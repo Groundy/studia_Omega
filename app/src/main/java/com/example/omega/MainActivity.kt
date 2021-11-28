@@ -27,6 +27,7 @@ import com.otaliastudios.cameraview.frame.Frame
 import com.otaliastudios.cameraview.frame.FrameProcessor
 import kotlinx.android.synthetic.main.activity_main.*
 
+
 class MainActivity: AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -34,7 +35,7 @@ class MainActivity: AppCompatActivity() {
 		FirebaseApp.initializeApp(this)
 		BlikNumberEditText.requestFocus()
 		askForCameraPermissions()
-		startNfcConnection()
+		//startNfcConnection()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -147,9 +148,10 @@ class MainActivity: AppCompatActivity() {
 		QrDetector = FirebaseVision.getInstance().getVisionBarcodeDetector(options)
 
 	}
-	//
-	lateinit var nfcAdapter:NfcAdapter
-	fun checkIfDeviceSupportNFC():Boolean{
+	/*
+	var nfcAdapter : NfcAdapter = NfcAdapter.getDefaultAdapter(this)
+
+	private fun checkIfDeviceSupportNFC(): Boolean {
 		var toRet = true
 		 if(nfcAdapter==null){
 			Toast.makeText(this, "That device doesn't support NFC ", Toast.LENGTH_LONG)
@@ -157,6 +159,7 @@ class MainActivity: AppCompatActivity() {
 		}
 		return toRet
 	}
+
 	fun askForNFCPermissions(){
 		val permissionArray= Array(1){ Manifest.permission.NFC}.toMutableList()
 		val permissionListener=object : MultiplePermissionsListener {
@@ -184,11 +187,10 @@ class MainActivity: AppCompatActivity() {
 	}
 	fun startNfcConnection(){
 		askForNFCPermissions()
-		nfcAdapter= NfcAdapter.getDefaultAdapter(this)
-		checkIfDeviceSupportNFC()
-
+		nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+		//checkIfDeviceSupportNFC()
 	}
-
+*/
 }
 
 
