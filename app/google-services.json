@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "755257593588",
+    "firebase_url": "https://omega-bfd5d.firebaseio.com",
+    "project_id": "omega-bfd5d",
+    "storage_bucket": "omega-bfd5d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755257593588:android:7247490d13be11ec90d8a1",
+        "android_client_info": {
+          "package_name": "com.example.omega"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755257593588-2sdl00di2a4v2nlju3ok4qajt9ojl20i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.omega",
+            "certificate_hash": "378ba4c982b8f9196dffc163d06450a7ad2d8997"
+          }
+        },
+        {
+          "client_id": "755257593588-lutdupsr9eq8vvlmt8i6kb41v4rn0eq6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8nhhJxEHSYxx17tXir0otvwY_2Qwa3o4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "755257593588-lutdupsr9eq8vvlmt8i6kb41v4rn0eq6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
