@@ -50,7 +50,7 @@ class MainActivity: AppCompatActivity() {
 	lateinit var options:FirebaseVisionBarcodeDetectorOptions
 	lateinit var QrDetector:FirebaseVisionBarcodeDetector
 	private fun askForCameraPermissions(){
-		val permissionArray= Array(2){Manifest.permission.CAMERA;Manifest.permission.RECORD_AUDIO}.toMutableList()
+		val permissionArray = Array(2){Manifest.permission.CAMERA;Manifest.permission.RECORD_AUDIO}.toMutableList()
 		val permissionListener=object :MultiplePermissionsListener{
 			override fun onPermissionsChecked(report: MultiplePermissionsReport?){
 				startCamera()
