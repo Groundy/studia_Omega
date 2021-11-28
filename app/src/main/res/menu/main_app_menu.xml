@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+          android:title="Historia Płatności"
+          android:id="@+id/History_of_Payment"
+          app:showAsAction="never"/>
+
+    <item
+            android:title="Przelew jednorazowy"
+            android:id="@+id/Money_Transfer"
+            app:showAsAction="never"/>
+    <item
+            android:title="Rachunki"
+            android:id="@+id/Accounts"
+            app:showAsAction="never"/>
+    <item
+            android:title="Konfiguracja"
+            android:id="@+id/Configurations"
+            app:showAsAction="never"/>
+    <item
+            android:title="Kontakty"
+            android:id="@+id/Contact"
+            app:showAsAction="never"/>
+    />
+</menu>
