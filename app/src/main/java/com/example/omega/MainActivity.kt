@@ -1,12 +1,15 @@
 package com.example.omega
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Menu
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.FirebaseApp
+import android.content.Intent
+import android.widget.Button
+
 
 class MainActivity: AppCompatActivity() {
+	lateinit var goQRActivityButton: Button
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
@@ -14,26 +17,18 @@ class MainActivity: AppCompatActivity() {
 		//var qrScanner : QrScanner = QrScanner(this)
 		//BlikNumberEditText.requestFocus()
 		//startNfcConnection()
+		goQRActivityButton = findViewById(R.id.goToQRScannerButton)
+		goQRActivityButton.setOnClickListener() {
+			val QRScannerActivityIntent = Intent(this, QRScannerActivity::class.java)
+			var returnCode: Int = 0
+			startActivityForResult(QRScannerActivityIntent, returnCode)
+		}
 	}
+
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.main_app_menu,menu)
 		return super.onCreateOptionsMenu(menu)
-	}
-
-
-
-
-	private fun showMsg(stringToDisplay:String){
-		val dialogBuilderVar=AlertDialog.Builder(this)
-		val dialogInterfaceVar=object : DialogInterface.OnClickListener{
-			override fun onClick(p0: DialogInterface, p1: Int) {
-				p0.dismiss()
-			}
-		}
-		dialogBuilderVar.setMessage(stringToDisplay).setPositiveButton("Ok",dialogInterfaceVar)
-		val dialog:AlertDialog=dialogBuilderVar.create()
-		dialog.show()
 	}
 	/*
 	var nfcAdapter : NfcAdapter = NfcAdapter.getDefaultAdapter(this)

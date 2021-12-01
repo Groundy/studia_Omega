@@ -97,7 +97,7 @@ public class QrScanner(activity : Activity) {
 		val scanButton: Button = activity!!.findViewById(R.id.scanButton)
 
 		lateinit var frameProcessor: FrameProcessor
-		cameraView = activity!!.findViewById(R.id.CameraView2)
+		//cameraView = activity!!.findViewById(R.id.CameraView2)
 
 		scanButton.isEnabled = false
 		scanButton.setOnClickListener {
