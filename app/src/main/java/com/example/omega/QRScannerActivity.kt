@@ -103,7 +103,9 @@ class QRScannerActivity() : AppCompatActivity() {
 						if(rawValue.length == 6){
 							var code : Int? = rawValue.toIntOrNull()
 							if(code!=null) {
-								context.setResult(code)
+								val output = Intent()
+								output.putExtra("codeFromQR", code)
+								context.setResult(RESULT_OK, output)
 								context.finish()
 							}
 						}
