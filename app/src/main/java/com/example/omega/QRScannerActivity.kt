@@ -24,10 +24,12 @@ import kotlinx.android.synthetic.main.activity_qrscanner.*
 import android.content.Intent
 
 class QRScannerActivity() : AppCompatActivity() {
+	/*
 	val options = FirebaseVisionBarcodeDetectorOptions.Builder()
 		.setBarcodeFormats(
 			FirebaseVisionBarcode.FORMAT_QR_CODE)
 		.build()
+	*/
 	var imgAnalyzer = ImageAnalysis.Builder().build()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,24 +42,18 @@ class QRScannerActivity() : AppCompatActivity() {
 	private fun askForCameraPermissions(){
 		val permissionListener = object : MultiplePermissionsListener {
 			override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-				if (report.areAllPermissionsGranted()) {
-
-				}
 				if (report.isAnyPermissionPermanentlyDenied or !report.areAllPermissionsGranted()) {
 					val toastText = "skaner kodów QR musi mieć dostęp do używania aparatu i mikrofonu."
 					Toast.makeText(this@QRScannerActivity,toastText,Toast.LENGTH_LONG).show()
 					this@QRScannerActivity.finish()
 				}
 			}
-
 			override fun onPermissionRationaleShouldBeShown(permissions: MutableList<PermissionRequest>?,token: PermissionToken?) {
 				token!!.continuePermissionRequest()
 			}
 		}
-
 		Dexter.withActivity(this@QRScannerActivity).withPermissions(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO).withListener(permissionListener).onSameThread().check()
 	}
-
 	private fun startCamera() {
 		val cameraProviderFuture = ProcessCameraProvider.getInstance( this@QRScannerActivity)
 		cameraProviderFuture.addListener(Runnable {
@@ -92,12 +88,13 @@ class QRScannerActivity() : AppCompatActivity() {
 	private class YourImageAnalyzer(context : QRScannerActivity) : ImageAnalysis.Analyzer {
 		val scanner = BarcodeScanning.getClient()
 		val context = context
+		val wrongFormatMsg : String = "t"
 		@SuppressLint("UnsafeExperimentalUsageError")
 		override fun analyze(imageProxy: ImageProxy) {
 			val mediaImage = imageProxy.image
 			if (mediaImage != null) {
 				val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-				val result = scanner.process(image).addOnSuccessListener {barcodes ->
+				val result = scanner.process(image).addOnSuccessListener{barcodes ->
 					for (barcode in barcodes) {
 						val rawValue = barcode.rawValue
 						if(rawValue.length == 6){
@@ -108,7 +105,10 @@ class QRScannerActivity() : AppCompatActivity() {
 								context.setResult(RESULT_OK, output)
 								context.finish()
 							}
+							Utilites.showToast(context, wrongFormatMsg)
 						}
+						else
+							Utilites.showToast(context, wrongFormatMsg)
 					}
 				}
 			}
