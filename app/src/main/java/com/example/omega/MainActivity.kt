@@ -43,6 +43,7 @@ class MainActivity: AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
+		test()
 		goQRActivityButton = findViewById(R.id.goToQRScannerButton)
 		codeField = findViewById(R.id.enterCodeField)
 		codeField.requestFocus()
@@ -71,6 +72,9 @@ class MainActivity: AppCompatActivity() {
 
 	private fun processCode(code : Int){
 		Utilites.showToast(this,"process: " + code.toString())
+	}
+
+	private fun test(){
 	}
 }
 
