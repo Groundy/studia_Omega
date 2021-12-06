@@ -1,4 +1,5 @@
 package com.example.omega
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
@@ -6,16 +7,15 @@ import com.google.firebase.FirebaseApp
 import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import kotlinx.android.synthetic.main.settings_activity.*
 
-
 class MainActivity: AppCompatActivity() {
 	private lateinit var goQRActivityButton: Button
 	private lateinit var codeField: EditText
-	private lateinit var configurationTab: View
 
 	private val QR_SCANNER_ACTIVITY_RET_CODE = 0x101
 
@@ -40,18 +40,13 @@ class MainActivity: AppCompatActivity() {
 		val qRScannerActivityIntent = Intent(this, QRScannerActivity::class.java)
 		startActivityForResult(qRScannerActivityIntent, QR_SCANNER_ACTIVITY_RET_CODE)
 	}
-	private val configurationTabListener = View.OnClickListener {
-		val settingsActivityIntent = Intent(this,settings::class.java)
-		startActivity(settingsActivityIntent)
-	}
 
+
+	@SuppressLint("ResourceType")
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
-		test()
-		//configurationTab = findViewById(R.id.ConfigurationsTab)
-		//configurationTab.setOnClickListener(configurationTabListner)
 		goQRActivityButton = findViewById(R.id.goToQRScannerButton)
 		codeField = findViewById(R.id.enterCodeField)
 		codeField.requestFocus()
@@ -78,20 +73,22 @@ class MainActivity: AppCompatActivity() {
 		return super.onCreateOptionsMenu(menu)
 	}
 
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		if(item.itemId == R.id.ConfigurationsTab){
+			val settingsActivityIntent = Intent(this@MainActivity,SettingsActivity::class.java)
+			startActivity(settingsActivityIntent)
+			return true
+		}
+		return false
+	}
+
 	private fun processCode(code : Int){
 		Utilites.showToast(this,"process: " + code.toString())
 	}
 
 	private fun test(){
+
 	}
-/*
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		R.string.
-		menuInflater.inflate(R.menu.mai, menu)
-		return true
-	}
-	*/
 
 }
 
