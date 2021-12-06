@@ -41,6 +41,12 @@
 
                 android:gravity="center_horizontal" />
 
+        <Button
+                android:layout_width="154dp"
+                android:layout_height="132dp"
+                android:id="@+id/nfcButton"
+                android:background="@drawable/nfc_off_icon" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
