@@ -19,7 +19,7 @@ class MainActivity: AppCompatActivity() {
 
 	private val QR_SCANNER_ACTIVITY_RET_CODE = 0x101
 
-	private val codeFieldTextListner = object : TextWatcher {
+	private val codeFieldTextListener = object : TextWatcher {
 
 		override fun afterTextChanged(s: Editable) {
 			if(s.length == 6){
@@ -40,7 +40,7 @@ class MainActivity: AppCompatActivity() {
 		val qRScannerActivityIntent = Intent(this, QRScannerActivity::class.java)
 		startActivityForResult(qRScannerActivityIntent, QR_SCANNER_ACTIVITY_RET_CODE)
 	}
-	private val configurationTabListner = View.OnClickListener {
+	private val configurationTabListener = View.OnClickListener {
 		val settingsActivityIntent = Intent(this,settings::class.java)
 		startActivity(settingsActivityIntent)
 	}
@@ -56,7 +56,7 @@ class MainActivity: AppCompatActivity() {
 		codeField = findViewById(R.id.enterCodeField)
 		codeField.requestFocus()
 		goQRActivityButton.setOnClickListener(goQRScannerButtonListener)
-		codeField.addTextChangedListener(codeFieldTextListner)
+		codeField.addTextChangedListener(codeFieldTextListener)
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
