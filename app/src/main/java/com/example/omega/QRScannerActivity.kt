@@ -1,17 +1,12 @@
 package com.example.omega
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
-import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode
-import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetectorOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import com.karumi.dexter.Dexter
@@ -52,7 +47,7 @@ class QRScannerActivity() : AppCompatActivity() {
 				token!!.continuePermissionRequest()
 			}
 		}
-		Dexter.withActivity(this@QRScannerActivity).withPermissions(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO).withListener(permissionListener).onSameThread().check()
+		Dexter.withActivity(this@QRScannerActivity).withPermissions(Manifest.permission.CAMERA).withListener(permissionListener).onSameThread().check()
 	}
 	private fun startCamera() {
 		val cameraProviderFuture = ProcessCameraProvider.getInstance( this@QRScannerActivity)
@@ -64,7 +59,6 @@ class QRScannerActivity() : AppCompatActivity() {
 			val preview = Preview.Builder().build().also {
 				it.setSurfaceProvider(this.cameraPreview.surfaceProvider)
 			}
-
 			// Select back camera as a default
 			val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
@@ -88,7 +82,7 @@ class QRScannerActivity() : AppCompatActivity() {
 	private class YourImageAnalyzer(context : QRScannerActivity) : ImageAnalysis.Analyzer {
 		val scanner = BarcodeScanning.getClient()
 		val context = context
-		val wrongFormatMsg : String = "t"
+		val wrongFormatMsg : String = "Odczytano QR kod w złym formacie"
 		@SuppressLint("UnsafeExperimentalUsageError")
 		override fun analyze(imageProxy: ImageProxy) {
 			val mediaImage = imageProxy.image

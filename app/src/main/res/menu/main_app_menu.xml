@@ -17,8 +17,8 @@
             app:showAsAction="never"/>
     <item
             android:title="Konfiguracja"
-            android:id="@+id/Configurations"
-            app:showAsAction="never"/>
+            android:id="@+id/ConfigurationsTab"
+            app:showAsAction="never" />
     <item
             android:title="Kontakty"
             android:id="@+id/Contact"
