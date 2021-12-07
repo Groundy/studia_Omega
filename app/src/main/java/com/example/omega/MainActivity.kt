@@ -1,7 +1,4 @@
 package com.example.omega
-import android.annotation.SuppressLint
-import android.app.IntentService
-import android.app.Service
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +14,7 @@ import android.widget.EditText
 import kotlinx.android.synthetic.main.settings_activity.*
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.IntentFilter
 
 
 class MainActivity: AppCompatActivity() {
@@ -24,19 +22,48 @@ class MainActivity: AppCompatActivity() {
 	private lateinit var codeField: EditText
 	private lateinit var nfcOnOffButton : Button
 
-	private val QR_SCANNER_ACTIVITY_RET_CODE = 0x101
+	var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent) {
+			val s1 = intent.getStringExtra("code")
+			codeField.setText(s1.toString())
+		}
+	}
+	private val codeFieldTextListener = object : TextWatcher {
+		override fun afterTextChanged(s: Editable) {
+			if(s.length == 6){
+				val code = s.toString().toInt()
+				if(code in  0..999999)
+					processCode(code)
+			}
+		}
 
-	@SuppressLint("ResourceType")
+		override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+		override fun onTextChanged(s: CharSequence, start: Int,before: Int, count: Int) {}
+	}
+	private val goQRScannerButtonListener =  View.OnClickListener{
+		val qRScannerActivityIntent = Intent(this, QRScannerActivity::class.java)
+		startActivityForResult(qRScannerActivityIntent, scannerRetCode)
+	}
+	private val nfcButtonListener = View.OnClickListener {
+		val imgFirst = nfcOnOffButton.background.constantState
+		val imgSecond = getDrawable(R.drawable.nfc_on_icon)!!.constantState
+		val isAlreadyTurnedOn = imgFirst == imgSecond
+		if(isAlreadyTurnedOn) turnNFCOFF() else turnNFCON()
+	}
+	private var nfcConnectorIntent : Intent? = null
+	private val scannerRetCode = 0x101
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
 		initUIVariables()
+
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
-		if(requestCode == QR_SCANNER_ACTIVITY_RET_CODE && resultCode == RESULT_OK && data!=null){
+		if(requestCode == scannerRetCode && resultCode == RESULT_OK && data!=null){
 			val returnedCode = data.getIntExtra("codeFromQR",-1)
 			val vailCode = returnedCode in 0..999999
 			if(vailCode) {
@@ -70,86 +97,30 @@ class MainActivity: AppCompatActivity() {
 		nfcOnOffButton.setOnClickListener(nfcButtonListener)
 	}
 	private fun test(){
-		Log.i("Wookie","test fun executed")
-		startService(Intent(this,NFCThread::class.java))
+
 	}
 	private fun turnNFCON(){
-		test()
-		nfcOnOffButton.setBackgroundResource(R.drawable.nfc_on_icon)
+		val currentlyTurnedOff = nfcConnectorIntent == null
+		if(currentlyTurnedOff){
+			val intentFilter = IntentFilter()
+			nfcConnectorIntent = Intent (this,NFCThread::class.java)
+			intentFilter.addAction("NFCThread")
+			registerReceiver(broadcastReceiver,intentFilter)
+			startService(nfcConnectorIntent)
+			nfcOnOffButton.setBackgroundResource(R.drawable.nfc_on_icon)
+		}
 	}
 	private fun turnNFCOFF(){
-		nfcOnOffButton.setBackgroundResource(R.drawable.nfc_off_icon)
-	}
-
-	private val codeFieldTextListener = object : TextWatcher {
-		override fun afterTextChanged(s: Editable) {
-			if(s.length == 6){
-				val code = s.toString().toInt()
-				processCode(code)
-			}
-		}
-
-		override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-		override fun onTextChanged(s: CharSequence, start: Int,before: Int, count: Int) {}
-	}
-	private val goQRScannerButtonListener =  View.OnClickListener{
-		val qRScannerActivityIntent = Intent(this, QRScannerActivity::class.java)
-		startActivityForResult(qRScannerActivityIntent, QR_SCANNER_ACTIVITY_RET_CODE)
-	}
-	private val nfcButtonListener = View.OnClickListener {
-		val imgFirst = nfcOnOffButton.background.constantState
-		val imgSecond = getDrawable(R.drawable.nfc_on_icon)!!.constantState
-		val isAlreadyTurnedOn = imgFirst == imgSecond
-		if(isAlreadyTurnedOn) turnNFCOFF() else turnNFCON()
-	}
-
-	
-}
-
-
-/*
-var nfcAdapter : NfcAdapter = NfcAdapter.getDefaultAdapter(this)
-
-private fun checkIfDeviceSupportNFC(): Boolean {
-	var toRet = true
-	 if(nfcAdapter==null){
-		Toast.makeText(this, "That device doesn't support NFC ", Toast.LENGTH_LONG)
-		toRet = false
-	}
-	return toRet
-}
-
-fun askForNFCPermissions(){
-	val permissionArray= Array(1){ Manifest.permission.NFC}.toMutableList()
-	val permissionListener=object : MultiplePermissionsListener {
-		override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-
-		}
-
-		override fun onPermissionRationaleShouldBeShown(
-			permissions: MutableList<PermissionRequest>?,
-			token: PermissionToken?
-		) {
-			Toast.makeText(this@MainActivity, "Accept permissions first!", Toast.LENGTH_LONG)
+		val alreadyTurnedOn = nfcConnectorIntent != null
+		if(alreadyTurnedOn){
+			nfcOnOffButton.setBackgroundResource(R.drawable.nfc_off_icon)
+			unregisterReceiver(broadcastReceiver)
+			stopService(nfcConnectorIntent)
+			nfcConnectorIntent =  null
 		}
 	}
-	Dexter.withActivity(this).withPermissions(permissionArray).withListener(permissionListener).check()
-
-}
-fun checkIfNfcIsEnabled():Boolean{
-	return if(nfcAdapter.isEnabled)
-		true
-	else{
-		Toast.makeText(this,"Turn on NFC", Toast.LENGTH_LONG)
-		false
+	override fun onStop() {
+		super.onStop()
+		unregisterReceiver(broadcastReceiver);
 	}
 }
-fun startNfcConnection(){
-	askForNFCPermissions()
-	nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-	//checkIfDeviceSupportNFC()
-}
-*/
-
-
-
