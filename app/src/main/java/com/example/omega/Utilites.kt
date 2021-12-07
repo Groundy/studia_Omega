@@ -3,7 +3,6 @@ import android.app.Activity
 import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
 import android.content.SharedPreferences
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 

@@ -1,4 +1,5 @@
 package com.example.omega
+import android.Manifest
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
@@ -6,7 +7,6 @@ import com.google.firebase.FirebaseApp
 import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -15,7 +15,14 @@ import kotlinx.android.synthetic.main.settings_activity.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.IntentFilter
-
+import android.content.pm.PackageManager
+import android.util.Log
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
 
 class MainActivity: AppCompatActivity() {
 	private lateinit var goQRActivityButton: Button
@@ -24,8 +31,14 @@ class MainActivity: AppCompatActivity() {
 
 	var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent) {
-			val s1 = intent.getStringExtra("code")
-			codeField.setText(s1.toString())
+			val codeTry = intent.getStringExtra("code")?.toInt()
+			val validValue = codeTry != null && codeTry in 0..999999
+			if(validValue){
+				val code : Int = codeTry!!
+				codeField.setText(code.toString())
+				turnNfcOff()
+				processCode(code)
+			}
 		}
 	}
 	private val codeFieldTextListener = object : TextWatcher {
@@ -45,10 +58,8 @@ class MainActivity: AppCompatActivity() {
 		startActivityForResult(qRScannerActivityIntent, scannerRetCode)
 	}
 	private val nfcButtonListener = View.OnClickListener {
-		val imgFirst = nfcOnOffButton.background.constantState
-		val imgSecond = getDrawable(R.drawable.nfc_on_icon)!!.constantState
-		val isAlreadyTurnedOn = imgFirst == imgSecond
-		if(isAlreadyTurnedOn) turnNFCOFF() else turnNFCON()
+		val isAlreadyTurnedOn = nfcConnectorIntent != null
+		if(isAlreadyTurnedOn) turnNfcOff() else turnNfcOn()
 	}
 	private var nfcConnectorIntent : Intent? = null
 	private val scannerRetCode = 0x101
@@ -58,7 +69,6 @@ class MainActivity: AppCompatActivity() {
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
 		initUIVariables()
-
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -99,7 +109,19 @@ class MainActivity: AppCompatActivity() {
 	private fun test(){
 
 	}
-	private fun turnNFCON(){
+	private fun turnNfcOn(){
+		val deviceHasNfc = this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)
+		if(!deviceHasNfc){
+			Log.e("WookieTag", "There's no NFC on user's phone")
+			//TODO dać info userowi że nie ma NFC
+			return
+		}
+
+		askForNFCPermissions()
+		val permissionNfcGranted = checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_GRANTED
+		if(!permissionNfcGranted)
+			return
+
 		val currentlyTurnedOff = nfcConnectorIntent == null
 		if(currentlyTurnedOff){
 			val intentFilter = IntentFilter()
@@ -108,19 +130,35 @@ class MainActivity: AppCompatActivity() {
 			registerReceiver(broadcastReceiver,intentFilter)
 			startService(nfcConnectorIntent)
 			nfcOnOffButton.setBackgroundResource(R.drawable.nfc_on_icon)
+			Log.i("WookieTag", "NFC process turned on")
 		}
 	}
-	private fun turnNFCOFF(){
+	private fun turnNfcOff(){
 		val alreadyTurnedOn = nfcConnectorIntent != null
 		if(alreadyTurnedOn){
 			nfcOnOffButton.setBackgroundResource(R.drawable.nfc_off_icon)
 			unregisterReceiver(broadcastReceiver)
 			stopService(nfcConnectorIntent)
 			nfcConnectorIntent =  null
+			Log.i("WookieTag", "NFC process turned off")
 		}
 	}
 	override fun onStop() {
 		super.onStop()
 		unregisterReceiver(broadcastReceiver);
+	}
+	private fun askForNFCPermissions(){
+		val permissionListener = object : PermissionListener {
+			override fun onPermissionGranted(response: PermissionGrantedResponse?) {}
+			override fun onPermissionDenied(response: PermissionDeniedResponse?) {
+				val toastText = "Do płatności zbliżeniowych konieczne jest włączenie NFC"
+				Utilites.showToast(this@MainActivity,toastText)
+				Log.e("WookieTag", "User denied permission to use NFC")
+			}
+			override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?,	token: PermissionToken?) {
+				token!!.continuePermissionRequest()
+			}
+		}
+		Dexter.withActivity(this).withPermission(Manifest.permission.NFC).withListener(permissionListener).check()
 	}
 }
