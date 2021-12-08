@@ -15,10 +15,11 @@ class NFCThread() : Service() {
 		intent1.action = "NFCThread"
 		val thread = Thread(){
 			Log.i("WookieTag","NFC Thread is looking for tag")
-			sleep(50)
+			while(true)
+				sleep(50)//TODO usunac to, tylko do symulacji dlugo dzialajacego procesu
+			endService(3,intent1)
 		}
 		thread.start()
-		endService(3,intent1)
 	}
 	override fun onCreate() {
 		Log.i("Wookie","NFCThread started")
@@ -35,52 +36,3 @@ class NFCThread() : Service() {
 		sleep(100)
 	}
 }
-
-
-/*
-var nfcAdapter : NfcAdapter = NfcAdapter.getDefaultAdapter(this)
-
-private fun checkIfDeviceSupportNFC(): Boolean {
-	var toRet = true
-	 if(nfcAdapter==null){
-		Toast.makeText(this, "That device doesn't support NFC ", Toast.LENGTH_LONG)
-		toRet = false
-	}
-	return toRet
-}
-
-fun askForNFCPermissions(){
-	val permissionArray= Array(1){ Manifest.permission.NFC}.toMutableList()
-	val permissionListener=object : MultiplePermissionsListener {
-		override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-
-		}
-
-		override fun onPermissionRationaleShouldBeShown(
-			permissions: MutableList<PermissionRequest>?,
-			token: PermissionToken?
-		) {
-			Toast.makeText(this@MainActivity, "Accept permissions first!", Toast.LENGTH_LONG)
-		}
-	}
-	Dexter.withActivity(this).withPermissions(permissionArray).withListener(permissionListener).check()
-
-}
-fun checkIfNfcIsEnabled():Boolean{
-	return if(nfcAdapter.isEnabled)
-		true
-	else{
-		Toast.makeText(this,"Turn on NFC", Toast.LENGTH_LONG)
-		false
-	}
-}
-fun startNfcConnection(){
-	askForNFCPermissions()
-	nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-	//checkIfDeviceSupportNFC()
-}
-*/
-
-
-
-

@@ -16,6 +16,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.nfc.NfcManager
 import android.util.Log
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -110,20 +111,9 @@ class MainActivity: AppCompatActivity() {
 
 	}
 	private fun turnNfcOn(){
-		val deviceHasNfc = this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)
-		if(!deviceHasNfc){
-			Log.e("WookieTag", "There's no NFC on user's phone")
-			//TODO dać info userowi że nie ma NFC
-			return
-		}
-
-		askForNFCPermissions()
-		val permissionNfcGranted = checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_GRANTED
-		if(!permissionNfcGranted)
-			return
-
 		val currentlyTurnedOff = nfcConnectorIntent == null
-		if(currentlyTurnedOff){
+		val nfcIsOn = checkIfNfcIsTurnedOn()
+		if(currentlyTurnedOff && nfcIsOn){
 			val intentFilter = IntentFilter()
 			nfcConnectorIntent = Intent (this,NFCThread::class.java)
 			intentFilter.addAction("NFCThread")
@@ -147,7 +137,15 @@ class MainActivity: AppCompatActivity() {
 		super.onStop()
 		unregisterReceiver(broadcastReceiver);
 	}
-	private fun askForNFCPermissions(){
+	private fun checkIfNfcIsTurnedOn() : Boolean{
+		val deviceHasNfc = this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)
+		if(!deviceHasNfc){
+			Log.e("WookieTag", "There's no NFC on user's phone")
+			//TODO dać info userowi że nie ma NFC
+			return false
+		}
+
+
 		val permissionListener = object : PermissionListener {
 			override fun onPermissionGranted(response: PermissionGrantedResponse?) {}
 			override fun onPermissionDenied(response: PermissionDeniedResponse?) {
@@ -160,5 +158,22 @@ class MainActivity: AppCompatActivity() {
 			}
 		}
 		Dexter.withActivity(this).withPermission(Manifest.permission.NFC).withListener(permissionListener).check()
+		val permissionNfcDenied= checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_DENIED
+		if(permissionNfcDenied){
+			Log.e("WookieTag", "There's no permission to use")
+			//TODO dać info userowi że nie ma pozwolenia na NFC
+			return false
+		}
+
+
+		val manager = this.getSystemService(NFC_SERVICE) as NfcManager
+		val nfcIsOn = manager.defaultAdapter.isEnabled
+		if(!nfcIsOn){
+			Log.e("WookieTag", "NFC connection is off")
+			//TODO dać info userowi że NFC jest wylaczone, przeniesc go z aplikacji do ustawien NFC
+			return false
+		}
+
+		return true
 	}
 }
