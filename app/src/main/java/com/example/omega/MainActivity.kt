@@ -16,7 +16,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.nfc.NfcAdapter
 import android.nfc.NfcManager
+import android.nfc.Tag
 import android.util.Log
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -24,46 +26,18 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import android.app.PendingIntent
+import android.nfc.tech.NfcA
+import android.widget.Toast
+import android.nfc.NdefMessage
 
 class MainActivity: AppCompatActivity() {
 	private lateinit var goQRActivityButton: Button
 	private lateinit var codeField: EditText
 	private lateinit var nfcOnOffButton : Button
-
-	var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-		override fun onReceive(context: Context?, intent: Intent) {
-			val codeTry = intent.getStringExtra("code")?.toInt()
-			val validValue = codeTry != null && codeTry in 0..999999
-			if(validValue){
-				val code : Int = codeTry!!
-				codeField.setText(code.toString())
-				turnNfcOff()
-				processCode(code)
-			}
-		}
-	}
-	private val codeFieldTextListener = object : TextWatcher {
-		override fun afterTextChanged(s: Editable) {
-			if(s.length == 6){
-				val code = s.toString().toInt()
-				if(code in  0..999999)
-					processCode(code)
-			}
-		}
-
-		override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-		override fun onTextChanged(s: CharSequence, start: Int,before: Int, count: Int) {}
-	}
-	private val goQRScannerButtonListener =  View.OnClickListener{
-		val qRScannerActivityIntent = Intent(this, QRScannerActivity::class.java)
-		startActivityForResult(qRScannerActivityIntent, scannerRetCode)
-	}
-	private val nfcButtonListener = View.OnClickListener {
-		val isAlreadyTurnedOn = nfcConnectorIntent != null
-		if(isAlreadyTurnedOn) turnNfcOff() else turnNfcOn()
-	}
-	private var nfcConnectorIntent : Intent? = null
+	private var nfcIsTurnOnOnApp : Boolean = false
 	private val scannerRetCode = 0x101
+	private lateinit var nfcAdapter : NfcAdapter
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -99,6 +73,38 @@ class MainActivity: AppCompatActivity() {
 		Utilites.showToast(this,"process: " + code.toString())
 	}
 	private fun initUIVariables(){
+		val goQRScannerButtonListener =  View.OnClickListener{
+			val qRScannerActivityIntent = Intent(this, QRScannerActivity::class.java)
+			startActivityForResult(qRScannerActivityIntent, scannerRetCode)
+		}
+		val nfcButtonListener = View.OnClickListener {
+			val nfcIsTurnedOnOnPhone = checkIfNfcIsTurnedOn()
+			if(!nfcIsTurnOnOnApp && nfcIsTurnedOnOnPhone){
+				//Turn on
+				nfcOnOffButton.setBackgroundResource(R.drawable.nfc_on_icon)
+				nfcIsTurnOnOnApp = !nfcIsTurnOnOnApp
+				return@OnClickListener
+			}
+			if(nfcIsTurnOnOnApp){
+				//Turn off
+				nfcOnOffButton.setBackgroundResource(R.drawable.nfc_off_icon)
+				nfcIsTurnOnOnApp = !nfcIsTurnOnOnApp
+				return@OnClickListener
+			}
+		}
+		val codeFieldTextListener = object : TextWatcher {
+			override fun afterTextChanged(s: Editable) {
+				if(s.length == 6){
+					val code = s.toString().toInt()
+					if(code in  0..999999)
+						processCode(code)
+				}
+			}
+			override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+			override fun onTextChanged(s: CharSequence, start: Int,before: Int, count: Int) {}
+		}
+
+		nfcAdapter = NfcAdapter.getDefaultAdapter(this)?.let { it }!!
 		goQRActivityButton = findViewById(R.id.goToQRScannerButton)
 		codeField = findViewById(R.id.enterCodeField)
 		codeField.requestFocus()
@@ -106,36 +112,6 @@ class MainActivity: AppCompatActivity() {
 		codeField.addTextChangedListener(codeFieldTextListener)
 		nfcOnOffButton = findViewById(R.id.nfcButton)
 		nfcOnOffButton.setOnClickListener(nfcButtonListener)
-	}
-	private fun test(){
-
-	}
-	private fun turnNfcOn(){
-		val currentlyTurnedOff = nfcConnectorIntent == null
-		val nfcIsOn = checkIfNfcIsTurnedOn()
-		if(currentlyTurnedOff && nfcIsOn){
-			val intentFilter = IntentFilter()
-			nfcConnectorIntent = Intent (this,NFCThread::class.java)
-			intentFilter.addAction("NFCThread")
-			registerReceiver(broadcastReceiver,intentFilter)
-			startService(nfcConnectorIntent)
-			nfcOnOffButton.setBackgroundResource(R.drawable.nfc_on_icon)
-			Log.i("WookieTag", "NFC process turned on")
-		}
-	}
-	private fun turnNfcOff(){
-		val alreadyTurnedOn = nfcConnectorIntent != null
-		if(alreadyTurnedOn){
-			nfcOnOffButton.setBackgroundResource(R.drawable.nfc_off_icon)
-			unregisterReceiver(broadcastReceiver)
-			stopService(nfcConnectorIntent)
-			nfcConnectorIntent =  null
-			Log.i("WookieTag", "NFC process turned off")
-		}
-	}
-	override fun onStop() {
-		super.onStop()
-		unregisterReceiver(broadcastReceiver);
 	}
 	private fun checkIfNfcIsTurnedOn() : Boolean{
 		val deviceHasNfc = this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)
@@ -175,5 +151,42 @@ class MainActivity: AppCompatActivity() {
 		}
 
 		return true
+	}
+	override fun onNewIntent(intent: Intent) {
+		super.onNewIntent(intent)
+		if(!nfcIsTurnOnOnApp)
+			return
+		val tagFromIntent: Tag? = intent?.getParcelableExtra(NfcAdapter.EXTRA_TAG)
+		if(tagFromIntent != null){
+			val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+			val relayRecord = (rawMsgs!![0] as NdefMessage).records[0]
+			var tagData = String(relayRecord.payload)
+			//format UNKOWN_BYTE,LAUNGAGE BYTES(probably 2 bytes), CODE
+			if(tagData.count() >= 6){
+				val codeCandidate = tagData.takeLast(6).toIntOrNull()
+				if(codeCandidate != null && codeCandidate in 0..999999){
+					val code = codeCandidate.toInt()
+					Log.i("WookieTag",tagData)
+					processCode(code)
+				}
+			}
+		}
+	}
+
+	private fun enableForegroundDispatch(activity: AppCompatActivity) {
+		val intent = Intent(activity.applicationContext, activity.javaClass).addFlags(
+			Intent.FLAG_ACTIVITY_SINGLE_TOP
+		)
+		val pendingIntent = PendingIntent.getActivity(activity.applicationContext, 0, intent, 0)
+		val filters = arrayOfNulls<IntentFilter>(1)
+		val techList = arrayOf<Array<String>>()
+
+		filters[0] = IntentFilter()
+		with(filters[0]) {
+			this?.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED)
+			this?.addCategory(Intent.CATEGORY_DEFAULT)
+			this?.addDataType("text/plain")
+		}
+		this.nfcAdapter.enableForegroundDispatch(activity, pendingIntent, filters, techList)
 	}
 }
