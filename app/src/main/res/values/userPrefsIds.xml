@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 				<bool name="turnNfcOnAppStart">false</bool>
+				<integer name="preferedAuthMethode">0</integer> <!--0-PIN, 1-Symbol, 2-fingerPrint-->
 </resources>

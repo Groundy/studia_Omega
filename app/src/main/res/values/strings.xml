@@ -31,5 +31,9 @@
 				<string name="attachment_summary_off">Only download attachments when manually requested</string>
 
 
+				<string name="selectAuthMethodeText_pin">PIN</string>
+				<string name="selectAuthMethodeText_finger">Odcisk palca</string>
+				<string name="selectAuthMethodeText_pattern">Wzór</string>
+				<string name="selectAuthMethodeText_base">"Preferowana metoda autoryzacji: "</string>
 				<!--    <string name=""></string>   -->
 </resources>

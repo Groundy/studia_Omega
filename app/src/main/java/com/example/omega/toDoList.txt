@@ -1,9 +1,11 @@
 //TODO
-
-
+5.  Dodać Activity z pobieraniem odcisku palca
+6.  Dodać Activity z ustaleniem pinu
+7.  Dodać Activity z wprowadzaniem wzoru
 
 
 //DONE
+4.  Dodać w opcjach wybór preferowanej metody uwierzytelniania PIN/wzór/fingerPrint, domyślnie PIN
 3.  Pokazywać NFC tylko jeżeli urządzenie posiada NFC
 2.  Dodać obsługę switcha od NFC w konfiguracji
 1.  Włączać NFC przy starcie aplikacji jeżeli użytkownik zaznaczył taką opcje.

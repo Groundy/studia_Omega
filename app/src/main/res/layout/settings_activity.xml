@@ -17,7 +17,15 @@
 																				android:layout_width="match_parent"
 																				android:layout_height="wrap_content"
 																				android:id="@+id/turnOnNFCWhenAppStartsSwitch"
-																				android:minHeight="32dp" />
+																				android:minHeight="32dp"
+																				android:showText="false" />
+
+												<TextView
+																				android:text="TextView"
+																				android:layout_width="match_parent"
+																				android:layout_height="50dp"
+																				android:id="@+id/selectAuthMethodeTextView" />
+
 								</LinearLayout>
 				</FrameLayout>
 </LinearLayout>
