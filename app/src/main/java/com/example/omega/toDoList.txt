@@ -1,0 +1,8 @@
+//TODO
+3. Pokazywać NFC tylko jeżeli urządzenie posiada NFC
+
+
+
+//DONE
+2. Dodać obsługę switcha od NFC w konfiguracji
+1.  Włączać NFC przy starcie aplikacji jeżeli użytkownik zaznaczył taką opcje.

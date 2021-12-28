@@ -19,12 +19,6 @@ import kotlinx.android.synthetic.main.activity_qrscanner.*
 import android.content.Intent
 
 class QRScannerActivity() : AppCompatActivity() {
-	/*
-	val options = FirebaseVisionBarcodeDetectorOptions.Builder()
-		.setBarcodeFormats(
-			FirebaseVisionBarcode.FORMAT_QR_CODE)
-		.build()
-	*/
 	var imgAnalyzer = ImageAnalysis.Builder().build()
 
 	override fun onCreate(savedInstanceState: Bundle?) {

@@ -6,7 +6,7 @@ android {
     buildToolsVersion "29.0.1"
     defaultConfig {
         applicationId "com.example.omega"
-        minSdkVersion 23//mozna przestawic na 23, w zaleznosci od uzytego telefonu
+        minSdkVersion 23//mozna przestawic na 23/28, w zaleznosci od uzytego telefonu
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"

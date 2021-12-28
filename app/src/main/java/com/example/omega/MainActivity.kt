@@ -12,8 +12,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import kotlinx.android.synthetic.main.settings_activity.*
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.nfc.NfcAdapter
@@ -27,8 +25,6 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import android.app.PendingIntent
-import android.nfc.tech.NfcA
-import android.widget.Toast
 import android.nfc.NdefMessage
 
 class MainActivity: AppCompatActivity() {
@@ -39,11 +35,19 @@ class MainActivity: AppCompatActivity() {
 	private val scannerRetCode = 0x101
 	private lateinit var nfcAdapter : NfcAdapter
 
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
 		initUIVariables()
+		readSavedUserSettings()
+	}
+
+	private fun readSavedUserSettings() {
+		var turnNfcAutomatically = Utilites.readPref_Bool(this, R.bool.turnNfcOnAppStart)
+		if(turnNfcAutomatically)
+			nfcOnOffButton.callOnClick()
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -70,7 +74,7 @@ class MainActivity: AppCompatActivity() {
 		return false
 	}
 	private fun processCode(code : Int){
-		Utilites.showToast(this,"process: " + code.toString())
+		Utilites.showToast(this, "process: $code")
 	}
 	private fun initUIVariables(){
 		val goQRScannerButtonListener =  View.OnClickListener{
@@ -160,7 +164,7 @@ class MainActivity: AppCompatActivity() {
 		if(tagFromIntent != null){
 			val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
 			val relayRecord = (rawMsgs!![0] as NdefMessage).records[0]
-			var tagData = String(relayRecord.payload)
+			val tagData = String(relayRecord.payload)
 			//format UNKOWN_BYTE,LAUNGAGE BYTES(probably 2 bytes), CODE
 			if(tagData.count() >= 6){
 				val codeCandidate = tagData.takeLast(6).toIntOrNull()
@@ -172,7 +176,6 @@ class MainActivity: AppCompatActivity() {
 			}
 		}
 	}
-
 	private fun enableForegroundDispatch(activity: AppCompatActivity) {
 		val intent = Intent(activity.applicationContext, activity.javaClass).addFlags(
 			Intent.FLAG_ACTIVITY_SINGLE_TOP
