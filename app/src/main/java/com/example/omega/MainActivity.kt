@@ -5,6 +5,9 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import android.hardware.biometrics.BiometricPrompt
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
@@ -28,13 +31,16 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.settings_activity.*
+import android.os.Build
+import androidx.core.app.ActivityCompat
+import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 
 class MainActivity : AppCompatActivity() {
-	private lateinit var goQRActivityButton: Button
-	private lateinit var codeField: EditText
 	private var nfcIsTurnOnOnApp: Boolean = false
 	private val scannerRetCode = 0x101
 	private lateinit var nfcAdapter: NfcAdapter
+	private lateinit var goQRActivityButton: Button
+	private lateinit var codeField: EditText
 
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +48,27 @@ class MainActivity : AppCompatActivity() {
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
 		initUIVariables()
+		test()
+	}
+
+	private fun test(){
+		val isBiometricPromptEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+		val isSdkVersionSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+		val fingerprintManager = FingerprintManagerCompat.from(this)
+		val isHardwareSupported = fingerprintManager.isHardwareDetected
+		val atLeastOneFingerInDatabase = fingerprintManager.hasEnrolledFingerprints()
+		val hasPerrmisions =  ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED
+
+		val promptInfo = BiometricPrompt.PromptInfo.Builder()
+			.setTitle("Biometric login for my app")
+			.setSubtitle("Log in using your biometric credential")
+			// Can't call setNegativeButtonText() and
+			// setAllowedAuthenticators(... or DEVICE_CREDENTIAL) at the same time.
+			// .setNegativeButtonText("Use account password")
+			.setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
+			.build()
+
+		val f = 4
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

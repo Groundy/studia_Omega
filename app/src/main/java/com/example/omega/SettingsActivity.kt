@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.select_auth_methode_dialog.*
+import kotlinx.android.synthetic.main.dialog_select_auth_methode.*
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -58,7 +58,7 @@ class SettingsActivity : AppCompatActivity() {
 	}
 	private fun showSelectAuthMethodeDialog(){
 		val dialog : Dialog = Dialog(this)
-		dialog.setContentView(R.layout.select_auth_methode_dialog)
+		dialog.setContentView(R.layout.dialog_select_auth_methode)
 		val radioButtonGroup = dialog.selectAuthMethodeButtonGroup
 		val radioButtonGroupListener = RadioGroup.OnCheckedChangeListener { radioButtonGroup, radioButtonId -> // checkedId is the RadioButton selected
 			dialog.dismiss()
