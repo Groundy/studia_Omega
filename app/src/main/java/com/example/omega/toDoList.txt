@@ -1,5 +1,5 @@
 //TODO
-5.  Dodać Activity z pobieraniem odcisku palca
+5.  Dodać Activity z autoryzacją odcisku palca
 6.  Dodać Activity z ustaleniem pinu
 7.  Dodać Activity z wprowadzaniem wzoru
 

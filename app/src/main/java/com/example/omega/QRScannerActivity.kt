@@ -81,6 +81,7 @@ class QRScannerActivity() : AppCompatActivity() {
 		override fun analyze(imageProxy: ImageProxy) {
 			val mediaImage = imageProxy.image
 			if (mediaImage != null) {
+				//TODO wyodrębnić funkcję analizaującą znaleziony obraz
 				val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 				val result = scanner.process(image).addOnSuccessListener{barcodes ->
 					for (barcode in barcodes) {

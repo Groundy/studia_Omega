@@ -1,17 +1,16 @@
 package com.example.omega
 
 import android.Manifest
+import android.app.Activity
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
-import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
-import android.hardware.biometrics.BiometricPrompt
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
 import android.nfc.Tag
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -21,8 +20,18 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import androidx.biometric.BiometricPrompt
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.google.firebase.FirebaseApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -31,13 +40,9 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.settings_activity.*
-import android.os.Build
-import androidx.core.app.ActivityCompat
-import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 
 class MainActivity : AppCompatActivity() {
 	private var nfcIsTurnOnOnApp: Boolean = false
-	private val scannerRetCode = 0x101
 	private lateinit var nfcAdapter: NfcAdapter
 	private lateinit var goQRActivityButton: Button
 	private lateinit var codeField: EditText
@@ -52,35 +57,31 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun test(){
-		val isBiometricPromptEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-		val isSdkVersionSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-		val fingerprintManager = FingerprintManagerCompat.from(this)
-		val isHardwareSupported = fingerprintManager.isHardwareDetected
-		val atLeastOneFingerInDatabase = fingerprintManager.hasEnrolledFingerprints()
-		val hasPerrmisions =  ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED
-
-		val promptInfo = BiometricPrompt.PromptInfo.Builder()
-			.setTitle("Biometric login for my app")
-			.setSubtitle("Log in using your biometric credential")
-			// Can't call setNegativeButtonText() and
-			// setAllowedAuthenticators(... or DEVICE_CREDENTIAL) at the same time.
-			// .setNegativeButtonText("Use account password")
-			.setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
-			.build()
-
+		val scanFingerActivityIntent = Intent(this, ScanFingerActivity::class.java)
+		val code =  resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE)
+		startActivityForResult(scanFingerActivityIntent, code)
 		val f = 4
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
-		if (requestCode == scannerRetCode && resultCode == RESULT_OK && data != null) {
-			val returnedCode = data.getIntExtra("codeFromQR", -1)
-			val vailCode = returnedCode in 0..999999
-			if (vailCode) {
-				codeField.setText(returnedCode.toString())
-				processCode(returnedCode)
+		if(resultCode == RESULT_OK && data != null){
+			when(requestCode){
+				resources.getInteger(R.integer.QR_SCANNER_RET_CODE) -> {
+					val returnedCode = data.getIntExtra("codeFromQR", -1)
+					val vailCode = returnedCode in 0..999999
+					if (vailCode) {
+						codeField.setText(returnedCode.toString())
+						processCode(returnedCode)
+					}
+				}
+				resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE) ->{
+					//Tylko do testów
+					Log.i("WookieTag", "finger activity returned")
+				}
 			}
 		}
+
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -104,7 +105,7 @@ class MainActivity : AppCompatActivity() {
 	private fun initUIVariables() {
 		val goQRScannerButtonListener = View.OnClickListener {
 			val qRScannerActivityIntent = Intent(this, QRScannerActivity::class.java)
-			startActivityForResult(qRScannerActivityIntent, scannerRetCode)
+			startActivityForResult(qRScannerActivityIntent, resources.getInteger(R.integer.QR_SCANNER_RET_CODE))
 		}
 		val codeFieldTextListener = object : TextWatcher {
 			override fun afterTextChanged(s: Editable) {
@@ -118,8 +119,8 @@ class MainActivity : AppCompatActivity() {
 			override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 			override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 		}
-
 		goQRActivityButton = findViewById(R.id.goToQRScannerButton)
+
 		codeField = findViewById(R.id.enterCodeField)
 		codeField.requestFocus()
 		goQRActivityButton.setOnClickListener(goQRScannerButtonListener)

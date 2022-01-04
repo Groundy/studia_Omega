@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+				<string name="selectAuthMethodeText_pin">PIN</string>
+				<string name="selectAuthMethodeText_finger">Odcisk palca</string>
+				<string name="selectAuthMethodeText_pattern">Wzór</string>
+				<string name="selectAuthMethodeText_base">"Preferowana metoda autoryzacji: "</string>
+
+
+				<string name="usePinInsteadOfFingerPrint">Użyj pinu</string>
+				<string name="fingerAuthTitle">Potwierdź transakcje</string>
+				<string name="fingerAuthSubTitlt">XXXXXXXXXXXXXXXX</string><!--ZMIENIC TO GDY BĘDE miał na to pomysł-->
+				<!--    <string name=""></string>   -->
+
+
+				<integer name="QR_SCANNER_RET_CODE">1001</integer>
+				<integer name="FINGER_SCANNER_RET_CODE">1002</integer>
+
+</resources>
