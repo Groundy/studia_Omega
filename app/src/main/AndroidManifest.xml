@@ -18,6 +18,9 @@
 												android:supportsRtl="true"
 												android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
 								<activity
+																android:name=".PinActivity"
+																android:exported="false" />
+								<activity
 																android:name=".ScanFingerActivity"
 																android:exported="false" />
 								<activity

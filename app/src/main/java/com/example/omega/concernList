@@ -1,0 +1,3 @@
+1. W listener w PIN activity byc moze trzeba ustawic sprawdzanie czy akcja klawisza to faktycznie
+ jego wcisniecie a nie np podniesienie, poki co to jest to opcja zakomentowana bo z jakis powodow
+ KeyEvent.action zawsze zwracal null

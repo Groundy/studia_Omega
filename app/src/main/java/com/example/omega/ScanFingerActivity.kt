@@ -1,22 +1,19 @@
 package com.example.omega
 
+
 import android.content.Context
 import android.content.Intent
-import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
-import android.net.wifi.hotspot2.pps.Credential
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
-import android.widget.Toast
 import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
 
 class ScanFingerActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_scan_finger)
+
 		val errorText = checkIfFingerScanningIsPossible(this)
 		val canAuth = errorText == null
 		if(canAuth)
@@ -25,33 +22,39 @@ class ScanFingerActivity : AppCompatActivity() {
 			finishActivity(false,errorText)
 	}
 	private fun showAuthDialog(){
+		val description : String? = this.intent.getStringExtra(getString(R.string.fingerAuthActivity_DescriptionField))
 		val promptInfo = BiometricPrompt.PromptInfo.Builder()
 			.setTitle(getString(R.string.fingerAuthTitle))
 			.setSubtitle(getString(R.string.fingerAuthSubTitlt))
+			.setDescription(description)
 			.setNegativeButtonText(getString(R.string.usePinInsteadOfFingerPrint))
 			.build()
 		val executor = mainExecutor
 		val authCallBack = object : BiometricPrompt.AuthenticationCallback() {
 			override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
 				super.onAuthenticationError(errorCode, errString)
-				Utilites.showToast(this@ScanFingerActivity,"Authentication error: $errString")
-				Utilites.showToast(this@ScanFingerActivity,"Authentication error code: $errorCode")
+				Log.e("WookieTag","Authentication error: $errString")
+				Log.e("WookieTag","Authentication error code: $errorCode")
 				when(errString){
 					getString(R.string.usePinInsteadOfFingerPrint) ->{
+						Log.i("WookieTag", "User wants to other auth methode than fingerPrint")
 						//TODO obsługa wypadku w którym użytkownik woli podać pin zamiast odcisku palca
+					}
+					else->{
+						finishActivity(false,null)
 					}
 				}
 			}
 			override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
 				//TODO obsługa wypadku prawidłowej autoryzacji
 				super.onAuthenticationSucceeded(result)
-				Toast.makeText(this@ScanFingerActivity,"Authentication succeeded!", Toast.LENGTH_SHORT).show()
+				Log.i("WookieTag","Auth by fingerPrint was correct")
 				finishActivity(true,null)
 			}
 			override fun onAuthenticationFailed() {
 				//TODO obsługa wypadku NIEprawidłowej autoryzacji
 				super.onAuthenticationFailed()
-				Utilites.showToast(this@ScanFingerActivity, "Authentication failed")
+				Log.i("WookieTag","Auth by fingerPrint was incorrect")
 				finishActivity(false,null)
 			}
 		}
@@ -105,4 +108,5 @@ class ScanFingerActivity : AppCompatActivity() {
 		setResult(RESULT_OK, output)
 		finish()
 	}
+
 }

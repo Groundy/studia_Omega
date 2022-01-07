@@ -1,10 +1,14 @@
 //TODO
-5.  Dodać Activity z autoryzacją odcisku palca
-6.  Dodać Activity z ustaleniem pinu
+12. Dodać okno z potwierdzeniem nadania przelewu.
+11. Dodać okno z formularzem w którym wpisuje się dane odbiorcy przelewu (4 z rap.)//IDEAs
+10. Wyświetlić listę banków podpiętych pod aplikację i umożliwić użytkownikowi tego banku(2 i 3 z raportu)
+9.  Dodadć logowanie w aplikacji (001 ze schematu z raprotu)
+8.  W errorAuth dodać rozóznienie między tym gdy użytkownik chce autoryzacji za pomocą innej metody a innym błędem.
 7.  Dodać Activity z wprowadzaniem wzoru
-
+6.  Dodać Activity z ustaleniem pinu
 
 //DONE
+5.  Dodać Activity z autoryzacją odcisku palca
 4.  Dodać w opcjach wybór preferowanej metody uwierzytelniania PIN/wzór/fingerPrint, domyślnie PIN
 3.  Pokazywać NFC tylko jeżeli urządzenie posiada NFC
 2.  Dodać obsługę switcha od NFC w konfiguracji

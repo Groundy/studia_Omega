@@ -3,4 +3,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 				<dimen name="fab_margin">16dp</dimen>
+
+
+
+				<dimen name="width_of_pin_digits">48dp</dimen>
+				<dimen name="height_of_pin_digits">80dp</dimen>
+				<dimen name="margin_width_of_pin_digits">20dp</dimen>
 </resources>

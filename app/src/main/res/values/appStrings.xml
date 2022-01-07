@@ -8,7 +8,8 @@
 
 				<string name="usePinInsteadOfFingerPrint">Użyj pinu</string>
 				<string name="fingerAuthTitle">Potwierdź transakcje</string>
-				<string name="fingerAuthSubTitlt">XXXXXXXXXXXXXXXX</string><!--ZMIENIC TO GDY BĘDE miał na to pomysł-->
+				<string name="fingerAuthSubTitlt">XXXXXXXXXXXXXXXX</string><!--ZMIENIC TO GDY BĘDE miał na to pomysł lub usunac calosc-->
+				<string name="fingerAuthActivity_DescriptionField">Tutaj powinnien być opis szczegółów operacji</string>
 				<!--    <string name=""></string>   -->
 
 
