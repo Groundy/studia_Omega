@@ -6,10 +6,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
-import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 
 
 class PinActivity : AppCompatActivity() {
@@ -28,6 +28,13 @@ class PinActivity : AppCompatActivity() {
 		digit4 = findViewById<EditText>(R.id.pid_digit4)
 		digit5 = findViewById<EditText>(R.id.pid_digit5)
 		setUIElementsListeners()
+
+		digit1.requestFocus()
+		val showKeyBoardObj = Runnable {
+			val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+			inputMethodManager.showSoftInput(digit1, InputMethodManager.SHOW_FORCED)
+		}
+		digit1.postDelayed(showKeyBoardObj, 100)
 	}
 
 	private fun setUIElementsListeners(){
@@ -44,7 +51,7 @@ class PinActivity : AppCompatActivity() {
 				}
 				else
 					Log.i("WookieTag","Pressed not enter key in PIN activity")
-				return true
+				return false
 			}
 		}
 		val listener1 = object : TextWatcher {
