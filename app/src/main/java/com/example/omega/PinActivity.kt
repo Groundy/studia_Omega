@@ -15,11 +15,8 @@ import android.view.inputmethod.InputMethodManager
 
 
 class PinActivity : AppCompatActivity() {
-	lateinit var digit1 : EditText
-	lateinit var digit2 : EditText
-	lateinit var digit3 : EditText
-	lateinit var digit4 : EditText
-	lateinit var digit5 : EditText
+	private lateinit var digits : MutableList<EditText>
+	private var pinTriesLeft = 3
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -58,32 +55,32 @@ class PinActivity : AppCompatActivity() {
 				if (keyCode == KeyEvent.KEYCODE_DEL && event?.action == KeyEvent.ACTION_DOWN) {
 					when(source?.id){
 						R.id.pid_digit1 ->{
-							digit1.text.clear()
+							digits[0].text.clear()
 						}
 						R.id.pid_digit2 ->{
-							digit1.requestFocus()
-							digit1.text.clear()
-							digit2.text.clear()
+							digits[0].requestFocus()
+							digits[0].text.clear()
+							digits[1].text.clear()
 						}
 						R.id.pid_digit3 ->{
-							digit2.requestFocus()
-							digit2.text.clear()
-							digit3.text.clear()
+							digits[1].requestFocus()
+							digits[1].text.clear()
+							digits[2].text.clear()
 						}
 						R.id.pid_digit4 ->{
-							digit3.requestFocus()
-							digit3.text.clear()
-							digit4.text.clear()
+							digits[2].requestFocus()
+							digits[2].text.clear()
+							digits[3].text.clear()
 						}
 						R.id.pid_digit5 ->{
-							val userAlreadyInsertedLastDigit = digit5.text.length == 1
+							val userAlreadyInsertedLastDigit = digits[4].text.length == 1
 							if(!userAlreadyInsertedLastDigit){
-								digit4.requestFocus()
-								digit4.text.clear()
-								digit5.text.clear()
+								digits[3].requestFocus()
+								digits[3].text.clear()
+								digits[4].text.clear()
 							}
 							else
-								digit5.text.clear()
+								digits[4].text.clear()
 						}
 						else ->{
 
@@ -100,7 +97,7 @@ class PinActivity : AppCompatActivity() {
 			override fun afterTextChanged(str: Editable?) {
 				val enteredDigit = str.toString().toIntOrNull()
 				if(enteredDigit != null){
-					digit2.requestFocus()
+					digits[1].requestFocus()
 				}
 			}
 		}
@@ -110,7 +107,7 @@ class PinActivity : AppCompatActivity() {
 			override fun afterTextChanged(str: Editable?) {
 				val enteredDigit = str.toString().toIntOrNull()
 				if(enteredDigit != null){
-					digit3.requestFocus()
+					digits[2].requestFocus()
 				}
 			}
 		}
@@ -120,7 +117,7 @@ class PinActivity : AppCompatActivity() {
 			override fun afterTextChanged(str: Editable?) {
 				val enteredDigit = str.toString().toIntOrNull()
 				if(enteredDigit != null){
-					digit4.requestFocus()
+					digits[3].requestFocus()
 				}
 			}
 		}
@@ -130,33 +127,27 @@ class PinActivity : AppCompatActivity() {
 			override fun afterTextChanged(str: Editable?) {
 				val enteredDigit = str.toString().toIntOrNull()
 				if(enteredDigit != null){
-					digit5.requestFocus()
+					digits[4].requestFocus()
 				}
 			}
 		}
 
-		digit1.addTextChangedListener(listener1)
-		digit2.addTextChangedListener(listener2)
-		digit3.addTextChangedListener(listener3)
-		digit4.addTextChangedListener(listener4)
-		digit1.setOnEditorActionListener(onEnterKeyPressedListener)
-		digit2.setOnEditorActionListener(onEnterKeyPressedListener)
-		digit3.setOnEditorActionListener(onEnterKeyPressedListener)
-		digit4.setOnEditorActionListener(onEnterKeyPressedListener)
-		digit5.setOnEditorActionListener(onEnterKeyPressedListener)
-		digit1.setOnKeyListener(deleteButtonPressedListener)
-		digit2.setOnKeyListener(deleteButtonPressedListener)
-		digit3.setOnKeyListener(deleteButtonPressedListener)
-		digit4.setOnKeyListener(deleteButtonPressedListener)
-		digit5.setOnKeyListener(deleteButtonPressedListener)
+		digits[0].addTextChangedListener(listener1)
+		digits[1].addTextChangedListener(listener2)
+		digits[2].addTextChangedListener(listener3)
+		digits[3].addTextChangedListener(listener4)
 
+		digits.forEach {
+			it.setOnEditorActionListener(onEnterKeyPressedListener)
+			it.setOnKeyListener(deleteButtonPressedListener)
+		}
 	}
 	private fun checkIfAllFieldsHaveEnteredDigits(): Boolean {
-		val value1 = digit1.text.toString().toIntOrNull()
-		val value2 = digit2.text.toString().toIntOrNull()
-		val value3 = digit3.text.toString().toIntOrNull()
-		val value4 = digit4.text.toString().toIntOrNull()
-		val value5 = digit5.text.toString().toIntOrNull()
+		val value1 = digits[0].text.toString().toIntOrNull()
+		val value2 = digits[1].text.toString().toIntOrNull()
+		val value3 = digits[2].text.toString().toIntOrNull()
+		val value4 = digits[3].text.toString().toIntOrNull()
+		val value5 = digits[4].text.toString().toIntOrNull()
 		val ok1 = value1 != null && value1 in 0..9
 		val ok2 = value2 != null && value2 in 0..9
 		val ok3 = value3 != null && value3 in 0..9
@@ -168,11 +159,11 @@ class PinActivity : AppCompatActivity() {
 		val allFieldsAreFilled = checkIfAllFieldsHaveEnteredDigits()
 		if(!allFieldsAreFilled)
 			return null
-		val value1 = digit1.text.toString().toInt() * 10000
-		val value2 = digit2.text.toString().toInt() * 1000
-		val value3 = digit3.text.toString().toInt() * 100
-		val value4 = digit4.text.toString().toInt() * 10
-		val value5 = digit5.text.toString().toInt() * 1
+		val value1 = digits[0].text.toString().toInt() * 10000
+		val value2 = digits[1].text.toString().toInt() * 1000
+		val value3 = digits[2].text.toString().toInt() * 100
+		val value4 = digits[3].text.toString().toInt() * 10
+		val value5 = digits[4].text.toString().toInt() * 1
 		val pin = value1 + value2 + value3 + value4 + value5
 		return pin
 	}
@@ -198,19 +189,19 @@ class PinActivity : AppCompatActivity() {
 		return description
 	}
 	private fun requestFocusOnActivityStart(){
-		digit1.requestFocus()
+		digits[0].requestFocus()
 		val showKeyboardObj = Runnable {
 			val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-			inputMethodManager.showSoftInput(digit1, InputMethodManager.SHOW_FORCED)
+			inputMethodManager.showSoftInput(digits[0], InputMethodManager.SHOW_FORCED)
 		}
-		digit1.postDelayed(showKeyboardObj, 150)
+		digits[0].postDelayed(showKeyboardObj, 150)
 	}
 	private fun findElements(){
-		digit1 = findViewById<EditText>(R.id.pid_digit1)
-		digit2 = findViewById<EditText>(R.id.pid_digit2)
-		digit3 = findViewById<EditText>(R.id.pid_digit3)
-		digit4 = findViewById<EditText>(R.id.pid_digit4)
-		digit5 = findViewById<EditText>(R.id.pid_digit5)
+		digits.add(findViewById<EditText>(R.id.pid_digit1))
+		digits.add(findViewById<EditText>(R.id.pid_digit2))
+		digits.add(findViewById<EditText>(R.id.pid_digit3))
+		digits.add(findViewById<EditText>(R.id.pid_digit4))
+		digits.add(findViewById<EditText>(R.id.pid_digit5))
 	}
 	private fun compareInsertedPin(pin : Int) : Boolean{
 		//TODO Dodać sprawdzanie czy pin jest OK
