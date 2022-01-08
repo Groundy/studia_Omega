@@ -1,7 +1,9 @@
 package com.example.omega
 import android.app.Activity
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -77,6 +79,46 @@ class Utilites {
 			val prefs = getSharedProperties(activity)
 			var toRet = prefs.getFloat(fieldName,0f)
 			return toRet
+		}
+
+		fun getAuthMethodeText(context: Context,methodeCode : Int) : String{
+			val methodeName = when(methodeCode){
+				0->context.getString(R.string.selectAuthMethodeText_pin)
+				1->context.getString(R.string.selectAuthMethodeText_pattern)
+				2->context.getString(R.string.selectAuthMethodeText_finger)
+				else ->context.getString(R.string.selectAuthMethodeText_pin)
+			}
+			return methodeName
+		}
+		fun getCodeForAuthMethode(context: Context,methodeName : String) : Int{
+			val methodeCode = when(methodeName){
+				context.getString(R.string.selectAuthMethodeText_pin) -> 0
+				context.getString(R.string.selectAuthMethodeText_pattern) -> 1
+				context.getString(R.string.selectAuthMethodeText_finger) -> 2
+				else -> 0
+			}
+			return methodeCode
+		}
+		fun authTransaction(context : Context, description : String?){
+			val preferredMethodeCode = readPref_Int(context as Activity,R.integer.preferedAuthMethode)
+			val preferredMethodeName = getAuthMethodeText(context,preferredMethodeCode)
+			when(preferredMethodeName){
+				context.getString(R.string.selectAuthMethodeText_pin) ->{
+					val pinActivityActivityIntent = Intent(context, PinActivity::class.java)
+					pinActivityActivityIntent.putExtra("","")
+					val retCodeForActivity = context.resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE)
+					context.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
+				}
+				context.getString(R.string.selectAuthMethodeText_pattern) ->{
+
+				}
+				context.getString(R.string.selectAuthMethodeText_finger) ->{
+					val scanFingerActivityIntent = Intent(context, ScanFingerActivity::class.java)
+					scanFingerActivityIntent.putExtra(context.resources.getString(R.string.fingerAuthActivity_DescriptionField),"ttutututututtutu\ntuitutujuj")
+					val retCodeForActivity = context.resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE)
+					context.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
+				}
+			}
 		}
 	}
 }

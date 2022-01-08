@@ -19,7 +19,7 @@
             android:orientation="vertical">
 
         <Button
-                android:text="scan QR"
+                android:text="@string/QR_scanner_buttonText"
                 android:layout_width="match_parent"
                 android:layout_height="71dp"
                 android:id="@+id/goToQRScannerButton"
@@ -45,7 +45,8 @@
                 android:layout_width="154dp"
                 android:layout_height="132dp"
                 android:id="@+id/nfcButton"
-                android:background="@drawable/nfc_off_icon" />
+                android:background="@drawable/nfc_off_icon"
+                tools:ignore="SpeakableTextPresentCheck" />
 
     </LinearLayout>
 

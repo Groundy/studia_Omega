@@ -36,17 +36,9 @@ class SettingsActivity : AppCompatActivity() {
 
 		val selectAuthMethodeField = findViewById<TextView>(R.id.selectAuthMethodeTextView)
 		val methodeCode = Utilites.readPref_Int(this, R.integer.preferedAuthMethode)
-		var methodeName: String = ""
-		methodeName = when(methodeCode){
-			0 -> getString(R.string.selectAuthMethodeText_pin)
-			1 -> getString(R.string.selectAuthMethodeText_pattern)
-			2 -> getString(R.string.selectAuthMethodeText_finger)
-			else -> getString(R.string.selectAuthMethodeText_pin)
-		}
+		var methodeName = Utilites.getAuthMethodeText(this,methodeCode)
 		val textToSetOnSelectAuthMethode = getString(R.string.selectAuthMethodeText_base) + methodeName
 		selectAuthMethodeField.text = textToSetOnSelectAuthMethode
-
-
 	}
 	private fun saveResults() {
 		val phoneHasNfc = NfcAdapter.getDefaultAdapter(this) != null
@@ -59,37 +51,47 @@ class SettingsActivity : AppCompatActivity() {
 	private fun showSelectAuthMethodeDialog(){
 		val dialog : Dialog = Dialog(this)
 		dialog.setContentView(R.layout.dialog_select_auth_methode)
+
 		val radioButtonGroup = dialog.selectAuthMethodeButtonGroup
+		val userPreferredMethodeCode = Utilites.readPref_Int(this,R.integer.preferedAuthMethode)
+		when(userPreferredMethodeCode){
+			0 -> {dialog.selectAuthMethodeButton_PIN.isChecked = true}
+			1 -> {dialog.selectAuthMethodeButton_patern.isChecked = true}
+			2 -> {dialog.selectAuthMethodeButton_finger.isChecked = true}
+		}
 		val radioButtonGroupListener = RadioGroup.OnCheckedChangeListener { radioButtonGroup, radioButtonId -> // checkedId is the RadioButton selected
 			dialog.dismiss()
 		}
+		radioButtonGroup.setOnCheckedChangeListener(radioButtonGroupListener)
+
 		val dialogOnDismissListener = DialogInterface.OnDismissListener{
-			var valueCodeToSave = 0
-			var methodeName = ""
+			var methodCode = Utilites.readPref_Int(this,R.integer.preferedAuthMethode)
+			var methodeName = when(methodCode){
+				0->getString(R.string.selectAuthMethodeText_pin)
+				1->getString(R.string.selectAuthMethodeText_pattern)
+				2->getString(R.string.selectAuthMethodeText_finger)
+				else -> getString(R.string.selectAuthMethodeText_pin)
+			}
 			when(radioButtonGroup.checkedRadioButtonId){
 				dialog.selectAuthMethodeButton_PIN.id ->{
 					methodeName = getString(R.string.selectAuthMethodeText_pin)
-					valueCodeToSave = 0
+					methodCode = 0
 				}
 				dialog.selectAuthMethodeButton_patern.id ->{
 					methodeName = getString(R.string.selectAuthMethodeText_pattern)
-					valueCodeToSave = 1
+					methodCode = 1
 				}
 				dialog.selectAuthMethodeButton_finger.id ->{
 					methodeName = getString(R.string.selectAuthMethodeText_finger)
-					valueCodeToSave = 2
-				}
-				else ->{
-					methodeName = getString(R.string.selectAuthMethodeText_pin)
-					valueCodeToSave = 0
+					methodCode = 2
 				}
 			}
-			Utilites.savePref(this,R.integer.preferedAuthMethode,valueCodeToSave)
+			Utilites.savePref(this,R.integer.preferedAuthMethode,methodCode)
 			val textToSetOnWidget = getString(R.string.selectAuthMethodeText_base) + methodeName
 			findViewById<TextView>(R.id.selectAuthMethodeTextView).text = textToSetOnWidget
 		}
 		dialog.setOnDismissListener(dialogOnDismissListener)
-		radioButtonGroup.setOnCheckedChangeListener(radioButtonGroupListener)
+
 		dialog.show()
 	}
 	override fun onBackPressed() {

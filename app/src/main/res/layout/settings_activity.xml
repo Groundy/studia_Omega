@@ -1,31 +1,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 								android:layout_width="match_parent"
-								android:layout_height="match_parent">
+								android:layout_height="match_parent"
+								android:orientation="vertical">
 
-				<FrameLayout
-												android:id="@+id/settings"
+				<Switch
+												android:text="@string/turnNfcOnAppStart_settingText"
 												android:layout_width="match_parent"
-												android:layout_height="match_parent" >
+												android:layout_height="wrap_content"
+												android:id="@+id/turnOnNFCWhenAppStartsSwitch"
+												android:minHeight="50dp"
+												android:showText="false"
+												android:textSize="@dimen/font_size_settings"
+												android:height="@dimen/field_height_settings" />
 
-								<LinearLayout
-																android:orientation="vertical"
-																android:layout_width="match_parent"
-																android:layout_height="match_parent">
+				<TextView
+												android:layout_width="match_parent"
+												android:layout_height="50dp"
+												android:id="@+id/selectAuthMethodeTextView"
+												android:text="@string/PrefferedAuthMethode"
+												android:textAlignment="gravity"
+												android:textSize="@dimen/font_size_settings"
+												android:height="@dimen/field_height_settings" />
 
-												<Switch
-																				android:text="Włącz łączność NFC przy starcie aplikacji"
-																				android:layout_width="match_parent"
-																				android:layout_height="wrap_content"
-																				android:id="@+id/turnOnNFCWhenAppStartsSwitch"
-																				android:minHeight="32dp"
-																				android:showText="false" />
-
-												<TextView
-																				android:text="TextView"
-																				android:layout_width="match_parent"
-																				android:layout_height="50dp"
-																				android:id="@+id/selectAuthMethodeTextView" />
-
-								</LinearLayout>
-				</FrameLayout>
 </LinearLayout>

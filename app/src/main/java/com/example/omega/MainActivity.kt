@@ -57,8 +57,9 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun test(){
-		val scanFingerActivityIntent = Intent(this, PinActivity::class.java)
-		startActivityForResult(scanFingerActivityIntent, resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE))
+		Utilites.authTransaction(this,"tetete")
+		//val scanFingerActivityIntent = Intent(this, PinActivity::class.java)
+		//startActivityForResult(scanFingerActivityIntent, resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE))
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

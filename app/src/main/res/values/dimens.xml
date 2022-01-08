@@ -5,8 +5,12 @@
 				<dimen name="fab_margin">16dp</dimen>
 
 
-
+				<!--Pin act-->
 				<dimen name="width_of_pin_digits">48dp</dimen>
 				<dimen name="height_of_pin_digits">80dp</dimen>
 				<dimen name="margin_width_of_pin_digits">20dp</dimen>
+
+				<!--Settings act-->
+				<dimen name="font_size_settings">16sp</dimen>
+				<dimen name="field_height_settings">50dp</dimen>
 </resources>

@@ -3,6 +3,11 @@
       xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+            android:title="Konfiguracja"
+            android:id="@+id/ConfigurationsTab"
+            app:showAsAction="never" />
+    <!--
+    <item
           android:title="Historia Płatności"
           android:id="@+id/History_of_Payment"
           app:showAsAction="never"/>
@@ -16,12 +21,9 @@
             android:id="@+id/Accounts"
             app:showAsAction="never"/>
     <item
-            android:title="Konfiguracja"
-            android:id="@+id/ConfigurationsTab"
-            app:showAsAction="never" />
-    <item
             android:title="Kontakty"
             android:id="@+id/Contact"
             app:showAsAction="never"/>
     />
+    -->
 </menu>

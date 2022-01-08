@@ -38,7 +38,6 @@ class PinActivity : AppCompatActivity() {
 		}
 		digit1.postDelayed(showKeyBoardObj, 150)
 	}
-
 	private fun setUIElementsListeners(){
 		val onEnterKeyPressedListener = object : TextView.OnEditorActionListener {
 			//zwracana wartosc oznacza czy zamknac klawiature

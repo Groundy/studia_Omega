@@ -5,14 +5,20 @@
 				<string name="selectAuthMethodeText_pattern">Wzór</string>
 				<string name="selectAuthMethodeText_base">"Preferowana metoda autoryzacji: "</string>
 
-
+				<!--FingerPrint activity-->
 				<string name="usePinInsteadOfFingerPrint">Użyj pinu</string>
 				<string name="fingerAuthTitle">Potwierdź transakcje</string>
 				<string name="fingerAuthSubTitlt">XXXXXXXXXXXXXXXX</string><!--ZMIENIC TO GDY BĘDE miał na to pomysł lub usunac calosc-->
 				<string name="fingerAuthActivity_DescriptionField">Tutaj powinnien być opis szczegółów operacji</string>
-				<!--    <string name=""></string>   -->
 
+				<!--Main activity-->
+				<string name="QR_scanner_buttonText">skaner QR</string>
 
+				<!--Settings-->
+				<string name="PrefferedAuthMethode">Preferowana metoda autoryzacji: </string>
+				<string name="turnNfcOnAppStart_settingText">Włącz NFC po starcie aplikacji</string>
+
+				<!--Other-->
 				<integer name="QR_SCANNER_RET_CODE">1001</integer>
 				<integer name="FINGER_SCANNER_RET_CODE">1002</integer>
 
