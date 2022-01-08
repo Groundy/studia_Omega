@@ -45,60 +45,51 @@ class QRScannerActivity() : AppCompatActivity() {
 	}
 	private fun startCamera() {
 		val cameraProviderFuture = ProcessCameraProvider.getInstance( this@QRScannerActivity)
-		cameraProviderFuture.addListener(Runnable {
-			// Used to bind the lifecycle of cameras to the lifecycle owner
-			val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-			// Preview
+		val cameraListener = Runnable {
+			val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()// Used to bind the lifecycle of cameras to the lifecycle owner
 			val preview = Preview.Builder().build().also {
 				it.setSurfaceProvider(this.cameraPreview.surfaceProvider)
 			}
-			// Select back camera as a default
-			val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
+			val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA			// Select back camera as a default
 			try {
-				// Unbind use cases before rebinding
-				cameraProvider.unbindAll()
-
-				// Bind use cases to camera
-				cameraProvider.bindToLifecycle(
-					this, cameraSelector,imgAnalyzer, preview)
-
+				cameraProvider.unbindAll()// Unbind use cases before rebinding
+				cameraProvider.bindToLifecycle(this, cameraSelector,imgAnalyzer, preview)// Bind use cases to camera
 			} catch(exc: Exception) {
-				//TODO
 				Utilites.showMsg(this,exc.toString())
 			}
 
-		}, ContextCompat.getMainExecutor(this))
+		}
+		cameraProviderFuture.addListener(cameraListener, ContextCompat.getMainExecutor(this))
 	}
 
 
-	private class YourImageAnalyzer(context : QRScannerActivity) : ImageAnalysis.Analyzer {
+	private class YourImageAnalyzer(val context : QRScannerActivity) : ImageAnalysis.Analyzer {
 		val scanner = BarcodeScanning.getClient()
-		val context = context
-		val wrongFormatMsg : String = "Odczytano QR kod w złym formacie"
+
+		private fun processCode(context: QRScannerActivity, rawValue : String){
+			val context = context
+			val properValue = rawValue != null && rawValue.length == 6 && rawValue.toInt() > 0
+			if(properValue){
+				val output = Intent()
+				val fieldName = context.resources.getString(R.string.QR_scanner_return_fieldName)
+				val code = rawValue.toInt()
+				output.putExtra(fieldName, code)
+				context.setResult(RESULT_OK, output)
+				context.finish()
+			}
+			else
+				Utilites.showToast(context, context.resources.getString(R.string.QR_WRONG_FORMAT))
+		}
+
 		@SuppressLint("UnsafeExperimentalUsageError")
 		override fun analyze(imageProxy: ImageProxy) {
 			val mediaImage = imageProxy.image
 			if (mediaImage != null) {
-				//TODO wyodrębnić funkcję analizaującą znaleziony obraz
 				val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-				val result = scanner.process(image).addOnSuccessListener{barcodes ->
+				scanner.process(image).addOnSuccessListener{barcodes ->
 					for (barcode in barcodes) {
 						val rawValue = barcode.rawValue
-						if(rawValue.length == 6){
-							var code : Int? = rawValue.toIntOrNull()
-							if(code!=null) {
-								val output = Intent()
-								val fieldName = context.resources.getString(R.string.QR_scanner_return_fieldName)
-								output.putExtra(fieldName, code)
-								context.setResult(RESULT_OK, output)
-								context.finish()
-							}
-							Utilites.showToast(context, wrongFormatMsg)
-						}
-						else
-							Utilites.showToast(context, wrongFormatMsg)
+						processCode(context, rawValue)
 					}
 				}
 			}

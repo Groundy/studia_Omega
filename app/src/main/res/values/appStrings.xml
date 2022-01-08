@@ -18,6 +18,9 @@
 				<string name="PreferredAuthMethode">Preferowana metoda autoryzacji: </string>
 				<string name="turnNfcOnAppStart_settingText">Włącz NFC po starcie aplikacji</string>
 
+				<!--QR_SCANNER-->
+				<string name="QR_WRONG_FORMAT">Odczytany QR jest w zlym formacie</string>
+
 				<!--Other-->
 				<integer name="QR_SCANNER_RET_CODE">1001</integer>
 				<integer name="FINGER_SCANNER_RET_CODE">1002</integer>
