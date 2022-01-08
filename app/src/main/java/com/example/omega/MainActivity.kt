@@ -57,9 +57,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun test(){
-		Utilites.authTransaction(this,"tetete")
-		//val scanFingerActivityIntent = Intent(this, PinActivity::class.java)
-		//startActivityForResult(scanFingerActivityIntent, resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE))
+		Utilites.authTransaction(this,"line1Des\nline2Des\nline3Des")
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -67,7 +65,8 @@ class MainActivity : AppCompatActivity() {
 		if(resultCode == RESULT_OK && data != null){
 			when(requestCode){
 				resources.getInteger(R.integer.QR_SCANNER_RET_CODE) -> {
-					val returnedCode = data.getIntExtra("codeFromQR", -1)
+					val returnFieldName = resources.getString(R.string.QR_scanner_return_fieldName)
+					val returnedCode = data.getIntExtra(returnFieldName, -1)
 					val vailCode = returnedCode in 0..999999
 					if (vailCode) {
 						codeField.setText(returnedCode.toString())
@@ -89,10 +88,12 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		if (item.itemId == R.id.ConfigurationsTab) {
-			val settingsActivityIntent = Intent(this@MainActivity, SettingsActivity::class.java)
-			startActivity(settingsActivityIntent)
-			return true
+		when(item.itemId){
+			R.id.ConfigurationsTab->{
+				val settingsActivityIntent = Intent(this@MainActivity, SettingsActivity::class.java)
+				startActivity(settingsActivityIntent)
+				return true
+			}
 		}
 		return false
 	}

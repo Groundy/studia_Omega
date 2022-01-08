@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -11,7 +12,6 @@ import android.widget.EditText
 import android.widget.TextView
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import java.util.*
 
 
 class PinActivity : AppCompatActivity() {
@@ -24,20 +24,12 @@ class PinActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_pin)
-		digit1 = findViewById<EditText>(R.id.pid_digit1)
-		digit2 = findViewById<EditText>(R.id.pid_digit2)
-		digit3 = findViewById<EditText>(R.id.pid_digit3)
-		digit4 = findViewById<EditText>(R.id.pid_digit4)
-		digit5 = findViewById<EditText>(R.id.pid_digit5)
+		findViewById<TextView>(R.id.descripitonOnPinAct).text = getAdditionalDescription()
+		findElements()
 		setUIElementsListeners()
-
-		digit1.requestFocus()
-		val showKeyBoardObj = Runnable {
-			val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-			inputMethodManager.showSoftInput(digit1, InputMethodManager.SHOW_FORCED)
-		}
-		digit1.postDelayed(showKeyBoardObj, 150)
+		requestFocusOnActivityStart()
 	}
+
 	private fun setUIElementsListeners(){
 		val onEnterKeyPressedListener = object : TextView.OnEditorActionListener {
 			//zwracana wartosc oznacza czy zamknac klawiature
@@ -102,7 +94,6 @@ class PinActivity : AppCompatActivity() {
 				return false
 			}
 		}
-
 		val listener1 = object : TextWatcher {
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -187,6 +178,42 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun processPIN(){
 		val pin = getPinFromFields()
+		if (pin != null) {
+			val authCorrect = compareInsertedPin(pin)
+			if(authCorrect){
+				val output = Intent()
+				val fieldName = resources.getString(R.string.PIN_RESULT_FIELD)
+				output.putExtra(fieldName, authCorrect)
+				setResult(RESULT_OK, output)
+				finish()
+			}
+			else{
+				//TODO obsługa sytuacji w ktorej do pinu wprowadzono wszystkie cyfry ale nie jest on poprawny
+			}
+		}
 		Utilites.showToast(this,pin.toString())
+	}
+	private fun getAdditionalDescription() : String?{
+		val description = this.intent.getStringExtra(getString(R.string.additionalDescriptionToAuthActivity))
+		return description
+	}
+	private fun requestFocusOnActivityStart(){
+		digit1.requestFocus()
+		val showKeyboardObj = Runnable {
+			val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+			inputMethodManager.showSoftInput(digit1, InputMethodManager.SHOW_FORCED)
+		}
+		digit1.postDelayed(showKeyboardObj, 150)
+	}
+	private fun findElements(){
+		digit1 = findViewById<EditText>(R.id.pid_digit1)
+		digit2 = findViewById<EditText>(R.id.pid_digit2)
+		digit3 = findViewById<EditText>(R.id.pid_digit3)
+		digit4 = findViewById<EditText>(R.id.pid_digit4)
+		digit5 = findViewById<EditText>(R.id.pid_digit5)
+	}
+	private fun compareInsertedPin(pin : Int) : Boolean{
+		//TODO Dodać sprawdzanie czy pin jest OK
+		return true
 	}
 }

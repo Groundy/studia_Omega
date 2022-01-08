@@ -106,7 +106,7 @@ class ScanFingerActivity : AppCompatActivity() {
 		finish()
 	}
 	private fun getAdditionalDescripition() : String?{
-		val description : String? = this.intent.getStringExtra(getString(R.string.fingerAuthActivity_DescriptionField))
+		val description : String? = this.intent.getStringExtra(getString(R.string.additionalDescriptionToAuthActivity))
 		return description
 	}
 }

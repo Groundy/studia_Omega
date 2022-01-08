@@ -105,7 +105,8 @@ class Utilites {
 			when(preferredMethodeName){
 				context.getString(R.string.selectAuthMethodeText_pin) ->{
 					val pinActivityActivityIntent = Intent(context, PinActivity::class.java)
-					pinActivityActivityIntent.putExtra("","")
+					val fieldName = context.resources.getString(R.string.additionalDescriptionToAuthActivity)
+					pinActivityActivityIntent.putExtra(fieldName,description)
 					val retCodeForActivity = context.resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE)
 					context.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
 				}
@@ -114,7 +115,7 @@ class Utilites {
 				}
 				context.getString(R.string.selectAuthMethodeText_finger) ->{
 					val scanFingerActivityIntent = Intent(context, ScanFingerActivity::class.java)
-					scanFingerActivityIntent.putExtra(context.resources.getString(R.string.fingerAuthActivity_DescriptionField),"ttutututututtutu\ntuitutujuj")
+					scanFingerActivityIntent.putExtra(context.resources.getString(R.string.additionalDescriptionToAuthActivity),description)
 					val retCodeForActivity = context.resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE)
 					context.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
 				}
