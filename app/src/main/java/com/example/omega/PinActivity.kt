@@ -15,7 +15,7 @@ import android.view.inputmethod.InputMethodManager
 
 
 class PinActivity : AppCompatActivity() {
-	private lateinit var digits : MutableList<EditText>
+	private var digits : MutableList<EditText> = arrayListOf()
 	private var pinTriesLeft = 3
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -155,17 +155,16 @@ class PinActivity : AppCompatActivity() {
 		val ok5 = value5 != null && value5 in 0..9
 		return ok1 && ok2 && ok3 && ok4 && ok5
 	}
-	private fun getPinFromFields() : Int?{
+	private fun getPinFromFields(): Int? {
 		val allFieldsAreFilled = checkIfAllFieldsHaveEnteredDigits()
-		if(!allFieldsAreFilled)
+		if (!allFieldsAreFilled)
 			return null
 		val value1 = digits[0].text.toString().toInt() * 10000
 		val value2 = digits[1].text.toString().toInt() * 1000
 		val value3 = digits[2].text.toString().toInt() * 100
 		val value4 = digits[3].text.toString().toInt() * 10
 		val value5 = digits[4].text.toString().toInt() * 1
-		val pin = value1 + value2 + value3 + value4 + value5
-		return pin
+		return value1 + value2 + value3 + value4 + value5
 	}
 	private fun processPIN(){
 		val pin = getPinFromFields()
@@ -179,10 +178,27 @@ class PinActivity : AppCompatActivity() {
 				finish()
 			}
 			else{
-				//TODO obsługa sytuacji w ktorej do pinu wprowadzono wszystkie cyfry ale nie jest on poprawny
+				pinTriesLeft--
+				val allowUserToTryOtherPin = pinTriesLeft > 0
+				if(allowUserToTryOtherPin){
+					val textToShow = when(pinTriesLeft){
+						2 -> "Pozostały 2 próby"
+						1 -> "Pozostała ostatnia próba"
+						else -> "Error"
+					}
+					Utilites.showToast(this,textToShow)
+					digits.forEach { it.text.clear() }
+					digits[0].requestFocus()
+				}
+				else{
+					val output = Intent()
+					val fieldName = resources.getString(R.string.PIN_RESULT_FIELD)
+					output.putExtra(fieldName, false)
+					setResult(RESULT_CANCELED, output)
+					finish()
+				}
 			}
 		}
-		Utilites.showToast(this,pin.toString())
 	}
 	private fun getAdditionalDescription() : String?{
 		val description = this.intent.getStringExtra(getString(R.string.additionalDescriptionToAuthActivity))
@@ -205,6 +221,6 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun compareInsertedPin(pin : Int) : Boolean{
 		//TODO Dodać sprawdzanie czy pin jest OK
-		return true
+		return pin == 12345
 	}
 }
