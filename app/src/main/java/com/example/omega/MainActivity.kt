@@ -53,33 +53,69 @@ class MainActivity : AppCompatActivity() {
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
 		initUIVariables()
+		TEST_addFunToButton()
 		test()
 	}
 
 	private fun test(){
-		Utilites.authTransaction(this,"line1Des\nline2Des\nline3Des")
+		Utilites.authTransaction(this,"line1Des\nline2Des\nline3Des",null)
+	}
+	private fun TEST_addFunToButton(){
+		val ttt = findViewById<Button>(R.id.testButton)
+		val listener = View.OnClickListener {
+			test()
+		}
+		ttt.setOnClickListener(listener)
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
-		if(resultCode == RESULT_OK && data != null){
 			when(requestCode){
 				resources.getInteger(R.integer.QR_SCANNER_RET_CODE) -> {
-					val returnFieldName = resources.getString(R.string.QR_scanner_return_fieldName)
-					val returnedCode = data.getIntExtra(returnFieldName, -1)
-					val vailCode = returnedCode in 0..999999
-					if (vailCode) {
-						codeField.setText(returnedCode.toString())
-						processCode(returnedCode)
+					if(resultCode == RESULT_OK && data != null) {
+						val returnFieldName = resources.getString(R.string.QR_scanner_return_fieldName)
+						val returnedCode = data.getIntExtra(returnFieldName, -1)
+						val vailCode = returnedCode in 0..999999
+						if (vailCode) {
+							codeField.setText(returnedCode.toString())
+							processCode(returnedCode)
+						}
 					}
 				}
 				resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE) ->{
-					//Tylko do testów
 					Log.i("WookieTag", "finger activity returned")
+					val errorCodeFieldName = getString(R.string.fingerActivity_retField_code)
+					val errorCode = data?.getIntExtra(errorCodeFieldName, -1)
+					val textToShow = when(errorCode){
+							0 -> "Uzyskano autoryzację!"
+							1 -> "Sensor jest chwilowo niedostępny, należy spróbować później."
+							2 -> "Czujnik nie był w stanie przetworzyć odcisku palca."
+							3 -> "Nie wykryto palca przez 30s."
+							4 -> "Urządzenie nie ma wystarczającej ilości miejsca żeby wykonać operacje."
+							5,10 -> "Użytkownik anulował uwierzytelnianie za pomocą biometrii."
+							7 -> "Pięciorkotnie nierozpoznano odcisku palca, sensor będzie dostępny ponownie za 30s."
+							9 -> "Sensor jest zablokowany, należy go odblokować wporwadzająć wzór/pin telefonu."
+							11 -> "Nieznany błąd, upewnij się czy w twoim urządzeniu jest zapisany odcis palca."
+							12 -> "Urządzenie nie posiada odpowiedniego sensora."
+							14 -> "Urządzenie musi posiadać pin,wzór lub hasło."
+							15 -> "Operacja nie może zostać wykonana bez aktualizacji systemu."
+							else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
+						}
+					Utilites.showToast(this, textToShow)
+					if(resultCode == RESULT_OK){
+						//TODO Autoryzacja się udała
+					}
+					else{
+						if(errorCode == 13){
+							//TODO wywyołać pin activity
+						}
+						//TODO Autoryzacja się udała
+					}
+				}
+				resources.getInteger(R.integer.PIN_RET_CODE) ->{
+
 				}
 			}
-		}
-
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -147,9 +183,8 @@ class MainActivity : AppCompatActivity() {
 			}
 			nfcOnOffButton.setOnClickListener(nfcButtonListener)
 		}
-		else{
+		else
 			nfcOnOffButton.isVisible = false
-		}
 	}
 
 	private fun checkIfNfcIsTurnedOn(): Boolean {

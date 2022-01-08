@@ -48,6 +48,12 @@
                 android:background="@drawable/nfc_off_icon"
                 tools:ignore="SpeakableTextPresentCheck" />
 
+        <Button
+                android:text="TEST_TEST_TEST_TEST"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/testButton" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
