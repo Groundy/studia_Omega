@@ -19,7 +19,7 @@
 												android:id="@+id/selectAuthMethodeButtonGroup">
 
 								<RadioButton
-																android:text="@string/selectAuthMethodeText_pin"
+																android:text="@string/GUI_selectAuthMethodeText_pin"
 																android:layout_width="match_parent"
 																android:layout_height="wrap_content"
 																android:id="@+id/selectAuthMethodeButton_PIN"
@@ -27,7 +27,7 @@
 																android:textSize="@dimen/font_size_settings" />
 
 								<RadioButton
-																android:text="@string/selectAuthMethodeText_finger"
+																android:text="@string/GUI_selectAuthMethodeText_finger"
 																android:layout_width="match_parent"
 																android:layout_height="wrap_content"
 																android:id="@+id/selectAuthMethodeButton_finger"
@@ -35,7 +35,7 @@
 																android:textSize="@dimen/font_size_settings" />
 
 								<RadioButton
-																android:text="@string/selectAuthMethodeText_pattern"
+																android:text="@string/GUI_selectAuthMethodeText_pattern"
 																android:layout_width="match_parent"
 																android:layout_height="wrap_content"
 																android:id="@+id/selectAuthMethodeButton_patern"

@@ -23,9 +23,9 @@ class ScanFingerActivity : AppCompatActivity() {
 	}
 	private fun showAuthDialog(){
 		val promptInfo = BiometricPrompt.PromptInfo.Builder()
-			.setTitle(getString(R.string.fingerAuthTitle))
+			.setTitle(getString(R.string.GUI_fingerAuthTitle))
 			.setDescription(additionalDescription())
-			.setNegativeButtonText(getString(R.string.usePinInsteadOfFingerPrint))
+			.setNegativeButtonText(getString(R.string.GUI_usePinInsteadOfFingerPrint))
 			.build()
 		val authCallBack = object : BiometricPrompt.AuthenticationCallback() {
 			override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -84,7 +84,7 @@ class ScanFingerActivity : AppCompatActivity() {
 		return errorCode
 	}
 	private fun finishActivity(result: Boolean, errorCode : Int){
-		val errorCodeFieldName = resources.getString(R.string.fingerActivity_retField_code)
+		val errorCodeFieldName = resources.getString(R.string.ACT_COM_Fnger_fieldName)
 		val output = Intent()
 		output.putExtra(errorCodeFieldName, errorCode)
 		if(result)
@@ -94,7 +94,7 @@ class ScanFingerActivity : AppCompatActivity() {
 		finish()
 	}
 	private fun additionalDescription() : String?{
-		val description : String? = this.intent.getStringExtra(getString(R.string.additionalDescriptionToAuthActivity))
+		val description : String? = this.intent.getStringExtra(getString(R.string.ACT_COM_Fnger_fieldName))
 		return description
 	}
 }

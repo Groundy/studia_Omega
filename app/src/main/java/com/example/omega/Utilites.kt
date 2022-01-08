@@ -83,18 +83,18 @@ class Utilites {
 
 		fun getAuthMethodeText(context: Context,methodeCode : Int) : String{
 			val methodeName = when(methodeCode){
-				0->context.getString(R.string.selectAuthMethodeText_pin)
-				1->context.getString(R.string.selectAuthMethodeText_pattern)
-				2->context.getString(R.string.selectAuthMethodeText_finger)
-				else ->context.getString(R.string.selectAuthMethodeText_pin)
+				0->context.getString(R.string.GUI_selectAuthMethodeText_pin)
+				1->context.getString(R.string.GUI_selectAuthMethodeText_pattern)
+				2->context.getString(R.string.GUI_selectAuthMethodeText_finger)
+				else ->context.getString(R.string.GUI_selectAuthMethodeText_pin)
 			}
 			return methodeName
 		}
 		fun getCodeForAuthMethode(context: Context,methodeName : String) : Int{
 			val methodeCode = when(methodeName){
-				context.getString(R.string.selectAuthMethodeText_pin) -> 0
-				context.getString(R.string.selectAuthMethodeText_pattern) -> 1
-				context.getString(R.string.selectAuthMethodeText_finger) -> 2
+				context.getString(R.string.GUI_selectAuthMethodeText_pin) -> 0
+				context.getString(R.string.GUI_selectAuthMethodeText_pattern) -> 1
+				context.getString(R.string.GUI_selectAuthMethodeText_finger) -> 2
 				else -> 0
 			}
 			return methodeCode
@@ -104,29 +104,28 @@ class Utilites {
 			var preferredMethodeCode = readPref_Int(context, R.integer.preferedAuthMethode)
 			if(forcedMethodeCode != null && forcedMethodeCode in 0..2)
 				preferredMethodeCode = forcedMethodeCode
-
 			val preferredMethodeName = getAuthMethodeText(context,preferredMethodeCode)
 			when(preferredMethodeName){
-				context.getString(R.string.selectAuthMethodeText_pin) ->
+				context.getString(R.string.GUI_selectAuthMethodeText_pin) ->
 					authByPin(context,description)
-				context.getString(R.string.selectAuthMethodeText_pattern) ->
+				context.getString(R.string.GUI_selectAuthMethodeText_pattern) ->
 					authByPattern(context,description)
-				context.getString(R.string.selectAuthMethodeText_finger) ->
+				context.getString(R.string.GUI_selectAuthMethodeText_finger) ->
 					authByFingerPrint(context,description)
 			}
 		}
 		private fun authByPin(activity: Activity, description : String?){
 			val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
-			val fieldName = activity.resources.getString(R.string.additionalDescriptionToAuthActivity)
-			pinActivityActivityIntent.putExtra(fieldName,description)
-			val retCodeForActivity = activity.resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE)
+			val desFieldName = activity.resources.getString(R.string.ACT_COM_additionalDescriptionToAuthActivity)
+			pinActivityActivityIntent.putExtra(desFieldName,description)
+			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN)
 			activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
 		}
 		private fun authByFingerPrint(activity: Activity, description : String?){
 			val scanFingerActivityIntent = Intent(activity, ScanFingerActivity::class.java)
-			val descriptionFieldName = activity.resources.getString(R.string.fingerActivity_retField_code)
+			val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_additionalDescriptionToAuthActivity)
 			scanFingerActivityIntent.putExtra(descriptionFieldName,description)
-			val retCodeForActivity = activity.resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE)
+			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_FINGER)
 			activity.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
 		}
 		private fun authByPattern(activity: Activity, description : String?){

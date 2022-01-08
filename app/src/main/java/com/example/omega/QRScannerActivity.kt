@@ -71,14 +71,14 @@ class QRScannerActivity() : AppCompatActivity() {
 			val properValue = rawValue != null && rawValue.length == 6 && rawValue.toInt() > 0
 			if(properValue){
 				val output = Intent()
-				val fieldName = context.resources.getString(R.string.QR_scanner_return_fieldName)
+				val fieldName = context.resources.getString(R.string.ACT_COM_QrScanner_fieldName)
 				val code = rawValue.toInt()
 				output.putExtra(fieldName, code)
 				context.setResult(RESULT_OK, output)
 				context.finish()
 			}
 			else
-				Utilites.showToast(context, context.resources.getString(R.string.QR_WRONG_FORMAT))
+				Utilites.showToast(context, context.resources.getString(R.string.USER_MSG_QR_WRONG_FORMAT))
 		}
 
 		@SuppressLint("UnsafeExperimentalUsageError")

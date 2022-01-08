@@ -71,9 +71,9 @@ class MainActivity : AppCompatActivity() {
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 			when(requestCode){
-				resources.getInteger(R.integer.QR_SCANNER_RET_CODE) -> {
+				resources.getInteger(R.integer.ACT_RETCODE_QR_SCANNER) -> {
 					if(resultCode == RESULT_OK && data != null) {
-						val returnFieldName = resources.getString(R.string.QR_scanner_return_fieldName)
+						val returnFieldName = resources.getString(R.string.ACT_COM_QrScanner_fieldName)
 						val returnedCode = data.getIntExtra(returnFieldName, -1)
 						val vailCode = returnedCode in 0..999999
 						if (vailCode) {
@@ -82,9 +82,8 @@ class MainActivity : AppCompatActivity() {
 						}
 					}
 				}
-				resources.getInteger(R.integer.FINGER_SCANNER_RET_CODE) ->{
-					Log.i("WookieTag", "finger activity returned")
-					val errorCodeFieldName = getString(R.string.fingerActivity_retField_code)
+				resources.getInteger(R.integer.ACT_RETCODE_FINGER) ->{
+					val errorCodeFieldName = getString(R.string.ACT_COM_Fnger_fieldName)
 					val errorCode = data?.getIntExtra(errorCodeFieldName, -1)
 					val textToShow = when(errorCode){
 							0 -> "Uzyskano autoryzację!"
@@ -112,7 +111,7 @@ class MainActivity : AppCompatActivity() {
 						//TODO Autoryzacja się udała
 					}
 				}
-				resources.getInteger(R.integer.PIN_RET_CODE) ->{
+				resources.getInteger(R.integer.ACT_RETCODE_PIN) ->{
 
 				}
 			}
@@ -141,7 +140,7 @@ class MainActivity : AppCompatActivity() {
 	private fun initUIVariables() {
 		val goQRScannerButtonListener = View.OnClickListener {
 			val qRScannerActivityIntent = Intent(this, QRScannerActivity::class.java)
-			startActivityForResult(qRScannerActivityIntent, resources.getInteger(R.integer.QR_SCANNER_RET_CODE))
+			startActivityForResult(qRScannerActivityIntent, resources.getInteger(R.integer.ACT_RETCODE_QR_SCANNER))
 		}
 		val codeFieldTextListener = object : TextWatcher {
 			override fun afterTextChanged(s: Editable) {

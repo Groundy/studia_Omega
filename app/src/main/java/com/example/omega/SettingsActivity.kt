@@ -37,7 +37,7 @@ class SettingsActivity : AppCompatActivity() {
 		val selectAuthMethodeField = findViewById<TextView>(R.id.selectAuthMethodeTextView)
 		val methodeCode = Utilites.readPref_Int(this, R.integer.preferedAuthMethode)
 		var methodeName = Utilites.getAuthMethodeText(this,methodeCode)
-		val textToSetOnSelectAuthMethode = getString(R.string.selectAuthMethodeText_base) + methodeName
+		val textToSetOnSelectAuthMethode = getString(R.string.GUI_selectAuthMethodeText_base) + methodeName
 		selectAuthMethodeField.text = textToSetOnSelectAuthMethode
 	}
 	private fun saveResults() {
@@ -66,28 +66,23 @@ class SettingsActivity : AppCompatActivity() {
 
 		val dialogOnDismissListener = DialogInterface.OnDismissListener{
 			var methodCode = Utilites.readPref_Int(this,R.integer.preferedAuthMethode)
-			var methodeName = when(methodCode){
-				0->getString(R.string.selectAuthMethodeText_pin)
-				1->getString(R.string.selectAuthMethodeText_pattern)
-				2->getString(R.string.selectAuthMethodeText_finger)
-				else -> getString(R.string.selectAuthMethodeText_pin)
-			}
+			var methodeName = Utilites.getAuthMethodeText(this,methodCode)
 			when(radioButtonGroup.checkedRadioButtonId){
 				dialog.selectAuthMethodeButton_PIN.id ->{
-					methodeName = getString(R.string.selectAuthMethodeText_pin)
+					methodeName = getString(R.string.GUI_selectAuthMethodeText_pin)
 					methodCode = 0
 				}
 				dialog.selectAuthMethodeButton_patern.id ->{
-					methodeName = getString(R.string.selectAuthMethodeText_pattern)
+					methodeName = getString(R.string.GUI_selectAuthMethodeText_pattern)
 					methodCode = 1
 				}
 				dialog.selectAuthMethodeButton_finger.id ->{
-					methodeName = getString(R.string.selectAuthMethodeText_finger)
+					methodeName = getString(R.string.GUI_selectAuthMethodeText_finger)
 					methodCode = 2
 				}
 			}
 			Utilites.savePref(this,R.integer.preferedAuthMethode,methodCode)
-			val textToSetOnWidget = getString(R.string.selectAuthMethodeText_base) + methodeName
+			val textToSetOnWidget = getString(R.string.GUI_selectAuthMethodeText_base) + methodeName
 			findViewById<TextView>(R.id.selectAuthMethodeTextView).text = textToSetOnWidget
 		}
 		dialog.setOnDismissListener(dialogOnDismissListener)

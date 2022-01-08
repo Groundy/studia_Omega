@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 				<!--GUI texts-->
-				<string name="selectAuthMethodeText_pin">PIN</string>
-				<string name="selectAuthMethodeText_finger">Odcisk palca</string>
-				<string name="selectAuthMethodeText_pattern">Wzór</string>
-				<string name="QR_scanner_buttonText">skaner QR</string>
-				<string name="selectAuthMethodeText_base">"Preferowana metoda autoryzacji: "</string>
-				<string name="PreferredAuthMethode">Preferowana metoda autoryzacji: </string>
-				<string name="turnNfcOnAppStart_settingText">Włącz NFC po starcie aplikacji</string>
-				<string name="usePinInsteadOfFingerPrint">Użyj pinu</string>
-				<string name="fingerAuthTitle">Potwierdź transakcje</string>
+				<string name="GUI_selectAuthMethodeText_pin">PIN</string>
+				<string name="GUI_selectAuthMethodeText_finger">Odcisk palca</string>
+				<string name="GUI_selectAuthMethodeText_pattern">Wzór</string>
+				<string name="GUI_QR_scanner_buttonText">skaner QR</string>
+				<string name="GUI_selectAuthMethodeText_base">"Preferowana metoda autoryzacji: "</string>
+				<string name="GUI_PreferredAuthMethode">Preferowana metoda autoryzacji: </string>
+				<string name="GUI_turnNfcOnAppStart_settingText">Włącz NFC po starcie aplikacji</string>
+				<string name="GUI_usePinInsteadOfFingerPrint">Użyj pinu</string>
+				<string name="GUI_fingerAuthTitle">Potwierdź transakcje</string>
 
 				<!--ACTIVIES ret codes-->
-				<integer name="QR_SCANNER_RET_CODE">1001</integer>
-				<integer name="FINGER_SCANNER_RET_CODE">1002</integer>
-				<integer name="PIN_RET_CODE">1003</integer>
+				<integer name="ACT_RETCODE_QR_SCANNER">1001</integer>
+				<integer name="ACT_RETCODE_FINGER">1002</integer>
+				<integer name="ACT_RETCODE_PIN">1003</integer>
 
 				<!--Activies comunications-->
-				<string name="additionalDescriptionToAuthActivity">Tutaj powinnien być opis szczegółów operacji</string>
-				<string name="PIN_RESULT_FIELD">PIN_RESULT_FIELD</string>
-				<string name="QR_scanner_return_fieldName">QR scanner return field</string>
-				<string name="fingerActivity_retField_code">finger_activity_ret_field_name</string>
+				<string name="ACT_COM_additionalDescriptionToAuthActivity">Tutaj powinnien być opis szczegółów operacji</string>
+				<string name="ACT_COM_Pin_fieldName">PIN_RESULT_FIELD</string>
+				<string name="ACT_COM_QrScanner_fieldName">QR scanner return field</string>
+				<string name="ACT_COM_Fnger_fieldName">finger_activity_ret_field_name</string>
 
 				<!--Msg to users-->
-				<string name="QR_WRONG_FORMAT">Odczytany QR jest w złym formacie</string>
+				<string name="USER_MSG_QR_WRONG_FORMAT">Odczytany QR jest w złym formacie</string>
 
 </resources>

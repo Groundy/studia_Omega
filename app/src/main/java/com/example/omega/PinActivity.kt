@@ -172,7 +172,7 @@ class PinActivity : AppCompatActivity() {
 			val authCorrect = compareInsertedPin(pin)
 			if(authCorrect){
 				val output = Intent()
-				val fieldName = resources.getString(R.string.PIN_RESULT_FIELD)
+				val fieldName = resources.getString(R.string.ACT_COM_Pin_fieldName)
 				output.putExtra(fieldName, authCorrect)
 				setResult(RESULT_OK, output)
 				finish()
@@ -192,7 +192,7 @@ class PinActivity : AppCompatActivity() {
 				}
 				else{
 					val output = Intent()
-					val fieldName = resources.getString(R.string.PIN_RESULT_FIELD)
+					val fieldName = resources.getString(R.string.ACT_COM_Pin_fieldName)
 					output.putExtra(fieldName, false)
 					setResult(RESULT_CANCELED, output)
 					finish()
@@ -201,7 +201,7 @@ class PinActivity : AppCompatActivity() {
 		}
 	}
 	private fun getAdditionalDescription() : String?{
-		val description = this.intent.getStringExtra(getString(R.string.additionalDescriptionToAuthActivity))
+		val description = this.intent.getStringExtra(getString(R.string.ACT_COM_additionalDescriptionToAuthActivity))
 		return description
 	}
 	private fun requestFocusOnActivityStart(){

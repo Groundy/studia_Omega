@@ -4,7 +4,7 @@
 								android:orientation="vertical">
 
 				<Switch
-												android:text="@string/turnNfcOnAppStart_settingText"
+												android:text="@string/GUI_turnNfcOnAppStart_settingText"
 												android:layout_width="match_parent"
 												android:layout_height="wrap_content"
 												android:id="@+id/turnOnNFCWhenAppStartsSwitch"
@@ -17,7 +17,7 @@
 												android:layout_width="match_parent"
 												android:layout_height="50dp"
 												android:id="@+id/selectAuthMethodeTextView"
-												android:text="@string/PreferredAuthMethode"
+												android:text="@string/GUI_PreferredAuthMethode"
 												android:textAlignment="gravity"
 												android:textSize="@dimen/font_size_settings"
 												android:height="@dimen/field_height_settings" />
