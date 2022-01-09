@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.dialog_select_auth_methode.*
 class SettingsActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.settings_activity)
+		setContentView(R.layout.activity_settings)
 		fillGuiSettingsWithSavedState()
 
 		val selectAuthMethodeField = findViewById<TextView>(R.id.selectAuthMethodeTextView)

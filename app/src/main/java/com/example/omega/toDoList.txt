@@ -9,6 +9,7 @@
 7.  Dodać Activity z wprowadzaniem wzoru
 
 //DONE
+16. Gdy użytkownik będzie chciał anulować biometric prompt zapytać czy chce anulować uwierzytelnianie, przejść do pinu czy wrocic do biometrii
 15. Jeżeli użytkownik zrezygnuje z uwierzytelniania przez odcisk palca to trzeba wyświetlić activity z PINem (trzeba przekazać te same szczegóły transakcji)
 6.  Dodać Activity z ustaleniem pinu
 5.  Dodać Activity z autoryzacją odcisku palca

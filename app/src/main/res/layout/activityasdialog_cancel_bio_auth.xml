@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+								xmlns:app="http://schemas.android.com/apk/res-auto"
+								xmlns:tools="http://schemas.android.com/tools"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:excludeFromRecents="true">
+				<LinearLayout
+												android:orientation="vertical"
+												android:layout_width="wrap_content"
+												android:layout_height="wrap_content"
+												app:layout_constraintTop_toTopOf="parent"
+												android:layout_marginTop="1dp"
+												app:layout_constraintBottom_toBottomOf="parent"
+												app:layout_constraintStart_toStartOf="parent"
+												android:layout_marginStart="1dp"
+												app:layout_constraintEnd_toEndOf="parent">
+
+								<TextView
+																android:text="@string/GUI_CANCEL_FINGER_AUTH_TEXT"
+																android:layout_width="@dimen/CancelFingerAuthText_WIDTH"
+																android:layout_height="@dimen/CancelFingerAuthText_HEIGHT"
+																android:id="@+id/fingerAuthCancelMsgTextView"
+																android:textSize="@dimen/CancelFingerAuthFontSize"
+																android:textAlignment="center"
+																android:gravity="center|center_vertical"
+																android:textColor="@color/black" />
+
+								<LinearLayout
+																android:orientation="horizontal"
+																android:layout_width="300dp"
+																android:layout_height="@dimen/CancelFingerAuthButton_HEIGHT">
+
+												<TextView
+																				android:text="@string/GUI_CANCEL_FINGER_AUTH_YES_BUTTON"
+																				android:layout_width="@dimen/CancelFingerAuthButton_WIDTH"
+																				android:layout_height="@dimen/CancelFingerAuthButton_HEIGHT"
+																				android:id="@+id/fingerAuthCancelOkTextTextView"
+																				android:layout_weight="1"
+																				android:textSize="@dimen/CancelFingerAuthFontSize"
+																				android:textAlignment="center"
+																				android:gravity="center|center_vertical"
+																				android:textColor="@color/mainColor" />
+
+												<TextView
+																				android:text="@string/GUI_CANCEL_FINGER_AUTH_NO_BUTTON"
+																				android:layout_width="@dimen/CancelFingerAuthButton_WIDTH"
+																				android:layout_height="@dimen/CancelFingerAuthButton_HEIGHT"
+																				android:id="@+id/fingerAuthCancelCancelTextTextView"
+																				android:layout_weight="1"
+																				android:textSize="@dimen/CancelFingerAuthFontSize"
+																				android:textAlignment="center"
+																				android:gravity="center_vertical"
+																				android:textColor="@color/mainColor"
+																				tools:ignore="RtlCompat" />
+								</LinearLayout>
+				</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

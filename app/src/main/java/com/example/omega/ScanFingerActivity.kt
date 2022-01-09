@@ -7,9 +7,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
+import kotlinx.android.synthetic.main.dialog_select_auth_methode.*
+import kotlinx.android.synthetic.main.activityasdialog_cancel_bio_auth.view.*
 
 class ScanFingerActivity : AppCompatActivity() {
-	private val USER_WANT_TO_USE_OTHER_AUTH_METHODE = 13
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_scan_finger)
@@ -30,9 +31,15 @@ class ScanFingerActivity : AppCompatActivity() {
 			override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
 				super.onAuthenticationError(errorCode, errString)
 				Log.e("WookieTag","Authentication error code: $errorCode")
-				if(errorCode == USER_WANT_TO_USE_OTHER_AUTH_METHODE)
-					Log.i("WookieTag", "User wants to other auth methode than fingerPrint")
-				finishActivity(false, errorCode)
+
+				when (errorCode) {
+					BiometricPrompt.ERROR_NEGATIVE_BUTTON -> {
+						Log.i("WookieTag", "User wants to other auth methode than fingerPrint")
+						finishActivity(false, errorCode)
+					}
+					BiometricPrompt.ERROR_USER_CANCELED -> showCancelDialog(this@ScanFingerActivity)
+					else -> finishActivity(false,errorCode)
+				}
 			}
 			override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
 				super.onAuthenticationSucceeded(result)
@@ -81,6 +88,23 @@ class ScanFingerActivity : AppCompatActivity() {
 	}
 	private fun getAdditionalDescription(): String? {
 		return intent.getStringExtra(getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME))
+	}
+
+	private fun showCancelDialog(activity: ScanFingerActivity){
+		val activityIntent = Intent(this@ScanFingerActivity, CancelBioAuthDialogActivity::class.java)
+		startActivityForResult(activityIntent,resources.getInteger(R.integer.ACT_RETCODE_CANCEL_BIO_AUTH))
+	}
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		if(requestCode == resources.getInteger(R.integer.ACT_RETCODE_CANCEL_BIO_AUTH)){
+			if(resultCode == RESULT_OK){
+				finishActivity(false,BiometricPrompt.ERROR_USER_CANCELED)
+			}
+			else{
+				showAuthDialog()
+			}
+		}
 	}
 
 }

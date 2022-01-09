@@ -1,7 +1,6 @@
 package com.example.omega
 
 import android.Manifest
-import android.app.Activity
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
@@ -10,7 +9,6 @@ import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
 import android.nfc.Tag
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,18 +18,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
-import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
-import androidx.biometric.BiometricPrompt
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.google.firebase.FirebaseApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -39,7 +27,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
-import kotlinx.android.synthetic.main.settings_activity.*
+import kotlinx.android.synthetic.main.activity_settings.*
 
 class MainActivity : AppCompatActivity() {
 	private var nfcIsTurnOnOnApp: Boolean = false
@@ -58,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun test(){
-		Utilites.authTransaction(this,"line1Des\nline2Des\nline3Des",null)
+		Utilites.authTransaction(this,"ff",null)
 	}
 	private fun TEST_addFunToButton(){
 		val ttt = findViewById<Button>(R.id.testButton)

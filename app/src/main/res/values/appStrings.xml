@@ -11,10 +11,15 @@
 				<string name="GUI_usePinInsteadOfFingerPrint">Użyj pinu</string>
 				<string name="GUI_fingerAuthTitle">Potwierdź transakcje</string>
 
+				<string name="GUI_CANCEL_FINGER_AUTH_TEXT">Czy chcesz anulować uwierzytelnianie za pomocą linii papilarnych?</string>
+				<string name="GUI_CANCEL_FINGER_AUTH_YES_BUTTON">TAK</string>
+				<string name="GUI_CANCEL_FINGER_AUTH_NO_BUTTON">NIE</string>
+
 				<!--ACTIVIES ret codes-->
 				<integer name="ACT_RETCODE_QR_SCANNER">1001</integer>
 				<integer name="ACT_RETCODE_FINGER">1002</integer>
 				<integer name="ACT_RETCODE_PIN">1003</integer>
+				<integer name="ACT_RETCODE_CANCEL_BIO_AUTH">1004</integer>
 
 				<!--Activies comunications-->
 				<string name="ACT_COM_TRANSACTION_DETAILS_FIELD_NAME">Transaction details</string>
