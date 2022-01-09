@@ -182,9 +182,9 @@ class PinActivity : AppCompatActivity() {
 				val allowUserToTryOtherPin = pinTriesLeft > 0
 				if(allowUserToTryOtherPin){
 					val textToShow = when(pinTriesLeft){
-						2 -> "Pozostały 2 próby"
-						1 -> "Pozostała ostatnia próba"
-						else -> "Error"
+						2 -> resources.getString(R.string.USER_MSG_2_TRIES_LEFT)
+						1 -> resources.getString(R.string.USER_MSG_LAST_TRY_LEFT)
+						else -> resources.getString(R.string.USER_MSG_UNKNOWN_ERROR)
 					}
 					Utilites.showToast(this,textToShow)
 					digits.forEach { it.text.clear() }

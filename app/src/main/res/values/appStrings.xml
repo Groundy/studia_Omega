@@ -24,5 +24,7 @@
 
 				<!--Msg to users-->
 				<string name="USER_MSG_QR_WRONG_FORMAT">Odczytany QR jest w złym formacie</string>
-
+				<string name="USER_MSG_2_TRIES_LEFT">Pozostały 2 próby</string>
+				<string name="USER_MSG_LAST_TRY_LEFT">Pozostała ostatnia próba</string>
+				<string name="USER_MSG_UNKNOWN_ERROR">Wystąpił nieznany bład</string>
 </resources>

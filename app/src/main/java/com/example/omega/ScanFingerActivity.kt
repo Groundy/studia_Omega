@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
 
 class ScanFingerActivity : AppCompatActivity() {
@@ -13,7 +15,6 @@ class ScanFingerActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_scan_finger)
-
 		val errorCode = checkIfFingerScanningIsPossible(this)
 		val canAuth = errorCode == 0
 		if(canAuth)
@@ -52,33 +53,18 @@ class ScanFingerActivity : AppCompatActivity() {
 		val biometricManager = BiometricManager.from(context)
 		val errorCode = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
 		when (errorCode) {
-			BiometricManager.BIOMETRIC_SUCCESS ->{
+			BiometricManager.BIOMETRIC_SUCCESS ->
 				Log.i("WookieTag", "App can authenticate using biometrics.")
-			}
-			BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-				val errorText = "No biometric features available on this device."
-				Log.e("WookieTag", errorText)
-			}
-			BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
-				val errorText = "Biometric features are currently unavailable."
-				Log.e("WookieTag", errorText)
-			}
-			BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-				val errorText = "Biometric features should take user to fingerPrint."
-				/*
-					// Prompts the user to create credentials that your app accepts.
-					val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-						putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,BIOMETRIC_STRONG)
-					}
-					startActivityForResult(enrollIntent, 101)
-				*/
-				Log.e("WookieTag", errorText)
-			}
+			BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
+				Log.e("WookieTag", "No biometric features available on this device.")
+			BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
+				Log.e("WookieTag", "Biometric features are currently unavailable.")
+			BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED ->
+				Log.e("WookieTag", "Biometric features should take user to fingerPrint.")
 			else -> {
 				//Prawodobonie brak zapisanego odcisku palca, android z niewiadomych przyczyn zwraca kod -1
 				// przy braku zapisanego odcisku palca zamiast kodu 11(BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED)
-				val errorText = "Unkown behaviour in chechking if finger auth is possible."
-				Log.e("WookieTag", errorText)//TODO tutaj powinien byc false, true jest tylko do testów
+				Log.e("WookieTag", "Unknown behaviour in checking if finger auth is possible, probably no finer enrolled")
 			}
 		}
 		return errorCode
@@ -97,4 +83,5 @@ class ScanFingerActivity : AppCompatActivity() {
 		val description : String? = this.intent.getStringExtra(getString(R.string.ACT_COM_Fnger_fieldName))
 		return description
 	}
+
 }
