@@ -59,26 +59,22 @@ class Utilites {
 		fun readPref_Bool(activity: Activity, strResourceId : Int) : Boolean{
 			val fieldName = activity.getString(strResourceId)
 			val prefs = getSharedProperties(activity)
-			var toRet = prefs.getBoolean(fieldName,false)
-			return toRet
+			return prefs.getBoolean(fieldName,false)
 		}
 		fun readPref_Int(activity: Activity, strResourceId : Int) : Int{
 			val fieldName = activity.getString(strResourceId)
 			val prefs = getSharedProperties(activity)
-			var toRet = prefs.getInt(fieldName,0)
-			return toRet
+			return prefs.getInt(fieldName,0)
 		}
 		fun readPref_Str(activity: Activity, strResourceId : Int) : String {
 			val fieldName = activity.getString(strResourceId)
 			val prefs = getSharedProperties(activity)
-			val toRet =  prefs.getString(fieldName, "")!!
-			return toRet
+			return prefs.getString(fieldName, "")!!
 		}
 		fun readPref_Float(activity: Activity, strResourceId : Int) : Float{
 			val fieldName = activity.getString(strResourceId)
 			val prefs = getSharedProperties(activity)
-			var toRet = prefs.getFloat(fieldName,0f)
-			return toRet
+			return prefs.getFloat(fieldName,0f)
 		}
 
 		fun getAuthMethodeText(context: Context,methodeCode : Int) : String{
@@ -116,20 +112,28 @@ class Utilites {
 		}
 		private fun authByPin(activity: Activity, description : String?){
 			val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
-			val desFieldName = activity.resources.getString(R.string.ACT_COM_additionalDescriptionToAuthActivity)
+			val desFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
 			pinActivityActivityIntent.putExtra(desFieldName,description)
 			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN)
 			activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
 		}
 		private fun authByFingerPrint(activity: Activity, description : String?){
 			val scanFingerActivityIntent = Intent(activity, ScanFingerActivity::class.java)
-			val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_additionalDescriptionToAuthActivity)
+			val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
 			scanFingerActivityIntent.putExtra(descriptionFieldName,description)
 			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_FINGER)
 			activity.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
 		}
 		private fun authByPattern(activity: Activity, description : String?){
 			//TODO
+		}
+		fun authSuccessed(context: Context){
+			//TODO
+			showToast(context as Activity, "Auth success!")
+		}
+		fun authFailed(context: Context){
+			//TODO
+			showToast(context as Activity, "Auth failed!")
 		}
 	}
 }

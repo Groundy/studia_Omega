@@ -71,7 +71,7 @@ class QRScannerActivity() : AppCompatActivity() {
 			val properValue = rawValue != null && rawValue.length == 6 && rawValue.toInt() > 0
 			if(properValue){
 				val output = Intent()
-				val fieldName = context.resources.getString(R.string.ACT_COM_QrScanner_fieldName)
+				val fieldName = context.resources.getString(R.string.ACT_COM_QR_SCANNER_FIELD_NAME)
 				val code = rawValue.toInt()
 				output.putExtra(fieldName, code)
 				context.setResult(RESULT_OK, output)

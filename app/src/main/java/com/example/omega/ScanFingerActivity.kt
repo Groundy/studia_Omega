@@ -4,10 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
 
 class ScanFingerActivity : AppCompatActivity() {
@@ -25,7 +23,7 @@ class ScanFingerActivity : AppCompatActivity() {
 	private fun showAuthDialog(){
 		val promptInfo = BiometricPrompt.PromptInfo.Builder()
 			.setTitle(getString(R.string.GUI_fingerAuthTitle))
-			.setDescription(additionalDescription())
+			.setDescription(getAdditionalDescription())
 			.setNegativeButtonText(getString(R.string.GUI_usePinInsteadOfFingerPrint))
 			.build()
 		val authCallBack = object : BiometricPrompt.AuthenticationCallback() {
@@ -70,8 +68,10 @@ class ScanFingerActivity : AppCompatActivity() {
 		return errorCode
 	}
 	private fun finishActivity(result: Boolean, errorCode : Int){
-		val errorCodeFieldName = resources.getString(R.string.ACT_COM_Fnger_fieldName)
+		val errorCodeFieldName = resources.getString(R.string.ACT_COM_FINGER_FIELD_NAME)
+		val descriptionFieldName = getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
 		val output = Intent()
+		output.putExtra(descriptionFieldName, getAdditionalDescription())
 		output.putExtra(errorCodeFieldName, errorCode)
 		if(result)
 			setResult(RESULT_OK, output)
@@ -79,9 +79,8 @@ class ScanFingerActivity : AppCompatActivity() {
 			setResult(RESULT_CANCELED, output)
 		finish()
 	}
-	private fun additionalDescription() : String?{
-		val description : String? = this.intent.getStringExtra(getString(R.string.ACT_COM_Fnger_fieldName))
-		return description
+	private fun getAdditionalDescription(): String? {
+		return intent.getStringExtra(getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME))
 	}
 
 }

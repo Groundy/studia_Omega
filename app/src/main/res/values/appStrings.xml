@@ -17,14 +17,17 @@
 				<integer name="ACT_RETCODE_PIN">1003</integer>
 
 				<!--Activies comunications-->
-				<string name="ACT_COM_additionalDescriptionToAuthActivity">Tutaj powinnien być opis szczegółów operacji</string>
-				<string name="ACT_COM_Pin_fieldName">PIN_RESULT_FIELD</string>
-				<string name="ACT_COM_QrScanner_fieldName">QR scanner return field</string>
-				<string name="ACT_COM_Fnger_fieldName">finger_activity_ret_field_name</string>
+				<string name="ACT_COM_TRANSACTION_DETAILS_FIELD_NAME">Transaction details</string>
+				<string name="ACT_COM_PIN_FIELD_NAME">PIN_RESULT_FIELD</string>
+				<string name="ACT_COM_QR_SCANNER_FIELD_NAME">QR scanner return field</string>
+				<string name="ACT_COM_FINGER_FIELD_NAME">finger_activity_ret_field_name</string>
 
 				<!--Msg to users-->
 				<string name="USER_MSG_QR_WRONG_FORMAT">Odczytany QR jest w złym formacie</string>
 				<string name="USER_MSG_2_TRIES_LEFT">Pozostały 2 próby</string>
 				<string name="USER_MSG_LAST_TRY_LEFT">Pozostała ostatnia próba</string>
 				<string name="USER_MSG_UNKNOWN_ERROR">Wystąpił nieznany bład</string>
+				<string name="USER_MSG_NFC_NEED_PERMISSION">Do płatności zbliżeniowych konieczne jest pozwolenie do komunikacji NFC</string>
+				<string name="USER_MSG_NFC_TURN_OFF">Do płatności zbliżeniowych konieczne jest włączenie NFC</string>
+				<string name="USER_MSG_NFC_NO_HW_SUPP">Urządzenie nie obsługuje NFC</string>
 </resources>

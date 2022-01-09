@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 			when(requestCode){
 				resources.getInteger(R.integer.ACT_RETCODE_QR_SCANNER) -> {
 					if(resultCode == RESULT_OK && data != null) {
-						val returnFieldName = resources.getString(R.string.ACT_COM_QrScanner_fieldName)
+						val returnFieldName = resources.getString(R.string.ACT_COM_QR_SCANNER_FIELD_NAME)
 						val returnedCode = data.getIntExtra(returnFieldName, -1)
 						val vailCode = returnedCode in 0..999999
 						if (vailCode) {
@@ -83,36 +83,43 @@ class MainActivity : AppCompatActivity() {
 					}
 				}
 				resources.getInteger(R.integer.ACT_RETCODE_FINGER) ->{
-					val errorCodeFieldName = getString(R.string.ACT_COM_Fnger_fieldName)
+					val errorCodeFieldName = getString(R.string.ACT_COM_FINGER_FIELD_NAME)
 					val errorCode = data?.getIntExtra(errorCodeFieldName, -1)
-					val textToShow = when(errorCode){
-							0 -> "Uzyskano autoryzację!"
-							1 -> "Sensor jest chwilowo niedostępny, należy spróbować później."
-							2 -> "Czujnik nie był w stanie przetworzyć odcisku palca."
-							3 -> "Nie wykryto palca przez 30s."
-							4 -> "Urządzenie nie ma wystarczającej ilości miejsca żeby wykonać operacje."
-							5,10 -> "Użytkownik anulował uwierzytelnianie za pomocą biometrii."
-							7 -> "Pięciorkotnie nierozpoznano odcisku palca, sensor będzie dostępny ponownie za 30s."
-							9 -> "Sensor jest zablokowany, należy go odblokować wporwadzająć wzór/pin telefonu."
-							11 -> "Nieznany błąd, upewnij się czy w twoim urządzeniu jest zapisany odcis palca."
-							12 -> "Urządzenie nie posiada odpowiedniego sensora."
-							14 -> "Urządzenie musi posiadać pin,wzór lub hasło."
-							15 -> "Operacja nie może zostać wykonana bez aktualizacji systemu."
-							else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
-						}
-					Utilites.showToast(this, textToShow)
-					if(resultCode == RESULT_OK){
-						//TODO Autoryzacja się udała
-					}
+
+					if(resultCode == RESULT_OK)
+						Utilites.authSuccessed(this)
 					else{
 						if(errorCode == 13){
-							//TODO wywyołać pin activity
+							val descriptionFieldName = resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
+							val description = data.extras?.getString(descriptionFieldName)
+							Utilites.authTransaction(this,description,0)
 						}
-						//TODO Autoryzacja się udała
+						else{
+							val textToShow = when(errorCode){
+								//0 -> "Uzyskano autoryzację!"
+								1 -> "Sensor jest chwilowo niedostępny, należy spróbować później."
+								2 -> "Czujnik nie był w stanie przetworzyć odcisku palca."
+								3 -> "Nie wykryto palca przez 30s."
+								4 -> "Urządzenie nie ma wystarczającej ilości miejsca żeby wykonać operacje."
+								5,10 -> "Użytkownik anulował uwierzytelnianie za pomocą biometrii."
+								7 -> "Pięciorkotnie nierozpoznano odcisku palca, sensor będzie dostępny ponownie za 30s."
+								9 -> "Sensor jest zablokowany, należy go odblokować wporwadzająć wzór/pin telefonu."
+								11 -> "Nieznany błąd, upewnij się czy w twoim urządzeniu jest zapisany odcis palca."
+								12 -> "Urządzenie nie posiada odpowiedniego sensora."
+								14 -> "Urządzenie musi posiadać pin,wzór lub hasło."
+								15 -> "Operacja nie może zostać wykonana bez aktualizacji systemu."
+								else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
+							}
+							Utilites.showToast(this, textToShow)
+							Utilites.authFailed(this)
+						}
 					}
 				}
 				resources.getInteger(R.integer.ACT_RETCODE_PIN) ->{
-
+					if(resultCode == RESULT_OK)
+						Utilites.authSuccessed(this)
+					else
+						Utilites.authFailed(this)
 				}
 			}
 	}
@@ -138,10 +145,15 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun initUIVariables() {
+		//QR button
 		val goQRScannerButtonListener = View.OnClickListener {
 			val qRScannerActivityIntent = Intent(this, QRScannerActivity::class.java)
 			startActivityForResult(qRScannerActivityIntent, resources.getInteger(R.integer.ACT_RETCODE_QR_SCANNER))
 		}
+		goQRActivityButton = findViewById(R.id.goToQRScannerButton)
+		goQRActivityButton.setOnClickListener(goQRScannerButtonListener)
+
+		//codeField
 		val codeFieldTextListener = object : TextWatcher {
 			override fun afterTextChanged(s: Editable) {
 				if (s.length == 6) {
@@ -150,17 +162,14 @@ class MainActivity : AppCompatActivity() {
 						processCode(code)
 				}
 			}
-
 			override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 			override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 		}
-		goQRActivityButton = findViewById(R.id.goToQRScannerButton)
-
 		codeField = findViewById(R.id.enterCodeField)
 		codeField.requestFocus()
-		goQRActivityButton.setOnClickListener(goQRScannerButtonListener)
 		codeField.addTextChangedListener(codeFieldTextListener)
 
+		//NFC
 		val deviceHasNfc = NfcAdapter.getDefaultAdapter(this) != null
 		val nfcOnOffButton = findViewById<Button>(R.id.nfcButton)
 		if (deviceHasNfc) {
@@ -187,10 +196,10 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun checkIfNfcIsTurnedOn(): Boolean {
-		val deviceHasNfc = this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)
+		val deviceHasNfc = this.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
 		if (!deviceHasNfc) {
 			Log.e("WookieTag", "There's no NFC hardware on user's phone")
-			//TODO dać info userowi że nie ma NFC
+			Utilites.showToast(this,resources.getString(R.string.USER_MSG_NFC_NO_HW_SUPP))
 			return false
 		}
 
@@ -198,25 +207,21 @@ class MainActivity : AppCompatActivity() {
 		val permissionListener = object : PermissionListener {
 			override fun onPermissionGranted(response: PermissionGrantedResponse?) {}
 			override fun onPermissionDenied(response: PermissionDeniedResponse?) {
-				val toastText = "Do płatności zbliżeniowych konieczne jest włączenie NFC"
-				Utilites.showToast(this@MainActivity, toastText)
+				Utilites.showToast(this@MainActivity, resources.getString(R.string.USER_MSG_NFC_NEED_PERMISSION))
 				Log.e("WookieTag", "User denied permission to use NFC")
 			}
 
-			override fun onPermissionRationaleShouldBeShown(
-				permission: PermissionRequest?,
-				token: PermissionToken?
-			) {
+			override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
 				token!!.continuePermissionRequest()
 			}
 		}
 		Dexter.withActivity(this).withPermission(Manifest.permission.NFC)
 			.withListener(permissionListener).check()
-		val permissionNfcDenied =
-			checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_DENIED
+		val permissionNfcDenied = checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_DENIED
 		if (permissionNfcDenied) {
 			Log.e("WookieTag", "There's no permission to use")
-			//TODO dać info userowi że nie ma pozwolenia na NFC
+			Utilites.showToast(this@MainActivity, resources.getString(R.string.USER_MSG_NFC_NEED_PERMISSION))
+			Log.e("WookieTag", "User denied permission to use NFC")
 			return false
 		}
 
@@ -225,7 +230,8 @@ class MainActivity : AppCompatActivity() {
 		val nfcIsOn = manager.defaultAdapter.isEnabled
 		if (!nfcIsOn) {
 			Log.e("WookieTag", "NFC connection is off")
-			//TODO dać info userowi że NFC jest wylaczone, przeniesc go z aplikacji do ustawien NFC
+			Utilites.showToast(this@MainActivity, resources.getString(R.string.USER_MSG_NFC_TURN_OFF))
+			Log.e("WookieTag", "User denied permission to use NFC")
 			return false
 		}
 
@@ -269,4 +275,5 @@ class MainActivity : AppCompatActivity() {
 		}
 		this.nfcAdapter.enableForegroundDispatch(activity, pendingIntent, filters, techList)
 	}
+
 }
