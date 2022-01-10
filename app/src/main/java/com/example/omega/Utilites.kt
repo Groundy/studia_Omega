@@ -97,7 +97,7 @@ class Utilites {
 		}
 
 		fun authTransaction(context : Activity, description : String?, forcedMethodeCode : Int?){
-			var preferredMethodeCode = readPref_Int(context, R.integer.preferedAuthMethode)
+			var preferredMethodeCode = readPref_Int(context, R.integer.PREF_preferedAuthMethode)
 			if(forcedMethodeCode != null && forcedMethodeCode in 0..2)
 				preferredMethodeCode = forcedMethodeCode
 			val preferredMethodeName = getAuthMethodeText(context,preferredMethodeCode)
@@ -113,8 +113,10 @@ class Utilites {
 		private fun authByPin(activity: Activity, description : String?){
 			val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
 			val desFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
+			val startForAuthFieldName = activity.resources.getString(R.string.ACT_COM_PIN_STARTED_FOR_AUTH)
 			pinActivityActivityIntent.putExtra(desFieldName,description)
-			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN)
+			pinActivityActivityIntent.putExtra(startForAuthFieldName,true)
+			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_AUTH)
 			activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
 		}
 		private fun authByFingerPrint(activity: Activity, description : String?){
@@ -134,6 +136,11 @@ class Utilites {
 		fun authFailed(context: Context){
 			//TODO
 			showToast(context as Activity, "Auth failed!")
+		}
+		fun checkIfAppHasAlreadySetPin(activity: Activity): Boolean {
+			//TODO tymczasowo PIN jest zapisywany w pamięci telefonu w plain text, należy to koniecznie zmienić
+			val pinRead = readPref_Int(activity, R.integer.PREF_pin)
+			return pinRead in 1..99999
 		}
 	}
 }

@@ -6,9 +6,13 @@
 
 
 				<!--Pin act-->
-				<dimen name="width_of_pin_digits">48dp</dimen>
-				<dimen name="height_of_pin_digits">80dp</dimen>
-				<dimen name="margin_width_of_pin_digits">20dp</dimen>
+				<dimen name="DIM_PIN_width_of_digits">48dp</dimen>
+				<dimen name="DIM_PIN_height_of_digits">80dp</dimen>
+				<dimen name="DIM_PIN_margin_width_of_pin_digits">20dp</dimen>
+				<dimen name="DIM_PIN_Title_Height">50dp</dimen>
+				<dimen name="DIM_PIN_Description_Height">50dp</dimen>
+				<dimen name="DIM_PIN_Title_Font_Size">30sp</dimen>
+				<dimen name="DIM_PIN_Description_Font_Size">20sp</dimen>
 
 				<!--Settings act-->
 				<dimen name="font_size_settings">16sp</dimen>

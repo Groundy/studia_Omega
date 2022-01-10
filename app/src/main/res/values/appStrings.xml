@@ -9,7 +9,9 @@
 				<string name="GUI_PreferredAuthMethode">Preferowana metoda autoryzacji: </string>
 				<string name="GUI_turnNfcOnAppStart_settingText">Włącz NFC po starcie aplikacji</string>
 				<string name="GUI_usePinInsteadOfFingerPrint">Użyj pinu</string>
-				<string name="GUI_fingerAuthTitle">Potwierdź transakcje</string>
+				<string name="GUI_authTransactionTitle">Potwierdź transakcje</string>
+				<string name="GUI_PIN_setPinTitle">Ustaw swój PIN</string>
+				<string name="GUI_PIN_setPinAgainTitle">Wprowadź PIN ponownie</string>
 
 				<string name="GUI_CANCEL_FINGER_AUTH_TEXT">Czy chcesz anulować uwierzytelnianie za pomocą linii papilarnych?</string>
 				<string name="GUI_CANCEL_FINGER_AUTH_YES_BUTTON">TAK</string>
@@ -18,14 +20,16 @@
 				<!--ACTIVIES ret codes-->
 				<integer name="ACT_RETCODE_QR_SCANNER">1001</integer>
 				<integer name="ACT_RETCODE_FINGER">1002</integer>
-				<integer name="ACT_RETCODE_PIN">1003</integer>
-				<integer name="ACT_RETCODE_CANCEL_BIO_AUTH">1004</integer>
+				<integer name="ACT_RETCODE_PIN_AUTH">1003</integer>
+				<integer name="ACT_RETCODE_PIN_SET">1004</integer>
+				<integer name="ACT_RETCODE_CANCEL_BIO_AUTH">1005</integer>
 
 				<!--Activies comunications-->
 				<string name="ACT_COM_TRANSACTION_DETAILS_FIELD_NAME">Transaction details</string>
 				<string name="ACT_COM_PIN_FIELD_NAME">PIN_RESULT_FIELD</string>
 				<string name="ACT_COM_QR_SCANNER_FIELD_NAME">QR scanner return field</string>
 				<string name="ACT_COM_FINGER_FIELD_NAME">finger_activity_ret_field_name</string>
+				<string name="ACT_COM_PIN_STARTED_FOR_AUTH">pin_started_for_auth</string>
 
 				<!--Msg to users-->
 				<string name="USER_MSG_QR_WRONG_FORMAT">Odczytany QR jest w złym formacie</string>
@@ -35,4 +39,6 @@
 				<string name="USER_MSG_NFC_NEED_PERMISSION">Do płatności zbliżeniowych konieczne jest pozwolenie do komunikacji NFC</string>
 				<string name="USER_MSG_NFC_TURN_OFF">Do płatności zbliżeniowych konieczne jest włączenie NFC</string>
 				<string name="USER_MSG_NFC_NO_HW_SUPP">Urządzenie nie obsługuje NFC</string>
+				<string name="USER_MSG_PIN_HAVE_TO_USE_ALL_DIGITS">PIN musi zawierać wszystkie możliwe cyfry</string>
+				<string name="USER_MSG_PIN_FAILED_TO_SET_NEW_PIN_DIFFRENT_PINS_INSERTED">Nie udało się ustawić nowego PINu, dwa wprowadzone piny nie były identyczne. Spróbuj ponownie.</string>
 </resources>

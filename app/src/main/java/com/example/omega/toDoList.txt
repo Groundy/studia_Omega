@@ -1,6 +1,5 @@
 //TODO
 14. Zapisać bezpiecznie PIN wprowadzony przez użytkownika{https://www.androidauthority.com/where-is-the-best-place-to-store-a-password-in-your-android-app-597197/}
-13. Dodać możliwość użycia PIN activity zarówno do autoryzacji jak i ustalenia pinu aplikacji
 12. Dodać okno z potwierdzeniem nadania przelewu.
 11. Dodać okno z formularzem w którym wpisuje się dane odbiorcy przelewu (4 z rap.)//IDEAs
 10. Wyświetlić listę banków podpiętych pod aplikację i umożliwić użytkownikowi tego banku(2 i 3 z raportu)
@@ -11,6 +10,7 @@
 //DONE
 16. Gdy użytkownik będzie chciał anulować biometric prompt zapytać czy chce anulować uwierzytelnianie, przejść do pinu czy wrocic do biometrii
 15. Jeżeli użytkownik zrezygnuje z uwierzytelniania przez odcisk palca to trzeba wyświetlić activity z PINem (trzeba przekazać te same szczegóły transakcji)
+13. Dodać możliwość użycia PIN activity zarówno do autoryzacji jak i ustalenia pinu aplikacji
 6.  Dodać Activity z ustaleniem pinu
 5.  Dodać Activity z autoryzacją odcisku palca
 4.  Dodać w opcjach wybór preferowanej metody uwierzytelniania PIN/wzór/fingerPrint, domyślnie PIN

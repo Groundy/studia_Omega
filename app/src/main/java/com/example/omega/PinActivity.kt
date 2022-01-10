@@ -17,11 +17,14 @@ import android.view.inputmethod.InputMethodManager
 class PinActivity : AppCompatActivity() {
 	private var digits : MutableList<EditText> = arrayListOf()
 	private var pinTriesLeft = 3
+	private var startedForAuth = true
+	private var tmpPIN : Int = 0
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_pin)
-		findViewById<TextView>(R.id.descripitonOnPinAct).text = getAdditionalDescription()
+		startedForAuth = checkIfActStartedForAuth()
+		getProperTextsForGUIElements()
 		findElements()
 		setUIElementsListeners()
 		requestFocusOnActivityStart()
@@ -54,25 +57,25 @@ class PinActivity : AppCompatActivity() {
 			override fun onKey(source: View?, keyCode: Int, event: KeyEvent): Boolean {
 				if (keyCode == KeyEvent.KEYCODE_DEL && event?.action == KeyEvent.ACTION_DOWN) {
 					when(source?.id){
-						R.id.pid_digit1 ->{
+						R.id.PIN_digit1_TextView ->{
 							digits[0].text.clear()
 						}
-						R.id.pid_digit2 ->{
+						R.id.PIN_digit2_TextView ->{
 							digits[0].requestFocus()
 							digits[0].text.clear()
 							digits[1].text.clear()
 						}
-						R.id.pid_digit3 ->{
+						R.id.PIN_digit3_TextView ->{
 							digits[1].requestFocus()
 							digits[1].text.clear()
 							digits[2].text.clear()
 						}
-						R.id.pid_digit4 ->{
+						R.id.PIN_digit4_TextView ->{
 							digits[2].requestFocus()
 							digits[2].text.clear()
 							digits[3].text.clear()
 						}
-						R.id.pid_digit5 ->{
+						R.id.PIN_digit5_TextView ->{
 							val userAlreadyInsertedLastDigit = digits[4].text.length == 1
 							if(!userAlreadyInsertedLastDigit){
 								digits[3].requestFocus()
@@ -155,6 +158,19 @@ class PinActivity : AppCompatActivity() {
 		val ok5 = value5 != null && value5 in 0..9
 		return ok1 && ok2 && ok3 && ok4 && ok5
 	}
+	private fun getProperTextsForGUIElements(){
+		val descriptionField = findViewById<TextView>(R.id.PIN_Description_TextView)
+		val titleField = findViewById<TextView>(R.id.PIN_Title_TextView)
+		if(startedForAuth){
+			titleField.text = resources.getString(R.string.GUI_authTransactionTitle)
+			descriptionField.text = intent.getStringExtra(getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME))
+		}
+		else{
+			descriptionField.text = null
+			titleField.text = resources.getString(R.string.GUI_PIN_setPinTitle)
+			descriptionField.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+		}
+	}
 	private fun getPinFromFields(): Int? {
 		val allFieldsAreFilled = checkIfAllFieldsHaveEnteredDigits()
 		if (!allFieldsAreFilled)
@@ -168,58 +184,106 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun processPIN(){
 		val pin = getPinFromFields()
-		if (pin != null) {
-			val authCorrect = compareInsertedPin(pin)
-			if(authCorrect){
-				val output = Intent()
-				val fieldName = resources.getString(R.string.ACT_COM_PIN_FIELD_NAME)
-				output.putExtra(fieldName, authCorrect)
-				setResult(RESULT_OK, output)
-				finish()
-			}
-			else{
-				pinTriesLeft--
-				val allowUserToTryOtherPin = pinTriesLeft > 0
-				if(allowUserToTryOtherPin){
-					val textToShow = when(pinTriesLeft){
-						2 -> resources.getString(R.string.USER_MSG_2_TRIES_LEFT)
-						1 -> resources.getString(R.string.USER_MSG_LAST_TRY_LEFT)
-						else -> resources.getString(R.string.USER_MSG_UNKNOWN_ERROR)
-					}
-					Utilites.showToast(this,textToShow)
-					digits.forEach { it.text.clear() }
-					digits[0].requestFocus()
-				}
-				else{
-					val output = Intent()
-					val fieldName = resources.getString(R.string.ACT_COM_PIN_FIELD_NAME)
-					output.putExtra(fieldName, false)
-					setResult(RESULT_CANCELED, output)
-					finish()
-				}
-			}
+		if( pin == null && startedForAuth)
+			Utilites.showToast(this,resources.getString(R.string.USER_MSG_PIN_HAVE_TO_USE_ALL_DIGITS))
+		else if(pin !=null && startedForAuth){
+			checkPinForAuth(pin)
+		}
+		else if(pin !=null && !startedForAuth){
+			setPinProcess(pin)
 		}
 	}
-	private fun getAdditionalDescription(): String? {
-		return intent.getStringExtra(getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME))
-	}
+
 	private fun requestFocusOnActivityStart(){
 		digits[0].requestFocus()
 		val showKeyboardObj = Runnable {
 			val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 			inputMethodManager.showSoftInput(digits[0], InputMethodManager.SHOW_FORCED)
 		}
-		digits[0].postDelayed(showKeyboardObj, 150)
+		digits[0].postDelayed(showKeyboardObj, 250)
 	}
 	private fun findElements(){
-		digits.add(findViewById<EditText>(R.id.pid_digit1))
-		digits.add(findViewById<EditText>(R.id.pid_digit2))
-		digits.add(findViewById<EditText>(R.id.pid_digit3))
-		digits.add(findViewById<EditText>(R.id.pid_digit4))
-		digits.add(findViewById<EditText>(R.id.pid_digit5))
+		digits.add(findViewById<EditText>(R.id.PIN_digit1_TextView))
+		digits.add(findViewById<EditText>(R.id.PIN_digit2_TextView))
+		digits.add(findViewById<EditText>(R.id.PIN_digit3_TextView))
+		digits.add(findViewById<EditText>(R.id.PIN_digit4_TextView))
+		digits.add(findViewById<EditText>(R.id.PIN_digit5_TextView))
 	}
-	private fun compareInsertedPin(pin : Int) : Boolean{
+	private fun checkIfPinForAuthIsCorrect(pin : Int) : Boolean{
 		//TODO Dodać sprawdzanie czy pin jest OK
-		return pin == 12345
+		val pinSavedInPrefs = Utilites.readPref_Int(this, R.integer.PREF_pin)
+		return pin == pinSavedInPrefs
 	}
+	private fun checkIfActStartedForAuth() : Boolean{
+		return intent.getBooleanExtra(getString(R.string.ACT_COM_PIN_STARTED_FOR_AUTH), true)
+	}
+	private fun checkPinForAuth(pin : Int){
+		val authCorrect = checkIfPinForAuthIsCorrect(pin)
+		if(authCorrect){
+			finishActivityForAuth(true)
+		}
+		else{
+			pinTriesLeft--
+			val allowUserToTryOtherPin = pinTriesLeft > 0
+			if(allowUserToTryOtherPin){
+				val textToShow = when(pinTriesLeft){
+					2 -> resources.getString(R.string.USER_MSG_2_TRIES_LEFT)
+					1 -> resources.getString(R.string.USER_MSG_LAST_TRY_LEFT)
+					else -> resources.getString(R.string.USER_MSG_UNKNOWN_ERROR)
+				}
+				Utilites.showToast(this,textToShow)
+				digits.forEach { it.text.clear() }
+				digits[0].requestFocus()
+			}
+			else
+				finishActivityForAuth(false)
+		}
+	}
+	private fun finishActivityForAuth(authSuccess: Boolean){
+		val output = Intent()
+		val fieldName = resources.getString(R.string.ACT_COM_PIN_FIELD_NAME)
+		output.putExtra(fieldName, authSuccess)
+		if(authSuccess)
+			setResult(RESULT_OK, output)
+		else
+			setResult(RESULT_CANCELED, output)
+		finish()
+	}
+
+	private fun setPinProcess(pin: Int) {
+		val itsFirstAttemptToSetPin = tmpPIN == 0
+		if(itsFirstAttemptToSetPin){
+			val textToSet = resources.getString(R.string.GUI_PIN_setPinAgainTitle)
+			findViewById<TextView>(R.id.PIN_Description_TextView).text = textToSet
+			digits.forEach { it.text.clear() }
+			requestFocusOnActivityStart()
+			tmpPIN = pin
+		}
+		else{
+			val bothPinsAreSame = pin == tmpPIN
+			if(bothPinsAreSame){
+				setNewPin(pin)
+				finishActivityForSetPin(true)
+			}
+			else
+				finishActivityForSetPin(false)
+		}
+	}
+	private fun setNewPin(pin : Int){
+		//TODO
+		Utilites.savePref(this,R.integer.PREF_pin,pin)
+		//dodać funkcję która ustawi ten PIN w pamięci apki i na severze
+	}
+	private fun finishActivityForSetPin(success: Boolean){
+		val output = Intent()
+		val fieldName = resources.getString(R.string.ACT_COM_PIN_FIELD_NAME)
+		output.putExtra(fieldName, success)
+		if(success)
+			setResult(RESULT_OK, output)
+		else
+			setResult(RESULT_CANCELED, output)
+
+		finish()
+	}
+
 }

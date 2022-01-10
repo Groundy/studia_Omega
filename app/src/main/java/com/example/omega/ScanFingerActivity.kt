@@ -23,7 +23,7 @@ class ScanFingerActivity : AppCompatActivity() {
 	}
 	private fun showAuthDialog(){
 		val promptInfo = BiometricPrompt.PromptInfo.Builder()
-			.setTitle(getString(R.string.GUI_fingerAuthTitle))
+			.setTitle(getString(R.string.GUI_authTransactionTitle))
 			.setDescription(getAdditionalDescription())
 			.setNegativeButtonText(getString(R.string.GUI_usePinInsteadOfFingerPrint))
 			.build()
