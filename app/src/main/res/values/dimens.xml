@@ -17,6 +17,7 @@
 				<!--Settings act-->
 				<dimen name="DIM_font_size_settings">16sp</dimen>
 				<dimen name="DIM_field_height_settings">50dp</dimen>
+				<dimen name="DIM_spacer_height_settings">1dp</dimen>
 
 				<!--Cancel auth dialog-->
 				<dimen name="DIM_CancelFingerAuthButton_HEIGHT">50dp</dimen>
