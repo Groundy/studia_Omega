@@ -15,13 +15,13 @@
 				<dimen name="DIM_PIN_Description_Font_Size">20sp</dimen>
 
 				<!--Settings act-->
-				<dimen name="font_size_settings">16sp</dimen>
-				<dimen name="field_height_settings">50dp</dimen>
+				<dimen name="DIM_font_size_settings">16sp</dimen>
+				<dimen name="DIM_field_height_settings">50dp</dimen>
 
 				<!--Cancel auth dialog-->
-				<dimen name="CancelFingerAuthButton_HEIGHT">50dp</dimen>
-				<dimen name="CancelFingerAuthButton_WIDTH">50dp</dimen>
-				<dimen name="CancelFingerAuthText_WIDTH">300dp</dimen><!--Double button width-->
-				<dimen name="CancelFingerAuthText_HEIGHT">100dp</dimen><!--Double button width-->
-				<dimen name="CancelFingerAuthFontSize">20sp</dimen>
+				<dimen name="DIM_CancelFingerAuthButton_HEIGHT">50dp</dimen>
+				<dimen name="DIM_CancelFingerAuthButton_WIDTH">50dp</dimen>
+				<dimen name="DIM_CancelFingerAuthText_WIDTH">300dp</dimen><!--Double button width-->
+				<dimen name="DIM_CancelFingerAuthText_HEIGHT">100dp</dimen><!--Double button width-->
+				<dimen name="DIM_CancelFingerAuthFontSize">20sp</dimen>
 </resources>

@@ -24,7 +24,7 @@
 																android:layout_height="wrap_content"
 																android:id="@+id/selectAuthMethodeButton_PIN"
 																android:minHeight="48dp"
-																android:textSize="@dimen/font_size_settings" />
+																android:textSize="@dimen/DIM_font_size_settings" />
 
 								<RadioButton
 																android:text="@string/GUI_selectAuthMethodeText_finger"
@@ -32,7 +32,7 @@
 																android:layout_height="wrap_content"
 																android:id="@+id/selectAuthMethodeButton_finger"
 																android:minHeight="48dp"
-																android:textSize="@dimen/font_size_settings" />
+																android:textSize="@dimen/DIM_font_size_settings" />
 
 								<RadioButton
 																android:text="@string/GUI_selectAuthMethodeText_pattern"
@@ -40,6 +40,6 @@
 																android:layout_height="wrap_content"
 																android:id="@+id/selectAuthMethodeButton_patern"
 																android:minHeight="48dp"
-																android:textSize="@dimen/font_size_settings" />
+																android:textSize="@dimen/DIM_font_size_settings" />
 				</RadioGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.omega
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.view.View
@@ -15,12 +16,8 @@ class SettingsActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_settings)
 		fillGuiSettingsWithSavedState()
+		addListenersToGuiElements()
 
-		val selectAuthMethodeField = findViewById<TextView>(R.id.selectAuthMethodeTextView)
-		val selectAuthMethodeFieldListener = View.OnClickListener {
-			showSelectAuthMethodeDialog()
-		}
-		selectAuthMethodeField.setOnClickListener(selectAuthMethodeFieldListener)
 
 	}
 
@@ -87,9 +84,27 @@ class SettingsActivity : AppCompatActivity() {
 
 		dialog.show()
 	}
+	private fun startPinChangeActivity(){
+		val changePinActivityIntent = Intent(this, PinActivity::class.java)
+		val activityReason = resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[2]
+		val activityReasonFieldName = resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
+		changePinActivityIntent.putExtra(activityReasonFieldName,activityReason)
+		val retCodeForActivity  = resources.getInteger(R.integer.ACT_RETCODE_PIN_CHANGE)
+		startActivityForResult(changePinActivityIntent, retCodeForActivity)
+	}
 	override fun onBackPressed() {
 		super.onBackPressed()
 		saveResults()
+	}
+	private fun addListenersToGuiElements(){
+		val selectAuthMethodeField = findViewById<TextView>(R.id.selectAuthMethodeTextView)
+		selectAuthMethodeField.setOnClickListener {
+			showSelectAuthMethodeDialog()
+		}
+		val changePinField = findViewById<TextView>(R.id.changePinSettingsTextView)
+		changePinField.setOnClickListener{
+			startPinChangeActivity()
+		}
 	}
 
 }

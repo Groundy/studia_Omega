@@ -1,6 +1,5 @@
 package com.example.omega
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -13,21 +12,23 @@ import android.widget.TextView
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 
-
+private enum class PURPOSE{SET, CHANGE, AUTH}
 class PinActivity : AppCompatActivity() {
+	private var puprose : PURPOSE = PURPOSE.AUTH//tmp
 	private var digits : MutableList<EditText> = arrayListOf()
 	private var pinTriesLeft = 3
-	private var startedForAuth = true
 	private var tmpPIN : Int = 0
+	private var change_phaseOfProcess = 0 //0 - inserting old pin, 1 - insert new pin first time, 2 - insert new pin second time
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_pin)
-		startedForAuth = checkIfActStartedForAuth()
+		checkStartPurpose()
 		getProperTextsForGUIElements()
 		findElements()
 		setUIElementsListeners()
 		requestFocusOnActivityStart()
+
 	}
 
 	private fun setUIElementsListeners(){
@@ -161,15 +162,21 @@ class PinActivity : AppCompatActivity() {
 	private fun getProperTextsForGUIElements(){
 		val descriptionField = findViewById<TextView>(R.id.PIN_Description_TextView)
 		val titleField = findViewById<TextView>(R.id.PIN_Title_TextView)
-		if(startedForAuth){
-			titleField.text = resources.getString(R.string.GUI_authTransactionTitle)
-			descriptionField.text = intent.getStringExtra(getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME))
+		when(puprose){
+			PURPOSE.AUTH -> {
+				titleField.text = resources.getString(R.string.GUI_authTransactionTitle)
+				descriptionField.text = intent.getStringExtra(getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME))
+			}
+			PURPOSE.SET -> {
+				descriptionField.text = null
+				titleField.text = resources.getString(R.string.GUI_PIN_setPinTitle)
+			}
+			PURPOSE.CHANGE -> {
+				descriptionField.text = resources.getString(R.string.GUI_PIN_changeDescription_old)
+				titleField.text = resources.getString(R.string.GUI_PIN_changeTitle)
+			}
 		}
-		else{
-			descriptionField.text = null
-			titleField.text = resources.getString(R.string.GUI_PIN_setPinTitle)
-			descriptionField.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-		}
+		descriptionField.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
 	}
 	private fun getPinFromFields(): Int? {
 		val allFieldsAreFilled = checkIfAllFieldsHaveEnteredDigits()
@@ -184,13 +191,14 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun processPIN(){
 		val pin = getPinFromFields()
-		if( pin == null && startedForAuth)
+		if(pin == null){
 			Utilites.showToast(this,resources.getString(R.string.USER_MSG_PIN_HAVE_TO_USE_ALL_DIGITS))
-		else if(pin !=null && startedForAuth){
-			checkPinForAuth(pin)
+			return
 		}
-		else if(pin !=null && !startedForAuth){
-			setPinProcess(pin)
+		when(puprose){
+			PURPOSE.AUTH -> processAuth(pin)
+			PURPOSE.SET -> processSet(pin)
+			PURPOSE.CHANGE -> processChange(pin)
 		}
 	}
 
@@ -209,19 +217,15 @@ class PinActivity : AppCompatActivity() {
 		digits.add(findViewById<EditText>(R.id.PIN_digit4_TextView))
 		digits.add(findViewById<EditText>(R.id.PIN_digit5_TextView))
 	}
-	private fun checkIfPinForAuthIsCorrect(pin : Int) : Boolean{
+	private fun checkIfPinIsCorrect(pin : Int) : Boolean{
 		//TODO Dodać sprawdzanie czy pin jest OK
 		val pinSavedInPrefs = Utilites.readPref_Int(this, R.integer.PREF_pin)
 		return pin == pinSavedInPrefs
 	}
-	private fun checkIfActStartedForAuth() : Boolean{
-		return intent.getBooleanExtra(getString(R.string.ACT_COM_PIN_STARTED_FOR_AUTH), true)
-	}
-	private fun checkPinForAuth(pin : Int){
-		val authCorrect = checkIfPinForAuthIsCorrect(pin)
-		if(authCorrect){
-			finishActivityForAuth(true)
-		}
+	private fun processAuth(pin : Int){
+		val authCorrect = checkIfPinIsCorrect(pin)
+		if(authCorrect)
+			finishActivity(true)
 		else{
 			pinTriesLeft--
 			val allowUserToTryOtherPin = pinTriesLeft > 0
@@ -232,58 +236,100 @@ class PinActivity : AppCompatActivity() {
 					else -> resources.getString(R.string.USER_MSG_UNKNOWN_ERROR)
 				}
 				Utilites.showToast(this,textToShow)
-				digits.forEach { it.text.clear() }
-				digits[0].requestFocus()
+				clearFields()
 			}
 			else
-				finishActivityForAuth(false)
+				finishActivity(false)
 		}
 	}
-	private fun finishActivityForAuth(authSuccess: Boolean){
-		val output = Intent()
-		val fieldName = resources.getString(R.string.ACT_COM_PIN_FIELD_NAME)
-		output.putExtra(fieldName, authSuccess)
-		if(authSuccess)
-			setResult(RESULT_OK, output)
-		else
-			setResult(RESULT_CANCELED, output)
-		finish()
+	private fun processChange(pin : Int){
+		val descriptionField = findViewById<TextView>(R.id.PIN_Description_TextView)
+		when(change_phaseOfProcess){
+			0 ->{
+				descriptionField.text = resources.getString(R.string.GUI_PIN_changeDescription_old)
+				clearFields()
+				val properOldPin = checkIfPinIsCorrect(pin)
+				if(properOldPin) {
+					change_phaseOfProcess = 1
+					descriptionField.text =	resources.getString(R.string.GUI_PIN_changeDescription_new)
+				}
+				else{
+					pinTriesLeft--
+					when(pinTriesLeft){
+						2 -> {
+							Utilites.showToast(this, resources.getString(R.string.USER_MSG_2_TRIES_LEFT))
+							return
+						}
+						1 -> {
+							Utilites.showToast(this, resources.getString(R.string.USER_MSG_LAST_TRY_LEFT))
+							return
+						}
+						else -> {
+							Utilites.showToast(this, resources.getString(R.string.USER_MSG_FAILED_TO_SET_NEW_PIN))
+							finishActivity(false)
+						}
+					}
+				}
+			}
+			1 ->{
+				descriptionField.text = resources.getString(R.string.GUI_PIN_changeDescription_new)
+				tmpPIN = pin
+				change_phaseOfProcess = 2
+			}
+			2->{
+				descriptionField.text = resources.getString(R.string.GUI_PIN_changeDescription_newAgain)
+				val twoPinsAreSame = pin == tmpPIN
+				if(twoPinsAreSame){
+					Utilites.showToast(this, resources.getString(R.string.USER_MSG_SUCESS_IN_SETTING_NEW_PIN))
+					saveNewPinInMemory(pin)
+					finishActivity(true)
+				}
+				else{
+					Utilites.showToast(this, resources.getString(R.string.USER_MSG_FAILED_TO_SET_NEW_PIN))
+					finishActivity(false)
+				}
+			}
+			else ->
+				Log.e("WookieTag", "Changing pin is in incorrect phase. change pin phase: $change_phaseOfProcess")
+		}
 	}
-
-	private fun setPinProcess(pin: Int) {
+	private fun processSet(pin: Int) {
 		val itsFirstAttemptToSetPin = tmpPIN == 0
 		if(itsFirstAttemptToSetPin){
 			val textToSet = resources.getString(R.string.GUI_PIN_setPinAgainTitle)
 			findViewById<TextView>(R.id.PIN_Description_TextView).text = textToSet
-			digits.forEach { it.text.clear() }
-			requestFocusOnActivityStart()
+			clearFields()
 			tmpPIN = pin
 		}
 		else{
 			val bothPinsAreSame = pin == tmpPIN
-			if(bothPinsAreSame){
-				setNewPin(pin)
-				finishActivityForSetPin(true)
-			}
-			else
-				finishActivityForSetPin(false)
+			if(bothPinsAreSame)
+				saveNewPinInMemory(pin)
+			finishActivity(bothPinsAreSame)
 		}
 	}
-	private fun setNewPin(pin : Int){
+	private fun saveNewPinInMemory(pin : Int){
 		//TODO
 		Utilites.savePref(this,R.integer.PREF_pin,pin)
 		//dodać funkcję która ustawi ten PIN w pamięci apki i na severze
 	}
-	private fun finishActivityForSetPin(success: Boolean){
-		val output = Intent()
-		val fieldName = resources.getString(R.string.ACT_COM_PIN_FIELD_NAME)
-		output.putExtra(fieldName, success)
-		if(success)
-			setResult(RESULT_OK, output)
-		else
-			setResult(RESULT_CANCELED, output)
-
+	private fun checkStartPurpose(){
+		val purposeFieldName = resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
+		val activityStartReasonStr = intent.getStringExtra(purposeFieldName)
+		when(activityStartReasonStr){
+			resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[0] -> this.puprose = PURPOSE.SET
+			resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[1] -> this.puprose = PURPOSE.AUTH
+			resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[2] -> this.puprose = PURPOSE.CHANGE
+			else -> this.puprose = PURPOSE.AUTH
+		}
+	}
+	private fun clearFields(){
+		digits.forEach { it.text.clear() }
+		digits[0].requestFocus()
+	}
+	private fun finishActivity(success: Boolean){
+		val retCode = if(success) RESULT_OK else RESULT_CANCELED
+		setResult(retCode)
 		finish()
 	}
-
 }

@@ -8,6 +8,7 @@
 7.  Dodać Activity z wprowadzaniem wzoru
 
 //DONE
+17. Dodać możliwość zmiany PINu aplikacji.
 16. Gdy użytkownik będzie chciał anulować biometric prompt zapytać czy chce anulować uwierzytelnianie, przejść do pinu czy wrocic do biometrii
 15. Jeżeli użytkownik zrezygnuje z uwierzytelniania przez odcisk palca to trzeba wyświetlić activity z PINem (trzeba przekazać te same szczegóły transakcji)
 13. Dodać możliwość użycia PIN activity zarówno do autoryzacji jak i ustalenia pinu aplikacji

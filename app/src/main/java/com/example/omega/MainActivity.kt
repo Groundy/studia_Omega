@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
-		Utilites.savePref(this,R.integer.PREF_pin,0)
+		//Utilites.savePref(this,R.integer.PREF_pin,0)
 		startActToSetPinIfTheresNoSavedPin()
 		initUIVariables()
 		TEST_addFunToButton()
@@ -48,14 +48,12 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun test(){
-		Utilites.authTransaction(this,"ff",null)
+		Utilites.authTransaction(this,"line1TextTextText\n\"line2TextTextText\n\"line3TextTextText",null)
 	}
 	private fun TEST_addFunToButton(){
-		val ttt = findViewById<Button>(R.id.testButton)
-		val listener = View.OnClickListener {
+		findViewById<Button>(R.id.testButton).setOnClickListener{
 			test()
 		}
-		ttt.setOnClickListener(listener)
 	}
 
 	override fun onNewIntent(intent: Intent) {
@@ -168,15 +166,15 @@ class MainActivity : AppCompatActivity() {
 			Log.e("WookieTag", "User denied permission to use NFC")
 			return false
 		}
-
 		return true
 	}
 	private fun startActToSetPinIfTheresNoSavedPin(){
 		val pinAlreadySet = Utilites.checkIfAppHasAlreadySetPin(this)
 		if(!pinAlreadySet){
 			val pinActivityActivityIntent = Intent(this, PinActivity::class.java)
-			val startForAuthFieldName = resources.getString(R.string.ACT_COM_PIN_STARTED_FOR_AUTH)
-			pinActivityActivityIntent.putExtra(startForAuthFieldName,false)
+			val pinActPurpose = resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[0]
+			val pinActPurposeFieldName = resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
+			pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
 			val retCodeForActivity = resources.getInteger(R.integer.ACT_RETCODE_PIN_SET)
 			startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
 		}

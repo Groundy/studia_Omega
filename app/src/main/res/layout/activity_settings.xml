@@ -6,20 +6,33 @@
 				<Switch
 												android:text="@string/GUI_turnNfcOnAppStart_settingText"
 												android:layout_width="match_parent"
-												android:layout_height="wrap_content"
+												android:layout_height="@dimen/DIM_field_height_settings"
 												android:id="@+id/turnOnNFCWhenAppStartsSwitch"
 												android:minHeight="50dp"
 												android:showText="false"
-												android:textSize="@dimen/font_size_settings"
-												android:height="@dimen/field_height_settings" />
+												android:textSize="@dimen/DIM_font_size_settings"
+												android:height="@dimen/DIM_field_height_settings"
+												android:textColor="@color/black"
+												android:gravity="center_vertical" />
 
 				<TextView
 												android:layout_width="match_parent"
-												android:layout_height="50dp"
+												android:layout_height="@dimen/DIM_field_height_settings"
 												android:id="@+id/selectAuthMethodeTextView"
 												android:text="@string/GUI_PreferredAuthMethode"
 												android:textAlignment="gravity"
-												android:textSize="@dimen/font_size_settings"
-												android:height="@dimen/field_height_settings" />
+												android:textSize="@dimen/DIM_font_size_settings"
+												android:height="@dimen/DIM_field_height_settings"
+												android:textColor="@color/black"
+												android:gravity="center_vertical" />
+
+				<TextView
+												android:text="@string/GUI_SETTINGS_change_pin_text"
+												android:layout_width="match_parent"
+												android:layout_height="@dimen/DIM_field_height_settings"
+												android:id="@+id/changePinSettingsTextView"
+												android:textSize="@dimen/DIM_font_size_settings"
+												android:textColor="@color/black"
+												android:gravity="center_vertical" />
 
 </LinearLayout>

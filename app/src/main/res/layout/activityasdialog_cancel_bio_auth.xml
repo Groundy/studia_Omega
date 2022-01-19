@@ -18,10 +18,10 @@
 
 								<TextView
 																android:text="@string/GUI_CANCEL_FINGER_AUTH_TEXT"
-																android:layout_width="@dimen/CancelFingerAuthText_WIDTH"
-																android:layout_height="@dimen/CancelFingerAuthText_HEIGHT"
+																android:layout_width="@dimen/DIM_CancelFingerAuthText_WIDTH"
+																android:layout_height="@dimen/DIM_CancelFingerAuthText_HEIGHT"
 																android:id="@+id/fingerAuthCancelMsgTextView"
-																android:textSize="@dimen/CancelFingerAuthFontSize"
+																android:textSize="@dimen/DIM_CancelFingerAuthFontSize"
 																android:textAlignment="center"
 																android:gravity="center|center_vertical"
 																android:textColor="@color/black" />
@@ -29,26 +29,26 @@
 								<LinearLayout
 																android:orientation="horizontal"
 																android:layout_width="300dp"
-																android:layout_height="@dimen/CancelFingerAuthButton_HEIGHT">
+																android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT">
 
 												<TextView
 																				android:text="@string/GUI_CANCEL_FINGER_AUTH_YES_BUTTON"
-																				android:layout_width="@dimen/CancelFingerAuthButton_WIDTH"
-																				android:layout_height="@dimen/CancelFingerAuthButton_HEIGHT"
+																				android:layout_width="@dimen/DIM_CancelFingerAuthButton_WIDTH"
+																				android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT"
 																				android:id="@+id/fingerAuthCancelOkTextTextView"
 																				android:layout_weight="1"
-																				android:textSize="@dimen/CancelFingerAuthFontSize"
+																				android:textSize="@dimen/DIM_CancelFingerAuthFontSize"
 																				android:textAlignment="center"
 																				android:gravity="center|center_vertical"
 																				android:textColor="@color/mainColor" />
 
 												<TextView
 																				android:text="@string/GUI_CANCEL_FINGER_AUTH_NO_BUTTON"
-																				android:layout_width="@dimen/CancelFingerAuthButton_WIDTH"
-																				android:layout_height="@dimen/CancelFingerAuthButton_HEIGHT"
+																				android:layout_width="@dimen/DIM_CancelFingerAuthButton_WIDTH"
+																				android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT"
 																				android:id="@+id/fingerAuthCancelCancelTextTextView"
 																				android:layout_weight="1"
-																				android:textSize="@dimen/CancelFingerAuthFontSize"
+																				android:textSize="@dimen/DIM_CancelFingerAuthFontSize"
 																				android:textAlignment="center"
 																				android:gravity="center_vertical"
 																				android:textColor="@color/mainColor"

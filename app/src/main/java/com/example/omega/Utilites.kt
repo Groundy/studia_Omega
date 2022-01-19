@@ -102,20 +102,18 @@ class Utilites {
 				preferredMethodeCode = forcedMethodeCode
 			val preferredMethodeName = getAuthMethodeText(context,preferredMethodeCode)
 			when(preferredMethodeName){
-				context.getString(R.string.GUI_selectAuthMethodeText_pin) ->
-					authByPin(context,description)
-				context.getString(R.string.GUI_selectAuthMethodeText_pattern) ->
-					authByPattern(context,description)
-				context.getString(R.string.GUI_selectAuthMethodeText_finger) ->
-					authByFingerPrint(context,description)
+				context.getString(R.string.GUI_selectAuthMethodeText_pin) -> authByPin(context,description)
+				context.getString(R.string.GUI_selectAuthMethodeText_pattern) -> authByPattern(context,description)
+				context.getString(R.string.GUI_selectAuthMethodeText_finger) -> authByFingerPrint(context,description)
 			}
 		}
 		private fun authByPin(activity: Activity, description : String?){
 			val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
-			val desFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
-			val startForAuthFieldName = activity.resources.getString(R.string.ACT_COM_PIN_STARTED_FOR_AUTH)
-			pinActivityActivityIntent.putExtra(desFieldName,description)
-			pinActivityActivityIntent.putExtra(startForAuthFieldName,true)
+			val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
+			val pinActPurpose = activity.resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[1]
+			val pinActPurposeFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
+			pinActivityActivityIntent.putExtra(descriptionFieldName,description)
+			pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
 			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_AUTH)
 			activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
 		}
@@ -123,7 +121,7 @@ class Utilites {
 			val scanFingerActivityIntent = Intent(activity, ScanFingerActivity::class.java)
 			val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
 			scanFingerActivityIntent.putExtra(descriptionFieldName,description)
-			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_FINGER)
+			val retCodeForActivity  = activity.resources.getInteger(R.integer.ACT_RETCODE_FINGER)
 			activity.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
 		}
 		private fun authByPattern(activity: Activity, description : String?){
