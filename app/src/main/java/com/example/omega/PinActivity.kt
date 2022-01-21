@@ -12,23 +12,25 @@ import android.widget.TextView
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 
-private enum class PURPOSE{SET, CHANGE, AUTH}
 class PinActivity : AppCompatActivity() {
+	private enum class PURPOSE{SET, CHANGE, AUTH}
+	private enum class CHANGE_PIN_PROCESS_PHASES{OLD_PIN, NEW_PIN, NEW_PIN_AGAIN}
+
 	private var puprose : PURPOSE = PURPOSE.AUTH//tmp
 	private var digits : MutableList<EditText> = arrayListOf()
 	private var pinTriesLeft = 3
 	private var tmpPIN : Int = 0
-	private var change_phaseOfProcess = 0 //0 - inserting old pin, 1 - insert new pin first time, 2 - insert new pin second time
-
+	private var phaseOfChangePinProcess = CHANGE_PIN_PROCESS_PHASES.OLD_PIN
+	private lateinit var descriptionField : TextView
+	private lateinit var titleField : TextView
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_pin)
+		findElements()
 		checkStartPurpose()
 		getProperTextsForGUIElements()
-		findElements()
 		setUIElementsListeners()
 		requestFocusOnActivityStart()
-
 	}
 
 	private fun setUIElementsListeners(){
@@ -160,8 +162,6 @@ class PinActivity : AppCompatActivity() {
 		return ok1 && ok2 && ok3 && ok4 && ok5
 	}
 	private fun getProperTextsForGUIElements(){
-		val descriptionField = findViewById<TextView>(R.id.PIN_Description_TextView)
-		val titleField = findViewById<TextView>(R.id.PIN_Title_TextView)
 		when(puprose){
 			PURPOSE.AUTH -> {
 				titleField.text = resources.getString(R.string.GUI_authTransactionTitle)
@@ -191,15 +191,15 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun processPIN(){
 		val pin = getPinFromFields()
-		if(pin == null){
+		if(pin != null){
+			when(puprose){
+				PURPOSE.AUTH -> processAuth(pin)
+				PURPOSE.SET -> processSet(pin)
+				PURPOSE.CHANGE -> processChange(pin)
+			}
+		}
+		else
 			Utilites.showToast(this,resources.getString(R.string.USER_MSG_PIN_HAVE_TO_USE_ALL_DIGITS))
-			return
-		}
-		when(puprose){
-			PURPOSE.AUTH -> processAuth(pin)
-			PURPOSE.SET -> processSet(pin)
-			PURPOSE.CHANGE -> processChange(pin)
-		}
 	}
 
 	private fun requestFocusOnActivityStart(){
@@ -216,6 +216,8 @@ class PinActivity : AppCompatActivity() {
 		digits.add(findViewById<EditText>(R.id.PIN_digit3_TextView))
 		digits.add(findViewById<EditText>(R.id.PIN_digit4_TextView))
 		digits.add(findViewById<EditText>(R.id.PIN_digit5_TextView))
+		descriptionField = findViewById<TextView>(R.id.PIN_Description_TextView)
+		titleField = findViewById<TextView>(R.id.PIN_Title_TextView)
 	}
 	private fun checkIfPinIsCorrect(pin : Int) : Boolean{
 		//TODO Dodać sprawdzanie czy pin jest OK
@@ -243,14 +245,13 @@ class PinActivity : AppCompatActivity() {
 		}
 	}
 	private fun processChange(pin : Int){
-		val descriptionField = findViewById<TextView>(R.id.PIN_Description_TextView)
-		when(change_phaseOfProcess){
-			0 ->{
+		when(phaseOfChangePinProcess){
+			CHANGE_PIN_PROCESS_PHASES.OLD_PIN ->{
 				descriptionField.text = resources.getString(R.string.GUI_PIN_changeDescription_old)
 				clearFields()
 				val properOldPin = checkIfPinIsCorrect(pin)
 				if(properOldPin) {
-					change_phaseOfProcess = 1
+					phaseOfChangePinProcess = CHANGE_PIN_PROCESS_PHASES.NEW_PIN
 					descriptionField.text =	resources.getString(R.string.GUI_PIN_changeDescription_new)
 				}
 				else{
@@ -271,12 +272,12 @@ class PinActivity : AppCompatActivity() {
 					}
 				}
 			}
-			1 ->{
+			CHANGE_PIN_PROCESS_PHASES.NEW_PIN ->{
 				descriptionField.text = resources.getString(R.string.GUI_PIN_changeDescription_new)
 				tmpPIN = pin
-				change_phaseOfProcess = 2
+				phaseOfChangePinProcess = CHANGE_PIN_PROCESS_PHASES.NEW_PIN_AGAIN
 			}
-			2->{
+			CHANGE_PIN_PROCESS_PHASES.NEW_PIN_AGAIN->{
 				descriptionField.text = resources.getString(R.string.GUI_PIN_changeDescription_newAgain)
 				val twoPinsAreSame = pin == tmpPIN
 				if(twoPinsAreSame){
@@ -289,15 +290,12 @@ class PinActivity : AppCompatActivity() {
 					finishActivity(false)
 				}
 			}
-			else ->
-				Log.e("WookieTag", "Changing pin is in incorrect phase. change pin phase: $change_phaseOfProcess")
 		}
 	}
 	private fun processSet(pin: Int) {
 		val itsFirstAttemptToSetPin = tmpPIN == 0
 		if(itsFirstAttemptToSetPin){
-			val textToSet = resources.getString(R.string.GUI_PIN_setPinAgainTitle)
-			findViewById<TextView>(R.id.PIN_Description_TextView).text = textToSet
+			descriptionField.text = resources.getString(R.string.GUI_PIN_setPinAgainTitle)
 			clearFields()
 			tmpPIN = pin
 		}
