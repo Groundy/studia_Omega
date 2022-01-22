@@ -1,4 +1,5 @@
 //TODO
+18. Usunąc opcje uwierzytelniania palcem dla telefonów bez czujnika
 14. Zapisać bezpiecznie PIN wprowadzony przez użytkownika{https://www.androidauthority.com/where-is-the-best-place-to-store-a-password-in-your-android-app-597197/}
 12. Dodać okno z potwierdzeniem nadania przelewu.
 11. Dodać okno z formularzem w którym wpisuje się dane odbiorcy przelewu (4 z rap.)//IDEAs

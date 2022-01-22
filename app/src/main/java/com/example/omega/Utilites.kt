@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog
 
 fun getSharedProperties(activity: Activity) : SharedPreferences{
 	val fileName = activity.getString(R.string.preference_file_key)
-	val sharedPref = activity?.getSharedPreferences(fileName,MODE_PRIVATE)
+	val sharedPref = activity.getSharedPreferences(fileName,MODE_PRIVATE)
 	return sharedPref
 }
 

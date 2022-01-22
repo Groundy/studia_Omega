@@ -23,6 +23,7 @@ class PinActivity : AppCompatActivity() {
 	private var phaseOfChangePinProcess = CHANGE_PIN_PROCESS_PHASES.OLD_PIN
 	private lateinit var descriptionField : TextView
 	private lateinit var titleField : TextView
+	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_pin)
@@ -58,7 +59,7 @@ class PinActivity : AppCompatActivity() {
 		}
 		val deleteButtonPressedListener = object : View.OnKeyListener{
 			override fun onKey(source: View?, keyCode: Int, event: KeyEvent): Boolean {
-				if (keyCode == KeyEvent.KEYCODE_DEL && event?.action == KeyEvent.ACTION_DOWN) {
+				if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
 					when(source?.id){
 						R.id.PIN_digit1_TextView ->{
 							digits[0].text.clear()
@@ -201,7 +202,6 @@ class PinActivity : AppCompatActivity() {
 		else
 			Utilites.showToast(this,resources.getString(R.string.USER_MSG_PIN_HAVE_TO_USE_ALL_DIGITS))
 	}
-
 	private fun requestFocusOnActivityStart(){
 		digits[0].requestFocus()
 		val showKeyboardObj = Runnable {
@@ -238,7 +238,7 @@ class PinActivity : AppCompatActivity() {
 					else -> resources.getString(R.string.USER_MSG_UNKNOWN_ERROR)
 				}
 				Utilites.showToast(this,textToShow)
-				clearFields()
+				clearDigitsFields()
 			}
 			else
 				finishActivity(false)
@@ -248,7 +248,7 @@ class PinActivity : AppCompatActivity() {
 		when(phaseOfChangePinProcess){
 			CHANGE_PIN_PROCESS_PHASES.OLD_PIN ->{
 				descriptionField.text = resources.getString(R.string.GUI_PIN_changeDescription_old)
-				clearFields()
+				clearDigitsFields()
 				val properOldPin = checkIfPinIsCorrect(pin)
 				if(properOldPin) {
 					phaseOfChangePinProcess = CHANGE_PIN_PROCESS_PHASES.NEW_PIN
@@ -296,7 +296,7 @@ class PinActivity : AppCompatActivity() {
 		val itsFirstAttemptToSetPin = tmpPIN == 0
 		if(itsFirstAttemptToSetPin){
 			descriptionField.text = resources.getString(R.string.GUI_PIN_setPinAgainTitle)
-			clearFields()
+			clearDigitsFields()
 			tmpPIN = pin
 		}
 		else{
@@ -321,7 +321,7 @@ class PinActivity : AppCompatActivity() {
 			else -> this.puprose = PURPOSE.AUTH
 		}
 	}
-	private fun clearFields(){
+	private fun clearDigitsFields(){
 		digits.forEach { it.text.clear() }
 		digits[0].requestFocus()
 	}

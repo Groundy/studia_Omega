@@ -58,4 +58,5 @@
 				<string name="USER_MSG_PIN_FAILED_TO_SET_NEW_PIN_DIFFRENT_PINS_INSERTED">Nie udało się ustawić nowego PINu, dwa wprowadzone piny nie były identyczne. Spróbuj ponownie.</string>
 				<string name="USER_MSG_FAILED_TO_SET_NEW_PIN">Nie udało się zmienić PINu.</string>
 				<string name="USER_MSG_SUCESS_IN_SETTING_NEW_PIN">Pin pomyślnie zmieniony.</string>
+				<string name="USER_MSG_QR_SCANNER_NEEDS_PERMISSION">Skaner kodów QR musi mieć dostęp do kamery.</string>
 </resources>
