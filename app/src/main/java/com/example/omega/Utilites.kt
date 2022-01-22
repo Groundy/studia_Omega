@@ -140,5 +140,22 @@ class Utilites {
 			val pinRead = readPref_Int(activity, R.integer.PREF_pin)
 			return pinRead in 1..99999
 		}
+		fun getMessageToDisplayToUserAfterBiometricAuthError(errCode : Int) : String{
+			return when(errCode){
+				//0 -> "Uzyskano autoryzację!"
+				1 -> "Sensor jest chwilowo niedostępny, należy spróbować później."
+				2 -> "Czujnik nie był w stanie przetworzyć odcisku palca."
+				3 -> "Nie wykryto palca przez 30s."
+				4 -> "Urządzenie nie ma wystarczającej ilości miejsca żeby wykonać operacje."
+				5,10 -> "Użytkownik anulował uwierzytelnianie za pomocą biometrii."
+				7 -> "Pięciorkotnie nierozpoznano odcisku palca, sensor będzie dostępny ponownie za 30s."
+				9 -> "Sensor jest zablokowany, należy go odblokować wporwadzająć wzór/pin telefonu."
+				11 -> "Nieznany błąd, upewnij się czy w twoim urządzeniu jest zapisany odcis palca."
+				12 -> "Urządzenie nie posiada odpowiedniego sensora."
+				14 -> "Urządzenie musi posiadać pin,wzór lub hasło."
+				15 -> "Operacja nie może zostać wykonana bez aktualizacji systemu."
+				else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
+			}
+		}
 	}
 }

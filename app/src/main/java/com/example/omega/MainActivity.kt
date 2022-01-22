@@ -75,7 +75,6 @@ class MainActivity : AppCompatActivity() {
 			resources.getInteger(R.integer.ACT_RETCODE_FINGER) ->{
 				val errorCodeFieldName = getString(R.string.ACT_COM_FINGER_FIELD_NAME)
 				val errorCode = data?.getIntExtra(errorCodeFieldName, -1)
-
 				if(resultCode == RESULT_OK)
 					Utilites.authSuccessed(this)
 				else{
@@ -85,21 +84,7 @@ class MainActivity : AppCompatActivity() {
 						Utilites.authTransaction(this,description,0)
 					}
 					else{
-						val textToShow = when(errorCode){
-							//0 -> "Uzyskano autoryzację!"
-							1 -> "Sensor jest chwilowo niedostępny, należy spróbować później."
-							2 -> "Czujnik nie był w stanie przetworzyć odcisku palca."
-							3 -> "Nie wykryto palca przez 30s."
-							4 -> "Urządzenie nie ma wystarczającej ilości miejsca żeby wykonać operacje."
-							5,10 -> "Użytkownik anulował uwierzytelnianie za pomocą biometrii."
-							7 -> "Pięciorkotnie nierozpoznano odcisku palca, sensor będzie dostępny ponownie za 30s."
-							9 -> "Sensor jest zablokowany, należy go odblokować wporwadzająć wzór/pin telefonu."
-							11 -> "Nieznany błąd, upewnij się czy w twoim urządzeniu jest zapisany odcis palca."
-							12 -> "Urządzenie nie posiada odpowiedniego sensora."
-							14 -> "Urządzenie musi posiadać pin,wzór lub hasło."
-							15 -> "Operacja nie może zostać wykonana bez aktualizacji systemu."
-							else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
-						}
+						val textToShow = Utilites.getMessageToDisplayToUserAfterBiometricAuthError(errorCode!!)
 						Utilites.showToast(this, textToShow)
 						Utilites.authFailed(this)
 					}
