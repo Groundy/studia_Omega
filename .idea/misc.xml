@@ -40,8 +40,10 @@
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.39427083333333335" />
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/drawable/pin_activity_digit_field_border.xml" value="0.67" />
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/drawable/rectangle.xml" value="0.39427083333333335" />
+        <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/activity_basic_transfer.xml" value="0.33" />
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/activity_main_menu.xml" value="0.21302083333333333" />
+        <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/activity_pattern.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/activity_pin.xml" value="0.33" />
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/activity_qrscanner.xml" value="0.21302083333333333" />
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/activity_scan_finger.xml" value="0.17864583333333334" />
@@ -51,6 +53,7 @@
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/dialog_scan_finger.xml" value="0.26510416666666664" />
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/dialog_select_auth_methode.xml" value="0.2609375" />
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/dialog_user_cancel_finger_auth.xml" value="0.28939157566302653" />
+        <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/pattern_widget.xml" value="0.1828125" />
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/scan_finger_dialog.xml" value="0.67" />
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/select_auth_methode_dialog.xml" value="0.24375" />
         <entry key="..\:/Users/ADMIN/Desktop/Omega/app/src/main/res/layout/settings_activity.xml" value="0.33" />

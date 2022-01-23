@@ -49,7 +49,9 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun test(){
-		Utilites.authTransaction(this,"line1TextTextText\n\"line2TextTextText\n\"line3TextTextText",null)
+		//Utilites.authTransaction(this,"line1TextTextText\n\"line2TextTextText\n\"line3TextTextText",null)
+		val basicTransferIntent = Intent(this, BasicTransferActivity::class.java)
+		startActivity(basicTransferIntent)
 	}
 	private fun TEST_addFunToButton(){
 		findViewById<Button>(R.id.testButton).setOnClickListener{

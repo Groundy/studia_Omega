@@ -18,12 +18,15 @@
 												android:supportsRtl="true"
 												android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
 								<activity
+																android:name=".BasicTransferActivity"
+																android:exported="false" />
+								<activity
 																android:name=".PinActivity"
 																android:exported="false" />
 								<activity
 																android:name=".CancelBioAuthDialogActivity"
 																android:exported="false"
-																android:theme="@style/Theme.AppCompat.Light.Dialog.Alert"/>
+																android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
 								<activity
 																android:name=".ScanFingerActivity"
 																android:exported="false" />

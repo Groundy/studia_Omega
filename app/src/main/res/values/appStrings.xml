@@ -22,6 +22,16 @@
 				<string name="GUI_PIN_changeDescription_newAgain">Wprowadź ponownie nowy pin</string>
 				<string name="GUI_PIN_changeTitle">Zmiana Pinu</string>
 
+				<string name="GUI_basicTransfer_chooseAccountTextView">Rachunek: </string>
+				<string name="GUI_basicTransfer_ReciverNameTextView">Odbiorca: </string>
+				<string name="GUI_basicTransfer_ReciverNumberTextView">Numer rachunku odbiorcy: </string>
+				<string name="GUI_basicTransfer_AmountOfTransferTextView">Kwota: </string>
+				<string name="GUI_basicTransfer_TitleOfTransferTextView">Tytuł przelewu: </string>
+				<string name="GUI_basicTransfer_goNextButtonText">Dalej: </string>
+				<string name="GUI_basicTransfer_"></string>
+
+
+
 				<!--ACTIVIES ret codes-->
 				<integer name="ACT_RETCODE_QR_SCANNER">1001</integer>
 				<integer name="ACT_RETCODE_FINGER">1002</integer>
