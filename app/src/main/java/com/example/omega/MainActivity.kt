@@ -33,7 +33,7 @@ import kotlinx.android.synthetic.main.activity_settings.*
 
 class MainActivity : AppCompatActivity() {
 	private var nfcSignalCatchingIsOn: Boolean = false
-	private lateinit var nfcAdapter: NfcAdapter
+	private var nfcAdapter: NfcAdapter? = null
 	private lateinit var goQRActivityButton: Button
 	private lateinit var codeField: EditText
 
@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 		initUIVariables()
 		TEST_addFunToButton()
 		//test()
-		//ggggggggggggggggggggggggggggggggggggggggggg()
 	}
 
 	private fun test(){
@@ -66,10 +65,8 @@ class MainActivity : AppCompatActivity() {
 					val returnFieldName = resources.getString(R.string.ACT_COM_QR_SCANNER_FIELD_NAME)
 					val returnedCode = data.getIntExtra(returnFieldName, -1)
 					val vailCode = returnedCode in 0..999999
-					if (vailCode) {
+					if (vailCode)
 						codeField.setText(returnedCode.toString())
-						processCode(returnedCode)
-					}
 				}
 			}
 			resources.getInteger(R.integer.ACT_RETCODE_FINGER) ->{
@@ -193,7 +190,7 @@ class MainActivity : AppCompatActivity() {
 	}
 	private fun switchNfcSignalCatching() {
 		if(nfcSignalCatchingIsOn){
-			nfcAdapter.disableForegroundDispatch(this)
+			nfcAdapter?.disableForegroundDispatch(this)
 			nfcSignalCatchingIsOn = false
 		}
 		else{
@@ -210,7 +207,7 @@ class MainActivity : AppCompatActivity() {
 				this?.addCategory(Intent.CATEGORY_DEFAULT)
 				this?.addDataType("text/plain")
 			}
-			nfcAdapter.enableForegroundDispatch(this, pendingIntent, filters, techList)
+			nfcAdapter?.enableForegroundDispatch(this, pendingIntent, filters, techList)
 			nfcSignalCatchingIsOn = true
 		}
 	}
@@ -264,7 +261,8 @@ class MainActivity : AppCompatActivity() {
 		goQRActivityButton = findViewById(R.id.goToQRScannerButton)
 		goQRActivityButton.setOnClickListener(goQRScannerButtonListener)
 	}
-	private fun ggggggggggggggggggggggggggggggggggggggggggg(){
+	private fun startNfcOnStartIfUserWishTo(){
+		//TODO ten kod mimo iż jest kopią kodu z przycisku włączającego wyłączającego, ale nie chce się uruchomić automatycznie
 		val turnNfcOnAppStart = Utilites.readPref_Bool(this, R.bool.PREF_turnNfcOnAppStart)
 		if(turnNfcOnAppStart && !nfcSignalCatchingIsOn){
 			findViewById<Button>(R.id.nfcButton).setBackgroundResource(R.drawable.nfc_on_icon)

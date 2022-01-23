@@ -1,4 +1,6 @@
+
 1. W listener w PIN activity byc moze trzeba ustawic sprawdzanie czy akcja klawisza to faktycznie
  jego wcisniecie a nie np podniesienie, poki co to jest to opcja zakomentowana bo z jakis powodow
  KeyEvent.action zawsze zwracal null
 2.  W listener w PIN activity keyListner ktory nasluchuje na backspace'a nie zawsze musi dzialac, uzyte opcje dzialaja roznie w zaleznosci od SDK
+3. NFC nasłuchuje dla wszystkich możliwych tagów nfc bo podano za argument pusty obiekt techlist, który jest też xmlem, należałoby zrobić coś zbyt ten argument był wczytywany z listy

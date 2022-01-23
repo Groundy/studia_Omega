@@ -1,5 +1,4 @@
 //TODO
-18. Usunąc opcje uwierzytelniania palcem dla telefonów bez czujnika
 14. Zapisać bezpiecznie PIN wprowadzony przez użytkownika{https://www.androidauthority.com/where-is-the-best-place-to-store-a-password-in-your-android-app-597197/}
 12. Dodać okno z potwierdzeniem nadania przelewu.
 11. Dodać okno z formularzem w którym wpisuje się dane odbiorcy przelewu (4 z rap.)//IDEAs
@@ -9,6 +8,7 @@
 7.  Dodać Activity z wprowadzaniem wzoru
 
 //DONE
+18. Usunąc opcje uwierzytelniania palcem dla telefonów bez czujnika
 17. Dodać możliwość zmiany PINu aplikacji.
 16. Gdy użytkownik będzie chciał anulować biometric prompt zapytać czy chce anulować uwierzytelnianie, przejść do pinu czy wrocic do biometrii
 15. Jeżeli użytkownik zrezygnuje z uwierzytelniania przez odcisk palca to trzeba wyświetlić activity z PINem (trzeba przekazać te same szczegóły transakcji)

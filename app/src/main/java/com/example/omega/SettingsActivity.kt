@@ -4,9 +4,11 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.nfc.NfcAdapter
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricManager
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.dialog_select_auth_methode.*
 
@@ -17,8 +19,6 @@ class SettingsActivity : AppCompatActivity() {
 		setContentView(R.layout.activity_settings)
 		fillGuiSettingsWithSavedState()
 		addListenersToGuiElements()
-
-
 	}
 
 	private fun fillGuiSettingsWithSavedState() {
@@ -31,7 +31,13 @@ class SettingsActivity : AppCompatActivity() {
 
 		val selectAuthMethodeField = findViewById<TextView>(R.id.selectAuthMethodeTextView)
 		val methodeCode = Utilites.readPref_Int(this, R.integer.PREF_preferedAuthMethode)
-		var methodeName = Utilites.getAuthMethodeText(this,methodeCode)
+		var methodeName = when(methodeCode){
+			0->getString(R.string.GUI_selectAuthMethodeText_pin)
+			1->getString(R.string.GUI_selectAuthMethodeText_pattern)
+			2->getString(R.string.GUI_selectAuthMethodeText_finger)
+			else ->getString(R.string.GUI_selectAuthMethodeText_pin)
+		}
+
 		val textToSetOnSelectAuthMethode = getString(R.string.GUI_selectAuthMethodeText_base) + methodeName
 		selectAuthMethodeField.text = textToSetOnSelectAuthMethode
 	}
@@ -46,13 +52,22 @@ class SettingsActivity : AppCompatActivity() {
 	private fun showSelectAuthMethodeDialog(){
 		val dialog : Dialog = Dialog(this)
 		dialog.setContentView(R.layout.dialog_select_auth_methode)
-
+		val phoneHasFingerSensor = phoneHasFingerSensor()
+		if(!phoneHasFingerSensor)
+			dialog.selectAuthMethodeButton_finger.isVisible = false
 		val radioButtonGroup = dialog.selectAuthMethodeButtonGroup
 		val userPreferredMethodeCode = Utilites.readPref_Int(this,R.integer.PREF_preferedAuthMethode)
 		when(userPreferredMethodeCode){
 			0 -> {dialog.selectAuthMethodeButton_PIN.isChecked = true}
 			1 -> {dialog.selectAuthMethodeButton_patern.isChecked = true}
-			2 -> {dialog.selectAuthMethodeButton_finger.isChecked = true}
+			2 -> {
+				if(phoneHasFingerSensor)
+					dialog.selectAuthMethodeButton_finger.isChecked = true
+				else {
+					dialog.selectAuthMethodeButton_PIN.isChecked = true
+					Utilites.savePref(this,R.integer.PREF_preferedAuthMethode,0)
+				}
+			}
 		}
 		val radioButtonGroupListener = RadioGroup.OnCheckedChangeListener { radioButtonGroup, radioButtonId -> // checkedId is the RadioButton selected
 			dialog.dismiss()
@@ -61,7 +76,12 @@ class SettingsActivity : AppCompatActivity() {
 
 		val dialogOnDismissListener = DialogInterface.OnDismissListener{
 			var methodCode = Utilites.readPref_Int(this,R.integer.PREF_preferedAuthMethode)
-			var methodeName = Utilites.getAuthMethodeText(this,methodCode)
+			var methodeName = when(methodCode){
+				0->getString(R.string.GUI_selectAuthMethodeText_pin)
+				1->getString(R.string.GUI_selectAuthMethodeText_pattern)
+				2->getString(R.string.GUI_selectAuthMethodeText_finger)
+				else ->getString(R.string.GUI_selectAuthMethodeText_pin)
+			}
 			when(radioButtonGroup.checkedRadioButtonId){
 				dialog.selectAuthMethodeButton_PIN.id ->{
 					methodeName = getString(R.string.GUI_selectAuthMethodeText_pin)
@@ -81,7 +101,6 @@ class SettingsActivity : AppCompatActivity() {
 			findViewById<TextView>(R.id.selectAuthMethodeTextView).text = textToSetOnWidget
 		}
 		dialog.setOnDismissListener(dialogOnDismissListener)
-
 		dialog.show()
 	}
 	private fun startPinChangeActivity(){
@@ -105,6 +124,12 @@ class SettingsActivity : AppCompatActivity() {
 		changePinField.setOnClickListener{
 			startPinChangeActivity()
 		}
+	}
+	private fun phoneHasFingerSensor() : Boolean{
+		val biometricManager = BiometricManager.from(this)
+		val errorCode = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+		val phoneCanUseFingerAuth = errorCode == 0
+		return phoneCanUseFingerAuth
 	}
 
 }

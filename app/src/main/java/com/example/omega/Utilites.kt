@@ -18,11 +18,7 @@ class Utilites {
 	companion object{
 		fun showMsg(activity: Activity, stringToDisplay:String) {
 			val dialogBuilder = AlertDialog.Builder(activity)
-			val dialogInterfaceVar = object : DialogInterface.OnClickListener {
-				override fun onClick(p0: DialogInterface, p1: Int) {
-					p0.dismiss()
-				}
-			}
+			val dialogInterfaceVar = DialogInterface.OnClickListener { p0, p1 -> p0.dismiss() }
 			dialogBuilder.setMessage(stringToDisplay).setPositiveButton("Ok", dialogInterfaceVar)
 			val dialog: AlertDialog = dialogBuilder.create()
 			dialog.show()
@@ -77,30 +73,16 @@ class Utilites {
 			return prefs.getFloat(fieldName,0f)
 		}
 
-		fun getAuthMethodeText(context: Context,methodeCode : Int) : String{
-			val methodeName = when(methodeCode){
+		fun authTransaction(context : Activity, description : String?, forcedMethodeCode : Int?){
+			var preferredMethodeCode = readPref_Int(context, R.integer.PREF_preferedAuthMethode)
+			if(forcedMethodeCode != null && forcedMethodeCode in 0..2)
+				preferredMethodeCode = forcedMethodeCode
+			val preferredMethodeName = when(preferredMethodeCode){
 				0->context.getString(R.string.GUI_selectAuthMethodeText_pin)
 				1->context.getString(R.string.GUI_selectAuthMethodeText_pattern)
 				2->context.getString(R.string.GUI_selectAuthMethodeText_finger)
 				else ->context.getString(R.string.GUI_selectAuthMethodeText_pin)
 			}
-			return methodeName
-		}
-		fun getCodeForAuthMethode(context: Context,methodeName : String) : Int{
-			val methodeCode = when(methodeName){
-				context.getString(R.string.GUI_selectAuthMethodeText_pin) -> 0
-				context.getString(R.string.GUI_selectAuthMethodeText_pattern) -> 1
-				context.getString(R.string.GUI_selectAuthMethodeText_finger) -> 2
-				else -> 0
-			}
-			return methodeCode
-		}
-
-		fun authTransaction(context : Activity, description : String?, forcedMethodeCode : Int?){
-			var preferredMethodeCode = readPref_Int(context, R.integer.PREF_preferedAuthMethode)
-			if(forcedMethodeCode != null && forcedMethodeCode in 0..2)
-				preferredMethodeCode = forcedMethodeCode
-			val preferredMethodeName = getAuthMethodeText(context,preferredMethodeCode)
 			when(preferredMethodeName){
 				context.getString(R.string.GUI_selectAuthMethodeText_pin) -> authByPin(context,description)
 				context.getString(R.string.GUI_selectAuthMethodeText_pattern) -> authByPattern(context,description)
