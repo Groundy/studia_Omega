@@ -1,3 +1,6 @@
+//IDEAs
+7.  Dodać Activity z wprowadzaniem wzoru
+
 //TODO
 14. Zapisać bezpiecznie PIN wprowadzony przez użytkownika{https://www.androidauthority.com/where-is-the-best-place-to-store-a-password-in-your-android-app-597197/}
 12. Dodać okno z potwierdzeniem nadania przelewu.
@@ -5,7 +8,6 @@
 10. Wyświetlić listę banków podpiętych pod aplikację i umożliwić użytkownikowi tego banku(2 i 3 z raportu)
 9.  Dodadć logowanie w aplikacji (001 ze schematu z raprotu)
 8.  W errorAuth dodać rozóznienie między tym gdy użytkownik chce autoryzacji za pomocą innej metody a innym błędem.
-7.  Dodać Activity z wprowadzaniem wzoru
 
 //DONE
 18. Usunąc opcje uwierzytelniania palcem dla telefonów bez czujnika

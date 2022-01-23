@@ -55,6 +55,7 @@ class SettingsActivity : AppCompatActivity() {
 		val phoneHasFingerSensor = phoneHasFingerSensor()
 		if(!phoneHasFingerSensor)
 			dialog.selectAuthMethodeButton_finger.isVisible = false
+		dialog.selectAuthMethodeButton_patern.isVisible = false //TODO to nie jest zaimplementowane
 		val radioButtonGroup = dialog.selectAuthMethodeButtonGroup
 		val userPreferredMethodeCode = Utilites.readPref_Int(this,R.integer.PREF_preferedAuthMethode)
 		when(userPreferredMethodeCode){

@@ -6,7 +6,7 @@ android {
 	buildToolsVersion "29.0.3"
 	defaultConfig {
 		applicationId "com.example.omega"
-		minSdkVersion 23//can be downgraded to 23 for NFC on huwawei mobile
+		minSdkVersion 28//can be downgraded to 23 for NFC on huwawei mobile
 		targetSdkVersion 30
 		versionCode 1
 		versionName "1.0"
