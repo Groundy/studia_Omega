@@ -19,7 +19,8 @@
 												android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
 								<activity
 																android:name=".BasicTransferActivity"
-																android:exported="false" />
+																android:exported="false"
+																android:windowSoftInputMode="adjustPan" />
 								<activity
 																android:name=".PinActivity"
 																android:exported="false" />

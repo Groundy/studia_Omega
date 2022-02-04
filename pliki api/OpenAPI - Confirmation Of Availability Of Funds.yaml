@@ -1,0 +1,278 @@
+---
+swagger: "2.0"
+info:
+  version: 1.5.5
+  title: OpenAPI - Confirmation Of Availability Of Funds
+  description: |-
+    Confirmation of the Availability of Funds (CAF) – usługa potwierdzania dostępności na rachunku płatniczym płatnika kwoty niezbędnej do wykonania transakcji płatniczej, zdefiniowana w art. 65 PSD2.
+
+    Dostęp do tego interfejsu API ograniczony jest jedynie do Dostawców Usług posiadających stosowne zezwolenie na świadczenie usług CAF lub potwierdzenie złożenia takiego wniosku.
+
+    Do korzystania z interfejsu API wymagany jest ważny certyfikat, służący do wzajemnej identyfikacji w interfejsie XS2A,
+    otrzymany od kwalifikowanego dostawcy usług zaufania, spełniającego wymogi regulacyjne w obszarze usługa zaufania oraz identyfikacji elektronicznej.
+    Certyfikat ten dodatkowo powinien spełniać wymagania zdefiniowane w RTS oraz specyfikacji technicznej ETSI (TS 119 495).
+
+    Interfejs API został opracowany na podstawie standardu PolishAPI w wersji 2.1.1
+    Więcej informacji na temat standardu PolishAPI znajduje się tutaj (https://polishapi.org/)
+  x-ibm-name: openapi-confirmation-of-funds
+  name: ""
+basePath: /v2_1_1.1/confirmation/v2_1_1.1
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: CAF
+  description: Confirmation of the Availability of Funds
+parameters:
+  acceptEncodingParam:
+    name: Accept-Encoding
+    in: header
+    required: true
+    type: string
+    enum:
+    - gzip
+    - deflate
+    description: Gzip, deflate
+  acceptLanguageParam:
+    name: Accept-Language
+    in: header
+    required: true
+    type: string
+    description: Prefered language of response
+  acceptCharsetParam:
+    name: Accept-Charset
+    in: header
+    required: true
+    type: string
+    enum:
+    - utf-8
+    description: UTF-8
+  xjwsSignatureParam:
+    name: X-JWS-SIGNATURE
+    in: header
+    required: true
+    type: string
+    description: Detached JWS signature of the body of the payload
+  acceptParam:
+    name: Accept
+    type: string
+    required: true
+    in: header
+    description: Accepted Content-type. Should be set to application/json
+  contentTypeParam:
+    name: Content-Type
+    type: string
+    required: true
+    in: header
+    description: Request Content-type. Should be set to application/json
+  xRequestIdParam:
+    name: X-REQUEST-ID
+    in: header
+    required: true
+    type: string
+    description: Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym
+      ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem
+      requestId przekazywanym w ciele każdego żądania. / Request identifier using
+      UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP.
+      Value of this header must be the same as for the requestId param passed inside
+      request payload.
+paths:
+  /getConfirmationOfFunds:
+    x-swagger-router-controller: caf
+    post:
+      summary: Confirmation of the availability of funds
+      description: Confirming the availability on the payers account of the amount
+        necessary to execute the payment transaction, as defined in Art. 65 PSD2.
+      operationId: getConfirmationOfFunds
+      parameters:
+      - $ref: '#/parameters/acceptParam'
+      - $ref: '#/parameters/contentTypeParam'
+      - $ref: '#/parameters/acceptEncodingParam'
+      - $ref: '#/parameters/acceptLanguageParam'
+      - $ref: '#/parameters/acceptCharsetParam'
+      - $ref: '#/parameters/xjwsSignatureParam'
+      - $ref: '#/parameters/xRequestIdParam'
+      - name: confirmationOfFundsRequest
+        in: body
+        description: Object with amount to check
+        required: true
+        schema:
+          $ref: '#/definitions/ConfirmationOfFundsRequest'
+      tags:
+      - CAF
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/ConfirmationOfFundsResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+            X-JWS-SIGNATURE:
+              type: string
+              description: Detached JWS signature of the body of the response
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/Error'
+        406:
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/Error'
+        415:
+          description: Unsupported Media Type
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/Error'
+        429:
+          description: Request limit for the requested service exceeded
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+        503:
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - ClientSecret: []
+        ClientId: []
+securityDefinitions:
+  ClientId:
+    description: ""
+    in: header
+    name: X-IBM-Client-Id
+    type: apiKey
+  ClientSecret:
+    description: ""
+    in: header
+    name: X-IBM-Client-Secret
+    type: apiKey
+definitions:
+  ConfirmationOfFundsRequest:
+    description: Klasa zapytania o dostępne środki płatnicze na rachunku / Confirmation
+      of Funds Request Class
+    type: object
+    required:
+    - requestHeader
+    - accountNumber
+    - amount
+    - currency
+    properties:
+      requestHeader:
+        $ref: '#/definitions/RequestHeaderWithoutToken'
+      accountNumber:
+        type: string
+        minLength: 1
+        maxLength: 34
+        description: Numer rachunku w formacie IBAN / Account number (IBAN)
+      amount:
+        type: string
+        pattern: ^(0|([1-9][0-9]{0,}))\.\d{2}$
+        description: Wielkość środków której dotyczy zaptanie / Amount of the transaction
+      currency:
+        type: string
+        maxLength: 3
+        description: Kod ISO Waluty (waluta transakcji) / Currency of transaction
+          (ISO)
+    xml:
+      name: ConfirmationOfFundsRequest
+  ConfirmationOfFundsResponse:
+    description: Klasa odpowiedzi na zapytanie o dostępne środki płatnicze na rachunku
+      / Confirmation of Funds Response Class
+    required:
+    - responseHeader
+    - fundsAvailable
+    properties:
+      responseHeader:
+        $ref: '#/definitions/ResponseHeader'
+      fundsAvailable:
+        description: Status - Czy środki są dostępne / Status - are funds available
+        type: boolean
+        enum:
+        - true
+        - false
+  Error:
+    description: Klasa zawierająca informacje o zwracanym błędzie / Error class
+    properties:
+      responseHeader:
+        $ref: '#/definitions/ResponseHeader'
+      code:
+        type: string
+        description: Kod błędu / Error code
+      message:
+        type: string
+        description: Opis błędu / Error message
+  RequestHeaderWithoutToken:
+    description: Klasa zawierająca informacje o PSU / PSU Information Class
+    type: object
+    required:
+    - requestId
+    properties:
+      requestId:
+        type: string
+        format: uuid
+        description: Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1) zgodnym
+          ze standardem RFC 4122 / Request ID using UUID format (Variant 1, Version
+          1) described in RFC 4122 standard
+      userAgent:
+        type: string
+        description: Browser agent dla PSU / PSU browser agent
+      ipAddress:
+        type: string
+        description: Adres IP końcowego urządzenia PSU. Wymagany dla isDirectPsu=true.
+          / IP address of PSU's terminal device. Required when isDirectPsu=true.
+      sendDate:
+        type: string
+        format: date-time
+        description: 'Oryginalna data wysłania, format: YYYY-MM-DDThh:mm:ss[.mmm]
+          / Send date'
+      tppId:
+        type: string
+        description: Identyfikator TPP (jeśli obecny, wartość zgodna z OID 2.5.4.97
+          dla certyfikatów QSealC i QWac wykorzystanych przez TPP)/ TPP ID (if present,
+          value should match OID 2.5.4.97 for QSealC and QWac certificates used by
+          TPP)
+  ResponseHeader:
+    description: Klasa zawierająca zwrotne metadane / Metadata Class
+    properties:
+      requestId:
+        type: string
+        format: uuid
+        description: Identyfikator żądania otrzymanego od TPP / Identifier of request
+          received from TPP
+      sendDate:
+        type: string
+        format: date-time
+        description: 'Data odpowiedzi, format: YYYY-MM-DDThh:mm:ss[.mmm] / Send date'
+      isCallback:
+        type: boolean
+        description: Znacznik określający czy odpowiedz zostanie przekazana w formie
+          wywołania zwrotnego. true - gdy odpowiedz w formie wywołania zwrotnego.
+          Inna dopuszczalna wartość to false.
+x-ibm-configuration:
+  enforced: true
+  testable: true
+  phase: realized
+x-ibm-endpoints:
+- endpointUrl: https://api.sandbox.pekao.com.pl
+  type:
+  - development
+...

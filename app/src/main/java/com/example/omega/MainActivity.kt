@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 	private lateinit var goQRActivityButton: Button
 	private lateinit var codeField: EditText
 
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
@@ -45,13 +46,13 @@ class MainActivity : AppCompatActivity() {
 		startActToSetPinIfTheresNoSavedPin()
 		initUIVariables()
 		TEST_addFunToButton()
-		//test()
+		test()
 	}
 
 	private fun test(){
-		//Utilites.authTransaction(this,"line1TextTextText\n\"line2TextTextText\n\"line3TextTextText",null)
-		val basicTransferIntent = Intent(this, BasicTransferActivity::class.java)
-		startActivity(basicTransferIntent)
+		//val basicTransferIntent = Intent(this, BasicTransferActivity::class.java)
+		//startActivity(basicTransferIntent)
+		ApiFuncs.generate_X_REQUEST_ID()
 	}
 	private fun TEST_addFunToButton(){
 		findViewById<Button>(R.id.testButton).setOnClickListener{

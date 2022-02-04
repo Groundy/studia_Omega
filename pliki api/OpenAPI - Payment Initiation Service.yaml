@@ -1,0 +1,2279 @@
+---
+swagger: "2.0"
+info:
+  version: 1.5.5
+  title: OpenAPI - Payment Initiation Service
+  description: |-
+    Payment Initiation Services (PIS) – usługa inicjowania transakcji płatniczej, zdefiniowana w art. 67 PSD2.
+
+    Interfejs API umożliwia zainicjowanie wykonania przelewu pojedynczego:
+    - z datą bieżącą
+    - przelew krajowy (Elixir lub Express Elixir)
+    - przelew krajowy do Organu Podatkowego/Izby Celnej w Polsce
+    - przelew zagraniczny (SWIFT, SEPA)
+    - zlecenia stałego z częstotliwością realizacji (1 tydzień, 1 miesiąc, 2 miesiące, 3 miesiące, 6 miesięcy, 1 rok)
+
+    Interfejs API umożliwia także uzyskanie informacji o statusie transakcji
+
+    Dostęp do tego interfejsu API ograniczony jest jedynie do Dostawców Usług posiadających stosowne zezwolenie na świadczenie usług PIS lub potwierdzenie złożenia takiego wniosku.
+
+    Do korzystania z interfejsu API wymagany jest ważny certyfikat, służący do wzajemnej identyfikacji w interfejsie XS2A,
+    otrzymany od kwalifikowanego dostawcy usług zaufania, spełniającego wymogi regulacyjne w obszarze usługa zaufania oraz identyfikacji elektronicznej.
+    Certyfikat ten dodatkowo powinien spełniać wymagania zdefiniowane w RTS oraz specyfikacji technicznej ETSI (TS 119 495).
+
+    Interfejs API został opracowany na podstawie standardu PolishAPI w wersji 2.1.1
+    Więcej informacji na temat standardu PolishAPI znajduje się tutaj (https://polishapi.org/)
+  x-ibm-name: openapi-payment-initiation-service
+  name: ""
+basePath: /v2_1_1.1/payments/v2_1_1.1
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: PIS
+  description: Payment Initiation Services
+parameters:
+  authorizationParam:
+    name: Authorization
+    in: header
+    required: true
+    type: string
+    description: The value of the Authorization header should consist of 'type' +
+      'credentials', where for the approach using the 'type' token should be 'Bearer'.
+  acceptEncodingParam:
+    name: Accept-Encoding
+    in: header
+    required: true
+    type: string
+    enum:
+    - gzip
+    - deflate
+    description: Gzip, deflate
+  acceptLanguageParam:
+    name: Accept-Language
+    in: header
+    required: true
+    type: string
+    description: Prefered language of response
+  acceptCharsetParam:
+    name: Accept-Charset
+    in: header
+    required: true
+    type: string
+    enum:
+    - utf-8
+    description: UTF-8
+  xjwsSignatureParam:
+    name: X-JWS-SIGNATURE
+    in: header
+    required: true
+    type: string
+    description: Detached JWS signature of the body of the payload
+  acceptParam:
+    name: Accept
+    type: string
+    required: true
+    in: header
+    description: Accepted Content-type. Should be set to application/json
+  contentTypeParam:
+    name: Content-Type
+    type: string
+    required: true
+    in: header
+    description: Request Content-type. Should be set to application/json
+  xRequestIdParam:
+    name: X-REQUEST-ID
+    in: header
+    required: true
+    type: string
+    description: Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym
+      ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem
+      requestId przekazywanym w ciele każdego żądania. / Request identifier using
+      UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP.
+      Value of this header must be the same as for the requestId param passed inside
+      request payload.
+paths:
+  /domestic:
+    x-swagger-router-controller: pis
+    post:
+      summary: Initiate domestic transfer
+      operationId: domestic
+      parameters:
+      - $ref: '#/parameters/acceptParam'
+      - $ref: '#/parameters/contentTypeParam'
+      - $ref: '#/parameters/authorizationParam'
+      - $ref: '#/parameters/acceptEncodingParam'
+      - $ref: '#/parameters/acceptLanguageParam'
+      - $ref: '#/parameters/acceptCharsetParam'
+      - $ref: '#/parameters/xjwsSignatureParam'
+      - $ref: '#/parameters/xRequestIdParam'
+      - name: domesticRequest
+        in: body
+        description: Data for domestic transfer
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentDomesticRequest'
+      tags:
+      - PIS
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/AddPaymentResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+            X-JWS-SIGNATURE:
+              type: string
+              description: Detached JWS signature of the body of the response
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/Error'
+        406:
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/Error'
+        415:
+          description: Unsupported Media Type
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+        503:
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - ClientSecret: []
+        ClientId: []
+        xs2a_auth_aspsp:
+        - pis
+  /EEA:
+    x-swagger-router-controller: pis
+    post:
+      summary: Initiate SEPA foreign transfers
+      operationId: EEA
+      parameters:
+      - $ref: '#/parameters/acceptParam'
+      - $ref: '#/parameters/contentTypeParam'
+      - $ref: '#/parameters/authorizationParam'
+      - $ref: '#/parameters/acceptEncodingParam'
+      - $ref: '#/parameters/acceptLanguageParam'
+      - $ref: '#/parameters/acceptCharsetParam'
+      - $ref: '#/parameters/xjwsSignatureParam'
+      - $ref: '#/parameters/xRequestIdParam'
+      - name: EEARequest
+        in: body
+        description: Data for SEPA foreign transfer
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentEEARequest'
+      tags:
+      - PIS
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/AddPaymentResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+            X-JWS-SIGNATURE:
+              type: string
+              description: Detached JWS signature of the body of the response
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/Error'
+        406:
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/Error'
+        415:
+          description: Unsupported Media Type
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+        503:
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - ClientSecret: []
+        ClientId: []
+        xs2a_auth_aspsp:
+        - pis
+  /nonEEA:
+    x-swagger-router-controller: pis
+    post:
+      summary: Initiate non SEPA foreign transfers
+      operationId: nonEEA
+      parameters:
+      - $ref: '#/parameters/acceptParam'
+      - $ref: '#/parameters/contentTypeParam'
+      - $ref: '#/parameters/authorizationParam'
+      - $ref: '#/parameters/acceptEncodingParam'
+      - $ref: '#/parameters/acceptLanguageParam'
+      - $ref: '#/parameters/acceptCharsetParam'
+      - $ref: '#/parameters/xjwsSignatureParam'
+      - $ref: '#/parameters/xRequestIdParam'
+      - name: nonEEARequest
+        in: body
+        description: Data for non SEPA foreign transfer
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentNonEEARequest'
+      tags:
+      - PIS
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/AddPaymentResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+            X-JWS-SIGNATURE:
+              type: string
+              description: Detached JWS signature of the body of the response
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/Error'
+        406:
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/Error'
+        415:
+          description: Unsupported Media Type
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+        503:
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - ClientSecret: []
+        ClientId: []
+        xs2a_auth_aspsp:
+        - pis
+  /tax:
+    x-swagger-router-controller: pis
+    post:
+      summary: Initiate tax transfer
+      description: ""
+      operationId: tax
+      parameters:
+      - $ref: '#/parameters/acceptParam'
+      - $ref: '#/parameters/contentTypeParam'
+      - $ref: '#/parameters/authorizationParam'
+      - $ref: '#/parameters/acceptEncodingParam'
+      - $ref: '#/parameters/acceptLanguageParam'
+      - $ref: '#/parameters/acceptCharsetParam'
+      - $ref: '#/parameters/xjwsSignatureParam'
+      - $ref: '#/parameters/xRequestIdParam'
+      - name: taxRequest
+        in: body
+        description: Data for tax transfer
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentTaxRequest'
+      tags:
+      - PIS
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/AddPaymentResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+            X-JWS-SIGNATURE:
+              type: string
+              description: Detached JWS signature of the body of the response
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/Error'
+        406:
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/Error'
+        415:
+          description: Unsupported Media Type
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+        503:
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - ClientSecret: []
+        ClientId: []
+        xs2a_auth_aspsp:
+        - pis
+  /recurring:
+    x-swagger-router-controller: pis
+    post:
+      summary: Defines new recurring payment
+      description: ""
+      operationId: recurring
+      parameters:
+      - $ref: '#/parameters/authorizationParam'
+      - $ref: '#/parameters/acceptEncodingParam'
+      - $ref: '#/parameters/acceptLanguageParam'
+      - $ref: '#/parameters/acceptCharsetParam'
+      - $ref: '#/parameters/xjwsSignatureParam'
+      - $ref: '#/parameters/xRequestIdParam'
+      - name: recurringRequest
+        in: body
+        description: Data for recurring payment definition
+        required: true
+        schema:
+          $ref: '#/definitions/RecurringPaymentRequest'
+      tags:
+      - PIS
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/RecurringPaymentResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+            X-JWS-SIGNATURE:
+              type: string
+              description: Detached JWS signature of the body of the response
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/Error'
+        406:
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/Error'
+        415:
+          description: Unsupported Media Type
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+        503:
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - ClientSecret: []
+        ClientId: []
+        xs2a_auth_aspsp:
+        - pis
+  /getPayment:
+    x-swagger-router-controller: pis
+    post:
+      summary: Get the status of payment
+      operationId: getPayment
+      parameters:
+      - $ref: '#/parameters/acceptParam'
+      - $ref: '#/parameters/contentTypeParam'
+      - $ref: '#/parameters/authorizationParam'
+      - $ref: '#/parameters/acceptEncodingParam'
+      - $ref: '#/parameters/acceptLanguageParam'
+      - $ref: '#/parameters/acceptCharsetParam'
+      - $ref: '#/parameters/xjwsSignatureParam'
+      - $ref: '#/parameters/xRequestIdParam'
+      - name: payment
+        in: body
+        description: Payment ID
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentRequest'
+      tags:
+      - PIS
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/GetPaymentResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+            X-JWS-SIGNATURE:
+              type: string
+              description: Detached JWS signature of the body of the response
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/Error'
+        406:
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/Error'
+        415:
+          description: Unsupported Media Type
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/Error'
+        429:
+          description: Request limit for the requested service exceeded
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+        503:
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - ClientSecret: []
+        ClientId: []
+        xs2a_auth_aspsp:
+        - pis
+  /getRecurringPayment:
+    x-swagger-router-controller: pis
+    post:
+      summary: Get the status of recurring payment
+      operationId: getRecurringPayment
+      parameters:
+      - $ref: '#/parameters/authorizationParam'
+      - $ref: '#/parameters/acceptEncodingParam'
+      - $ref: '#/parameters/acceptLanguageParam'
+      - $ref: '#/parameters/acceptCharsetParam'
+      - $ref: '#/parameters/xjwsSignatureParam'
+      - $ref: '#/parameters/xRequestIdParam'
+      - name: recurringPayment
+        in: body
+        description: Recurring payment identification
+        required: true
+        schema:
+          $ref: '#/definitions/RecurringPaymentStatusRequest'
+      tags:
+      - PIS
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/RecurringPaymentStatusResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+            X-JWS-SIGNATURE:
+              type: string
+              description: Detached JWS signature of the body of the response
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/Error'
+        406:
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/Error'
+        415:
+          description: Unsupported Media Type
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/Error'
+        429:
+          description: Request limit for the requested service exceeded
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+        503:
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - ClientSecret: []
+        ClientId: []
+        xs2a_auth_aspsp:
+        - pis
+  /cancelPayments:
+    x-swagger-router-controller: pis
+    post:
+      summary: Cancelation of future dated payment
+      operationId: cancelPayments
+      parameters:
+      - $ref: '#/parameters/authorizationParam'
+      - $ref: '#/parameters/acceptEncodingParam'
+      - $ref: '#/parameters/acceptLanguageParam'
+      - $ref: '#/parameters/acceptCharsetParam'
+      - $ref: '#/parameters/xjwsSignatureParam'
+      - $ref: '#/parameters/xRequestIdParam'
+      - name: payment data
+        in: body
+        description: Payments to be cancelled - identification data
+        required: true
+        schema:
+          $ref: '#/definitions/CancelPaymentsRequest'
+      tags:
+      - PIS
+      responses:
+        200:
+          description: Success. Operation pefrormed but some of transactions could
+            not be cancelled.
+          schema:
+            $ref: '#/definitions/CancelPaymentsResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+            X-JWS-SIGNATURE:
+              type: string
+              description: Detached JWS signature of the body of the response
+        204:
+          description: Success. Operation pefrormed with no exceptions.
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/Error'
+        406:
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/Error'
+        415:
+          description: Unsupported Media Type
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+        503:
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - ClientSecret: []
+        ClientId: []
+        xs2a_auth_aspsp:
+        - pis
+  /getBundle:
+    x-swagger-router-controller: pis
+    post:
+      summary: Get the status of payment
+      operationId: getBundle
+      parameters:
+      - $ref: '#/parameters/acceptParam'
+      - $ref: '#/parameters/contentTypeParam'
+      - $ref: '#/parameters/authorizationParam'
+      - $ref: '#/parameters/acceptEncodingParam'
+      - $ref: '#/parameters/acceptLanguageParam'
+      - $ref: '#/parameters/acceptCharsetParam'
+      - $ref: '#/parameters/xjwsSignatureParam'
+      - $ref: '#/parameters/xRequestIdParam'
+      - name: getBundle
+        in: body
+        description: Payment ID
+        required: true
+        schema:
+          $ref: '#/definitions/BundleRequest'
+      tags:
+      - PIS
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/BundleResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+            X-JWS-SIGNATURE:
+              type: string
+              description: Detached JWS signature of the body of the response
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/Error'
+        406:
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/Error'
+        415:
+          description: Unsupported Media Type
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/Error'
+        429:
+          description: Request limit for the requested service exceeded
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+        503:
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - ClientSecret: []
+        ClientId: []
+        xs2a_auth_aspsp:
+        - pis
+  /bundle:
+    x-swagger-router-controller: pis
+    post:
+      summary: Initialize bundle payment
+      description: ""
+      operationId: bundle
+      parameters:
+      - $ref: '#/parameters/authorizationParam'
+      - $ref: '#/parameters/acceptEncodingParam'
+      - $ref: '#/parameters/acceptLanguageParam'
+      - $ref: '#/parameters/acceptCharsetParam'
+      - $ref: '#/parameters/xjwsSignatureParam'
+      - $ref: '#/parameters/xRequestIdParam'
+      - name: bundleRequest
+        in: body
+        description: Data for getBundle payment definition
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentsBundleRequest'
+      tags:
+      - PIS
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/PaymentsBundleResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+            X-JWS-SIGNATURE:
+              type: string
+              description: Detached JWS signature of the body of the response
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/Error'
+        406:
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/Error'
+        415:
+          description: Unsupported Media Type
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+        503:
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - ClientSecret: []
+        ClientId: []
+        xs2a_auth_aspsp:
+        - pis
+  /cancelRecurringPayment:
+    x-swagger-router-controller: pis
+    post:
+      summary: Cancelation of recurring payment
+      operationId: cancelRecurringPayment
+      parameters:
+      - $ref: '#/parameters/authorizationParam'
+      - $ref: '#/parameters/acceptEncodingParam'
+      - $ref: '#/parameters/acceptLanguageParam'
+      - $ref: '#/parameters/acceptCharsetParam'
+      - $ref: '#/parameters/xjwsSignatureParam'
+      - $ref: '#/parameters/xRequestIdParam'
+      - name: recurring payment data
+        in: body
+        description: Recurring payment to be cancelled - identification data
+        required: true
+        schema:
+          $ref: '#/definitions/CancelRecurringPaymentRequest'
+      tags:
+      - PIS
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/CancelRecurringPaymentResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: Gzip, deflate
+            X-JWS-SIGNATURE:
+              type: string
+              description: Detached JWS signature of the body of the response
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/Error'
+        406:
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/Error'
+        415:
+          description: Unsupported Media Type
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Unprocessable entity
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+        503:
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - ClientSecret: []
+        ClientId: []
+        xs2a_auth_aspsp:
+        - pis
+securityDefinitions:
+  ClientId:
+    description: ""
+    in: header
+    name: X-IBM-Client-Id
+    type: apiKey
+  ClientSecret:
+    description: ""
+    in: header
+    name: X-IBM-Client-Secret
+    type: apiKey
+  xs2a_auth_aspsp:
+    authorizationUrl: https://https://api.sandbox.pekao.com.pl/v2_1_1.1/auth/v2_1_1.1/authorize
+    description: ""
+    flow: accessCode
+    scopes:
+      pis: Permission to initiate payments and check their statuses through Payment
+        Initiation Service
+    tokenUrl: https://https://api.sandbox.pekao.com.pl/v2_1_1.1/technical/authorization/oauth2/token
+    type: oauth2
+definitions:
+  Payor:
+    description: Klasa informacji o płatniku do US / Tax Payor Information Class
+    type: object
+    required:
+    - payorId
+    - payorIdType
+    properties:
+      payorId:
+        type: string
+        maxLength: 20
+        description: Identyfikator płatnika / Payor ID
+      payorIdType:
+        type: string
+        description: Typ identyfikatora płatnika / Payor ID type
+        enum:
+        - "N"
+        - P
+        - R
+        - "1"
+        - "2"
+        - "3"
+        x-ms-enum:
+          name: payorIdType
+          values:
+          - value: "N"
+            description: NIP
+          - value: P
+            description: Pesel
+          - value: R
+            description: Regon
+          - value: "1"
+            description: Dowód osobisty
+          - value: "2"
+            description: Paszport
+          - value: "3"
+            description: Inny
+    xml:
+      name: Payor
+  TransactionInfoTax:
+    description: Klasa informacji danych dla przelewu podatkowego do Urzędu Skarbowego
+      lub Izby Celnej / Tax Transfer
+    type: object
+    required:
+    - payerInfo
+    - formCode
+    - year
+    - periodType
+    - periodId
+    properties:
+      payerInfo:
+        $ref: '#/definitions/Payor'
+      formCode:
+        type: string
+        maxLength: 7
+        description: Symbol formularza Urzędu Skarbowego lub Izby Celnej / Tax authority
+          form symbol
+      periodId:
+        type: string
+        maxLength: 7
+        description: Numer okresu. Wymagany warunkowo - w zależności od wartości parametru
+          formCode. / Period number. Required conditionally - depending on formCode
+          parameter value.
+      periodType:
+        type: string
+        maxLength: 7
+        description: Typ okresu. Wymagany warunkowo - w zależności od wartości parametru
+          formCode. / Period type. Required conditionally - depending on formCode
+          parameter value.
+      year:
+        type: integer
+        format: int32
+        maximum: 9999
+        description: Rok okresu. Wymagany warunkowo - w zależności od wartości parametru
+          formCode. / Period year. Required conditionally - depending on formCode
+          parameter value.
+      obligationId:
+        type: string
+        maxLength: 40
+        description: Identyfikator zobowiązania, z którego wynika należność podatku
+          np. decyzja, tytuł wykonawczy, postanowienie / Obligation ID
+    xml:
+      name: TransactionInfoTax
+  PaymentDomesticRequest:
+    description: Klasa zlecenia przelewu krajowego / Domestic Transfer Request Class
+    type: object
+    required:
+    - requestHeader
+    - recipient
+    - sender
+    - transferData
+    - tppTransactionId
+    - deliveryMode
+    - system
+    properties:
+      requestHeader:
+        $ref: '#/definitions/RequestHeaderCallback'
+      recipient:
+        $ref: '#/definitions/RecipientPIS'
+      sender:
+        $ref: '#/definitions/SenderPISDomestic'
+      transferData:
+        $ref: '#/definitions/TransferData'
+      tppTransactionId:
+        type: string
+        maxLength: 64
+        description: ID transakcji nadany przez TPP / Transaction ID (TPP)
+      deliveryMode:
+        description: Tryb pilności / Urgency mode
+        type: string
+        enum:
+        - ExpressD0
+        - StandardD1
+      system:
+        description: Droga jaką przelew ma być rozliczony / The way the transfer should
+          be settled
+        type: string
+        enum:
+        - Elixir
+        - ExpressElixir
+        - Sorbnet
+        - Internal
+      hold:
+        description: Czy założyć blokadę (w przypadku np. zlecenia przelewu w dniu
+          wolnym) / Indicates if payment should be holded
+        type: boolean
+      executionMode:
+        description: Tryb realizacji płatności. Nadrzędna informacja decydująca o
+          tym w jakim trybie zostanie zrealizowana płatność. / Payment execution mode.
+          The superior information deciding which mode is to be used to execute payment.
+        type: string
+        enum:
+        - Immediate
+        - FutureDated
+    xml:
+      name: PaymentDomesticRequest
+  PaymentTaxRequestBundled:
+    description: Klasa zlecenia przelewu podatkowego / Tax Transfer Request Class
+    type: object
+    required:
+    - recipient
+    - sender
+    - transferData
+    - tppTransactionId
+    - deliveryMode
+    - usInfo
+    - system
+    properties:
+      recipient:
+        $ref: '#/definitions/RecipientPISTax'
+      sender:
+        $ref: '#/definitions/SenderPISDomestic'
+      transferData:
+        $ref: '#/definitions/TransferDataCurrencyRequiredTax'
+      usInfo:
+        $ref: '#/definitions/TransactionInfoTax'
+      tppTransactionId:
+        type: string
+        maxLength: 64
+        description: ID transakcji nadany przez TPP / Transaction ID (TPP)
+      deliveryMode:
+        description: Tryb pilności / Urgency mode
+        type: string
+        enum:
+        - ExpressD0
+        - StandardD1
+      system:
+        description: Droga jaką przelew ma być rozliczony / The way the transfer should
+          be settled
+        type: string
+        enum:
+        - Elixir
+      hold:
+        description: Czy założyć blokadę (w przypadku np. zlecenia przelewu w dniu
+          wolnym) / Indicates if payment should be holded
+        type: boolean
+      executionMode:
+        description: Tryb realizacji płatności. Nadrzędna informacja decydująca o
+          tym w jakim trybie zostanie zrealizowana płatność. / Payment execution mode.
+          The superior information deciding which mode is to be used to execute payment.
+        type: string
+        enum:
+        - Immediate
+        - FutureDated
+    xml:
+      name: PaymentTaxRequestBundled
+  PaymentNonEEARequestBundled:
+    description: Klasa zlecenia przelewu zagranicznego innego niż SEPA / NonEEA Transfer
+      Request Class
+    type: object
+    required:
+    - recipient
+    - recipientBank
+    - sender
+    - transferData
+    - tppTransactionId
+    - deliveryMode
+    - transferCharges
+    - executionMode
+    - system
+    properties:
+      recipient:
+        $ref: '#/definitions/RecipientPISForeign'
+      recipientBank:
+        $ref: '#/definitions/Bank'
+      sender:
+        $ref: '#/definitions/SenderPISForeign'
+      transferData:
+        $ref: '#/definitions/TransferDataCurrencyRequired'
+      transferCharges:
+        type: string
+        maxLength: 3
+        description: Klauzula kosztowa / The cost clause
+        enum:
+        - OUR
+        - BEN
+        - SHA
+      tppTransactionId:
+        type: string
+        maxLength: 64
+        description: ID transakcji nadany przez TPP / Transaction ID (TPP)
+      deliveryMode:
+        description: Tryb pilności / Urgency mode
+        type: string
+        enum:
+        - ExpressD0
+        - UrgentD1
+        - StandardD2
+      system:
+        description: Droga jaką przelew ma być rozliczony / The way the transfer should
+          be settled
+        type: string
+        enum:
+        - Swift
+      hold:
+        description: Czy założyć blokadę (w przypadku np. zlecenia przelewu w dniu
+          wolnym) / Indicates if payment should be holded
+        type: boolean
+      executionMode:
+        description: Tryb realizacji płatności. Nadrzędna informacja decydująca o
+          tym w jakim trybie zostanie zrealizowana płatność. / Payment execution mode.
+          The superior information deciding which mode is to be used to execute payment.
+        type: string
+        enum:
+        - Immediate
+        - FutureDated
+    xml:
+      name: PaymentNonEEARequestBundled
+  PaymentDomesticRequestBundled:
+    description: Klasa zlecenia przelewu krajowego w ramach paczki / Domestic Transfer
+      inside bundle Request Class
+    type: object
+    required:
+    - recipient
+    - sender
+    - transferData
+    - tppTransactionId
+    - deliveryMode
+    - system
+    properties:
+      recipient:
+        $ref: '#/definitions/RecipientPIS'
+      sender:
+        $ref: '#/definitions/SenderPISDomestic'
+      transferData:
+        $ref: '#/definitions/TransferData'
+      tppTransactionId:
+        type: string
+        maxLength: 64
+        description: ID transakcji nadany przez TPP / Transaction ID (TPP)
+      deliveryMode:
+        description: Tryb pilności / Urgency mode
+        type: string
+        enum:
+        - ExpressD0
+        - StandardD1
+      system:
+        description: Droga jaką przelew ma być rozliczony / The way the transfer should
+          be settled
+        type: string
+        enum:
+        - Elixir
+        - ExpressElixir
+        - Internal
+      hold:
+        description: Czy założyć blokadę (w przypadku np. zlecenia przelewu w dniu
+          wolnym) / Indicates if payment should be holded
+        type: boolean
+      executionMode:
+        description: Tryb realizacji płatności. Nadrzędna informacja decydująca o
+          tym w jakim trybie zostanie zrealizowana płatność. / Payment execution mode.
+          The superior information deciding which mode is to be used to execute payment.
+        type: string
+        enum:
+        - Immediate
+        - FutureDated
+    xml:
+      name: PaymentDomesticRequestBundled
+  PaymentEEARequestBundled:
+    description: Klasa zlecenia przelewu zagranicznego SEPA w ramach paczki / EEA
+      Transfer inside bundle Request Class
+    type: object
+    required:
+    - recipient
+    - sender
+    - transferData
+    - tppTransactionId
+    - deliveryMode
+    - executionMode
+    - system
+    properties:
+      recipient:
+        $ref: '#/definitions/RecipientPISForeign'
+      sender:
+        $ref: '#/definitions/SenderPISForeign'
+      transferData:
+        $ref: '#/definitions/TransferDataCurrencyRequired'
+      tppTransactionId:
+        type: string
+        maxLength: 64
+        description: ID transakcji nadany przez TPP / Transaction ID (TPP)
+      deliveryMode:
+        description: Tryb pilności / Urgency mode
+        type: string
+        enum:
+        - StandardD1
+        - ExpressD0
+      system:
+        description: Droga jaką przelew ma być rozliczony / The way the transfer should
+          be settled
+        type: string
+        enum:
+        - SEPA
+        - Target
+      hold:
+        description: Czy założyć blokadę (w przypadku np. zlecenia przelewu w dniu
+          wolnym) / Indicates if payment should be holded
+        type: boolean
+      executionMode:
+        description: Tryb realizacji płatności. Nadrzędna informacja decydująca o
+          tym w jakim trybie zostanie zrealizowana płatność. / Payment execution mode.
+          The superior information deciding which mode is to be used to execute payment.
+        type: string
+        enum:
+        - Immediate
+        - FutureDated
+    xml:
+      name: PaymentEEARequestBundled
+  PaymentsBundleRequest:
+    description: Klasa zlecenia wielu przelewow krajowych / bundle Transfer Request
+      Class
+    type: object
+    required:
+    - requestHeader
+    - tppBundleId
+    - transfersTotalAmount
+    - typeOfTransfers
+    properties:
+      requestHeader:
+        $ref: '#/definitions/RequestHeaderCallback'
+      tppBundleId:
+        type: string
+        maxLength: 64
+        description: Identyfikator paczki przelewów nadany przez TPP / Bundle of payments
+          identifier set by TPP
+      transfersTotalAmount:
+        type: string
+        pattern: ^(0|([1-9][0-9]{0,}))\.\d{2}$
+        description: Łączna kwota wszystkich przelewów z paczki / The total amount
+          of all transfers from bundle
+      typeOfTransfers:
+        description: Typ przelewów, które zostaną zlecone w ramach paczki / The type
+          of transfers that will be initiated through the bundle
+        type: string
+        enum:
+        - domestic
+        - EEA
+        - nonEEA
+        - tax
+      domesticTransfers:
+        type: array
+        description: Lista struktur danych przelewów zwykłych, które zostaną zlecone.
+          Wymagane gdy typeOfTransfers = domestic. / The list of data structures of
+          domestic transfers to be initiated. Required when typeOfTransfers = domestic.
+        items:
+          $ref: '#/definitions/PaymentDomesticRequestBundled'
+      EEATransfers:
+        type: array
+        description: Lista struktur danych przelewów zagranicznych SEPA, które zostaną
+          zlecone. Wymagane gdy typeOfTransfers = EEA. / The list of data structures
+          of SEPA foreign transfers to be initiated. Required when typeOfTransfers
+          = EEA.
+        items:
+          $ref: '#/definitions/PaymentEEARequestBundled'
+      nonEEATransfers:
+        type: array
+        description: Lista struktur danych przelewów zagranicznych innych niż SEPA,
+          które zostaną zlecone. Wymagane gdy typeOfTransfers = nonEEA. / The list
+          of data structures of non SEPA foreign transfers to be initiated. Required
+          when typeOfTransfers = nonEEA.
+        items:
+          $ref: '#/definitions/PaymentNonEEARequestBundled'
+      taxTransfers:
+        type: array
+        description: Lista struktur danych przelewów do urzędu podatkowego, które
+          zostaną zlecone. Wymagane gdy typeOfTransfers = tax. / The list of data
+          structures of tax transfers to be initiated. Required when typeOfTransfers
+          = tax.
+        items:
+          $ref: '#/definitions/PaymentTaxRequestBundled'
+    xml:
+      name: PaymentsBundleRequest
+  BundleRequest:
+    description: Klasa zapytania o status paczki płatności / Bundle Request Class
+    required:
+    - requestHeader
+    properties:
+      requestHeader:
+        $ref: '#/definitions/RequestHeader'
+      bundleId:
+        type: string
+        maxLength: 64
+        description: Identyfikator paczki przelewów. Wymagany warunkowo - jeśli TPP
+          otrzymał ten identyfikator od ASPSP. / Bundle of payments identifier.Conditionally
+          required - in case TPP has received this identifier from ASPSP.
+      tppBundleId:
+        type: string
+        maxLength: 64
+        description: Identyfikator paczki przelewów nadany przez TPP. Wymagany warunkowo
+          - jeśli TPP nie otrzymał identyfikatora bundleId od ASPSP. / Bundle of payments
+          identifier set by TPP. Conditionally required - in case TPP has not received
+          bundleId from ASPSP.
+      transactionsIncluded:
+        type: boolean
+        description: (true / false) Znacznik oznaczający czy w odpowiedzi mają być
+          uwzględnione statusy transakcji wchodzące w skład paczki / Indicates if
+          statuses of payments from the bundle should be included
+    xml:
+      name: BundleRequest
+  RecurringDomesticPayment:
+    description: Struktura danych przelewu krajowego, użyta do zdefinowania nowej
+      płatności cyklicznej. / Data structure of domestic payment that is to be used
+      to define new recurring payment.
+    type: object
+    required:
+    - recipient
+    - sender
+    - transferData
+    - deliveryMode
+    - system
+    properties:
+      recipient:
+        $ref: '#/definitions/RecipientPIS'
+      sender:
+        $ref: '#/definitions/SenderPISDomestic'
+      transferData:
+        $ref: '#/definitions/TransferData'
+      deliveryMode:
+        description: Tryb pilności / Urgency mode
+        type: string
+        enum:
+        - ExpressD0
+        - StandardD1
+      system:
+        description: Droga jaką przelew ma być rozliczony / The way the transfer should
+          be settled
+        type: string
+        enum:
+        - Elixir
+        - ExpressElixir
+        - Internal
+      hold:
+        description: Czy założyć blokadę (w przypadku np. zlecenia przelewu w dniu
+          wolnym) / Indicates if payment should be holded
+        type: boolean
+    xml:
+      name: RecurringDomesticPayment
+  PaymentEEARequest:
+    description: Klasa zlecenia przelewu zagranicznego SEPA / EEA Transfer Request
+      Class
+    type: object
+    required:
+    - requestHeader
+    - recipient
+    - sender
+    - transferData
+    - tppTransactionId
+    - deliveryMode
+    - executionMode
+    - system
+    properties:
+      requestHeader:
+        $ref: '#/definitions/RequestHeaderCallback'
+      recipient:
+        $ref: '#/definitions/RecipientPISForeign'
+      sender:
+        $ref: '#/definitions/SenderPISForeign'
+      transferData:
+        $ref: '#/definitions/TransferDataCurrencyRequired'
+      tppTransactionId:
+        type: string
+        maxLength: 64
+        description: ID transakcji nadany przez TPP / Transaction ID (TPP)
+      deliveryMode:
+        description: Tryb pilności / Urgency mode
+        type: string
+        enum:
+        - StandardD1
+        - ExpressD0
+      system:
+        description: Droga jaką przelew ma być rozliczony / The way the transfer should
+          be settled
+        type: string
+        enum:
+        - SEPA
+        - Target
+      hold:
+        description: Czy założyć blokadę (w przypadku np. zlecenia przelewu w dniu
+          wolnym) / Indicates if payment should be holded
+        type: boolean
+      executionMode:
+        description: Tryb realizacji płatności. Nadrzędna informacja decydująca o
+          tym w jakim trybie zostanie zrealizowana płatność. / Payment execution mode.
+          The superior information deciding which mode is to be used to execute payment.
+        type: string
+        enum:
+        - Immediate
+        - FutureDated
+    xml:
+      name: PaymentEEARequest
+  PaymentNonEEARequest:
+    description: Klasa zlecenia przelewu zagranicznego innego niż SEPA / NonEEA Transfer
+      Request Class
+    type: object
+    required:
+    - requestHeader
+    - recipient
+    - recipientBank
+    - sender
+    - transferData
+    - tppTransactionId
+    - deliveryMode
+    - transferCharges
+    - executionMode
+    - system
+    properties:
+      requestHeader:
+        $ref: '#/definitions/RequestHeaderCallback'
+      recipient:
+        $ref: '#/definitions/RecipientPISForeign'
+      recipientBank:
+        $ref: '#/definitions/Bank'
+      sender:
+        $ref: '#/definitions/SenderPISForeign'
+      transferData:
+        $ref: '#/definitions/TransferDataCurrencyRequired'
+      transferCharges:
+        type: string
+        maxLength: 3
+        description: Klauzula kosztowa / The cost clause
+        enum:
+        - OUR
+        - BEN
+        - SHA
+      tppTransactionId:
+        type: string
+        maxLength: 64
+        description: ID transakcji nadany przez TPP / Transaction ID (TPP)
+      deliveryMode:
+        description: Tryb pilności / Urgency mode
+        type: string
+        enum:
+        - ExpressD0
+        - UrgentD1
+        - StandardD2
+      system:
+        description: Droga jaką przelew ma być rozliczony / The way the transfer should
+          be settled
+        type: string
+        enum:
+        - Swift
+      hold:
+        description: Czy założyć blokadę (w przypadku np. zlecenia przelewu w dniu
+          wolnym) / Indicates if payment should be holded
+        type: boolean
+      executionMode:
+        description: Tryb realizacji płatności. Nadrzędna informacja decydująca o
+          tym w jakim trybie zostanie zrealizowana płatność. / Payment execution mode.
+          The superior information deciding which mode is to be used to execute payment.
+        type: string
+        enum:
+        - Immediate
+        - FutureDated
+    xml:
+      name: PaymentNonEEARequest
+  PaymentTaxRequest:
+    description: Klasa zlecenia przelewu podatkowego / Tax Transfer Request Class
+    type: object
+    required:
+    - requestHeader
+    - recipient
+    - sender
+    - transferData
+    - tppTransactionId
+    - deliveryMode
+    - usInfo
+    - system
+    properties:
+      requestHeader:
+        $ref: '#/definitions/RequestHeaderCallback'
+      recipient:
+        $ref: '#/definitions/RecipientPISTax'
+      sender:
+        $ref: '#/definitions/SenderPISDomestic'
+      transferData:
+        $ref: '#/definitions/TransferDataCurrencyRequiredTax'
+      usInfo:
+        $ref: '#/definitions/TransactionInfoTax'
+      tppTransactionId:
+        type: string
+        maxLength: 64
+        description: ID transakcji nadany przez TPP / Transaction ID (TPP)
+      deliveryMode:
+        description: Tryb pilności / Urgency mode
+        type: string
+        enum:
+        - ExpressD0
+        - StandardD1
+      system:
+        description: Droga jaką przelew ma być rozliczony / The way the transfer should
+          be settled
+        type: string
+        enum:
+        - Elixir
+      hold:
+        description: Czy założyć blokadę (w przypadku np. zlecenia przelewu w dniu
+          wolnym) / Indicates if payment should be holded
+        type: boolean
+      executionMode:
+        description: Tryb realizacji płatności. Nadrzędna informacja decydująca o
+          tym w jakim trybie zostanie zrealizowana płatność. / Payment execution mode.
+          The superior information deciding which mode is to be used to execute payment.
+        type: string
+        enum:
+        - Immediate
+        - FutureDated
+    xml:
+      name: PaymentTaxRequest
+  PaymentRequest:
+    description: Klasa zapytania o status płatności / Payment Request Class
+    required:
+    - requestHeader
+    properties:
+      requestHeader:
+        $ref: '#/definitions/RequestHeader'
+      paymentId:
+        type: string
+        maxLength: 64
+        description: Identyfikator płatności. Wymagany warunkowo - jeśli TPP otrzymał
+          ten identyfikator od ASPSP. / Identifier of the payment. Conditionally required
+          - in case TPP has received this identifier from ASPSP.
+      tppTransactionId:
+        type: string
+        maxLength: 64
+        description: Identyfikator transakcji nadany przez TPP. Wymagany warunkowo
+          - jeśli TPP nie otrzymał identyfikatora paymentId od ASPSP. / Identifier
+          of transaction established by TPP. Conditionally required - in case TPP
+          has not received paymentId from ASPSP.
+    xml:
+      name: PaymentRequest
+  RecurringPaymentStatusRequest:
+    description: Klasa zapytania o status płatności cyklicznej / Recurring payment
+      status Request Class
+    required:
+    - requestHeader
+    properties:
+      requestHeader:
+        $ref: '#/definitions/RequestHeader'
+      recurringPaymentId:
+        description: Identyfikator płatności cyklicznej nadany przez ASPSP. Wymagany
+          warunkowo - jeśli TPP otrzymał ten identyfikator od ASPSP. / Recurring payment
+          identifier set by ASPSP. Conditionally required - in case TPP has received
+          this identifier from ASPSP.
+        type: string
+        maxLength: 64
+      tppRecurringPaymentId:
+        description: Identyfikator płatności cyklicznej nadany przez TPP. Wymagany
+          warunkowo - jeśli TPP nie otrzymał identyfikatora recurringPaymentId od
+          ASPSP. / Recurring payment identifier set by TPP. Conditionally required
+          - in case TPP has not received recurringPaymentId from ASPSP.
+        type: string
+        maxLength: 64
+    xml:
+      name: RecurringPaymentStatusRequest
+  RecurringPaymentRequest:
+    description: Klasa zlecenia zdefiniowania nowej płatności cyklicznej / Recurring
+      payment definition Request Class
+    type: object
+    required:
+    - requestHeader
+    - tppRecurringPaymentId
+    - recurrence
+    - typeOfPayment
+    properties:
+      requestHeader:
+        $ref: '#/definitions/RequestHeader'
+      tppRecurringPaymentId:
+        description: Identyfikator płatności cyklicznej nadany przez TPP / Recurring
+          payment identifier set by TPP
+        type: string
+        maxLength: 64
+      recurrence:
+        $ref: '#/definitions/RecurringTransferParameters'
+      typeOfPayment:
+        description: Typ przelewu, który zostanie wykorzystany do zdefiniowania nowej
+          płatności cyklicznej  / The type of payment that is to be used to define
+          new recurring payment
+        type: string
+        enum:
+        - domestic
+      domesticPayment:
+        $ref: '#/definitions/RecurringDomesticPayment'
+    xml:
+      name: RecurringPaymentRequest
+  RecurringPaymentResponse:
+    description: Klasa odpowiedzi na żądanie zdefiniowania nowej płatności cyklicznej.
+      / Data returned for the request of creation of new recurring payment
+    properties:
+      responseHeader:
+        $ref: '#/definitions/ResponseHeader'
+      recurringPaymentId:
+        description: Identyfikator płatności cyklicznej nadany przez ASPSP / Recurring
+          payment identifier set by ASPSP
+        type: string
+        maxLength: 64
+      recurrence:
+        $ref: '#/definitions/RecurringTransferParameters'
+      recurringPaymentStatus:
+        description: Status płatności cyklicznej / Status of recurring payment
+        type: string
+        enum:
+        - submitted
+        - inProgress
+        - cancelled
+        - close
+      recurringPaymentDetailedStatus:
+        description: Szczegółowy status płatności cyklicznej / Recurring payment detailed
+          status
+        type: string
+    xml:
+      name: RecurringPaymentResponse
+  CancelPaymentsRequest:
+    description: 'Klasa zapytania o odwołanie przelewu lub paczki przelewów.  Wymagany
+      warunkowo jeden z atrybutów - transactionId lub bundleId / Payment or bundle
+      of payments cancelation request class. One of the following attributes is required:
+      transactionId or bundleId'
+    required:
+    - requestHeader
+    properties:
+      requestHeader:
+        $ref: '#/definitions/RequestHeader'
+      paymentId:
+        type: string
+        maxLength: 64
+        description: Identyfikator płatności / Payment ID
+      bundleId:
+        type: string
+        description: Identyfikator paczki przelewów / Bundle of payments ID
+    xml:
+      name: CancelPaymentsRequest
+  CancelRecurringPaymentRequest:
+    description: Klasa zapytania o anulowanie płatności cyklicznej. / Recurring payment
+      cancelation request class.
+    required:
+    - requestHeader
+    - recurringPaymentId
+    properties:
+      requestHeader:
+        $ref: '#/definitions/RequestHeader'
+      recurringPaymentId:
+        type: string
+        maxLength: 64
+        description: Identyfikator płatności cyklicznej nadany przez ASPSP / Recurring
+          payment identifier set by ASPSP
+    xml:
+      name: CancelRecurringPaymentRequest
+  CancelPaymentsResponse:
+    description: Klasa odpowiedzi na żądanie odwołania przelewów. Zawiera dane przelewów,
+      które nie mogły być odwołane. / Class describing payments that could not have
+      been cancelled.
+    required:
+    - responseHeader
+    properties:
+      responseHeader:
+        $ref: '#/definitions/ResponseHeader'
+      payments:
+        type: array
+        items:
+          $ref: '#/definitions/PaymentInfo'
+    xml:
+      name: CancelPaymentsResponse
+  PaymentsBundleResponse:
+    description: Klasa odpowiedzi na żądanie inicjacji paczki przelewów. Zawiera dane
+      o statusach poszczególnych przelewów oraz status paczki. / Class describing
+      statuses of each payment inside the bundle and the bundle itself.
+    properties:
+      bundleId:
+        type: string
+        maxLength: 64
+        description: Identyfikator paczki przelewów / Bundle of payments identifier
+      bundleStatus:
+        type: string
+        description: Status paczki przelewów / Bundle of payments status
+      bundleDetailedStatus:
+        type: string
+        description: Szczegółowy status paczki przelewów / Bundle of payments detailed
+          status
+      payments:
+        type: array
+        items:
+          $ref: '#/definitions/PaymentInfo'
+    xml:
+      name: PaymentsBundleResponse
+  BundleResponse:
+    description: Klasa odpowiedzi na pytanie o status paczki płatności / Response
+      data with status of bundle of payments
+    required:
+    - responseHeader
+    - bundleId
+    - tppBundleId
+    properties:
+      responseHeader:
+        $ref: '#/definitions/ResponseHeader'
+      bundleId:
+        type: string
+        description: Identyfikator paczki przelewów / Bundle of payments identifier
+        maxLength: 64
+      tppBundleId:
+        type: string
+        description: Identyfikator paczki przelewów nadany przez TPP. / Bundle of
+          payments identifier set by TPP.
+        maxLength: 64
+      bundleStatus:
+        type: string
+        description: Status paczki przelewów / Bundle of payments status
+        enum:
+        - inProgress
+        - cancelled
+        - done
+        - partiallyDone
+      bundleDetailedStatus:
+        type: string
+        description: Szczegółowy status paczki przelewów / Bundle of payments detailed
+          status
+      payments:
+        type: array
+        items:
+          $ref: '#/definitions/PaymentInfo'
+  CancelRecurringPaymentResponse:
+    description: Klasa odpowiedzi na żądanie anulowania płatności cyklicznej / Cancel
+      recurring payment response class
+    required:
+    - responseHeader
+    - recurringPaymentId
+    - tppRecurringPaymentId
+    properties:
+      responseHeader:
+        $ref: '#/definitions/ResponseHeader'
+      recurringPaymentId:
+        description: Identyfikator płatności cyklicznej nadany przez APSP / Recurring
+          payment identifier set by ASPSP
+        type: string
+        maxLength: 64
+      tppRecurringPaymentId:
+        description: Identyfikator płatności cyklicznej nadany przez TPP. / Recurring
+          payment identifier set by TPP.
+        type: string
+        maxLength: 64
+      recurringPaymentStatus:
+        description: Status płatności cyklicznej / Recurring payment status
+        type: string
+        enum:
+        - submitted
+        - inProgress
+        - cancelled
+        - close
+      recurringPaymentDetailedStatus:
+        description: Szczegółowy status płatności cyklicznej / Recurring payment detailed
+          status
+        type: string
+  AddPaymentResponse:
+    description: Klasa odpowiedzi zlecenia płatności / Payment Add Response Class
+    required:
+    - responseHeader
+    - paymentId
+    - generalStatus
+    - detailedStatus
+    properties:
+      responseHeader:
+        $ref: '#/definitions/ResponseHeader'
+      paymentId:
+        type: string
+        description: Identyfiaktor płatności / Payment ID
+      generalStatus:
+        $ref: '#/definitions/PaymentStatus'
+      detailedStatus:
+        type: string
+        description: Status płatności / Detailed payment status
+  PaymentInfo:
+    description: Klasa informacji o płatności / Payment Information Class
+    required:
+    - paymentId
+    - tppTransactionId
+    - generalStatus
+    - detailedStatus
+    - executionMode
+    properties:
+      paymentId:
+        type: string
+        description: Identyfiaktor płatności / Payment ID
+      tppTransactionId:
+        type: string
+        description: ID transakcji nadany przez TPP / Transaction ID (TPP)
+      generalStatus:
+        $ref: '#/definitions/PaymentStatus'
+      detailedStatus:
+        type: string
+        description: Szczegółowy status płatności / Detailed payment status
+      executionMode:
+        description: Tryb realizacji płatności. Nadrzędna informacja decydująca o
+          tym w jakim trybie zostanie zrealizowana płatność. / Payment execution mode.
+          The superior information deciding which mode is to be used to execute payment.
+        type: string
+        enum:
+        - Immediate
+        - FutureDated
+  GetPaymentResponse:
+    description: Klasa odpowiedzi na pytanie o płatność / Payment Get Response Class
+    allOf:
+    - $ref: '#/definitions/PaymentInfo'
+    - type: object
+      required:
+      - responseHeader
+      - paymentId
+      - generalStatus
+      - detailedStatus
+      properties:
+        responseHeader:
+          $ref: '#/definitions/ResponseHeader'
+  RecurringPaymentStatusResponse:
+    description: Klasa odpowiedzi na pytanie o status płatności cyklicznej / Response
+      data with status of recurring payment
+    required:
+    - responseHeader
+    - recurringPaymentId
+    - tppRecurringPaymentId
+    properties:
+      responseHeader:
+        $ref: '#/definitions/ResponseHeader'
+      recurringPaymentId:
+        description: Identyfikator płatności cyklicznej nadany przez APSP / Recurring
+          payment identifier set by ASPSP
+        type: string
+        maxLength: 64
+      tppRecurringPaymentId:
+        description: Identyfikator płatności cyklicznej nadany przez TPP. / Recurring
+          payment identifier set by TPP.
+        type: string
+        maxLength: 64
+      recurringPaymentStatus:
+        description: Status płatności cyklicznej / Recurring payment status
+        type: string
+        enum:
+        - submitted
+        - inProgress
+        - cancelled
+        - close
+      recurringPaymentDetailedStatus:
+        description: Szczegółowy status płatności cyklicznej / Recurring payment detailed
+          status
+        type: string
+  Error:
+    description: Klasa zawierająca informacje o zwracanym błędzie / Error class
+    properties:
+      responseHeader:
+        $ref: '#/definitions/ResponseHeader'
+      code:
+        type: string
+        description: Kod błędu / Error code
+      message:
+        type: string
+        description: Opis błędu / Error message
+  AccountNumber:
+    description: Numer konta
+    type: string
+    minLength: 1
+    maxLength: 34
+  AccountForeign:
+    description: Numer konta, format dla przelewów zagranicznych
+    type: string
+    maxLength: 34
+  RequestHeaderWithoutToken:
+    description: Klasa zawierająca informacje o PSU / PSU Information Class
+    type: object
+    required:
+    - requestId
+    properties:
+      requestId:
+        type: string
+        format: uuid
+        description: Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1) zgodnym
+          ze standardem RFC 4122 / Request ID using UUID format (Variant 1, Version
+          1) described in RFC 4122 standard
+      userAgent:
+        type: string
+        description: Browser agent dla PSU / PSU browser agent
+      ipAddress:
+        type: string
+        description: Adres IP końcowego urządzenia PSU. Wymagany dla isDirectPsu=true.
+          / IP address of PSU's terminal device. Required when isDirectPsu=true.
+      sendDate:
+        type: string
+        format: date-time
+        description: 'Oryginalna data wysłania, format: YYYY-MM-DDThh:mm:ss[.mmm]
+          / Send date'
+      tppId:
+        type: string
+        description: Identyfikator TPP (jeśli obecny, wartość zgodna z OID 2.5.4.97
+          dla certyfikatów QSealC i QWac wykorzystanych przez TPP)/ TPP ID (if present,
+          value should match OID 2.5.4.97 for QSealC and QWac certificates used by
+          TPP)
+  RequestHeaderCallback:
+    description: Klasa zawierająca informacje o PSU and callback URL / PSU and callback
+      URL Information Class
+    allOf:
+    - $ref: '#/definitions/RequestHeaderWithoutToken'
+    - type: object
+      required:
+      - token
+      properties:
+        token:
+          type: string
+          description: Token autoryzacyjny (wartość zgodna tokenem przekazanym w nagłówku
+            Authorization) / Authorization token (should match token passed in Authorization
+            header)
+        callbackURL:
+          type: string
+          description: adres funkcji zwrotnej / callback URL
+        apiKey:
+          type: string
+          description: API key dla wywołania funkcji zwrotnej / callback API key
+  RequestHeader:
+    description: Klasa zawierająca informacje o PSU / PSU Information Class
+    allOf:
+    - $ref: '#/definitions/RequestHeaderWithoutToken'
+    - type: object
+      required:
+      - token
+      properties:
+        token:
+          type: string
+          description: Token autoryzacyjny (wartość zgodna tokenem przekazanym w nagłówku
+            Authorization) / Authorization token (should match token passed in Authorization
+            header)
+  ResponseHeader:
+    description: Klasa zawierająca zwrotne metadane / Metadata Class
+    properties:
+      requestId:
+        type: string
+        format: uuid
+        description: Identyfikator żądania otrzymanego od TPP / Identifier of request
+          received from TPP
+      sendDate:
+        type: string
+        format: date-time
+        description: 'Data odpowiedzi, format: YYYY-MM-DDThh:mm:ss[.mmm] / Send date'
+      isCallback:
+        type: boolean
+        description: Znacznik określający czy odpowiedz zostanie przekazana w formie
+          wywołania zwrotnego. true - gdy odpowiedz w formie wywołania zwrotnego.
+          Inna dopuszczalna wartość to false.
+  SenderPISForeign:
+    description: Klasa zawierająca dane nadawcy przelewu zagranicznego używana w żądaniach
+      PIS / Foreign PIS services Sender Data Class
+    properties:
+      accountNumber:
+        $ref: '#/definitions/AccountNumber'
+      nameAddress:
+        $ref: '#/definitions/NameAddress'
+  SenderPISDomestic:
+    description: Klasa zawierająca dane nadawcy przelewu krajowego używana w żądaniach
+      PIS / Domestic PIS services Sender Data Class
+    properties:
+      accountNumber:
+        $ref: '#/definitions/AccountNumber'
+      nameAddress:
+        $ref: '#/definitions/NameAddress'
+  Bank:
+    description: Klasa zawierająca dane banku używana w żądaniach AIS / AIS Bank Data
+      Class
+    required:
+    - bicOrSwift
+    - name
+    - code
+    - countryCode
+    properties:
+      bicOrSwift:
+        type: string
+        maxLength: 11
+        description: Numer BIC/SWIFT Banku / BIC/SWIFT number
+      name:
+        type: string
+        maxLength: 70
+        description: Nazwa Banku / Bank's name
+      code:
+        type: string
+        maxLength: 10
+        description: Kod Banku, dla przelewów zagranicznych / Bank's code
+      countryCode:
+        type: string
+        maxLength: 3
+        description: Kod kraju 3166-1 / Country code
+      address:
+        $ref: '#/definitions/Address'
+  RecurringTransferParameters:
+    description: Klasa definiująca parametry płatności cyklicznej / A class defining
+      recurring payment parameters
+    type: object
+    required:
+    - startDate
+    - frequency
+    - dayOffOffsetType
+    properties:
+      startDate:
+        type: string
+        format: date
+        maxLength: 10
+        description: 'Data wykonania pierwszej płatności w definiowanym cyklu. Format:
+          YYYY-MM-DD / First payment execution date (of the defined cycle).'
+      frequency:
+        $ref: '#/definitions/RecurringTransferFrequency'
+      endDate:
+        type: string
+        format: date
+        maxLength: 10
+        description: 'Ostatnia możliwa data wykonania płatności w definiowanym cyklu.
+          Format: YYYY-MM-DD / The last possible payment execution date (of the defined
+          cycle).'
+      dayOffOffsetType:
+        type: string
+        description: Rodzaj przesunięcia, który należy zastosować do wykonania przelewu
+          w przypadku, gdy dzień wolny jest planowaną datą przelewu / Type of offset
+          that should be used for transfer execution in case of day off being the
+          planned date of transfer
+        enum:
+        - before
+        - after
+  RecurringTransferFrequency:
+    description: Klasa opisująca parametry częśtotliwości wykonywania płatności cyklicznej
+      / A class defining parameters of the frequency of recurring paymenets
+    type: object
+    required:
+    - periodType
+    - periodValue
+    properties:
+      periodType:
+        type: string
+        description: Typ jednostki okresu czasu / The type of unit of time period
+        enum:
+        - day
+        - week
+        - month
+      periodValue:
+        type: integer
+        description: Wartość jednostki okresu czasu / The value of unit of time period
+        minimum: 1
+  TransferDataBase:
+    description: Bazowa klasa dla TransferData / TransferData Base Class
+    type: object
+    properties:
+      description:
+        type: string
+        maxLength: 140
+        description: Pole opisujące przelew / Description
+      amount:
+        type: string
+        pattern: ^(0|([1-9][0-9]{0,}))\.\d{2}$
+        description: Kwota przelewu / Amount
+      executionDate:
+        type: string
+        format: date
+        maxLength: 10
+        description: 'Data wykonania przelewu. Wymagany pod warunkiem przekazania
+          wartości FutureDated w atrybucie executionMode. Format: YYYY-MM-DD / Date
+          when the transfer is to be executed (YYYY-MM-DD). Required conditionally
+          if executionMode attribute has value FutureDated.'
+  TransferDataBaseTax:
+    description: Bazowa klasa dla TransferData / TransferData Base Class
+    type: object
+    properties:
+      amount:
+        type: string
+        pattern: ^(0|([1-9][0-9]{0,}))\.\d{2}$
+        description: Kwota przelewu / Amount
+      executionDate:
+        type: string
+        format: date
+        maxLength: 10
+        description: 'Data wykonania przelewu. Wymagany pod warunkiem przekazania
+          wartości FutureDated w atrybucie executionMode. Format: YYYY-MM-DD / Date
+          when the transfer is to be executed (YYYY-MM-DD). Required conditionally
+          if executionMode attribute has value FutureDated.'
+  TransferData:
+    description: Klasa zawierająca dane przelewu / Transfer Data Class
+    allOf:
+    - $ref: '#/definitions/TransferDataBase'
+    - type: object
+      required:
+      - description
+      - amount
+      properties:
+        currency:
+          type: string
+          maxLength: 3
+          description: Waluta / Currency
+  TransferDataCurrencyRequired:
+    description: Klasa zawierająca dane przelewu / Transfer Data Class
+    allOf:
+    - $ref: '#/definitions/TransferDataBase'
+    - type: object
+      required:
+      - description
+      - amount
+      - currency
+      properties:
+        currency:
+          type: string
+          maxLength: 3
+          description: Waluta, domyślnie EUR przelewów zagranicznych / Currency
+  TransferDataCurrencyRequiredTax:
+    description: Klasa zawierająca dane przelewu / Transfer Data Class
+    allOf:
+    - $ref: '#/definitions/TransferDataBaseTax'
+    - type: object
+      required:
+      - amount
+      - currency
+      properties:
+        currency:
+          type: string
+          maxLength: 3
+          description: Waluta, wymagana wartość PLN / Currency - PLN value required
+  RecipientPIS:
+    description: Klasa zawierająca dane odbiorcy używana w żądaniach PIS / PIS Recipient
+      Data Class
+    required:
+    - nameAddress
+    - accountNumber
+    properties:
+      accountNumber:
+        $ref: '#/definitions/AccountNumber'
+      nameAddress:
+        $ref: '#/definitions/NameAddress'
+  RecipientPISTax:
+    description: Klasa zawierająca dane odbiorcy używana w żądaniach PIS dla operacji
+      podatkowych / PIS Tax Recipient Data Class
+    required:
+    - nameAddress
+    - accountNumber
+    properties:
+      accountNumber:
+        $ref: '#/definitions/AccountNumber'
+      nameAddress:
+        $ref: '#/definitions/NameAddress'
+  RecipientPISForeign:
+    description: Klasa zawierająca dane odbiorcy używana w żądaniach PIS dla operacji
+      zagranicznych / PIS foreign Recipient Data Class
+    required:
+    - nameAddress
+    - accountNumber
+    properties:
+      accountNumber:
+        $ref: '#/definitions/AccountForeign'
+      nameAddress:
+        $ref: '#/definitions/NameAddress'
+  Address:
+    description: Klasa zawierająca dane adresu pocztowego / Postal address Class
+    type: array
+    minItems: 1
+    maxItems: 4
+    items:
+      type: string
+      maxLength: 35
+  NameAddress:
+    description: Klasa zawierająca dane nazwy i adresu w postaci czterech linii danych
+      (pierwsza linia – nazwa, pozostałe linie adres) / Simple name and  postal address
+      Class (first line is name, other lines are address lines)
+    properties:
+      value:
+        type: array
+        minItems: 1
+        maxItems: 4
+        items:
+          type: string
+          maxLength: 35
+  PaymentStatus:
+    description: Słownik statusów płatności
+    type: string
+    enum:
+    - submitted
+    - cancelled
+    - pending
+    - done
+    - rejected
+    - scheduled
+x-ibm-configuration:
+  enforced: true
+  testable: true
+  phase: realized
+x-ibm-endpoints:
+- endpointUrl: https://api.sandbox.pekao.com.pl
+  type:
+  - development
+...

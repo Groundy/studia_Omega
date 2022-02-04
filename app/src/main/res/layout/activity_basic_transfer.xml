@@ -21,7 +21,7 @@
 
 								<LinearLayout
 																android:orientation="vertical"
-																android:layout_width="wrap_content"
+																android:layout_width="match_parent"
 																android:layout_height="wrap_content"
 																android:layout_marginTop="0dp"
 																android:id="@+id/linearLayout2">
@@ -37,12 +37,6 @@
 																								android:layout_width="match_parent"
 																								android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
 																								android:id="@+id/basicTransfer_accountList_textView" />
-
-																<TextView
-																								android:text="SPACESSPACESSPACESSPACESSPACESSPACESSPACESSPACES"
-																								android:layout_width="match_parent"
-																								android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
-																								android:id="@+id/bankNameSpace" />
 
 												</LinearLayout>
 
@@ -64,12 +58,13 @@
 
 																<EditText
 																								android:layout_width="match_parent"
-																								android:layout_height="wrap_content"
+																								android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
 																								android:inputType="textPersonName"
 																								android:ems="10"
 																								android:id="@+id/basicTransfer_reciverName_EditText"
 																								android:textColorHint="@color/black"
-																								tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+																								tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck"
+																								android:maxLength="50" />
 
 												</LinearLayout>
 
@@ -91,7 +86,7 @@
 
 																<EditText
 																								android:layout_width="match_parent"
-																								android:layout_height="wrap_content"
+																								android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
 																								android:inputType="number"
 																								android:ems="10"
 																								android:id="@+id/basicTransfer_receiverNumber_EditText"
@@ -120,12 +115,17 @@
 
 																<EditText
 																								android:layout_width="match_parent"
-																								android:layout_height="wrap_content"
+																								android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
 																								android:inputType="numberDecimal"
 																								android:ems="10"
 																								android:id="@+id/basicTransfer_amount_editText"
 																								android:textColorHint="@color/black"
 																								tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+																<TextView
+																								android:layout_width="match_parent"
+																								android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+																								android:id="@+id/basicTransfer_amountAfterTransfer_TextView" />
 
 												</LinearLayout>
 
@@ -147,12 +147,13 @@
 
 																<EditText
 																								android:layout_width="match_parent"
-																								android:layout_height="wrap_content"
+																								android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
 																								android:inputType="textPersonName"
 																								android:ems="10"
 																								android:id="@+id/basicTransfer_transferTitle_EditText"
 																								android:textColorHint="@color/black"
-																								tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+																								tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
+																								android:maxLength="50" />
 
 												</LinearLayout>
 
@@ -163,7 +164,7 @@
 												<Button
 																				android:text="@string/GUI_basicTransfer_goNextButtonText"
 																				android:layout_width="match_parent"
-																				android:layout_height="wrap_content"
+																				android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
 																				android:id="@+id/basicTransfer_goNext_button" />
 
 								</LinearLayout>
