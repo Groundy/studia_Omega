@@ -59,6 +59,7 @@ dependencies {
 	implementation 'com.google.firebase:firebase-auth:19.2.0'
 	implementation 'com.otaliastudios:cameraview:2.0.0-rc1'
 	implementation 'com.karumi:dexter:6.0.1'//asking for permissions
+	implementation 'com.squareup.retrofit2:converter-gson:2.4.0'//converting json data to java objects
 
 }
 apply plugin: 'com.google.gms.google-services'
