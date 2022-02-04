@@ -5,6 +5,10 @@ import java.util.*
 
 class ApiFuncs {
 	companion object{
+		val PREFERED_CHARSET = "utf-8"
+		val PREFERED_ENCODING = "Gzip"
+		val PREFERED_LAUNGAGE = "eng"
+
 		fun generate_X_REQUEST_ID() : UUID{
 			val random = Random()
 			val random63BitLong = random.nextLong() and 0x3FFFFFFFFFFFFFFFL
