@@ -61,6 +61,7 @@ dependencies {
 	implementation 'com.karumi:dexter:6.0.1'//asking for permissions
 	//implementation 'com.squareup.retrofit2:converter-gson:2.4.0'//converting json data to java objects
 	implementation 'com.squareup.okhttp3:okhttp:4.9.3' //do HTTP
+	compile 'io.jsonwebtoken:jjwt:0.9.0'// Do tworzenia podpisu JWS
 
 }
 apply plugin: 'com.google.gms.google-services'

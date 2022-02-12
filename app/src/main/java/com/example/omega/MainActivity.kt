@@ -57,28 +57,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun test(){
-		val thread = Thread {
-			try {
-				val mediaType = "application/x-www-form-urlencoded".toMediaTypeOrNull()
-				val body = RequestBody.create(
-					mediaType,
-					"grant_type=password&client_id=${ApiFuncs.userId_PEKAO}&client_secret=${ApiFuncs.appSecret_PEKAO}&code=wotwagumgocevoo&redirect_uri=http%3A%2F%2Fjom.it%2Fdem&username=Ricardo&password=bukopeoglophak&scope=vaguzcojitoka&refresh_token=cf5fca6de016f80f2501f4a858f8e1a56222883e2c1013557bb4d041dd7d3136"
-				)
-				val request: Request = Request.Builder()
-					.url("https://api.sandbox.pekao.com.pl/v2_1_1.1/technical/authorization/oauth2/token")
-					.post(body)
-					.addHeader("content-type", "application/x-www-form-urlencoded")
-					.addHeader("accept", "application/json")
-					.build()
-				val client = OkHttpClient()
-				val response: Response = client.newCall(request).execute()
-				val t = 0
-
-			} catch (e: Exception) {
-				e.printStackTrace()
-			}
-		}
-		thread.start()
+		ApiMethodes.doTestRequestInThread()
 	}
 	private fun TEST_addFunToButton(){
 		findViewById<Button>(R.id.testButton).setOnClickListener{
@@ -86,9 +65,16 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 
-	private fun TEST_funBody(){
-		ApiMethodes.AS_register()
-	}
+
+
+
+
+
+
+
+
+
+
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 		when(requestCode){
