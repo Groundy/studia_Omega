@@ -1,0 +1,1 @@
+w content type w requestach trzeba dostarczać byte arrays a nie strings, dzięki temu content type będzie application/json a nie application/json charset=utf-8

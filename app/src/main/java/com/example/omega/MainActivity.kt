@@ -57,7 +57,8 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun test(){
-		ApiMethodes.doTestRequestInThread()
+		ApiConsts.pathToSaveFolder = this.getExternalFilesDir(null).toString()
+		TestClass.doTestRequestInThread()
 	}
 	private fun TEST_addFunToButton(){
 		findViewById<Button>(R.id.testButton).setOnClickListener{
