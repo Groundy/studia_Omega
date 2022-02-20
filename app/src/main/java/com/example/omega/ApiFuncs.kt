@@ -1,43 +1,24 @@
 package com.example.omega
-import android.Manifest
-import android.app.Activity
-import java.time.Duration
-import java.time.LocalDateTime
-import java.util.*
-import io.jsonwebtoken.CompressionCodecs
+
+import android.os.Build
+import android.os.Environment
+import android.util.Log
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
-import android.os.Build
-import android.provider.DocumentsContract
-import android.util.Log
-import kotlinx.coroutines.flow.callbackFlow
-import okhttp3.internal.wait
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.Exception
-import java.lang.StringBuilder
 import java.net.Inet4Address
 import java.net.InetAddress
 import java.net.NetworkInterface
 import java.nio.charset.StandardCharsets
-import kotlin.concurrent.thread
-import android.R.string.no
-import android.content.Context
-import android.content.ContextWrapper
-import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
-import java.io.File
-import java.io.FileOutputStream
-import java.io.FileWriter
-import java.nio.file.Files
-import android.os.Environment
-
+import java.time.Duration
+import java.time.LocalDateTime
+import java.util.*
+import io.jsonwebtoken.security.Keys
+import java.security.Key
+import com.fasterxml.uuid.Generators
 
 
 
@@ -45,19 +26,7 @@ import android.os.Environment
 class ApiFuncs {
 	companion object{
 		fun getUUID() : String{
-			val random = Random()
-			val random63BitLong = random.nextLong() and 0x3FFFFFFFFFFFFFFFL
-			val variant1BitFlag : Long = (-0x6000000000000000L).toLong()
-			val least64SigBits = random63BitLong + variant1BitFlag
-
-			val start: LocalDateTime = LocalDateTime.of(1582, 10, 15, 0, 0, 0)
-			val duration: Duration = Duration.between(start, LocalDateTime.now())
-			val timeForUuidIn100Nanos = duration.seconds * 10000000 + duration.nano * 100
-			val least12SignificantBitOfTime = timeForUuidIn100Nanos and 0x000000000000FFFFL shr 4
-			val version = (1 shl 12).toLong()
-			val most64SigBits = (timeForUuidIn100Nanos and -0x10000L) + version + least12SignificantBitOfTime
-
-			val uuid = UUID(most64SigBits, least64SigBits)
+			val uuid = Generators.timeBasedGenerator().generate()
 			return uuid.toString()
 		}
 		fun getCurrentTimeStr(secFromNow : Int = 0): String {
@@ -112,13 +81,15 @@ class ApiFuncs {
 			result.append(")")
 			return result.toString()
 		}
-		fun getJWS(key: String, payload: String): String {
-			val toRet = Jwts.builder()
-				.setPayload(payload)
-				.compressWith(CompressionCodecs.DEFLATE)
-				.signWith(SignatureAlgorithm.HS512, key)
+		fun getJWS(payload : String): String {
+			val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
+			val jws = Jwts.builder()
+				.setSubject(payload)
+				//.setHeaderParam("kid", "ttt")
+				//.setHeaderParam("x5t#S256","aa")
+				.signWith(key)
 				.compact()
-			return toRet
+			return jws
 		}
 		fun getLocalIpAddress(): String {
 			try {
@@ -142,8 +113,7 @@ class ApiFuncs {
 			return ""
 		}
 		fun getPublicIPByInternetService() : String{
-			//TODO for speed
-			//return "1.2.3.4"
+			return "213.134.179.174"		//TODO for speed
 
 			var ip = ""
 			val request: Request = Request.Builder()
@@ -186,8 +156,6 @@ class ApiFuncs {
 			}
 			else
 				fileName = fileNameToSet
-
-
 
 			//Checking the availability state of the External Storage.
 			val state = Environment.getExternalStorageState()

@@ -21,6 +21,11 @@ class ApiConsts {
 		val REDIRECT_URI = "https://Omega:8080/auth/oauth2/callback"/////////////////////////////////////////////////////
 
 
+		val testAliorBankNr = "PL63249000050000400030900682"
+		val testAliborBrank = "Alior Bank - Individual Customer"
+		val testAliorUserName = "22058375"
+		val testAliorState = userId_ALIOR
+
 
 
 		var pathToSaveFolder = ""
