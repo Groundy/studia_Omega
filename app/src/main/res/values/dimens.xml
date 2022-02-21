@@ -3,6 +3,8 @@
 	<dimen name="activity_horizontal_margin">20dp</dimen>
 	<dimen name="activity_vertical_margin">10dp</dimen>
 	<dimen name="fab_margin">16dp</dimen>
+	<dimen name="DIM_infoTextSize">15sp</dimen>
+	<dimen name="DIM_variableTextSize">40sp</dimen>
 
 
 	<!--Pin act-->
@@ -25,10 +27,4 @@
 	<dimen name="DIM_CancelFingerAuthText_WIDTH">300dp</dimen><!--Double button width-->
 	<dimen name="DIM_CancelFingerAuthText_HEIGHT">100dp</dimen><!--Double button width-->
 	<dimen name="DIM_CancelFingerAuthFontSize">20sp</dimen>
-
-	<!--basic transfer-->
-	<dimen name="DIM_basicTransfer_spacer_Y">10dp</dimen>
-	<dimen name="DIM_basicTransfer_inputFieldY">50dp</dimen>
-	<dimen name="DIM_basicTransfer_textFieldY">20dp</dimen>
-
 </resources>

@@ -38,6 +38,16 @@
 					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
 					android:text="@string/GUI_basicTransfer_chooseAccountTextView" />
 
+				<TextView
+					android:id="@+id/textView"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
+					android:text="TextView" />
+
+				<Space
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/DIM_basicTransfer_spacer_Y" />
+
 			</LinearLayout>
 
 			<LinearLayout
@@ -46,6 +56,12 @@
 				android:layout_height="match_parent"
 				android:orientation="vertical">
 
+				<TextView
+					android:id="@+id/basicTransfer_recvierName_textView"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:text="@string/GUI_basicTransfer_ReceiverNameTextView" />
+
 				<EditText
 					android:id="@+id/basicTransfer_reciverName_EditText"
 					android:layout_width="match_parent"
@@ -53,14 +69,13 @@
 					android:ems="10"
 					android:inputType="textPersonName"
 					android:maxLength="50"
+					android:textColor="@color/black"
 					android:textColorHint="@color/black"
 					tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
-				<TextView
-					android:id="@+id/basicTransfer_recvierName_textView"
+				<Space
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
-					android:text="@string/GUI_basicTransfer_ReciverNameTextView" />
+					android:layout_height="@dimen/DIM_basicTransfer_spacer_Y" />
 
 			</LinearLayout>
 
@@ -70,6 +85,12 @@
 				android:layout_height="match_parent"
 				android:orientation="vertical">
 
+				<TextView
+					android:id="@+id/basicTransfer_reciverNumber_textView"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:text="@string/GUI_basicTransfer_ReceiverNumberTextView" />
+
 				<EditText
 					android:id="@+id/basicTransfer_receiverNumber_EditText"
 					android:layout_width="match_parent"
@@ -78,14 +99,13 @@
 					android:ems="10"
 					android:inputType="number"
 					android:maxLength="26"
+					android:textColor="@color/black"
 					android:textColorHint="@color/black"
 					tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
-				<TextView
-					android:id="@+id/basicTransfer_reciverNumber_textView"
+				<Space
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
-					android:text="@string/GUI_basicTransfer_ReciverNumberTextView" />
+					android:layout_height="@dimen/DIM_basicTransfer_spacer_Y" />
 
 			</LinearLayout>
 
@@ -95,25 +115,31 @@
 				android:layout_height="match_parent"
 				android:orientation="vertical">
 
+				<TextView
+					android:id="@+id/basicTransfer_Amount_TextView"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:text="@string/GUI_basicTransfer_AmountOfTransferTextView" />
+
 				<EditText
 					android:id="@+id/basicTransfer_amount_editText"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
 					android:ems="10"
 					android:inputType="numberDecimal"
+					android:textColor="@color/black"
 					android:textColorHint="@color/black"
 					tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
 				<TextView
-					android:id="@+id/KwotaTextView"
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
-					android:text="@string/GUI_basicTransfer_AmountOfTransferTextView" />
-
-				<TextView
 					android:id="@+id/basicTransfer_amountAfterTransfer_TextView"
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_inputFieldY" />
+					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:textColor="@color/black" />
+
+				<Space
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/DIM_basicTransfer_spacer_Y" />
 
 			</LinearLayout>
 
@@ -136,21 +162,26 @@
 					android:ems="10"
 					android:inputType="textPersonName"
 					android:maxLength="50"
+					android:textColor="@color/black"
 					android:textColorHint="@color/black"
 					tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
-			</LinearLayout>
+				<Space
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/DIM_basicTransfer_spacer_Y" />
 
-			<Space
-				android:layout_width="match_parent"
-				android:layout_height="1000dp"
-				android:layout_weight="1" />
+			</LinearLayout>
 
 			<Button
 				android:id="@+id/basicTransfer_goNext_button"
 				android:layout_width="match_parent"
 				android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
 				android:text="@string/GUI_basicTransfer_goNextButtonText" />
+
+			<Space
+				android:layout_width="match_parent"
+				android:layout_height="1000dp"
+				android:layout_weight="1" />
 
 		</LinearLayout>
 

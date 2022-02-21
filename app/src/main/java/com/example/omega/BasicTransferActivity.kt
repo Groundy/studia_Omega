@@ -59,8 +59,23 @@ class BasicTransferActivity : AppCompatActivity() {
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun afterTextChanged(p0: Editable?) {}
 		}
-		val buttonOnClickList = View.OnClickListener {
 
+		val buttonOnClickList = View.OnClickListener {
+			val inputErrorText : String? = getErrorInputText()
+			val inputCorrect = inputErrorText == null
+			if(inputCorrect){
+				val senderAccNumber = "12312312312312312312312312"				//TODO
+				val receiverAccNumber = receiverNumberEditText.text.toString()
+				val receiverName = receiverNameEditText.text.toString()
+				val amount = amountEditText.text.toString().toDoubleOrNull()
+				val title = transferTitle.text.toString()
+				val transferData = TransferData(senderAccNumber,receiverAccNumber,receiverName,title,amount)
+				ActivityStarter.startTransferSummaryActivity(this, transferData)
+				this.finish()
+			}
+			else{
+				Utilites.showToast(this, inputErrorText!!)
+			}
 		}
 
 		receiverNumberEditText.addTextChangedListener(receiverNumberEditTextListener)
@@ -109,13 +124,24 @@ class BasicTransferActivity : AppCompatActivity() {
 			}
 		}
 	}
-	private fun checkIfInputIsCorrect() : Boolean{
+	private fun getErrorInputText() : String?{
 		val properAmount = getAccountBalanceAfterTransfer() >= 0
-		val receiverAccNumberCorrect = receiverNumberEditText.text.length == 26
-		val receiverNameCorrect = receiverNameEditText.text.length in 3..50
+		if(!properAmount)
+			return resources.getString(R.string.USER_MSG_basicTransfer_Amount_too_hight)
 
-		val InputIsCorrect = properAmount && receiverAccNumberCorrect && receiverNameCorrect
-		return receiverNameCorrect
+		val receiverAccNumberCorrect = receiverNumberEditText.text.length == polishBankAccountNumberLength
+		if(!receiverAccNumberCorrect)
+			return resources.getString(R.string.USER_MSG_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER)
+
+		val receiverNameCorrect = receiverNameEditText.text.length in 3..50
+		if(!receiverNameCorrect)
+			return resources.getString(R.string.USER_MSG_basicTransfer_wrong_receiver_name)
+
+		val titleCorrect = transferTitle.text.length in 3..50
+		if(!titleCorrect)
+			return resources.getString(R.string.USER_MSG_basicTransfer_wrong_title)
+
+		return null
 	}
 	private fun getAccountBalanceAfterTransfer() : Double{
 		val balance = getSelectedAccountBalance()

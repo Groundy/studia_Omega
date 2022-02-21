@@ -72,41 +72,7 @@ class Utilites {
 			val prefs = getSharedProperties(activity)
 			return prefs.getFloat(fieldName,0f)
 		}
-
-		fun authTransaction(context : Activity, description : String?, forcedMethodeCode : Int?){
-			var preferredMethodeCode = readPref_Int(context, R.integer.PREF_preferedAuthMethode)
-			if(forcedMethodeCode != null && forcedMethodeCode in 0..2)
-				preferredMethodeCode = forcedMethodeCode
-			val preferredMethodeName = when(preferredMethodeCode){
-				0->context.getString(R.string.GUI_selectAuthMethodeText_pin)
-				1->context.getString(R.string.GUI_selectAuthMethodeText_pattern)
-				2->context.getString(R.string.GUI_selectAuthMethodeText_finger)
-				else ->context.getString(R.string.GUI_selectAuthMethodeText_pin)
-			}
-			when(preferredMethodeName){
-				context.getString(R.string.GUI_selectAuthMethodeText_pin) -> authByPin(context,description)
-				context.getString(R.string.GUI_selectAuthMethodeText_pattern) -> authByPattern(context,description)
-				context.getString(R.string.GUI_selectAuthMethodeText_finger) -> authByFingerPrint(context,description)
-			}
-		}
-		private fun authByPin(activity: Activity, description : String?){
-			val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
-			val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
-			val pinActPurpose = activity.resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[1]
-			val pinActPurposeFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
-			pinActivityActivityIntent.putExtra(descriptionFieldName,description)
-			pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
-			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_AUTH)
-			activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
-		}
-		private fun authByFingerPrint(activity: Activity, description : String?){
-			val scanFingerActivityIntent = Intent(activity, ScanFingerActivity::class.java)
-			val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
-			scanFingerActivityIntent.putExtra(descriptionFieldName,description)
-			val retCodeForActivity  = activity.resources.getInteger(R.integer.ACT_RETCODE_FINGER)
-			activity.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
-		}
-		private fun authByPattern(activity: Activity, description : String?){
+		fun authByPattern(activity: Activity, description : String?){
 			//TODO
 		}
 		fun authSuccessed(context: Context){
@@ -138,30 +104,6 @@ class Utilites {
 				15 -> "Operacja nie może zostać wykonana bez aktualizacji systemu."
 				else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
 			}
-		}
-		fun showResultActivity(activity: Activity, textIdToDisplay: Int){
-			val resultIntent = Intent(activity, ResultActivity::class.java)
-			val textToDisplay = activity.resources.getString(textIdToDisplay)
-			val textFieldName = activity.resources.getString(R.string.ACT_COM_RESULT_TEXT_FIELD_NAME)
-			resultIntent.putExtra(textFieldName,textToDisplay)
-			activity.startActivity(resultIntent)
-		}
-		fun showTransferSummaryActivity(activity: Activity, transferData: TransferData){
-			val resultIntent = Intent(activity, TransferSummary::class.java)
-
-			val senderAccField = activity.getString(R.string.TransferSummary_COM_senderAccNumberField)
-			val receiverNameField = activity.getString(R.string.TransferSummary_COM_receiverNameField)
-			val receiverAccField = activity.getString(R.string.TransferSummary_COM_receiverAccNumberField)
-			val titleField = activity.getString(R.string.TransferSummary_COM_TitleField)
-			val amountField = activity.getString(R.string.TransferSummary_COM_AmountField)
-
-			resultIntent.putExtra(senderAccField,transferData.senderAccNumber)
-			resultIntent.putExtra(receiverNameField,transferData.receiverName)
-			resultIntent.putExtra(receiverAccField,transferData.receiverAccNumber)
-			resultIntent.putExtra(titleField,transferData.title)
-			resultIntent.putExtra(amountField,transferData.amount.toString())
-
-			activity.startActivity(resultIntent)
 		}
 		fun checkBlikCode(code : Int) : TransferData?{
 			//TODO implement

@@ -22,6 +22,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import com.google.firebase.FirebaseApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -52,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 		FirebaseApp.initializeApp(this)
 		//Utilites.savePref(this,R.integer.PREF_pin,0)
 		// ApiConsts.pathToSaveFolder = this.getExternalFilesDir(null).toString()
-		startActToSetPinIfTheresNoSavedPin()
+		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initUIVariables()
 		TEST_addFunToButton()
 		test()
@@ -65,10 +66,6 @@ class MainActivity : AppCompatActivity() {
 			test()
 		}
 	}
-
-
-
-
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
@@ -91,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 					if(errorCode == 13){
 						val descriptionFieldName = resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
 						val description = data.extras?.getString(descriptionFieldName)
-						Utilites.authTransaction(this,description,0)
+						ActivityStarter.startAuthActivity(this,description,0)
 					}
 					else{
 						val textToShow = Utilites.getMessageToDisplayToUserAfterBiometricAuthError(errorCode!!)
@@ -100,12 +97,6 @@ class MainActivity : AppCompatActivity() {
 					}
 				}
 			}
-			resources.getInteger(R.integer.ACT_RETCODE_PIN_AUTH) ->{
-				if(resultCode == RESULT_OK)
-					Utilites.authSuccessed(this)
-				else
-					Utilites.authFailed(this)
-			}
 			resources.getInteger(R.integer.ACT_RETCODE_PIN_SET) ->{
 				if(resultCode == RESULT_OK){
 					//do nothing
@@ -113,7 +104,7 @@ class MainActivity : AppCompatActivity() {
 				else{
 					//TODO to tworzy infinity loop w ktorym urzytkownik do upadlego jest proszony o pin
 					Utilites.showToast(this,getString(R.string.USER_MSG_PIN_FAILED_TO_SET_NEW_PIN_DIFFRENT_PINS_INSERTED))
-					startActToSetPinIfTheresNoSavedPin()
+					ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 				}
 			}
 		}
@@ -125,12 +116,13 @@ class MainActivity : AppCompatActivity() {
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when(item.itemId){
 			R.id.ConfigurationsTab->{
-				val settingsActivityIntent = Intent(this@MainActivity, SettingsActivity::class.java)
-				startActivity(settingsActivityIntent)
-				return true
+				ActivityStarter.startConfigurationActivity(this)
+			}
+			R.id.TransferTab->{
+				ActivityStarter.startTransferActivityFromMenu(this)
 			}
 		}
-		return false
+		return true
 	}
 	override fun onNewIntent(intent: Intent) {
 		super.onNewIntent(intent)
@@ -154,12 +146,10 @@ class MainActivity : AppCompatActivity() {
 	private fun processCode(code: Int) {
 		codeField.text.clear()
 		val transferData = Utilites.checkBlikCode(code)
-		if(transferData != null){
-			Utilites.showTransferSummaryActivity(this,transferData)
-		}
-		else{
-			Utilites.showResultActivity(this, R.string.GUI_result_WRONG_CODE)
-		}
+		if(transferData != null)
+			ActivityStarter.startTransferSummaryActivity(this,transferData)
+		else
+			ActivityStarter.startResultActivity(this, R.string.GUI_result_WRONG_CODE)
 
 	}
 	private fun checkIfNfcIsTurnedOnPhone(): Boolean {
@@ -197,17 +187,6 @@ class MainActivity : AppCompatActivity() {
 			return false
 		}
 		return true
-	}
-	private fun startActToSetPinIfTheresNoSavedPin(){
-		val pinAlreadySet = Utilites.checkIfAppHasAlreadySetPin(this)
-		if(!pinAlreadySet){
-			val pinActivityActivityIntent = Intent(this, PinActivity::class.java)
-			val pinActPurpose = resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[0]
-			val pinActPurposeFieldName = resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
-			pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
-			val retCodeForActivity = resources.getInteger(R.integer.ACT_RETCODE_PIN_SET)
-			startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
-		}
 	}
 	private fun switchNfcSignalCatching() {
 		if(nfcSignalCatchingIsOn){
@@ -258,6 +237,7 @@ class MainActivity : AppCompatActivity() {
 			nfcOnOffButton.isVisible = false
 	}
 	private fun initCodeField(){
+		codeField = findViewById(R.id.enterCodeField)
 		val codeFieldTextListener = object : TextWatcher {
 			override fun afterTextChanged(s: Editable) {
 				if (s.length == 6) {
@@ -269,9 +249,8 @@ class MainActivity : AppCompatActivity() {
 			override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 			override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 		}
-		codeField = findViewById(R.id.enterCodeField)
-		codeField.requestFocus()
 		codeField.addTextChangedListener(codeFieldTextListener)
+		codeField.requestFocus()
 	}
 	private fun initQR(){
 		val goQRScannerButtonListener = View.OnClickListener {

@@ -6,16 +6,16 @@
             android:title="Konfiguracja"
             android:id="@+id/ConfigurationsTab"
             app:showAsAction="never" />
+    <item
+            android:title="Przelew jednorazowy"
+            android:id="@+id/TransferTab"
+            app:showAsAction="never"/>
+
     <!--
     <item
           android:title="Historia Płatności"
           android:id="@+id/History_of_Payment"
           app:showAsAction="never"/>
-
-    <item
-            android:title="Przelew jednorazowy"
-            android:id="@+id/Money_Transfer"
-            app:showAsAction="never"/>
     <item
             android:title="Rachunki"
             android:id="@+id/Accounts"

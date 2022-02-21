@@ -29,7 +29,7 @@ class TransferSummary : AppCompatActivity() {
 		val amount = intent.getStringExtra(amountField)
 		transferData = TransferData(senderAccNumber,receiverAccNumber,receiverName,title,amount?.toDouble())
 
-		findViewById<TextView>(R.id.transferSummary_amount).text = amount
+		findViewById<TextView>(R.id.transferSummary_amount).text = "$amount PLN"
 		findViewById<TextView>(R.id.transferSummary_receAcc).text = receiverAccNumber
 		findViewById<TextView>(R.id.transferSummary_receName).text = receiverName
 		findViewById<TextView>(R.id.transferSummary_senderAcc).text = senderAccNumber
@@ -43,7 +43,7 @@ class TransferSummary : AppCompatActivity() {
 	}
 	private fun authClicked(){
 		val des  = transferData.toString()
-		Utilites.authTransaction(this,des,null)
+		ActivityStarter.startAuthActivity(this,des,null)
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -55,9 +55,9 @@ class TransferSummary : AppCompatActivity() {
 
 		if(isAuthCode){
 			if(resultCode == RESULT_OK)
-				Utilites.showResultActivity(this,R.string.GUI_result_OK)
+				ActivityStarter.startResultActivity(this,R.string.GUI_result_OK)
 			else
-				Utilites.showResultActivity(this,R.string.GUI_result_WRONG_AUTH)
+				ActivityStarter.startResultActivity(this,R.string.GUI_result_WRONG_AUTH)
 		}
 		this.finish()
 	}

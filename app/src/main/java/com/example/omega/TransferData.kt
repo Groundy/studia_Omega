@@ -28,17 +28,18 @@ class TransferData {
 		val line2 = "Nazwa odbiorcy:\n$receiverName"
 		val line3 = "Numer odbiorcy:\n$receiverAccNumber"
 		val line4 = "Tytuł:\n$title"
-		val line5 = "kwota:\n${amount.toString()}"
+		val line5 = "kwota:\n${amount.toString()} PLN"
 		val toRet = "$line1\n $line2\n $line3\n $line4\n $line5"
 		return toRet
 	}
-	override fun toJsonObject() : JSONObject{
-		val JsonObj = JSONObject()
-		JsonObj.put("senderAccNumber",senderAccNumber)
-		JsonObj.put("receiverAccNumber",receiverAccNumber)
-		JsonObj.put("receiverName",receiverName)
-		JsonObj.put("title",title)
-		JsonObj.put("amount",amount)
+	fun toJsonObject() : JSONObject{
+		val jsonObj = JSONObject()
+		jsonObj.put("senderAccNumber",senderAccNumber)
+		jsonObj.put("receiverAccNumber",receiverAccNumber)
+		jsonObj.put("receiverName",receiverName)
+		jsonObj.put("title",title)
+		jsonObj.put("amount",amount)
+		return jsonObj
 	}
 	fun validateData() : Boolean{
 		val senderAccCorrectLength = senderAccNumber?.length in 0..26

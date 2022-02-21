@@ -1,59 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/container"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".MainActivity">
 
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginEnd="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:orientation="vertical">
+	<FrameLayout
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_marginStart="@dimen/activity_horizontal_margin"
+		android:layout_marginTop="@dimen/activity_vertical_margin"
+		android:layout_marginEnd="@dimen/activity_horizontal_margin"
+		android:layout_marginBottom="@dimen/activity_vertical_margin"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-                android:text="@string/GUI_QR_scanner_buttonText"
-                android:layout_width="match_parent"
-                android:layout_height="71dp"
-                android:id="@+id/goToQRScannerButton"
-                android:textSize="24sp" />
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical">
 
-        <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:ems="1"
-                android:maxLength="6"
-                android:visibility="visible"
-                android:id="@+id/enterCodeField"
-                android:ellipsize="start"
-                android:hint="_ _ _ _ _ _"
-                android:textSize="50sp"
-                android:imeOptions="actionDone"
-                android:background="@null"
+			<Button
+				android:id="@+id/goToQRScannerButton"
+				android:layout_width="match_parent"
+				android:layout_height="71dp"
+				android:text="@string/GUI_QR_scanner_buttonText"
+				android:textSize="24sp" />
 
-                android:gravity="center_horizontal" />
+			<Button
+				android:id="@+id/nfcButton"
+				android:layout_width="154dp"
+				android:layout_height="132dp"
+				android:background="@drawable/nfc_off_icon"
+				tools:ignore="SpeakableTextPresentCheck" />
 
-        <Button
-                android:layout_width="154dp"
-                android:layout_height="132dp"
-                android:id="@+id/nfcButton"
-                android:background="@drawable/nfc_off_icon"
-                tools:ignore="SpeakableTextPresentCheck" />
+			<Button
+				android:id="@+id/testButton"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="TEST_TEST_TEST_TEST" />
 
-        <Button
-                android:text="TEST_TEST_TEST_TEST"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/testButton" />
+			<EditText
+				android:id="@+id/enterCodeField"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@null"
+				android:ellipsize="start"
+				android:ems="1"
+				android:gravity="center_horizontal"
+				android:hint="_ _ _ _ _ _"
+				android:imeOptions="actionDone"
+				android:inputType="number"
+				android:maxLength="6"
+				android:textSize="50sp"
 
-    </LinearLayout>
+				android:visibility="visible" />
+
+		</LinearLayout>
+	</FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

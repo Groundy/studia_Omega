@@ -32,13 +32,17 @@
 					android:id="@+id/Transfer_senderAccNumber_textView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_infoFieldY"
-					android:text="@string/TransferSummary_SenderAcc" />
+					android:text="@string/TransferSummary_SenderAcc"
+					android:textColor="@color/black"
+					android:textSize="@dimen/DIM_infoTextSize" />
 
 				<TextView
 					android:id="@+id/transferSummary_senderAcc"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_valueFieldY"
-					android:text="00000000000000000000000000" />
+					android:text="00000000000000000000000000"
+					android:textColor="@color/black"
+					android:textSize="@dimen/DIM_variableTextSize" />
 
 				<Space
 					android:layout_width="match_parent"
@@ -52,16 +56,20 @@
 				android:orientation="vertical">
 
 				<TextView
-					android:id="@+id/textView3"
+					android:id="@+id/transferSummary_receiverName_TextView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_infoFieldY"
-					android:text="@string/TransferSummary_ReceiverName" />
+					android:text="@string/TransferSummary_ReceiverName"
+					android:textColor="@color/black"
+					android:textSize="@dimen/DIM_infoTextSize" />
 
 				<TextView
 					android:id="@+id/transferSummary_receName"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_valueFieldY"
-					android:text="------------------------------------------------------------------------" />
+					android:text="------------------------------------------------------------------------"
+					android:textColor="@color/black"
+					android:textSize="@dimen/DIM_variableTextSize" />
 
 				<Space
 					android:layout_width="match_parent"
@@ -74,16 +82,20 @@
 				android:orientation="vertical">
 
 				<TextView
-					android:id="@+id/textView5"
+					android:id="@+id/transferSummary_receiverAcc_TextView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_infoFieldY"
-					android:text="@string/TransferSummary_ReceiverAcc" />
+					android:text="@string/TransferSummary_ReceiverAcc"
+					android:textColor="@color/black"
+					android:textSize="@dimen/DIM_infoTextSize" />
 
 				<TextView
 					android:id="@+id/transferSummary_receAcc"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_valueFieldY"
-					android:text="00000000000000000000000000000000000000" />
+					android:text="00000000000000000000000000000000000000"
+					android:textColor="@color/black"
+					android:textSize="@dimen/DIM_variableTextSize" />
 
 				<Space
 					android:layout_width="match_parent"
@@ -96,16 +108,20 @@
 				android:orientation="vertical">
 
 				<TextView
-					android:id="@+id/textView7"
+					android:id="@+id/transferSummary_title_TextView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_infoFieldY"
-					android:text="@string/TransferSummary_Title" />
+					android:text="@string/TransferSummary_Title"
+					android:textColor="@color/black"
+					android:textSize="@dimen/DIM_infoTextSize" />
 
 				<TextView
 					android:id="@+id/transferSummary_title"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_valueFieldY"
-					android:text="------------------------------------------------------------------------------------------------------" />
+					android:text="------------------------------------------------------------------------------------------------------"
+					android:textColor="@color/black"
+					android:textSize="@dimen/DIM_variableTextSize" />
 
 				<Space
 					android:layout_width="match_parent"
@@ -118,16 +134,20 @@
 				android:orientation="vertical">
 
 				<TextView
-					android:id="@+id/textView9"
-					android:layout_width="wrap_content"
+					android:id="@+id/transferSummary_amount_TextView"
+					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_infoFieldY"
-					android:text="@string/TransferSummary_Amount" />
+					android:text="@string/TransferSummary_Amount"
+					android:textColor="@color/black"
+					android:textSize="@dimen/DIM_infoTextSize" />
 
 				<TextView
 					android:id="@+id/transferSummary_amount"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_valueFieldY"
-					android:text=" 0.00 PLN" />
+					android:text=" 0.00 PLN"
+					android:textColor="@color/black"
+					android:textSize="@dimen/DIM_variableTextSize" />
 
 			</LinearLayout>
 
