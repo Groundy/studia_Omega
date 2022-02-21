@@ -1,118 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-								xmlns:tools="http://schemas.android.com/tools"
-								xmlns:app="http://schemas.android.com/apk/res-auto"
-								android:layout_width="match_parent"
-								android:layout_height="match_parent"
-								tools:context=".PinActivity">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".PinActivity">
 
-				<LinearLayout
-												android:orientation="vertical"
-												android:layout_width="wrap_content"
-												android:layout_height="wrap_content"
-												app:layout_constraintEnd_toEndOf="parent"
-												app:layout_constraintTop_toTopOf="parent"
-												app:layout_constraintStart_toStartOf="parent"
-												app:layout_constraintBottom_toBottomOf="parent">
+	<FrameLayout
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_marginStart="@dimen/activity_vertical_margin"
+		android:layout_marginTop="@dimen/activity_horizontal_margin"
+		android:layout_marginEnd="@dimen/activity_vertical_margin"
+		android:layout_marginBottom="@dimen/activity_horizontal_margin"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
 
-								<TextView
-																android:text="Title"
-																android:layout_width="match_parent"
-																android:layout_height="@dimen/DIM_PIN_Title_Height"
-																android:id="@+id/PIN_Title_TextView"
-																android:textColor="@color/black"
-																android:textAlignment="center"
-																android:textSize="@dimen/DIM_PIN_Title_Font_Size" />
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical">
 
-								<TextView
-																android:layout_width="match_parent"
-																android:layout_height="@dimen/DIM_PIN_Description_Height"
-																android:id="@+id/PIN_Description_TextView"
-																android:text="Description"
-																android:textColor="@color/black"
-																android:textSize="@dimen/DIM_PIN_Description_Font_Size" />
+			<TextView
+				android:id="@+id/PIN_Title_TextView"
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/DIM_PIN_Title_Height"
+				android:gravity="center"
+				android:text="Title"
+				android:textAlignment="center"
+				android:textColor="@color/black"
+				android:textSize="@dimen/DIM_PIN_Title_Font_Size" />
 
-								<LinearLayout
-																android:orientation="horizontal"
-																android:layout_width="wrap_content"
-																android:layout_height="wrap_content"
-																android:id="@+id/linearLayout"
-																android:fadeScrollbars="true">
+			<TextView
+				android:id="@+id/PIN_Description_TextView"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="Description"
+				android:textColor="@color/black"
+				android:textSize="@dimen/DIM_PIN_Description_Font_Size" />
 
-												<EditText
-																				android:layout_width="@dimen/DIM_PIN_width_of_digits"
-																				android:layout_height="@dimen/DIM_PIN_height_of_digits"
-																				android:inputType="number|numberPassword"
-																				android:ems="10"
-																				android:id="@+id/PIN_digit1_TextView"
-																				android:maxLength="1"
-																				android:layout_marginEnd="@dimen/DIM_PIN_margin_width_of_pin_digits"
-																				android:textAlignment="center"
-																				android:hapticFeedbackEnabled="true"
-																				tools:ignore="SpeakableTextPresentCheck, LabelFor"
-																				android:background="@drawable/border_for_digit_field_pin_activity"
-																				android:importantForAutofill="no"
-																				android:textSize="34sp" />
+			<LinearLayout
+				android:id="@+id/linearLayout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:fadeScrollbars="true"
+				android:gravity="center"
+				android:orientation="horizontal">
+
+				<EditText
+					android:id="@+id/PIN_digit1_TextView"
+					android:layout_width="@dimen/DIM_PIN_width_of_digits"
+					android:layout_height="@dimen/DIM_PIN_height_of_digits"
+					android:layout_marginEnd="@dimen/DIM_PIN_margin_width_of_pin_digits"
+					android:background="@drawable/border_for_digit_field_pin_activity"
+					android:ems="10"
+					android:hapticFeedbackEnabled="true"
+					android:importantForAutofill="no"
+					android:inputType="number|numberPassword"
+					android:maxLength="1"
+					android:textAlignment="center"
+					android:textSize="34sp"
+					tools:ignore="SpeakableTextPresentCheck, LabelFor" />
 
 
-												<EditText
-																				android:layout_width="@dimen/DIM_PIN_width_of_digits"
-																				android:layout_height="@dimen/DIM_PIN_height_of_digits"
-																				android:inputType="number|numberPassword"
-																				android:ems="10"
-																				android:id="@+id/PIN_digit2_TextView"
-																				android:maxLength="1"
-																				android:layout_marginEnd="@dimen/DIM_PIN_margin_width_of_pin_digits"
-																				android:textAlignment="center"
-																				tools:ignore="SpeakableTextPresentCheck, LabelFor"
-																				android:background="@drawable/border_for_digit_field_pin_activity"
-																				android:importantForAutofill="no"
-																				android:textSize="34sp" />
+				<EditText
+					android:id="@+id/PIN_digit2_TextView"
+					android:layout_width="@dimen/DIM_PIN_width_of_digits"
+					android:layout_height="@dimen/DIM_PIN_height_of_digits"
+					android:layout_marginEnd="@dimen/DIM_PIN_margin_width_of_pin_digits"
+					android:background="@drawable/border_for_digit_field_pin_activity"
+					android:ems="10"
+					android:importantForAutofill="no"
+					android:inputType="number|numberPassword"
+					android:maxLength="1"
+					android:textAlignment="center"
+					android:textSize="34sp"
+					tools:ignore="SpeakableTextPresentCheck, LabelFor" />
 
-												<EditText
-																				android:layout_width="@dimen/DIM_PIN_width_of_digits"
-																				android:layout_height="@dimen/DIM_PIN_height_of_digits"
-																				android:inputType="number|numberPassword"
-																				android:ems="10"
-																				android:id="@+id/PIN_digit3_TextView"
-																				android:maxLength="1"
-																				android:layout_marginEnd="@dimen/DIM_PIN_margin_width_of_pin_digits"
-																				android:textAlignment="center"
-																				tools:ignore="SpeakableTextPresentCheck, LabelFor"
-																				android:background="@drawable/border_for_digit_field_pin_activity"
-																				android:importantForAutofill="no"
-																				android:textSize="34sp" />
+				<EditText
+					android:id="@+id/PIN_digit3_TextView"
+					android:layout_width="@dimen/DIM_PIN_width_of_digits"
+					android:layout_height="@dimen/DIM_PIN_height_of_digits"
+					android:layout_marginEnd="@dimen/DIM_PIN_margin_width_of_pin_digits"
+					android:background="@drawable/border_for_digit_field_pin_activity"
+					android:ems="10"
+					android:importantForAutofill="no"
+					android:inputType="number|numberPassword"
+					android:maxLength="1"
+					android:textAlignment="center"
+					android:textSize="34sp"
+					tools:ignore="SpeakableTextPresentCheck, LabelFor" />
 
-												<EditText
-																				android:layout_width="@dimen/DIM_PIN_width_of_digits"
-																				android:layout_height="@dimen/DIM_PIN_height_of_digits"
-																				android:inputType="number|numberPassword"
-																				android:ems="10"
-																				android:id="@+id/PIN_digit4_TextView"
-																				android:maxLength="1"
-																				android:layout_marginEnd="@dimen/DIM_PIN_margin_width_of_pin_digits"
-																				android:textAlignment="center"
-																				tools:ignore="SpeakableTextPresentCheck, LabelFor"
-																				android:background="@drawable/border_for_digit_field_pin_activity"
-																				android:scrollbars="none"
-																				android:importantForAutofill="no"
-																				android:textSize="34sp" />
+				<EditText
+					android:id="@+id/PIN_digit4_TextView"
+					android:layout_width="@dimen/DIM_PIN_width_of_digits"
+					android:layout_height="@dimen/DIM_PIN_height_of_digits"
+					android:layout_marginEnd="@dimen/DIM_PIN_margin_width_of_pin_digits"
+					android:background="@drawable/border_for_digit_field_pin_activity"
+					android:ems="10"
+					android:importantForAutofill="no"
+					android:inputType="number|numberPassword"
+					android:maxLength="1"
+					android:scrollbars="none"
+					android:textAlignment="center"
+					android:textSize="34sp"
+					tools:ignore="SpeakableTextPresentCheck, LabelFor" />
 
-												<EditText
-																				android:layout_width="@dimen/DIM_PIN_width_of_digits"
-																				android:layout_height="@dimen/DIM_PIN_height_of_digits"
-																				android:inputType="number|numberPassword"
-																				android:ems="10"
-																				android:id="@+id/PIN_digit5_TextView"
-																				android:maxLength="1"
-																				android:layout_marginEnd="@dimen/DIM_PIN_margin_width_of_pin_digits"
-																				android:textAlignment="center"
-																				tools:ignore="SpeakableTextPresentCheck, LabelFor"
-																				android:background="@drawable/border_for_digit_field_pin_activity"
-																				android:verticalScrollbarPosition="defaultPosition"
-																				android:importantForAutofill="no"
-																				android:textSize="34sp" />
-								</LinearLayout>
-				</LinearLayout>
+				<EditText
+					android:id="@+id/PIN_digit5_TextView"
+					android:layout_width="@dimen/DIM_PIN_width_of_digits"
+					android:layout_height="@dimen/DIM_PIN_height_of_digits"
+					android:background="@drawable/border_for_digit_field_pin_activity"
+					android:ems="10"
+					android:importantForAutofill="no"
+					android:inputType="number|numberPassword"
+					android:maxLength="1"
+					android:textAlignment="center"
+					android:textSize="34sp"
+					android:verticalScrollbarPosition="defaultPosition"
+					tools:ignore="SpeakableTextPresentCheck, LabelFor" />
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

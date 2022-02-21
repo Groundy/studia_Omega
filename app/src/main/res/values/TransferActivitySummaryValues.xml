@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="TransferSummarySUMMARY_BACK_BUTTON_TEXT">Anuluj</string>
+	<string name="TransferSummary_AUTH_BUTTON_TEXT">Autoryzuj</string>
+	<string name="TransferSummary_SenderAcc">Z rachunku: </string>
+	<string name="TransferSummary_ReceiverName">Nazwa odbiorcy:</string>
+	<string name="TransferSummary_ReceiverAcc">Numer rachunku odbiorcy:</string>
+	<string name="TransferSummary_Title">Tytuł przelewu:</string>
+	<string name="TransferSummary_Amount">Kwota:</string>
+
+	<dimen name="TransferSummary_infoFieldY">20dp</dimen>
+	<dimen name="TransferSummary_valueFieldY">50dp</dimen>
+	<dimen name="TransferSummary_spaceBetweenFields">15dp</dimen>
+
+	<!---->
+	<string name="TransferSummary_COM_senderAccNumberField">TransferSummary_COM_senderAccNumberField</string>
+	<string name="TransferSummary_COM_receiverAccNumberField">TransferSummary_COM_receiverAccNumberField</string>
+	<string name="TransferSummary_COM_receiverNameField">TransferSummary_COM_receiverNameField</string>
+	<string name="TransferSummary_COM_AmountField">TransferSummary_COM_AmountField</string>
+	<string name="TransferSummary_COM_TitleField">TransferSummary_COM_TitleField</string>
+
+</resources>

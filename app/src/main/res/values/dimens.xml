@@ -1,38 +1,34 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-				<dimen name="fab_margin">16dp</dimen>
+	<!-- Default screen margins, per the Android Design guidelines. -->
+	<dimen name="activity_horizontal_margin">20dp</dimen>
+	<dimen name="activity_vertical_margin">10dp</dimen>
+	<dimen name="fab_margin">16dp</dimen>
 
 
-				<!--Pin act-->
-				<dimen name="DIM_PIN_width_of_digits">48dp</dimen>
-				<dimen name="DIM_PIN_height_of_digits">80dp</dimen>
-				<dimen name="DIM_PIN_margin_width_of_pin_digits">20dp</dimen>
-				<dimen name="DIM_PIN_Title_Height">50dp</dimen>
-				<dimen name="DIM_PIN_Description_Height">50dp</dimen>
-				<dimen name="DIM_PIN_Title_Font_Size">30sp</dimen>
-				<dimen name="DIM_PIN_Description_Font_Size">20sp</dimen>
+	<!--Pin act-->
+	<dimen name="DIM_PIN_width_of_digits">48dp</dimen>
+	<dimen name="DIM_PIN_height_of_digits">80dp</dimen>
+	<dimen name="DIM_PIN_margin_width_of_pin_digits">20dp</dimen>
+	<dimen name="DIM_PIN_Title_Height">50dp</dimen>
+	<dimen name="DIM_PIN_Description_Height">50dp</dimen>
+	<dimen name="DIM_PIN_Title_Font_Size">30sp</dimen>
+	<dimen name="DIM_PIN_Description_Font_Size">20sp</dimen>
 
-				<!--Settings act-->
-				<dimen name="DIM_font_size_settings">16sp</dimen>
-				<dimen name="DIM_field_height_settings">50dp</dimen>
-				<dimen name="DIM_spacer_height_settings">1dp</dimen>
+	<!--Settings act-->
+	<dimen name="DIM_font_size_settings">16sp</dimen>
+	<dimen name="DIM_field_height_settings">50dp</dimen>
+	<dimen name="DIM_spacer_height_settings">1dp</dimen>
 
-				<!--Cancel auth dialog-->
-				<dimen name="DIM_CancelFingerAuthButton_HEIGHT">50dp</dimen>
-				<dimen name="DIM_CancelFingerAuthButton_WIDTH">50dp</dimen>
-				<dimen name="DIM_CancelFingerAuthText_WIDTH">300dp</dimen><!--Double button width-->
-				<dimen name="DIM_CancelFingerAuthText_HEIGHT">100dp</dimen><!--Double button width-->
-				<dimen name="DIM_CancelFingerAuthFontSize">20sp</dimen>
+	<!--Cancel auth dialog-->
+	<dimen name="DIM_CancelFingerAuthButton_HEIGHT">50dp</dimen>
+	<dimen name="DIM_CancelFingerAuthButton_WIDTH">50dp</dimen>
+	<dimen name="DIM_CancelFingerAuthText_WIDTH">300dp</dimen><!--Double button width-->
+	<dimen name="DIM_CancelFingerAuthText_HEIGHT">100dp</dimen><!--Double button width-->
+	<dimen name="DIM_CancelFingerAuthFontSize">20sp</dimen>
 
-				<!--basic transfer-->
-				<dimen name="DIM_basicTransfer_marginX">10dp</dimen>
-				<dimen name="DIM_basicTransfer_marginY">20dp</dimen>
-				<dimen name="DIM_basicTransfer_spacer_Y">10dp</dimen>
-				<dimen name="DIM_basicTransfer_inputFieldY">50dp</dimen>
-				<dimen name="DIM_basicTransfer_textFieldY">20dp</dimen>
-
-
+	<!--basic transfer-->
+	<dimen name="DIM_basicTransfer_spacer_Y">10dp</dimen>
+	<dimen name="DIM_basicTransfer_inputFieldY">50dp</dimen>
+	<dimen name="DIM_basicTransfer_textFieldY">20dp</dimen>
 
 </resources>

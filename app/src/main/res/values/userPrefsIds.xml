@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-				<bool name="PREF_turnNfcOnAppStart">false</bool>
-				<integer name="PREF_pin">0</integer> <!--tutaj jest 6 cyfr, pin musi byc 5 cyfrowy-->
-				<integer name="PREF_preferedAuthMethode">0</integer> <!--0-PIN, 1-Symbol, 2-fingerPrint-->
+	<bool name="PREF_turnNfcOnAppStart">false</bool>
+	<integer name="PREF_pin">0</integer> <!--tutaj jest 6 cyfr, pin musi byc 5 cyfrowy-->
+	<integer name="PREF_preferedAuthMethode">0</integer> <!--0-PIN, 1-Symbol, 2-fingerPrint-->
 </resources>

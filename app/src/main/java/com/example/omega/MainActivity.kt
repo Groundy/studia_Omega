@@ -1,6 +1,7 @@
 package com.example.omega
 
 import android.Manifest
+import android.app.Activity
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
@@ -38,7 +39,6 @@ import okhttp3.RequestBody
 import okhttp3.OkHttpClient
 import org.json.JSONObject
 
-
 class MainActivity : AppCompatActivity() {
 	private var nfcSignalCatchingIsOn: Boolean = false
 	private var nfcAdapter: NfcAdapter? = null
@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
 		//Utilites.savePref(this,R.integer.PREF_pin,0)
+		// ApiConsts.pathToSaveFolder = this.getExternalFilesDir(null).toString()
 		startActToSetPinIfTheresNoSavedPin()
 		initUIVariables()
 		TEST_addFunToButton()
@@ -58,19 +59,12 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun test(){
-		ApiConsts.pathToSaveFolder = this.getExternalFilesDir(null).toString()
-		TestClass.doTestRequestInThread()
 	}
 	private fun TEST_addFunToButton(){
 		findViewById<Button>(R.id.testButton).setOnClickListener{
 			test()
 		}
 	}
-
-
-
-
-
 
 
 
@@ -158,7 +152,15 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun processCode(code: Int) {
-		Utilites.showToast(this, "process: $code")
+		codeField.text.clear()
+		val transferData = Utilites.checkBlikCode(code)
+		if(transferData != null){
+			Utilites.showTransferSummaryActivity(this,transferData)
+		}
+		else{
+			Utilites.showResultActivity(this, R.string.GUI_result_WRONG_CODE)
+		}
+
 	}
 	private fun checkIfNfcIsTurnedOnPhone(): Boolean {
 		val deviceHasNfc = this.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
@@ -230,7 +232,6 @@ class MainActivity : AppCompatActivity() {
 			nfcSignalCatchingIsOn = true
 		}
 	}
-
 	private fun initUIVariables() {
 		initQR()
 		initCodeField()

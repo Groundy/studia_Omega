@@ -139,5 +139,40 @@ class Utilites {
 				else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
 			}
 		}
+		fun showResultActivity(activity: Activity, textIdToDisplay: Int){
+			val resultIntent = Intent(activity, ResultActivity::class.java)
+			val textToDisplay = activity.resources.getString(textIdToDisplay)
+			val textFieldName = activity.resources.getString(R.string.ACT_COM_RESULT_TEXT_FIELD_NAME)
+			resultIntent.putExtra(textFieldName,textToDisplay)
+			activity.startActivity(resultIntent)
+		}
+		fun showTransferSummaryActivity(activity: Activity, transferData: TransferData){
+			val resultIntent = Intent(activity, TransferSummary::class.java)
+
+			val senderAccField = activity.getString(R.string.TransferSummary_COM_senderAccNumberField)
+			val receiverNameField = activity.getString(R.string.TransferSummary_COM_receiverNameField)
+			val receiverAccField = activity.getString(R.string.TransferSummary_COM_receiverAccNumberField)
+			val titleField = activity.getString(R.string.TransferSummary_COM_TitleField)
+			val amountField = activity.getString(R.string.TransferSummary_COM_AmountField)
+
+			resultIntent.putExtra(senderAccField,transferData.senderAccNumber)
+			resultIntent.putExtra(receiverNameField,transferData.receiverName)
+			resultIntent.putExtra(receiverAccField,transferData.receiverAccNumber)
+			resultIntent.putExtra(titleField,transferData.title)
+			resultIntent.putExtra(amountField,transferData.amount.toString())
+
+			activity.startActivity(resultIntent)
+		}
+		fun checkBlikCode(code : Int) : TransferData?{
+			//TODO implement
+			val properCode = 111111
+			val isProperCode = code == properCode
+			if(isProperCode){
+				val transferData = TransferData("01234567890123456789012345","00001111222233334444555566","Mama","Za obiad" ,13.57)
+				return transferData
+			}
+			else
+				return null
+		}
 	}
 }
