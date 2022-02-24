@@ -2,6 +2,7 @@ package com.example.omega
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 
 class ActivityStarter {
 	companion object{
@@ -86,6 +87,17 @@ class ActivityStarter {
 			scanFingerActivityIntent.putExtra(descriptionFieldName,description)
 			val retCodeForActivity  = activity.resources.getInteger(R.integer.ACT_RETCODE_FINGER)
 			activity.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
+		}
+		 fun openBrowserForLogin(activity: Activity, authUrl : String, expectedState: String){
+			 val intent = Intent(activity, OAuth::class.java)
+			 val uriField = activity.resources.getString(R.string.ACT_COM_WEBVIEW_URI_FIELDNAME)
+			 val stateField = activity.resources.getString(R.string.ACT_COM_WEBVIEW_STATE_FIELDNAME)
+			 val returnCode = activity.resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)
+
+			 intent.putExtra(uriField,authUrl)
+			 intent.putExtra(stateField,expectedState)
+
+			 activity.startActivityForResult(intent,returnCode)
 		}
 	}
 }

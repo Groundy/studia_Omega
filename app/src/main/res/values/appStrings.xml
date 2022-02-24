@@ -36,6 +36,7 @@
 	<integer name="ACT_RETCODE_PIN_AUTH">1004</integer>
 	<integer name="ACT_RETCODE_PIN_SET">1005</integer>
 	<integer name="ACT_RETCODE_PIN_CHANGE">1006</integer>
+	<integer name="ACT_RETCODE_WEBVIEW">1007</integer>
 
 	<!--Activies comunications-->
 	<string name="ACT_COM_TRANSACTION_DETAILS_FIELD_NAME">Transaction details</string>
@@ -48,6 +49,9 @@
 	</string-array>
 	<string name="ACT_COM_PIN_ACT_PURPOSE_FIELDNAME">PIN_PURPOSE_FIELDNAME</string>
 	<string name="ACT_COM_RESULT_TEXT_FIELD_NAME">ACT_COM_RESULT_TEXT_FIELD_NAME</string>
+	<string name="ACT_COM_WEBVIEW_STATE_FIELDNAME">ACT_COM_WEBVIEW_STATE_FIELDNAME</string>
+	<string name="ACT_COM_WEBVIEW_URI_FIELDNAME">ACT_COM_WEBVIEW_URI_FIELDNAME</string>
+	<string name="ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME">ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME</string>
 
 
 	<!--Msg to users-->

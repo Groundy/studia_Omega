@@ -60,6 +60,8 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun test(){
+		val url = TestClass.doTestRequestInThread(this)
+		val a =3
 	}
 	private fun TEST_addFunToButton(){
 		findViewById<Button>(R.id.testButton).setOnClickListener{
