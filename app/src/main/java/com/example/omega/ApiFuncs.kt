@@ -25,6 +25,8 @@ import com.fasterxml.uuid.Generators
 
 class ApiFuncs {
 	companion object{
+		val requestTimeOut = 4000L
+
 		fun getUUID() : String{
 			val uuid = Generators.timeBasedGenerator().generate()
 			return uuid.toString()
@@ -180,6 +182,10 @@ class ApiFuncs {
 			} catch (e: Exception) {
 				e.printStackTrace()
 			}
+		}
+		fun getRandomStateValue() : String{
+			//TODO
+			return "q3g34gb@G@"
 		}
 	}
 }

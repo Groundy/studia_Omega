@@ -2,7 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 android {
-	compileSdkVersion 30
+	signingConfigs {
+        release {
+		storePassword 'simson123'
+            keyPassword 'simson123'
+        }
+    }
+    compileSdkVersion 30
 	buildToolsVersion "29.0.3"
 	defaultConfig {
 		applicationId "com.example.omega"

@@ -1,7 +1,6 @@
 package com.example.omega
 
 import android.Manifest
-import android.app.Activity
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
@@ -11,7 +10,6 @@ import android.nfc.NfcAdapter
 import android.nfc.NfcManager
 import android.nfc.Tag
 import android.os.Bundle
-import android.service.autofill.CharSequenceTransformation
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -22,7 +20,6 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import com.google.firebase.FirebaseApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -33,19 +30,12 @@ import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_settings.*
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody.Part.Companion.create
-import java.lang.Exception
-import okhttp3.RequestBody
-import okhttp3.OkHttpClient
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 	private var nfcSignalCatchingIsOn: Boolean = false
 	private var nfcAdapter: NfcAdapter? = null
 	private lateinit var goQRActivityButton: Button
 	private lateinit var codeField: EditText
-
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -60,9 +50,9 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun test(){
-		val url = TestClass.doTestRequestInThread(this)
-		val a =3
+		API_authorize(this).run()
 	}
+
 	private fun TEST_addFunToButton(){
 		findViewById<Button>(R.id.testButton).setOnClickListener{
 			test()
@@ -107,6 +97,20 @@ class MainActivity : AppCompatActivity() {
 					//TODO to tworzy infinity loop w ktorym urzytkownik do upadlego jest proszony o pin
 					Utilites.showToast(this,getString(R.string.USER_MSG_PIN_FAILED_TO_SET_NEW_PIN_DIFFRENT_PINS_INSERTED))
 					ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
+				}
+			}
+			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)->{
+				if(resultCode == RESULT_OK){
+					val codeFieldName = getString(R.string.ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME)
+					val code = data?.extras?.getString(codeFieldName)
+					if(code.isNullOrEmpty()){
+						Log.e("WookieTag","OAuth return null code")
+						return
+					}
+					UserData.authCode = code
+				}
+				else{
+					//todo
 				}
 			}
 		}

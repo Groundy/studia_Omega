@@ -33,20 +33,21 @@ class OAuth : AppCompatActivity() {
 		webView.webViewClient = object : WebViewClient() {
 			override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
 				request?.let {
-					val isProperRedirectUri = request.url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
+					val url = request.url
+					val isProperRedirectUri = url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
 					if(!isProperRedirectUri){
-						Log.e("WookieTag", "Failed to obtain code()[resuest not started with my app callBack], request [${request.url.toString()}]")
+						Log.e("WookieTag", "Failed to obtain code[resuest not started with my app callBack], request [${request.url.toString()}]")
 						finishThisActivity(false)
 					}
 
-					val responseState = request.url.getQueryParameter("state")// To prevent CSRF attacks, check that we got the same state value we sent,
+					val responseState = url.getQueryParameter("state")// To prevent CSRF attacks, check that we got the same state value we sent,
 					val responseStateCorrect = responseState == expectedRedirectState
 					if (!responseStateCorrect) {
 						Log.e("WookieTag", "Failed to obtain code[wrong state], request [${request.url.toString()}]")
 						finishThisActivity(false)
 					}
 
-					val code : String? = request.url.getQueryParameter("code")
+					val code : String? = url.getQueryParameter("code")
 					if (code == null) {
 						Log.e("WookieTag", "Failed to obtain code[no code], request [${request.url.toString()}]")
 						finishThisActivity(false)

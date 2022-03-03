@@ -156,4 +156,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	private fun fillListOfAccs(){
 
 	}
+	private fun finishThisActivity(success : Boolean, errorCode : String?){
+
+	}
 }

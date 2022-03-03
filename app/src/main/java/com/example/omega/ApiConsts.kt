@@ -3,6 +3,11 @@ package com.example.omega
 import android.content.Context
 
 class ApiConsts {
+	enum class scopeValues {AIS,AIS_ACC,PIS}
+	enum class responseField{
+		token_type, access_token, refresh_token, expires_in, scope, scope_details, responseHeader
+	}
+
 	companion object{
 		val PREFERED_CHARSET = "utf-8"
 		val PREFERED_ENCODING = "gzip"
@@ -11,22 +16,6 @@ class ApiConsts {
 		val appSecret_ALIOR = "M4uV4nK6lY5tP0vO7vC0cF8iR3rD4sN2wV6yM1aX3rU6uG8nS7"
 		val userId_ALIOR = "6af374ae-480e-4631-b70c-4d8b2862e311"
 		val REDIRECT_URI = "https://Omega:8080/auth/oauth2/callback"
-
-		enum class scopeValues(val printableName: String) {
-			AIS("ais"),
-			AIS_ACC("ais-accounts"),
-			PIS("pis")
-		}
-		val TOKEN_TYPE = "Bearer"
-
-
-		val testAliorBankNr = "PL63249000050000400030900682"
-		val testAliborBrank = "Alior Bank - Individual Customer"
-		val testAliorUserName = "22058375"
-		val testAliorState = userId_ALIOR
-
-
-
 		var pathToSaveFolder = ""
 	}
 }
