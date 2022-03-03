@@ -183,9 +183,14 @@ class ApiFuncs {
 				e.printStackTrace()
 			}
 		}
-		fun getRandomStateValue() : String{
-			//TODO
-			return "q3g34gb@G@"
+		fun getRandomStateValue(length: Int = 13) : String{
+			val availableChars="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			var toRet : String = ""
+			repeat(length){
+				val randomIndex = Random().nextInt(length)
+				toRet += availableChars[randomIndex]
+			}
+			return toRet
 		}
 	}
 }
