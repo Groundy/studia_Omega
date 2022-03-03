@@ -30,6 +30,7 @@ import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_settings.*
 import okhttp3.*
+import okhttp3.internal.userAgent
 
 class MainActivity : AppCompatActivity() {
 	private var nfcSignalCatchingIsOn: Boolean = false
@@ -108,6 +109,10 @@ class MainActivity : AppCompatActivity() {
 						return
 					}
 					UserData.authCode = code
+					API_getToken(this).run()
+					API_getAccounts(this).run()
+					val nb = UserData.accList?.get(0)?.accNumber!!
+					API_getPaymentAccDetails(this,nb).run()
 				}
 				else{
 					//todo
