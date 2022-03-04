@@ -20,13 +20,10 @@ import io.jsonwebtoken.security.Keys
 import java.security.Key
 import com.fasterxml.uuid.Generators
 
-
-
-
 class ApiFuncs {
 	companion object{
-		val requestTimeOut = 4000L
-
+		val requestTimeOut = 4000L * 50L
+		
 		fun getUUID() : String{
 			val uuid = Generators.timeBasedGenerator().generate()
 			return uuid.toString()
