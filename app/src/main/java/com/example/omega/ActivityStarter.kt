@@ -34,21 +34,10 @@ class ActivityStarter {
 			resultIntent.putExtra(textFieldName,textToDisplay)
 			activity.startActivity(resultIntent)
 		}
-		fun startTransferSummaryActivity(activity: Activity, transferData: TransferData){
+		fun startTransferSummaryActivity(activity: Activity, serializedTransferDataObj: String){
 			val resultIntent = Intent(activity, TransferSummary::class.java)
-
-			val senderAccField = activity.getString(R.string.TransferSummary_COM_senderAccNumberField)
-			val receiverNameField = activity.getString(R.string.TransferSummary_COM_receiverNameField)
-			val receiverAccField = activity.getString(R.string.TransferSummary_COM_receiverAccNumberField)
-			val titleField = activity.getString(R.string.TransferSummary_COM_TitleField)
-			val amountField = activity.getString(R.string.TransferSummary_COM_AmountField)
-
-			resultIntent.putExtra(senderAccField,transferData.senderAccNumber)
-			resultIntent.putExtra(receiverNameField,transferData.receiverName)
-			resultIntent.putExtra(receiverAccField,transferData.receiverAccNumber)
-			resultIntent.putExtra(titleField,transferData.title)
-			resultIntent.putExtra(amountField,transferData.amount.toString())
-
+			val serializedObjField = activity.getString(R.string.TransferSummary_COM_serializedData)
+			resultIntent.putExtra(serializedObjField,serializedTransferDataObj)
 			activity.startActivity(resultIntent)
 		}
 		fun startAuthActivity(context : Activity, description : String?, forcedMethodeCode : Int?){
@@ -88,7 +77,7 @@ class ActivityStarter {
 			val retCodeForActivity  = activity.resources.getInteger(R.integer.ACT_RETCODE_FINGER)
 			activity.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
 		}
-		 fun openBrowserForLogin(activity: Activity, authUrl : String, expectedState: String){
+		fun openBrowserForLogin(activity: Activity, authUrl : String, expectedState: String){
 			 val intent = Intent(activity, OAuth::class.java)
 			 val uriField = activity.resources.getString(R.string.ACT_COM_WEBVIEW_URI_FIELDNAME)
 			 val stateField = activity.resources.getString(R.string.ACT_COM_WEBVIEW_STATE_FIELDNAME)

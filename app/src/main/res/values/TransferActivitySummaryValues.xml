@@ -13,10 +13,7 @@
 	<dimen name="TransferSummary_spaceBetweenFields">15dp</dimen>
 
 	<!---->
-	<string name="TransferSummary_COM_senderAccNumberField">TransferSummary_COM_senderAccNumberField</string>
-	<string name="TransferSummary_COM_receiverAccNumberField">TransferSummary_COM_receiverAccNumberField</string>
-	<string name="TransferSummary_COM_receiverNameField">TransferSummary_COM_receiverNameField</string>
-	<string name="TransferSummary_COM_AmountField">TransferSummary_COM_AmountField</string>
-	<string name="TransferSummary_COM_TitleField">TransferSummary_COM_TitleField</string>
+	<string name="TransferSummary_COM_serializedData">TransferSummary_COM_serializedData</string>
+
 
 </resources>

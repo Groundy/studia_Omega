@@ -16,7 +16,12 @@
 
 	<string name="USER_MSG_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER">Numer odbiorcy musi mieć 26 cyfr.</string>
 	<string name="USER_MSG_basicTransfer_Amount_too_hight">Kwota przelewu jest większa niż dostępne na rachunku środki.</string>
+	<string name="USER_MSG_basicTransfer_Amount_zero">Kwota przelewu nie musi być większa niż zero.</string>
 	<string name="USER_MSG_basicTransfer_wrong_receiver_name">Nazwa odbiorca musi mieć między 3 a 50 znaków</string>
 	<string name="USER_MSG_basicTransfer_wrong_title">Tytuł przelewu musi mieć między 3 a 50 znaków</string>
+
+	<string name="USER_MSG_basicTransfer_error_reciving_acc_balance">Błąd pobierania informacji o środkach na rachunku, płatność niemożliwa.</string>
+	<string name="USER_MSG_basicTransfer_unkownError">Nieznany błąd, płatność niemożliwa.</string>
+
 
 </resources>

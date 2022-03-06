@@ -38,11 +38,14 @@
 					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
 					android:text="@string/GUI_basicTransfer_chooseAccountTextView" />
 
-				<TextView
-					android:id="@+id/textView"
+				<Spinner
+					android:id="@+id/basicTransfer_accountList_Spinner"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
-					android:text="TextView" />
+					android:dropDownWidth="300dp"
+					android:scrollbarSize="40dp"
+					android:spinnerMode="dropdown"
+					tools:ignore="SpeakableTextPresentCheck" />
 
 				<Space
 					android:layout_width="match_parent"

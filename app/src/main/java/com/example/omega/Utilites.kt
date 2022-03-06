@@ -16,6 +16,8 @@ fun getSharedProperties(activity: Activity) : SharedPreferences{
 
 class Utilites {
 	companion object{
+		val TagProduction = "WookieTag"
+		val TagTest = "WookieTest"
 		fun showMsg(activity: Activity, stringToDisplay:String) {
 			val dialogBuilder = AlertDialog.Builder(activity)
 			val dialogInterfaceVar = DialogInterface.OnClickListener { p0, p1 -> p0.dismiss() }
@@ -110,7 +112,7 @@ class Utilites {
 			val properCode = 111111
 			val isProperCode = code == properCode
 			if(isProperCode){
-				val transferData = TransferData("01234567890123456789012345","00001111222233334444555566","Mama","Za obiad" ,13.57)
+				val transferData = TransferData("01234567890123456789012345","00001111222233334444555566","Jan Kowalski","zwrot pożyczki" ,13.57 ,  "PLN")
 				return transferData
 			}
 			else

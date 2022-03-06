@@ -16,24 +16,15 @@ class TransferSummary : AppCompatActivity() {
 	}
 
 	private fun setUpGUI() {
-		val senderAccNumberField = getString(R.string.TransferSummary_COM_senderAccNumberField)
-		val receiverAccNumberField = getString(R.string.TransferSummary_COM_receiverAccNumberField)
-		val receiverNameField = getString(R.string.TransferSummary_COM_receiverNameField)
-		val titleField = getString(R.string.TransferSummary_COM_TitleField)
-		val amountField = getString(R.string.TransferSummary_COM_AmountField)
+		val transferDataSerializedField = getString(R.string.TransferSummary_COM_serializedData)
+		val transferDataSerialized = intent.getStringExtra(transferDataSerializedField)
+		transferData = TransferData(transferDataSerialized!!)
 
-		val senderAccNumber = intent.getStringExtra(senderAccNumberField)
-		val receiverAccNumber = intent.getStringExtra(receiverAccNumberField)
-		val receiverName = intent.getStringExtra(receiverNameField)
-		val title = intent.getStringExtra(titleField)
-		val amount = intent.getStringExtra(amountField)
-		transferData = TransferData(senderAccNumber,receiverAccNumber,receiverName,title,amount?.toDouble())
-
-		findViewById<TextView>(R.id.transferSummary_amount).text = "$amount PLN"
-		findViewById<TextView>(R.id.transferSummary_receAcc).text = receiverAccNumber
-		findViewById<TextView>(R.id.transferSummary_receName).text = receiverName
-		findViewById<TextView>(R.id.transferSummary_senderAcc).text = senderAccNumber
-		findViewById<TextView>(R.id.transferSummary_title).text = title
+		findViewById<TextView>(R.id.transferSummary_amount).text = "${transferData.amount} ${transferData.currency}"
+		findViewById<TextView>(R.id.transferSummary_receAcc).text = "${transferData.receiverAccNumber}"
+		findViewById<TextView>(R.id.transferSummary_receName).text = "${transferData.receiverName}"
+		findViewById<TextView>(R.id.transferSummary_senderAcc).text = "${transferData.senderAccNumber}"
+		findViewById<TextView>(R.id.transferSummary_title).text = "${transferData.title}"
 
 		findViewById<Button>(R.id.TransferSummary_cancel_Button).setOnClickListener{cancelClicked()}
 		findViewById<Button>(R.id.TransferSummary_auth_Button).setOnClickListener{authClicked()}
@@ -42,8 +33,8 @@ class TransferSummary : AppCompatActivity() {
 		this.finish()
 	}
 	private fun authClicked(){
-		val des  = transferData.toString()
-		ActivityStarter.startAuthActivity(this,des,null)
+		val description  = transferData.toString()
+		ActivityStarter.startAuthActivity(this,description,null)
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -4,10 +4,6 @@ import android.content.Context
 
 class ApiConsts {
 	enum class scopeValues {AIS,AIS_ACC,PIS}
-	enum class responseField{
-		token_type, access_token, refresh_token, expires_in, scope, scope_details, responseHeader
-	}
-
 	companion object{
 		val PREFERED_CHARSET = "utf-8"
 		val PREFERED_ENCODING = "gzip"

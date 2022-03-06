@@ -17,28 +17,23 @@ class API_getToken {
 		this.parentActivity = activity
 	}
 
-	fun run(){
-		var tmpTokenStruct : UserData.AccessTokenStruct? = null
-
+	fun run() : Boolean{
+		var success = false
 		val thread = Thread{
 			try {
-				tmpTokenStruct = getToken()
+				val responseJson = getTokenJson()
+				if(responseJson != null)
+					success = parseJsonResponse(responseJson)
 			} catch (e: Exception) {
 				Log.e("WookieTag",e.toString())
 			}
 		}
 		thread.start()
 		thread.join(ApiFuncs.requestTimeOut)
-		if(tmpTokenStruct != null)
-			UserData.accessTokenStruct = tmpTokenStruct
-		else{
-			Log.e("WookieTag","Error in obtainging token")
-			//Comunicate error
-		}
+		return success
 	}
 
-
-	private fun getToken() : UserData.AccessTokenStruct?{
+	private fun getTokenJson() : JSONObject?{
 		val request = getTokenRequest()
 		val response = OkHttpClient().newCall(request).execute()
 
@@ -53,33 +48,51 @@ class API_getToken {
 		}
 
 		try {
-			val responseJson = JSONObject(bodyStr)
-		    val tokenType = responseJson.get(ApiConsts.responseField.token_type.toString())
-			val accessToken = responseJson.get(ApiConsts.responseField.access_token.toString())
-			val refresToken = responseJson.get(ApiConsts.responseField.refresh_token.toString())
-			val expiresIn = responseJson.get(ApiConsts.responseField.expires_in.toString())
-			val scope = responseJson.get(ApiConsts.responseField.scope.toString())
-			val scopeDetails = responseJson.get(ApiConsts.responseField.scope_details.toString())
-			val responseHeader = responseJson.get(ApiConsts.responseField.responseHeader.toString())
-			val dataOk = !(tokenType.toString().isNullOrEmpty() || accessToken.toString().isNullOrEmpty())
-
-			if(dataOk){
-				return UserData.AccessTokenStruct()
-					.setTokenContent(accessToken.toString())
-					.setTokenType(tokenType.toString())
-			}
-			else
-				return null
-
+			return JSONObject(bodyStr)
 		}catch (e : Exception){
 			Log.e("WookieTag",e.toString())
 			return null
 		}
 	}
+	private fun parseJsonResponse(responseJson : JSONObject) : Boolean{
+		val tokenType = responseJson.get("token_type")
+		val accessTokenCont = responseJson.get("access_token")
+		val refreshToken = responseJson.get("refresh_token")
+		val expiresIn = responseJson.get("expires_in")
+		val scope = responseJson.get("scope")
+		val scopeDetails = responseJson.getJSONObject("scope_details")
+		val responseHeader = responseJson.get("responseHeader")
+
+
+		val scopeToSet = when(scope){
+			"ais" -> ApiConsts.scopeValues.AIS
+			"ais-accounts" ->ApiConsts.scopeValues.AIS_ACC
+			"pis" -> ApiConsts.scopeValues.PIS
+			else -> null
+		}
+		val expirationDate = scopeDetails.get("scopeTimeLimit").toString()
+
+		val accountsToSet = ArrayList<UserData.PaymentAccount>()
+		val accArray = scopeDetails.getJSONArray("privilegeList")
+		for (i in 0 until accArray.length()){
+			val accNumber = accArray.getJSONObject(i).getString("accountNumber")
+			accountsToSet.add(UserData.PaymentAccount(accNumber))
+		}
+
+		val accessToken = UserData.AccessTokenStruct()
+			.setTokenContent(accessTokenCont.toString())
+			.setTokenType(tokenType.toString())
+			.setTokenScope(scopeToSet)
+			.setTokenExpirationTime(expirationDate)
+			.setRefreshToken(refreshToken as String)
+			.addAccounts(accountsToSet)
+		UserData.accessTokenStruct = accessToken
+
+		return true
+	}
 
 	private fun getTokenRequest() : Request {
 		val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/token"
-		val mediaType : MediaType = ApiConsts.CONTENT_TYPE.toMediaType()
 		val uuidStr = ApiFuncs.getUUID()
 		val currentTimeStr = ApiFuncs.getCurrentTimeStr()
 
@@ -97,20 +110,7 @@ class API_getToken {
 			.put("client_id",ApiConsts.userId_ALIOR)
 			.put("client_secret",ApiConsts.appSecret_ALIOR)
 
-		val requestBody = requestBodyJson.toString().toByteArray().toRequestBody(mediaType)
-		val request = Request.Builder()
-			.url(url)
-			.post(requestBody)
-			.addHeader("x-ibm-client-id", ApiConsts.userId_ALIOR)
-			.addHeader("x-ibm-client-secret", ApiConsts.appSecret_ALIOR)
-			.addHeader("accept-encoding", ApiConsts.PREFERED_ENCODING)
-			.addHeader("accept-language", ApiConsts.PREFERED_LAUNGAGE)
-			.addHeader("accept-charset", ApiConsts.PREFERED_CHARSET)
-			//.addHeader("x-jws-signature", ApiFuncs.getJWS(bodyStr))
-			.addHeader("x-request-id", uuidStr)
-			.addHeader("content-type", ApiConsts.CONTENT_TYPE)
-			.addHeader("accept", ApiConsts.CONTENT_TYPE)
-			.build()
+		val request = ApiFuncs.bodyToRequest(url, requestBodyJson, uuidStr)
 		return request
 	}
 }

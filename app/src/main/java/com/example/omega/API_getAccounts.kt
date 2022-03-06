@@ -14,20 +14,17 @@ import kotlin.concurrent.thread
 
 class API_getAccounts {
 	private lateinit var activity : Activity
-	enum class responseFields{
-		accounts, accountNumber, accountType, accountTypeName
-	}
 	constructor(activity: Activity){
 		this.activity = activity
 	}
 
 	fun run() {
-		var accountListTmp : ArrayList<UserData.Account>? = null
+		var accountListTmp : ArrayList<UserData.PaymentAccount>? = null
 		val thread = Thread{
 			try {
 				accountListTmp = getAccInfo()
 				if(accountListTmp != null){
-					UserData.accList = accountListTmp
+					UserData.accessTokenStruct?.listOfAccounts = accountListTmp
 				}
 				else{
 					//todo
@@ -42,7 +39,6 @@ class API_getAccounts {
 
 	private fun getAccountsRequest() : Request {
 		val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccounts"
-		val mediaType : MediaType = ApiConsts.CONTENT_TYPE.toMediaType()
 		val uuidStr = ApiFuncs.getUUID()
 		val currentTimeStr = ApiFuncs.getCurrentTimeStr()
 
@@ -59,25 +55,12 @@ class API_getAccounts {
 				.put("directPsu", false)
 		)
 
-		val requestBody = requestBodyJson.toString().toByteArray().toRequestBody(mediaType)
-		val request = Request.Builder()
-			.url(url)
-			.post(requestBody)
-			.addHeader("x-ibm-client-id", ApiConsts.userId_ALIOR)
-			.addHeader("x-ibm-client-secret", ApiConsts.appSecret_ALIOR)
-			.addHeader("accept-encoding", ApiConsts.PREFERED_ENCODING)
-			.addHeader("accept-language", ApiConsts.PREFERED_LAUNGAGE)
-			.addHeader("accept-charset", ApiConsts.PREFERED_CHARSET)
-			.addHeader("AUTHORIZATION", authFieldValue)
-			//.addHeader("x-jws-signature", ApiFuncs.getJWS(bodyStr))
-			.addHeader("x-request-id", uuidStr)
-			.addHeader("content-type", ApiConsts.CONTENT_TYPE)
-			.addHeader("accept", ApiConsts.CONTENT_TYPE)
-			.build()
+		val additionalHeaderList = arrayListOf<Pair<String,String>>(Pair("AUTHORIZATION",authFieldValue))
+		val request = ApiFuncs.bodyToRequest(url, requestBodyJson, uuidStr, additionalHeaderList)
 		return request
 	}
 
-	private fun getAccInfo() : ArrayList<UserData.Account>?{
+	private fun getAccInfo() : ArrayList<UserData.PaymentAccount>?{
 		val request = getAccountsRequest()
 		val response = OkHttpClient().newCall(request).execute()
 
@@ -93,13 +76,12 @@ class API_getAccounts {
 
 		try {
 			val responseJson = JSONObject(bodyStr)
-			val accountsArray = responseJson.getJSONArray(responseFields.accounts.toString())
-			var accountList = ArrayList<UserData.Account>()
+			val accountsArray = responseJson.getJSONArray("accounts")
+			var accountList = ArrayList<UserData.PaymentAccount>()
 			for (i in 0 until accountsArray.length()){
 				val accObj =  accountsArray.getJSONObject(i)
-				val accountNumber = accObj.getString(responseFields.accountNumber.toString())
-				val accType = accObj.getString(responseFields.accountTypeName.toString())
-				val tmpAcc = UserData.Account().setNumber(accountNumber).setType(accType)
+				val accountNumber = accObj.getString("accountNumber")
+				val tmpAcc = UserData.PaymentAccount(accountNumber)
 				accountList.add(tmpAcc)
 			}
 			return accountList

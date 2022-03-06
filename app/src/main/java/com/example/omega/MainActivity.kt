@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_settings.*
 import okhttp3.*
 import okhttp3.internal.userAgent
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 	private var nfcSignalCatchingIsOn: Boolean = false
@@ -49,7 +50,9 @@ class MainActivity : AppCompatActivity() {
 		TEST_addFunToButton()
 		test()
 	}
-
+	private fun test_afterAuthorize(){
+		ActivityStarter.startTransferActivityFromMenu(this)
+	}
 	private fun test(){
 		API_authorize(this).run()
 	}
@@ -109,27 +112,8 @@ class MainActivity : AppCompatActivity() {
 						return
 					}
 					UserData.authCode = code
-					val TTTTTTTTTTTTTTTTTTTTTTTTTTTTT = UserData
 					API_getToken(this).run()
-					if(UserData.accessTokenStruct == null || UserData.accessTokenStruct?.tokenContent.isNullOrEmpty()){
-						Log.e("WookieTag", "Failed to obtain auth token from auth code!")
-						return
-					}
-					API_getAccounts(this).run()
-					if(UserData.accList == null){
-						Log.e("WookieTag", "Failed to obtain list of payment accounts!")
-						return
-					}
-					if(UserData.accList?.size == 0){
-						Log.e("WookieTag", "There isn't any payment account in user bank account!")
-						return
-					}
-					else{
-						Log.i("WookieTag", "There are ${UserData?.accList?.size} payment accounts on user bank account.")
-						return
-					}
-					val nb = UserData.accList?.get(0)?.accNumber!!
-					API_getPaymentAccDetails(this,nb).run()
+					test_afterAuthorize()
 				}
 				else{
 					//todo
@@ -174,11 +158,12 @@ class MainActivity : AppCompatActivity() {
 	private fun processCode(code: Int) {
 		codeField.text.clear()
 		val transferData = Utilites.checkBlikCode(code)
-		if(transferData != null)
-			ActivityStarter.startTransferSummaryActivity(this,transferData)
-		else
+		if(transferData == null){
 			ActivityStarter.startResultActivity(this, R.string.GUI_result_WRONG_CODE)
+			return
+		}
 
+		ActivityStarter.startTransferSummaryActivity(this,transferData.serialize()!!)
 	}
 	private fun checkIfNfcIsTurnedOnPhone(): Boolean {
 		val deviceHasNfc = this.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
