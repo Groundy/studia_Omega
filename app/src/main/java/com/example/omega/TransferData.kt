@@ -37,7 +37,7 @@ class TransferData {
 	}
 	fun serialize() : String?{
 		if(!validateData()){
-			Log.e(Utilites.TagTest, "Error in serilization transferDataObj")
+			Log.e(Utilites.TagProduction, "Error in serilization transferDataObj")
 			return null
 		}
 
@@ -62,7 +62,7 @@ class TransferData {
 			currency = parts[5]
 		}
 		catch (e : Exception){
-			Log.e(Utilites.TagTest, "Error in creating transferDataObject from serialized data! [${e.toString()}]")
+			Log.e(Utilites.TagProduction, "Error in creating transferDataObject from serialized data! [${e.toString()}]")
 		}
 	}
 	fun toJsonObject() : JSONObject{

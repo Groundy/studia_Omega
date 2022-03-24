@@ -135,7 +135,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(!properAmount)
 			return resources.getString(R.string.USER_MSG_basicTransfer_Amount_too_hight)
 
-		val amountInserted = amountEditText.text.toString().toDouble()
+		val amountInserted = amountEditText.text.toString().toDoubleOrNull()
 		if(amountInserted == null || amountInserted == 0.0)
 			return getString(R.string.USER_MSG_basicTransfer_Amount_zero)
 

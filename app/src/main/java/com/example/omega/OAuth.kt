@@ -36,20 +36,20 @@ class OAuth : AppCompatActivity() {
 					val url = request.url
 					val isProperRedirectUri = url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
 					if(!isProperRedirectUri){
-						Log.e("WookieTag", "Failed to obtain code[resuest not started with my app callBack], request [${request.url.toString()}]")
+						Log.e(Utilites.TagProduction, "Failed to obtain code[resuest not started with my app callBack], request [${request.url.toString()}]")
 						finishThisActivity(false)
 					}
 
 					val responseState = url.getQueryParameter("state")// To prevent CSRF attacks, check that we got the same state value we sent,
 					val responseStateCorrect = responseState == expectedRedirectState
 					if (!responseStateCorrect) {
-						Log.e("WookieTag", "Failed to obtain code[wrong state], request [${request.url.toString()}]")
+						Log.e(Utilites.TagProduction, "Failed to obtain code[wrong state], request [${request.url.toString()}]")
 						finishThisActivity(false)
 					}
 
 					val code : String? = url.getQueryParameter("code")
 					if (code == null) {
-						Log.e("WookieTag", "Failed to obtain code[no code], request [${request.url.toString()}]")
+						Log.e(Utilites.TagProduction, "Failed to obtain code[no code], request [${request.url.toString()}]")
 						finishThisActivity(false)
 					}
 					finishThisActivity(true, code)
@@ -63,13 +63,13 @@ class OAuth : AppCompatActivity() {
 		val stateField = resources.getString(R.string.ACT_COM_WEBVIEW_STATE_FIELDNAME)
 		uri = intent.getStringExtra(uriField).toString()
 		if(uri == null){
-			Log.e("WookieTag", "Failed to authorize, wrong Uri passed to activity")
+			Log.e(Utilites.TagProduction, "Failed to authorize, wrong Uri passed to activity")
 			finishThisActivity(false)
 		}
 
 		expectedRedirectState = intent.getStringExtra(stateField).toString()
 		if(expectedRedirectState == null){
-			Log.e("WookieTag", "Failed to authorize, Uri passed to activity has no state parameter")
+			Log.e(Utilites.TagProduction, "Failed to authorize, Uri passed to activity has no state parameter")
 			finishThisActivity(false)
 		}
 

@@ -1,41 +1,32 @@
 package com.example.omega
 
-import android.app.Activity
-import android.os.AsyncTask
 import android.util.Log
-import kotlinx.coroutines.*
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.internal.wait
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.Exception
 
 class API_authorize {
-	private lateinit var parentActivity : Activity
-	constructor(activity: Activity){
-		this.parentActivity = activity
-	}
-	private enum class bankJsonRespFields {aspspRedirectUri}
+	var permissionsList : List<ApiConsts.priviliges>? = null
+	fun run(stateValue : String,  permissions : List<ApiConsts.priviliges>? = null) : String?{
+		var authUrl : String? = null
+		permissionsList = permissions
 
-	fun run(){
 		val thread = Thread{
 			try {
-				startAuthorize()
+				authUrl = startAuthorize(stateValue)
 			} catch (e: Exception) {
 				e.printStackTrace()
 			}
 		}
 		thread.start()
 		thread.join(ApiFuncs.requestTimeOut)
+		return authUrl
 	}
 
-	private fun startAuthorize() : String?{
-		val state = ApiFuncs.getRandomStateValue()
-		val request = getAuthRequest(state)
+	private fun startAuthorize(stateValue : String) : String?{
+		val request = getAuthRequest(stateValue)
 		val response = OkHttpClient().newCall(request).execute()
 
 		val responseCodeOk = response.code == 200
@@ -43,17 +34,16 @@ class API_authorize {
 			try {
 				val responseBody = response.body?.string()
 				val responseJsonObject = JSONObject(responseBody)
-				val fieldName = bankJsonRespFields.aspspRedirectUri.toString()
+				val fieldName = "aspspRedirectUri"
 				val authUrl = responseJsonObject.get(fieldName).toString()
-				ActivityStarter.openBrowserForLogin(parentActivity,authUrl, state)
 				return authUrl
 			}catch (e : Exception){
-				Log.e("WookieTag", e.toString())
+				Log.e(Utilites.TagProduction, e.toString())
 				return null
 			}
 		}
 		else{
-			Log.e("WookieTag", response.body?.byteStream().toString())
+			Log.e(Utilites.TagProduction, response.body?.byteStream().toString())
 			return null
 		}
 	}
@@ -61,7 +51,7 @@ class API_authorize {
 		val uuidStr = ApiFuncs.getUUID()
 		val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/authorize"
 		val currentTimeStr = ApiFuncs.getCurrentTimeStr()
-		val endValidityTimeStr = ApiFuncs.getCurrentTimeStr(300)
+		val endValidityTimeStr = ApiFuncs.getCurrentTimeStr(65*60)
 
 		val requestBodyJson = JSONObject()
 			.put("requestHeader",JSONObject()
@@ -69,32 +59,57 @@ class API_authorize {
 				.put("userAgent", ApiFuncs.getUserAgent())
 				.put("ipAddress", ApiFuncs.getPublicIPByInternetService())
 				.put("sendDate", currentTimeStr)
-				.put("tppId", "requiredValueThatIsNotValidated")
+				.put("tppId", ApiConsts.TTP_ID)
 				.put("isCompanyContext", false)
 			)
 			.put("response_type","code")
 			.put("client_id",ApiConsts.userId_ALIOR)
 			.put("scope","ais")
-			.put("scope_details",JSONObject()
-				.put("privilegeList", JSONArray()
-					.put(JSONObject()
-						//.put("ais-accounts:getAccounts",JSONObject()
-						//	.put("scopeUsageLimit","multiple")
-						//)
-						.put("ais:getAccount",JSONObject()
-							.put("scopeUsageLimit","multiple")
-						)
-					)
-				)
-				.put("scopeGroupType", "ais")
-				.put("consentId", "486153511763968")
-				.put("scopeTimeLimit", endValidityTimeStr)
-				.put("throttlingPolicy", "psd2Regulatory")
-			)
+			.put("scope_details",getScopeDetailsObject(endValidityTimeStr))
 			.put("redirect_uri",ApiConsts.REDIRECT_URI)
 			.put("state",stateStr)
+		return ApiFuncs.bodyToRequest(url, requestBodyJson,uuidStr)
+	}
+	private fun getScopeDetailsObject(expTimeStr : String, permissions : List<ApiConsts.priviliges>? = null) : JSONObject{
+		var permissionListArray = JSONArray()
+		if(!permissions.isNullOrEmpty()){
+			var toAddObject = JSONObject()
 
-		val request = ApiFuncs.bodyToRequest(url, requestBodyJson,uuidStr)
-		return request
+			if(permissions.contains(ApiConsts.priviliges.accountsHistory)){
+				toAddObject.put("ais:getTransactionsDone",JSONObject()
+					.put("scopeUsageLimit","multiple")
+					.put("maxAllowedHistoryLong",11)
+				)
+			}
+			if(permissions.contains(ApiConsts.priviliges.accountsDetails)){
+				toAddObject.put("ais:getAccount",JSONObject()
+					.put("scopeUsageLimit","multiple")
+				)
+			}
+
+			permissionListArray.put(toAddObject)
+		}
+		else{
+			//test
+			permissionListArray.put(JSONObject()
+				/*
+				.put("ais:getAccount",JSONObject()
+					.put("scopeUsageLimit","multiple")
+				)
+				*/
+				.put("ais:getTransactionsDone",JSONObject()
+					.put("scopeUsageLimit","multiple")
+					.put("maxAllowedHistoryLong",11)
+				)
+			)
+		}
+
+		var scopeDetailsObjToRet = JSONObject()
+			.put("privilegeList", permissionListArray)
+			.put("scopeGroupType", "ais")
+			.put("consentId", "123456789")
+			.put("scopeTimeLimit", expTimeStr)
+			.put("throttlingPolicy", "psd2Regulatory")
+		return scopeDetailsObjToRet
 	}
 }

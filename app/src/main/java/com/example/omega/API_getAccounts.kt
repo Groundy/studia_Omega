@@ -30,7 +30,7 @@ class API_getAccounts {
 					//todo
 				}
 			} catch (e: Exception) {
-				Log.e("WookieTag",e.toString())//todo
+				Log.e(Utilites.TagProduction,e.toString())//todo
 			}
 		}
 		thread.start()
@@ -86,7 +86,7 @@ class API_getAccounts {
 			}
 			return accountList
 		}catch (e : Exception){
-			Log.e("WookieTag",e.toString())
+			Log.e(Utilites.TagProduction,e.toString())
 			return null
 		}
 	}

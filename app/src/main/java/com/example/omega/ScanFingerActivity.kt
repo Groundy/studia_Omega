@@ -30,11 +30,11 @@ class ScanFingerActivity : AppCompatActivity() {
 		val authCallBack = object : BiometricPrompt.AuthenticationCallback() {
 			override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
 				super.onAuthenticationError(errorCode, errString)
-				Log.e("WookieTag","Authentication error code: $errorCode")
+				Log.e(Utilites.TagProduction,"Authentication error code: $errorCode")
 
 				when (errorCode) {
 					BiometricPrompt.ERROR_NEGATIVE_BUTTON -> {
-						Log.i("WookieTag", "User wants to other auth methode than fingerPrint")
+						Log.i(Utilites.TagProduction, "User wants to other auth methode than fingerPrint")
 						finishActivity(false, errorCode)
 					}
 					BiometricPrompt.ERROR_USER_CANCELED -> showCancelDialog(this@ScanFingerActivity)
@@ -43,12 +43,12 @@ class ScanFingerActivity : AppCompatActivity() {
 			}
 			override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
 				super.onAuthenticationSucceeded(result)
-				Log.i("WookieTag","Auth by fingerPrint was correct")
+				Log.i(Utilites.TagProduction,"Auth by fingerPrint was correct")
 				finishActivity(true,0)
 			}
 			override fun onAuthenticationFailed() {
 				super.onAuthenticationFailed()
-				Log.i("WookieTag","Auth by fingerPrint was incorrect")
+				Log.i(Utilites.TagProduction,"Auth by fingerPrint was incorrect")
 			}
 		}
 		val biometricPrompt = BiometricPrompt(this@ScanFingerActivity, mainExecutor, authCallBack)
@@ -59,17 +59,17 @@ class ScanFingerActivity : AppCompatActivity() {
 		val errorCode = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
 		when (errorCode) {
 			BiometricManager.BIOMETRIC_SUCCESS ->
-				Log.i("WookieTag", "App can authenticate using biometrics.")
+				Log.i(Utilites.TagProduction, "App can authenticate using biometrics.")
 			BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
-				Log.e("WookieTag", "No biometric features available on this device.")
+				Log.e(Utilites.TagProduction, "No biometric features available on this device.")
 			BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
-				Log.e("WookieTag", "Biometric features are currently unavailable.")
+				Log.e(Utilites.TagProduction, "Biometric features are currently unavailable.")
 			BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED ->
-				Log.e("WookieTag", "Biometric features should take user to fingerPrint.")
+				Log.e(Utilites.TagProduction, "Biometric features should take user to fingerPrint.")
 			else -> {
 				//Prawodobonie brak zapisanego odcisku palca, android z niewiadomych przyczyn zwraca kod -1
 				// przy braku zapisanego odcisku palca zamiast kodu 11(BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED)
-				Log.e("WookieTag", "Unknown behaviour in checking if finger auth is possible, probably no finer enrolled")
+				Log.e(Utilites.TagProduction, "Unknown behaviour in checking if finger auth is possible, probably no finer enrolled")
 			}
 		}
 		return errorCode

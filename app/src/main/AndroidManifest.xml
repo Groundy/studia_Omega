@@ -11,33 +11,46 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
 		<activity
-			android:name=".OAuth"
-			android:exported="false" />
-		<activity
-			android:name=".OAuth2"
+			android:name=".UserPermissionList"
 			android:exported="false"
-			android:label="@string/title_activity_oauth2"
-			android:theme="@style/NoActionBar" />
+			android:label="@string/title_activity_settings"
+			android:theme="@style/Theme.AppCompat.Dialog" />
+		<activity
+			android:name=".OAuth"
+			android:exported="false"
+			android:label="@string/title_activity_settings"
+			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name=".TransferSummary"
-			android:exported="false" />
+			android:exported="false"
+			android:label="@string/title_activity_settings"
+			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name=".ResultActivity"
-			android:exported="false" />
+			android:exported="false"
+			android:label="@string/title_activity_settings"
+			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name=".BasicTransferActivity"
 			android:exported="false"
+			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name=".PinActivity"
-			android:exported="false" />
+			android:exported="false"
+			android:label="@string/title_activity_settings"
+			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name=".CancelBioAuthDialogActivity"
 			android:exported="false"
-			android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
+			android:label="@string/title_activity_settings"
+			android:theme="@style/Theme.AppCompat.Light.Dialog.Alert"
+			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name=".ScanFingerActivity"
-			android:exported="false" />
+			android:exported="false"
+			android:label="@string/title_activity_settings"
+			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name=".SettingsActivity"
 			android:exported="false"
@@ -59,18 +72,17 @@
 			<intent-filter>
 				<action android:name="android.nfc.action.NDEF_DISCOVERED" />
 				<action android:name="android.nfc.action.TAG_DISCOVERED" />
-				<!-- <category android:name="android.intent.category.DEFAULT"/> -->
+
 				<data android:mimeType="text/plain" />
 			</intent-filter>
-			<!-- TESTTESTESTTESTTESTETSTEST$ETSEST -->
-			<intent-filter tools:ignore="AppLinkUrlError">
+			<intent-filter tools:ignore="AppLinkUrlError"> <!-- TESTTESTESTTESTTESTETSTEST$ETSEST -->
 				<action android:name="android.intent.action.VIEW" />
 
 				<data
 					android:host="oauthdemo.developer.aliorbank.pl"
 					android:scheme="https" />
-			</intent-filter>
-			<!-- TESTTESTESTTESTTESTETSTEST$ETSEST -->
+			</intent-filter> <!-- TESTTESTESTTESTTESTETSTEST$ETSEST -->
+
 			<meta-data
 				android:name="android.nfc.action.TECH_DISCOVERED"
 				android:resource="@xml/techlist" />
@@ -78,13 +90,13 @@
 	</application>
 
 	<uses-feature android:name="android.hardware.nfc" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.NFC" />
 	<uses-permission android:name="android.permission.USE_BIOMETRIC" />
 	<uses-permission android:name="aandroid.permission.INTERNET" />
-
 	<uses-permission android:name="android.permission.USE_FINGERPRINT" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>

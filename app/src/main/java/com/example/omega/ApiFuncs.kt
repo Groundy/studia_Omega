@@ -27,7 +27,7 @@ import org.json.JSONObject
 
 class ApiFuncs {
 	companion object{
-		val requestTimeOut = 4000L * 50L
+		const val requestTimeOut = 4000L * 50L
 		fun bodyToRequest(url : String, requestBodyJson: JSONObject, uuidStr : String, additionalHeaders: List<Pair<String,String>>? = null): Request {
 			val mediaType : MediaType = ApiConsts.CONTENT_TYPE.toMediaType()
 			val requestBodyStr = requestBodyJson.toString().toByteArray().toRequestBody(mediaType)
@@ -58,8 +58,7 @@ class ApiFuncs {
 		}
 
 		fun getUUID() : String{
-			val uuid = Generators.timeBasedGenerator().generate()
-			return uuid.toString()
+			return Generators.timeBasedGenerator().generate().toString()
 		}
 		fun getCurrentTimeStr(secFromNow : Int = 0): String {
 			val c: Calendar = Calendar.getInstance()
@@ -112,39 +111,7 @@ class ApiFuncs {
 			}
 			result.append(")")
 			return result.toString()
-		}
-		fun getJWS(payload : String): String {
-			val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
-			val jws = Jwts.builder()
-				.setSubject(payload)
-				//.setHeaderParam("kid", "ttt")
-				//.setHeaderParam("x5t#S256","aa")
-				.signWith(key)
-				.compact()
-			return jws
-		}
-		fun getLocalIpAddress(): String {
-			try {
-				val en: Enumeration<NetworkInterface> = NetworkInterface.getNetworkInterfaces()
-				while (en.hasMoreElements()) {
-					val netInterface: NetworkInterface = en.nextElement()
-					val enumIpAddr: Enumeration<InetAddress> = netInterface.inetAddresses
-					while (enumIpAddr.hasMoreElements()) {
-						val inetAddress: InetAddress = enumIpAddr.nextElement()
-						val isNotLoopBack = !inetAddress.isLoopbackAddress
-						val isV4Type = inetAddress is Inet4Address
-						if (isNotLoopBack && isV4Type){
-							Log.i("WookieTag", "User Ip: ${inetAddress.hostAddress}")
-							return inetAddress.hostAddress
-						}
-					}
-				}
-			} catch (ex: Exception) {
-				Log.e("WookieTag","Error(getLocalIpAddress) ${ex.toString()}")
-			}
-			return ""
-		}
-		fun getPublicIPByInternetService() : String{
+		}fun getPublicIPByInternetService() : String{
 			return "213.134.179.174"		//TODO for speed
 
 			var ip = ""
@@ -153,7 +120,7 @@ class ApiFuncs {
 				.build()
 			val callbackRequest = object : Callback {
 				override fun onFailure(call: Call, e: IOException) {
-					Log.e("WookieTag", "bład pobierania publicznego ip z internetu")
+					Log.e(Utilites.TagProduction, "bład pobierania publicznego ip z internetu")
 				}
 				override fun onResponse(call: Call, response: Response) {
 					val bytes : ByteArray? = response.body?.bytes()
@@ -161,7 +128,7 @@ class ApiFuncs {
 						val str = String(bytes, StandardCharsets.ISO_8859_1)
 						if(str.length > 3){
 							ip = str.take(str.length - 1) // delete newLine char
-							Log.i("WookieTag", "Publiczne ip użytkownika:${str}")
+							Log.i(Utilites.TagProduction, "Publiczne ip użytkownika:${str}")
 						}
 					}
 				}
@@ -176,42 +143,6 @@ class ApiFuncs {
 				tries--
 			}
 			return ip
-		}
-		fun saveJsonToHardDriver(jsonObjContent : String, fileNameToSet: String = ""){
-			var fileName = ""
-			if(fileNameToSet.length == 0){
-				var fileName = ApiFuncs.getCurrentTimeStr()
-					.replace('-','_')
-					.replace(':','_')
-					.replace('.','_')
-				fileName += ".json"
-			}
-			else
-				fileName = fileNameToSet
-
-			//Checking the availability state of the External Storage.
-			val state = Environment.getExternalStorageState()
-			if (Environment.MEDIA_MOUNTED != state) {
-				return
-			}
-
-			//Create a new file that points to the root directory, with the given name:
-			val file: File = File(ApiConsts.pathToSaveFolder, fileName)
-
-			//This point and below is responsible for the write operation
-			var outputStream: FileOutputStream? = null
-			try {
-				file.createNewFile()
-				//second argument of FileOutputStream constructor indicates whether
-				//to append or create new file if one exists
-				outputStream = FileOutputStream(file, true)
-				val data = jsonObjContent.toString().replace("\\/","/").toByteArray()
-				outputStream.write(data)
-				outputStream.flush()
-				outputStream.close()
-			} catch (e: Exception) {
-				e.printStackTrace()
-			}
 		}
 		fun getRandomStateValue(length: Int = 13) : String{
 			val availableChars="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"

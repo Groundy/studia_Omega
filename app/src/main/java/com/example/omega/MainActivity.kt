@@ -48,13 +48,16 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initUIVariables()
 		TEST_addFunToButton()
+		//getAccessToken()
 		test()
 	}
-	private fun test_afterAuthorize(){
-		ActivityStarter.startTransferActivityFromMenu(this)
-	}
 	private fun test(){
-		API_authorize(this).run()
+		ActivityStarter.startUserPermissionListActivity(this)
+	}
+
+	private fun test_afterAuthorize() {
+		val accNumber = UserData.accessTokenStruct?.listOfAccounts?.get(0)?.accNumber
+		API_getTransactionsDone.run(this,accNumber)
 	}
 
 	private fun TEST_addFunToButton(){
@@ -106,14 +109,30 @@ class MainActivity : AppCompatActivity() {
 			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)->{
 				if(resultCode == RESULT_OK){
 					val codeFieldName = getString(R.string.ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME)
-					val code = data?.extras?.getString(codeFieldName)
+					val code = data?.getStringExtra(codeFieldName)
 					if(code.isNullOrEmpty()){
-						Log.e("WookieTag","OAuth return null code")
+						Log.e(Utilites.TagProduction,"OAuth return null code")
 						return
 					}
 					UserData.authCode = code
-					API_getToken(this).run()
+					API_getToken.run()
 					test_afterAuthorize()
+				}
+				else{
+					//todo
+				}
+			}
+			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST)->{
+				if(resultCode == RESULT_OK){
+					val field = getString(R.string.userPermissionList_outputField)
+					val serializedPermissionList = data?.getStringExtra(field)
+
+					var permissionList = PermissionList()
+					if(!serializedPermissionList.isNullOrEmpty())
+						permissionList = PermissionList(serializedPermissionList)
+
+					API_authorize().run(ApiFuncs.getRandomStateValue(), permissionList.permissions)
+					API_getToken.run()
 				}
 				else{
 					//todo
@@ -121,6 +140,7 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 	}
+
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.main_app_menu, menu)
 		return super.onCreateOptionsMenu(menu)
@@ -132,6 +152,9 @@ class MainActivity : AppCompatActivity() {
 			}
 			R.id.TransferTab->{
 				ActivityStarter.startTransferActivityFromMenu(this)
+			}
+			R.id.AskForTokenTab->{
+				ActivityStarter.startUserPermissionListActivity(this)
 			}
 		}
 		return true
@@ -148,7 +171,7 @@ class MainActivity : AppCompatActivity() {
 				val codeCandidate = tagData.takeLast(6).toIntOrNull()
 				if (codeCandidate != null && codeCandidate in 0..999999) {
 					val code = codeCandidate.toInt()
-					Log.i("WookieTag", "NFC TAG data found:$tagData")
+					Log.i(Utilites.TagProduction, "NFC TAG data found:$tagData")
 					codeField.setText(code.toString())
 				}
 			}
@@ -168,7 +191,7 @@ class MainActivity : AppCompatActivity() {
 	private fun checkIfNfcIsTurnedOnPhone(): Boolean {
 		val deviceHasNfc = this.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
 		if (!deviceHasNfc) {
-			Log.e("WookieTag", "There's no NFC hardware on user's phone")
+			Log.e(Utilites.TagProduction, "There's no NFC hardware on user's phone")
 			Utilites.showToast(this,resources.getString(R.string.USER_MSG_NFC_NO_HW_SUPP))
 			return false
 		}
@@ -177,7 +200,7 @@ class MainActivity : AppCompatActivity() {
 			override fun onPermissionGranted(response: PermissionGrantedResponse?) {}
 			override fun onPermissionDenied(response: PermissionDeniedResponse?) {
 				Utilites.showToast(this@MainActivity, resources.getString(R.string.USER_MSG_NFC_NEED_PERMISSION))
-				Log.e("WookieTag", "User denied permission to use NFC")
+				Log.e(Utilites.TagProduction, "User denied permission to use NFC")
 			}
 
 			override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
@@ -188,7 +211,7 @@ class MainActivity : AppCompatActivity() {
 			.withListener(permissionListener).check()
 		val permissionNfcDenied = checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_DENIED
 		if (permissionNfcDenied) {
-			Log.e("WookieTag", "There's no permission to use")
+			Log.e(Utilites.TagProduction, "There's no permission to use")
 			Utilites.showToast(this@MainActivity, resources.getString(R.string.USER_MSG_NFC_NEED_PERMISSION))
 			return false
 		}
@@ -196,7 +219,7 @@ class MainActivity : AppCompatActivity() {
 		val nfcIsOn = manager.defaultAdapter.isEnabled
 		if (!nfcIsOn) {
 			Utilites.showToast(this@MainActivity, resources.getString(R.string.USER_MSG_NFC_TURN_OFF))
-			Log.e("WookieTag", "User denied permission to use NFC")
+			Log.e(Utilites.TagProduction, "User denied permission to use NFC")
 			return false
 		}
 		return true
@@ -280,5 +303,15 @@ class MainActivity : AppCompatActivity() {
 			findViewById<Button>(R.id.nfcButton).setBackgroundResource(R.drawable.nfc_on_icon)
 			switchNfcSignalCatching()
 		}
+	}
+	private fun getAccessToken(){
+		val state = ApiFuncs.getRandomStateValue()
+		val authUrl = API_authorize().run(state)
+		if(authUrl.isNullOrEmpty()){
+			Log.e(Utilites.TagProduction, "Failed to obtain auth url")
+			Utilites.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")
+			return
+		}
+		ActivityStarter.openBrowserForLogin(this,authUrl,state)
 	}
 }

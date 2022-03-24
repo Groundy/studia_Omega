@@ -4,6 +4,9 @@ import android.content.Context
 
 class ApiConsts {
 	enum class scopeValues {AIS,AIS_ACC,PIS}
+	enum class priviliges(val text : String){
+		accountsDetails("ACC_DETAILS"), accountsHistory("ACC_HISTORY"), single_payment("SINGLE_PAYMENT")
+	}
 	companion object{
 		val PREFERED_CHARSET = "utf-8"
 		val PREFERED_ENCODING = "gzip"
@@ -13,5 +16,6 @@ class ApiConsts {
 		val userId_ALIOR = "6af374ae-480e-4631-b70c-4d8b2862e311"
 		val REDIRECT_URI = "https://Omega:8080/auth/oauth2/callback"
 		var pathToSaveFolder = ""
+		val TTP_ID = "requiredValueThatIsNotValidated"
 	}
 }

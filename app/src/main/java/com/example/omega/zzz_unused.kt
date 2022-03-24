@@ -1,5 +1,16 @@
 package com.example.omega
 
+import android.os.Environment
+import android.util.Log
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.security.Keys
+import java.io.File
+import java.io.FileOutputStream
+import java.net.Inet4Address
+import java.net.InetAddress
+import java.net.NetworkInterface
+import java.security.Key
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
@@ -22,5 +33,74 @@ class zzz_unused {
 			val uuid = UUID(most64SigBits, least64SigBits)
 			return uuid.toString()
 		}
+
+		fun getJWS(payload : String): String {
+			val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
+			val jws = Jwts.builder()
+				.setSubject(payload)
+				//.setHeaderParam("kid", "ttt")
+				//.setHeaderParam("x5t#S256","aa")
+				.signWith(key)
+				.compact()
+			return jws
+		}
+		fun getLocalIpAddress(): String? {
+			try {
+				val en: Enumeration<NetworkInterface> = NetworkInterface.getNetworkInterfaces()
+				while (en.hasMoreElements()) {
+					val netInterface: NetworkInterface = en.nextElement()
+					val enumIpAddr: Enumeration<InetAddress> = netInterface.inetAddresses
+					while (enumIpAddr.hasMoreElements()) {
+						val inetAddress: InetAddress = enumIpAddr.nextElement()
+						val isNotLoopBack = !inetAddress.isLoopbackAddress
+						val isV4Type = inetAddress is Inet4Address
+						if (isNotLoopBack && isV4Type){
+							Log.i(Utilites.TagProduction, "User Ip: ${inetAddress.hostAddress}")
+							return inetAddress.hostAddress
+						}
+					}
+				}
+			} catch (ex: Exception) {
+				Log.e(Utilites.TagProduction,"Error(getLocalIpAddress) ${ex.toString()}")
+			}
+			return null
+		}
+		fun saveJsonToHardDriver(jsonObjContent : String, fileNameToSet: String = ""){
+			var fileName = ""
+			if(fileNameToSet.length == 0){
+				var fileName = ApiFuncs.getCurrentTimeStr()
+					.replace('-','_')
+					.replace(':','_')
+					.replace('.','_')
+				fileName += ".json"
+			}
+			else
+				fileName = fileNameToSet
+
+			//Checking the availability state of the External Storage.
+			val state = Environment.getExternalStorageState()
+			if (Environment.MEDIA_MOUNTED != state) {
+				return
+			}
+
+			//Create a new file that points to the root directory, with the given name:
+			val file: File = File(ApiConsts.pathToSaveFolder, fileName)
+
+			//This point and below is responsible for the write operation
+			var outputStream: FileOutputStream? = null
+			try {
+				file.createNewFile()
+				//second argument of FileOutputStream constructor indicates whether
+				//to append or create new file if one exists
+				outputStream = FileOutputStream(file, true)
+				val data = jsonObjContent.toString().replace("\\/","/").toByteArray()
+				outputStream.write(data)
+				outputStream.flush()
+				outputStream.close()
+			} catch (e: Exception) {
+				e.printStackTrace()
+			}
+		}
+
 	}
 }

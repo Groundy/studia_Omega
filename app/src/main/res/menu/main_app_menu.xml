@@ -3,13 +3,17 @@
       xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-            android:title="Konfiguracja"
-            android:id="@+id/ConfigurationsTab"
-            app:showAsAction="never" />
+        android:id="@+id/ConfigurationsTab"
+        android:title="Konfiguracja"
+        app:showAsAction="never" />
     <item
-            android:title="Przelew jednorazowy"
-            android:id="@+id/TransferTab"
-            app:showAsAction="never"/>
+        android:id="@+id/TransferTab"
+        android:title="Przelew krajowy"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/AskForTokenTab"
+        android:title="Token"
+        app:showAsAction="never" />
 
     <!--
     <item

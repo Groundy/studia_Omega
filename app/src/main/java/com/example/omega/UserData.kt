@@ -126,8 +126,9 @@ class UserData  {
 				this.bankName = bankName
 				this.bankAddress = bankAddress
 				this.ownerName = ownerName
+				this.ownerName = ownerName
 			}catch (e : Exception){
-				Log.e("WookieTag", "Failed to conver response body from getAccount methode to Account obj [${e.toString()}]")
+				Log.e(Utilites.TagProduction, "Failed to conver response body from getAccount methode to Account obj [${e.toString()}]")
 			}
 		}
 		constructor(accNumber: String){

@@ -17,7 +17,6 @@ fun getSharedProperties(activity: Activity) : SharedPreferences{
 class Utilites {
 	companion object{
 		val TagProduction = "WookieTag"
-		val TagTest = "WookieTest"
 		fun showMsg(activity: Activity, stringToDisplay:String) {
 			val dialogBuilder = AlertDialog.Builder(activity)
 			val dialogInterfaceVar = DialogInterface.OnClickListener { p0, p1 -> p0.dismiss() }

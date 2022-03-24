@@ -29,5 +29,6 @@
 	<string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
 	<string name="attachment_summary_off">Only download attachments when manually requested</string>
 	<string name="title_activity_oauth2">OAuth2</string>
+	<string name="title_activity_user_permission_list">UserPermissionList</string>
 
 </resources>

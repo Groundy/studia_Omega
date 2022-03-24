@@ -43,17 +43,17 @@ class PinActivity : AppCompatActivity() {
 				if (pressedKeyIsEnter) {
 					val everyDigitIsOk = checkIfAllFieldsHaveEnteredDigits()
 					if(everyDigitIsOk){
-						Log.i("WookieTag","Pressed enter in PIN activity, pin is in CORRECT format")
+						Log.i(Utilites.TagProduction,"Pressed enter in PIN activity, pin is in CORRECT format")
 						processPIN()
 						return false
 					}
 					else{
-						Log.e("WookieTag","Pressed enter in PIN activity, pin is in WRONG format")
+						Log.e(Utilites.TagProduction,"Pressed enter in PIN activity, pin is in WRONG format")
 						return true
 					}
 				}
 				else
-					Log.i("WookieTag","Pressed not enter key in PIN activity")
+					Log.i(Utilites.TagProduction,"Pressed not enter key in PIN activity")
 				return true
 			}
 		}

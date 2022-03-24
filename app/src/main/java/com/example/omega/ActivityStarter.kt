@@ -6,6 +6,11 @@ import android.net.Uri
 
 class ActivityStarter {
 	companion object{
+		fun startUserPermissionListActivity(activity: Activity){
+			val intent = Intent(activity, UserPermissionList::class.java)
+			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST)
+			activity.startActivityForResult(intent,retCode)
+		}
 		fun startActToSetPinIfTheresNoSavedPin(activity: Activity){
 			val pinAlreadySet = Utilites.checkIfAppHasAlreadySetPin(activity)
 			if(!pinAlreadySet){
