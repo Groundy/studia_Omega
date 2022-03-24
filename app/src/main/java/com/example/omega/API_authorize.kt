@@ -70,18 +70,18 @@ class API_authorize {
 			.put("state",stateStr)
 		return ApiFuncs.bodyToRequest(url, requestBodyJson,uuidStr)
 	}
-	private fun getScopeDetailsObject(expTimeStr : String, permissions : List<ApiConsts.priviliges>? = null) : JSONObject{
+	private fun getScopeDetailsObject(expTimeStr : String) : JSONObject{
 		var permissionListArray = JSONArray()
-		if(!permissions.isNullOrEmpty()){
+		if(!permissionsList.isNullOrEmpty()){
 			var toAddObject = JSONObject()
 
-			if(permissions.contains(ApiConsts.priviliges.accountsHistory)){
+			if(permissionsList!!.contains(ApiConsts.priviliges.accountsHistory)){
 				toAddObject.put("ais:getTransactionsDone",JSONObject()
 					.put("scopeUsageLimit","multiple")
 					.put("maxAllowedHistoryLong",11)
 				)
 			}
-			if(permissions.contains(ApiConsts.priviliges.accountsDetails)){
+			if(permissionsList!!.contains(ApiConsts.priviliges.accountsDetails)){
 				toAddObject.put("ais:getAccount",JSONObject()
 					.put("scopeUsageLimit","multiple")
 				)
