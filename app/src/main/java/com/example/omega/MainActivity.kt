@@ -131,8 +131,16 @@ class MainActivity : AppCompatActivity() {
 					if(!serializedPermissionList.isNullOrEmpty())
 						permissionList = PermissionList(serializedPermissionList)
 
-					API_authorize().run(ApiFuncs.getRandomStateValue(), permissionList.permissions)
-					API_getToken.run()
+					val state = ApiFuncs.getRandomStateValue()
+					val authUrl = API_authorize().run(state, permissionList.permissions)
+
+					if(authUrl.isNullOrEmpty()){
+						Log.e(Utilites.TagProduction, "Failed to obtain auth url")
+						Utilites.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")
+						return
+					}
+
+					ActivityStarter.openBrowserForLogin(this,authUrl,state)
 				}
 				else{
 					//todo
@@ -304,7 +312,8 @@ class MainActivity : AppCompatActivity() {
 			switchNfcSignalCatching()
 		}
 	}
-	private fun getAccessToken(){
+
+	private fun TEST_getAccessToken(){
 		val state = ApiFuncs.getRandomStateValue()
 		val authUrl = API_authorize().run(state)
 		if(authUrl.isNullOrEmpty()){
