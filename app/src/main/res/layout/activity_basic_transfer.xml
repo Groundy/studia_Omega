@@ -36,6 +36,8 @@
 					android:id="@+id/basicTransfer_accountList_textView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:layout_gravity="fill_vertical|end"
+					android:gravity="center_horizontal"
 					android:text="@string/GUI_basicTransfer_chooseAccountTextView" />
 
 				<Spinner
@@ -63,6 +65,7 @@
 					android:id="@+id/basicTransfer_recvierName_textView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:gravity="center"
 					android:text="@string/GUI_basicTransfer_ReceiverNameTextView" />
 
 				<EditText
@@ -74,6 +77,7 @@
 					android:maxLength="50"
 					android:textColor="@color/black"
 					android:textColorHint="@color/black"
+					android:textSize="@dimen/DIM_basicTransfer_textSize"
 					tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
 				<Space
@@ -92,6 +96,7 @@
 					android:id="@+id/basicTransfer_reciverNumber_textView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:gravity="center"
 					android:text="@string/GUI_basicTransfer_ReceiverNumberTextView" />
 
 				<EditText
@@ -104,6 +109,7 @@
 					android:maxLength="26"
 					android:textColor="@color/black"
 					android:textColorHint="@color/black"
+					android:textSize="@dimen/DIM_basicTransfer_textSize"
 					tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
 				<Space
@@ -122,6 +128,7 @@
 					android:id="@+id/basicTransfer_Amount_TextView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:gravity="center"
 					android:text="@string/GUI_basicTransfer_AmountOfTransferTextView" />
 
 				<EditText
@@ -132,6 +139,7 @@
 					android:inputType="numberDecimal"
 					android:textColor="@color/black"
 					android:textColorHint="@color/black"
+					android:textSize="@dimen/DIM_basicTransfer_textSize"
 					tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
 				<TextView
@@ -156,6 +164,7 @@
 					android:id="@+id/basicTransfer_transfTitle_textView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:gravity="center"
 					android:text="@string/GUI_basicTransfer_TitleOfTransferTextView" />
 
 				<EditText
@@ -167,6 +176,7 @@
 					android:maxLength="50"
 					android:textColor="@color/black"
 					android:textColorHint="@color/black"
+					android:textSize="@dimen/DIM_basicTransfer_textSize"
 					tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
 				<Space

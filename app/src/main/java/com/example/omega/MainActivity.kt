@@ -33,6 +33,7 @@ import okhttp3.*
 
 //  Minimize: CTRL + SHFT + '-'
 //  Expand:   CTRL + SHFT + '+'
+//  Ctrl + B go to definition
 
 class MainActivity : AppCompatActivity() {
 	private var nfcSignalCatchingIsOn: Boolean = false

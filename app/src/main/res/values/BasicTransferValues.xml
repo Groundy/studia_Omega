@@ -3,6 +3,7 @@
 	<dimen name="DIM_basicTransfer_spacer_Y">20dp</dimen>
 	<dimen name="DIM_basicTransfer_inputFieldY">50dp</dimen>
 	<dimen name="DIM_basicTransfer_textFieldY">20dp</dimen>
+	<dimen name="DIM_basicTransfer_textSize">10dp</dimen>
 
 	<string name="GUI_basicTransfer_chooseAccountTextView">Z Rachunku: </string>
 	<string name="GUI_basicTransfer_ReceiverNameTextView">Odbiorca: </string>

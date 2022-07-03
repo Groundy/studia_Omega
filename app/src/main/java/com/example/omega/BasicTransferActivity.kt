@@ -165,7 +165,12 @@ class BasicTransferActivity : AppCompatActivity() {
 		return floor(balanceAfterTransfer * 100) / 100 //trim decimal after 2 digits
 	}
 	private fun fillListOfAccounts(){
-		val ok = API_getPaymentAccDetails.run(this)
+		val obtainedAccountData = API_getPaymentAccDetails.run(this)
+		if(!obtainedAccountData){
+			val errorCodeTextToDisplay = getString(R.string.USER_MSG_basicTransfer_error_reciving_acc_balance)
+			finishThisActivity(false,errorCodeTextToDisplay)
+			return
+		}
 		val listOfAccountFromToken = UserData.accessTokenStruct?.listOfAccounts!!
 		val adapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item)
 		listOfAccountFromToken.forEach{
