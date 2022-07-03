@@ -23,6 +23,4 @@
 
 	<string name="USER_MSG_basicTransfer_error_reciving_acc_balance">Błąd pobierania informacji o środkach na rachunku, płatność niemożliwa.</string>
 	<string name="USER_MSG_basicTransfer_unkownError">Nieznany błąd, płatność niemożliwa.</string>
-
-
 </resources>

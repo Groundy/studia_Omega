@@ -157,15 +157,14 @@ class MainActivity : AppCompatActivity() {
 	}
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when(item.itemId){
-			R.id.ConfigurationsTab->{
+			R.id.ConfigurationsTab->
 				ActivityStarter.startConfigurationActivity(this)
-			}
-			R.id.TransferTab->{
+			R.id.TransferTab->
 				ActivityStarter.startTransferActivityFromMenu(this)
-			}
-			R.id.AskForTokenTab->{
+			R.id.AskForTokenTab->
 				ActivityStarter.startUserPermissionListActivity(this)
-			}
+			R.id.GenerateBlikCodeTab->
+				ActivityStarter.startBlikCodeCreatorActivity(this)
 		}
 		return true
 	}

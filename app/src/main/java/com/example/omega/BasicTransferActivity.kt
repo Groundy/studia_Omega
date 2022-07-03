@@ -7,8 +7,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import kotlin.math.floor
-import android.text.SpannableStringBuilder
-import android.util.Log
 import android.widget.*
 
 
@@ -18,7 +16,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	private lateinit var receiverNameEditText : EditText
 	private lateinit var transferTitle : EditText
 	private lateinit var goNextButton : Button
-	private val polishBankAccountNumberLength = 26
+	private val polishBankAccountNumberLength = 28
 	private lateinit var amountAfterTransferTextView : TextView
 	private lateinit var spinner : Spinner
 
@@ -43,7 +41,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun afterTextChanged(p0: Editable?) {
 				if(p0 != null)
-					stopUserFromPuttingMoreThan2DigitsAfterComma(previousValue, p0.toString())
+					Utilites.stopUserFromPuttingMoreThan2DigitsAfterComma(amountEditText, previousValue, p0.toString())
 				printAmountAfterTransfer()
 			}
 		}
@@ -85,7 +83,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		amountEditText = findViewById(R.id.basicTransfer_amount_editText)
 		receiverNameEditText = findViewById(R.id.basicTransfer_reciverName_EditText)
 		transferTitle = findViewById(R.id.basicTransfer_transferTitle_EditText)
-		goNextButton = findViewById(R.id.basicTransfer_goNext_button)
+		goNextButton = findViewById(R.id.BlikCodeGenerator_goNext_button)
 		amountAfterTransferTextView = findViewById(R.id.basicTransfer_amountAfterTransfer_TextView)
 		spinner = findViewById<Spinner>(R.id.basicTransfer_accountList_Spinner)
 
@@ -116,16 +114,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			amountAfterTransferTextView.setTextColor(Color.RED)
 		}
 	}
-	private fun stopUserFromPuttingMoreThan2DigitsAfterComma(oldVal : String, newVal : String){
-		val indexOfDecimal = newVal.indexOf('.')
-		if(indexOfDecimal != -1){
-			val digitsAfterComma = (newVal.length - 1) - indexOfDecimal
-			if(digitsAfterComma > 2){
-				amountEditText.text = SpannableStringBuilder(oldVal)
-				amountEditText.setSelection(amountEditText.length())//Setting cursor to end
-			}
-		}
-	}
+
 	private fun getErrorInputText() : String?{
 		val amountAfterTransfer = getAccountBalanceAfterTransfer()
 		if(amountAfterTransfer == null)

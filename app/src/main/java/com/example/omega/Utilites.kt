@@ -5,6 +5,8 @@ import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.text.SpannableStringBuilder
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 
@@ -116,6 +118,16 @@ class Utilites {
 			}
 			else
 				return null
+		}
+		fun stopUserFromPuttingMoreThan2DigitsAfterComma(editText : EditText, oldVal : String, newVal : String){
+			val indexOfDecimal = newVal.indexOf('.')
+			if(indexOfDecimal != -1){
+				val digitsAfterComma = (newVal.length - 1) - indexOfDecimal
+				if(digitsAfterComma > 2){
+					editText.text = SpannableStringBuilder(oldVal)
+					editText.setSelection(editText.length())//Setting cursor to end
+				}
+			}
 		}
 	}
 }

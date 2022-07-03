@@ -32,6 +32,10 @@ class ActivityStarter {
 			val transferIntent = Intent(activity,BasicTransferActivity::class.java)
 			activity.startActivity(transferIntent)
 		}
+		fun startBlikCodeCreatorActivity(activity: Activity){
+			val blikCodeCreatorIntent = Intent(activity,BlikCodeCreator::class.java)
+			activity.startActivity(blikCodeCreatorIntent)
+		}
 		fun startResultActivity(activity: Activity, textIdToDisplay: Int){
 			val resultIntent = Intent(activity, ResultActivity::class.java)
 			val textToDisplay = activity.resources.getString(textIdToDisplay)

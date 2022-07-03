@@ -11,9 +11,14 @@
         android:title="Przelew krajowy"
         app:showAsAction="never" />
     <item
+        android:id="@+id/GenerateBlikCodeTab"
+        android:title="Generuj kod Blik"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/AskForTokenTab"
         android:title="Token"
         app:showAsAction="never" />
+
 
     <!--
     <item
