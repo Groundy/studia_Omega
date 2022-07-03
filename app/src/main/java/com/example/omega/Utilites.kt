@@ -111,7 +111,7 @@ class Utilites {
 			val properCode = 111111
 			val isProperCode = code == properCode
 			if(isProperCode){
-				val transferData = TransferData("01234567890123456789012345","00001111222233334444555566","Jan Kowalski","zwrot pożyczki" ,13.57 ,  "PLN")
+				val transferData = TransferData("0123456789012345678901234567","0001112223334445556667778889","Jan Kowalski","zwrot pożyczki" ,13.57 ,  "PLN")
 				return transferData
 			}
 			else

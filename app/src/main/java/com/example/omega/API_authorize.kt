@@ -1,6 +1,12 @@
 package com.example.omega
 
+import android.app.Activity
+import android.app.Dialog
+import android.os.Looper
 import android.util.Log
+import android.widget.ProgressBar
+import androidx.test.core.app.ActivityScenario.launch
+import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
@@ -8,17 +14,13 @@ import org.json.JSONObject
 import java.lang.Exception
 
 class API_authorize {
-	var permissionsList : List<ApiConsts.priviliges>? = null
+	private var permissionsList : List<ApiConsts.priviliges>? = null
 	fun run(stateValue : String,  permissions : List<ApiConsts.priviliges>? = null) : String?{
 		var authUrl : String? = null
 		permissionsList = permissions
 
 		val thread = Thread{
-			try {
-				authUrl = startAuthorize(stateValue)
-			} catch (e: Exception) {
-				e.printStackTrace()
-			}
+			authUrl = startAuthorize(stateValue)
 		}
 		thread.start()
 		thread.join(ApiFuncs.requestTimeOut)
@@ -26,24 +28,23 @@ class API_authorize {
 	}
 
 	private fun startAuthorize(stateValue : String) : String?{
-		val request = getAuthRequest(stateValue)
-		val response = OkHttpClient().newCall(request).execute()
+		try{
+			val request = getAuthRequest(stateValue)
+			val response = OkHttpClient().newCall(request).execute()
 
-		val responseCodeOk = response.code == 200
-		if(responseCodeOk){
-			try {
+			val responseCodeOk = response.code == 200
+			return if(responseCodeOk){
 				val responseBody = response.body?.string()
 				val responseJsonObject = JSONObject(responseBody)
 				val fieldName = "aspspRedirectUri"
 				val authUrl = responseJsonObject.get(fieldName).toString()
-				return authUrl
-			}catch (e : Exception){
-				Log.e(Utilites.TagProduction, e.toString())
-				return null
+				authUrl
+			} else{
+				Log.e(Utilites.TagProduction, "Got auth response, Code=${response.code}, body=${response.body?.byteString()}")
+				null
 			}
-		}
-		else{
-			Log.e(Utilites.TagProduction, response.body?.byteStream().toString())
+		}catch (e : Exception){
+			Log.e(Utilites.TagProduction,e.toString())
 			return null
 		}
 	}

@@ -30,8 +30,9 @@ import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_settings.*
 import okhttp3.*
-import okhttp3.internal.userAgent
-import org.json.JSONObject
+
+//  Minimize: CTRL + SHFT + '-'
+//  Expand:   CTRL + SHFT + '+'
 
 class MainActivity : AppCompatActivity() {
 	private var nfcSignalCatchingIsOn: Boolean = false

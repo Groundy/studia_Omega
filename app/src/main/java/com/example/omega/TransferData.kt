@@ -36,7 +36,7 @@ class TransferData {
 		return "$line1\n $line2\n $line3\n $line4\n $line5"
 	}
 	fun serialize() : String?{
-		if(!validateData()){
+		if(!validateTransferData()){
 			Log.e(Utilites.TagProduction, "Error in serilization transferDataObj")
 			return null
 		}
@@ -74,7 +74,7 @@ class TransferData {
 			.put("amount",amount)
 			.put("currency", currency)
 	}
-	fun validateData() : Boolean{
+	private fun validateTransferData() : Boolean{
 		val objectWrong =
 			senderAccNumber.isNullOrEmpty() ||
 			receiverAccNumber.isNullOrEmpty() ||
@@ -87,12 +87,33 @@ class TransferData {
 			return false
 
 		val senderAccCorrectLength = senderAccNumber?.length == 28
+		if(!senderAccCorrectLength)
+			return false
+
 		val receiverAccCorrectLength = true //todo tutaj trzeba ogarnąć troche więcej gdyż przelewy międzynardowoew mogą mieć różną długość,  https://pl.wikipedia.org/wiki/Międzynarodowy_numer_rachunku_bankowego
+		if(!receiverAccCorrectLength)
+			return false
+
 		val senderReceiverAccDiffer = senderAccNumber != receiverAccNumber
+		if(!senderReceiverAccDiffer)
+			return false
+
 		val receiverNameOk = receiverName?.length in 5..50
+		if(!receiverNameOk)
+			return false
+
 		val titleOk = receiverName?.length in 5..50
+		if(!titleOk)
+			return false
+
 		val amountOk = amount!! > 0.0
+		if(!amountOk)
+			return false
+
 		val currencyOK = true //TODO dodać sprawdzanie czy waluta jest z zakresu dostępnych.
-		return senderAccCorrectLength && receiverAccCorrectLength && senderReceiverAccDiffer && receiverNameOk && titleOk && amountOk && currencyOK
+		if(!currencyOK)
+			return false
+
+		return true
 	}
 }
