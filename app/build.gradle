@@ -74,6 +74,7 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2','io.jsonwebtoken:jjwt-jackson:0.11.2'//JWS
 
 	implementation 'com.fasterxml.uuid:java-uuid-generator:4.0.1'//UUID
+	implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.3'//tworzenie QR
 
 }
 apply plugin: 'com.google.gms.google-services'

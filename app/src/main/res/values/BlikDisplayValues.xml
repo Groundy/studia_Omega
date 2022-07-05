@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<dimen name="BLIKDISPLAY_ButtonHeight">100dp</dimen>
+	<dimen name="BLIKDISPLAY_min_QR_DIM">350dp</dimen>
+	<dimen name="BLIKDISPLAY_code_Size">50sp</dimen>
+	<string name="BLIKDISPLAY_buttonText">Wstecz</string>
+
+
+	<string name="USER_MSG_RBlikDisplay_incorrectCodePassed">Kod niepoprawny. Wygenerowanie kodu RBlik jest niemożliwa.</string>
+	<string name="USER_MSG_RBlikDisplay_qrGeneratorError">Błąd generatora kodów QR.</string>
+</resources>

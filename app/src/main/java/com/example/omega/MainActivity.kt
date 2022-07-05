@@ -20,6 +20,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.navigation.findNavController
 import com.google.firebase.FirebaseApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -49,25 +50,12 @@ class MainActivity : AppCompatActivity() {
 		// ApiConsts.pathToSaveFolder = this.getExternalFilesDir(null).toString()
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initUIVariables()
-		TEST_addFunToButton()
 		//getAccessToken()
-		test()
+		DEVELOPER_initaialFun()
 	}
-	private fun test(){
-		ActivityStarter.startUserPermissionListActivity(this)
-	}
+	private fun DEVELOPER_initaialFun(){
 
-	private fun test_afterAuthorize() {
-		val accNumber = UserData.accessTokenStruct?.listOfAccounts?.get(0)?.accNumber
-		API_getTransactionsDone.run(this,accNumber)
 	}
-
-	private fun TEST_addFunToButton(){
-		findViewById<Button>(R.id.testButton).setOnClickListener{
-			test()
-		}
-	}
-
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 		when(requestCode){
@@ -118,7 +106,6 @@ class MainActivity : AppCompatActivity() {
 					}
 					UserData.authCode = code
 					API_getToken.run()
-					test_afterAuthorize()
 				}
 				else{
 					//todo
@@ -153,6 +140,11 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.main_app_menu, menu)
+		//todo delete that
+		if (menu != null) {
+			onOptionsItemSelected(menu.findItem(R.id.GenerateBlikCodeTab))
+		}
+		//
 		return super.onCreateOptionsMenu(menu)
 	}
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {

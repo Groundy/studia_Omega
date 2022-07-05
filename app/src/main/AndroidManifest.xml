@@ -11,6 +11,9 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
 		<activity
+			android:name=".BlikCodeDisplayActivity"
+			android:exported="false" />
+		<activity
 			android:name=".BlikCodeCreator"
 			android:exported="false" />
 		<activity
@@ -93,13 +96,13 @@
 	</application>
 
 	<uses-feature android:name="android.hardware.nfc" />
-	<uses-permission android:name="android.permission.NFC" />
 	<uses-permission android:name="android.permission.USE_BIOMETRIC" />
 	<uses-permission android:name="aandroid.permission.INTERNET" />
 	<uses-permission android:name="android.permission.USE_FINGERPRINT" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
 	<uses-permission android:name="android.permission.CAMERA" />
+
+	<uses-permission android:name="android.permission.NFC" />
 
 </manifest>

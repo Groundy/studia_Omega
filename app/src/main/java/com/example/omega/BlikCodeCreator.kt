@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -7,6 +8,7 @@ import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
+import kotlin.random.Random
 
 
 class BlikCodeCreator : AppCompatActivity() {
@@ -20,6 +22,7 @@ class BlikCodeCreator : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_blik_code_creator)
 		setUpGui()
+		DEVELOPER_fillWidgets()
 	}
 	private fun setUpGui(){
 		amountField = findViewById(R.id.BlikCodeGenerator_amount_editText)
@@ -51,10 +54,15 @@ class BlikCodeCreator : AppCompatActivity() {
 	private fun goNextButtonClicked(){
 		val dataOk = validateDataToGenBlikCode()
 		if(!dataOk)
-			return
+			return//todo
 
 		val data = serializeDataForServer()
 		val codeAssociated = getCodeFromServer(data)
+		if(codeAssociated == null){
+			return//todo
+		}
+
+		openDisplayActivityWithCode(codeAssociated)
 	}
 
 	private fun validateDataToGenBlikCode() : Boolean{
@@ -73,7 +81,7 @@ class BlikCodeCreator : AppCompatActivity() {
 			return false
 		}
 
-		val amountText = findViewById<EditText>(R.id.BlikCodeGenerator_Amount_TextView).text.toString()
+		val amountText = findViewById<EditText>(R.id.BlikCodeGenerator_amount_editText).text.toString()
 		val amountOk = amountText.toDouble() > 0.0
 		if(!amountOk){
 			val textToShow = getString(R.string.USER_MSG_BlikCodeGenerator_Amount_zero)
@@ -92,10 +100,8 @@ class BlikCodeCreator : AppCompatActivity() {
 
 		return true
 	}
-
 	private fun getCodeFromServer(transferData: TransferData) : Int?{
-		//todo
-		return 123456
+		return Utilites.getRandomTestCode()		//todo
 	}
 	private fun serializeDataForServer() : TransferData {
 		val amount = amountField.text.toString().toDouble()
@@ -105,5 +111,16 @@ class BlikCodeCreator : AppCompatActivity() {
 		val receiverName = receiverNameField.text.toString()
 		val data = TransferData(null, receiverAccNumberAcc, receiverName, title, amount, currency)
 		return data
+	}
+
+	private fun openDisplayActivityWithCode(codeFromServer : Int){
+		val codeDisplayIntent = Intent(this, BlikCodeDisplayActivity::class.java)
+		codeDisplayIntent.putExtra(getString(R.string.ACT_COM_CODEGENERATOR_CODE_FOR_DISPLAY), codeFromServer)
+		this.startActivity(codeDisplayIntent)
+	}
+	private fun DEVELOPER_fillWidgets(){
+		amountField.setText("5")
+		titleField.setText("rrrr")
+		receiverNameField.setText("444")
 	}
 }

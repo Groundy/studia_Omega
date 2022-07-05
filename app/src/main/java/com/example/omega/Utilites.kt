@@ -9,6 +9,7 @@ import android.text.SpannableStringBuilder
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import kotlin.random.Random
 
 fun getSharedProperties(activity: Activity) : SharedPreferences{
 	val fileName = activity.getString(R.string.preference_file_key)
@@ -128,6 +129,9 @@ class Utilites {
 					editText.setSelection(editText.length())//Setting cursor to end
 				}
 			}
+		}
+		fun getRandomTestCode() : Int{
+			return Random.nextInt(999999)
 		}
 	}
 }
