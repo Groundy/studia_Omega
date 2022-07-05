@@ -1,9 +1,8 @@
-package com.example.omega
+package omega
 import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
-import android.content.Intent
 import android.content.SharedPreferences
 import android.text.SpannableStringBuilder
 import android.widget.EditText

@@ -1,23 +1,11 @@
-package com.example.omega
+package omega
 
 import android.os.Build
-import android.os.Environment
 import android.util.Log
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
 import okhttp3.*
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.net.Inet4Address
-import java.net.InetAddress
-import java.net.NetworkInterface
 import java.nio.charset.StandardCharsets
-import java.time.Duration
-import java.time.LocalDateTime
 import java.util.*
-import io.jsonwebtoken.security.Keys
-import java.security.Key
 import com.fasterxml.uuid.Generators
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody

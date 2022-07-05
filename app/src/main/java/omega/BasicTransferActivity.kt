@@ -1,4 +1,4 @@
-package com.example.omega
+package omega
 
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -41,7 +41,11 @@ class BasicTransferActivity : AppCompatActivity() {
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun afterTextChanged(p0: Editable?) {
 				if(p0 != null)
-					Utilites.stopUserFromPuttingMoreThan2DigitsAfterComma(amountEditText, previousValue, p0.toString())
+					Utilites.stopUserFromPuttingMoreThan2DigitsAfterComma(
+						amountEditText,
+						previousValue,
+						p0.toString()
+					)
 				printAmountAfterTransfer()
 			}
 		}

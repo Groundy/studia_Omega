@@ -1,4 +1,4 @@
-package com.example.omega
+package omega
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -45,7 +45,11 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun afterTextChanged(p0: Editable?) {
 				if(p0 != null)
-					Utilites.stopUserFromPuttingMoreThan2DigitsAfterComma(amountField, previousValue, p0.toString())
+					Utilites.stopUserFromPuttingMoreThan2DigitsAfterComma(
+						amountField,
+						previousValue,
+						p0.toString()
+					)
 			}
 		}
 		amountField.addTextChangedListener(amountEditTextListener)
@@ -68,7 +72,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		val accountChosen = true//todo
 		if(!accountChosen){
 			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_acc_not_chosen)
-			Utilites.showToast(this,textToShow)
+			Utilites.showToast(this, textToShow)
 			return false
 		}
 
@@ -76,7 +80,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		val receiverNameOk = receiverName.length in 3..50
 		if(!receiverNameOk){
 			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_wrong_receiver_name)
-			Utilites.showToast(this,textToShow)
+			Utilites.showToast(this, textToShow)
 			return false
 		}
 
@@ -84,7 +88,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		val amountOk = amountText.toDouble() > 0.0
 		if(!amountOk){
 			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_Amount_zero)
-			Utilites.showToast(this,textToShow)
+			Utilites.showToast(this, textToShow)
 			return false
 		}
 
@@ -93,14 +97,14 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		val titleOk = titleText.length in 3..50
 		if(!titleOk){
 			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_wrong_title)
-			Utilites.showToast(this,textToShow)
+			Utilites.showToast(this, textToShow)
 			return false
 		}
 
 		return true
 	}
 	private fun getCodeFromServer(transferData: TransferData) : Int?{
-		return Utilites.getRandomTestCode()		//todo
+		return Utilites.getRandomTestCode()        //todo
 	}
 	private fun serializeDataForServer() : TransferData {
 		val amount = amountField.text.toString().toDouble()

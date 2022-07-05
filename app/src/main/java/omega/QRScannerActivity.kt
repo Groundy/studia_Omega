@@ -1,4 +1,4 @@
-package com.example.omega
+package omega
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -26,7 +26,7 @@ class QrScannerActivity() : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_qrscanner)
 		askForCameraPermissions()
-		imgAnalyzer.setAnalyzer(mainExecutor,YourImageAnalyzer(this))
+		imgAnalyzer.setAnalyzer(mainExecutor, YourImageAnalyzer(this))
 		startCamera()
 	}
 	private fun askForCameraPermissions(){
@@ -57,7 +57,7 @@ class QrScannerActivity() : AppCompatActivity() {
 				cameraProvider.bindToLifecycle(this, cameraSelector,imgAnalyzer, preview)// Bind use cases to camera
 			}
 			catch(exc: Exception) {
-				Utilites.showMsg(this,exc.toString())
+				Utilites.showMsg(this, exc.toString())
 			}
 		}
 		cameraProviderFuture.addListener(cameraListener, ContextCompat.getMainExecutor(this))
@@ -74,7 +74,10 @@ class QrScannerActivity() : AppCompatActivity() {
 			if(properValue)
 				context.endActivity(context, true,rawValue.toInt())
 			else
-				Utilites.showToast(context, context.resources.getString(R.string.QrScanner_UserMsg_wrongQrFormat))
+				Utilites.showToast(
+					context,
+					context.resources.getString(R.string.QrScanner_UserMsg_wrongQrFormat)
+				)
 		}
 		@SuppressLint("UnsafeExperimentalUsageError")
 		override fun analyze(imageProxy: ImageProxy) {

@@ -1,16 +1,11 @@
-package com.example.omega
+package omega
 
 import android.app.Activity
 import android.util.Log
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.internal.userAgent
 import org.json.JSONObject
 import java.lang.Exception
-import kotlin.concurrent.thread
 
 class API_getAccounts {
 	private lateinit var activity : Activity

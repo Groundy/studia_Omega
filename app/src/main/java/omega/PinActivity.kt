@@ -1,4 +1,4 @@
-package com.example.omega
+package omega
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -200,7 +200,10 @@ class PinActivity : AppCompatActivity() {
 			}
 		}
 		else
-			Utilites.showToast(this,resources.getString(R.string.PIN_UserMsg_haveToUseAllTheDigits))
+			Utilites.showToast(
+				this,
+				resources.getString(R.string.PIN_UserMsg_haveToUseAllTheDigits)
+			)
 	}
 	private fun requestFocusOnActivityStart(){
 		digits[0].requestFocus()
@@ -237,7 +240,7 @@ class PinActivity : AppCompatActivity() {
 					1 -> resources.getString(R.string.PIN_UserMsg_triesLeft1)
 					else -> resources.getString(R.string.UserMsg_UNKNOWN_ERROR)
 				}
-				Utilites.showToast(this,textToShow)
+				Utilites.showToast(this, textToShow)
 				clearDigitsFields()
 			}
 			else
@@ -258,15 +261,24 @@ class PinActivity : AppCompatActivity() {
 					pinTriesLeft--
 					when(pinTriesLeft){
 						2 -> {
-							Utilites.showToast(this, resources.getString(R.string.PIN_UserMsg_triesLeft2))
+							Utilites.showToast(
+								this,
+								resources.getString(R.string.PIN_UserMsg_triesLeft2)
+							)
 							return
 						}
 						1 -> {
-							Utilites.showToast(this, resources.getString(R.string.PIN_UserMsg_triesLeft1))
+							Utilites.showToast(
+								this,
+								resources.getString(R.string.PIN_UserMsg_triesLeft1)
+							)
 							return
 						}
 						else -> {
-							Utilites.showToast(this, resources.getString(R.string.PIN_UserMsg_failedToSetNewPin))
+							Utilites.showToast(
+								this,
+								resources.getString(R.string.PIN_UserMsg_failedToSetNewPin)
+							)
 							finishActivity(false)
 						}
 					}
@@ -277,7 +289,7 @@ class PinActivity : AppCompatActivity() {
 				tmpPIN = pin
 				phaseOfChangePinProcess = CHANGE_PIN_PROCESS_PHASES.NEW_PIN_AGAIN
 			}
-			CHANGE_PIN_PROCESS_PHASES.NEW_PIN_AGAIN->{
+			CHANGE_PIN_PROCESS_PHASES.NEW_PIN_AGAIN ->{
 				descriptionField.text = resources.getString(R.string.PIN_GUI_changeDescription_newAgain)
 				val twoPinsAreSame = pin == tmpPIN
 				if(twoPinsAreSame){
@@ -286,7 +298,10 @@ class PinActivity : AppCompatActivity() {
 					finishActivity(true)
 				}
 				else{
-					Utilites.showToast(this, resources.getString(R.string.PIN_UserMsg_failedToSetNewPin))
+					Utilites.showToast(
+						this,
+						resources.getString(R.string.PIN_UserMsg_failedToSetNewPin)
+					)
 					finishActivity(false)
 				}
 			}
@@ -308,16 +323,19 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun saveNewPinInMemory(pin : Int){
 		//TODO
-		Utilites.savePref(this,R.integer.PREF_pin,pin)
+		Utilites.savePref(this, R.integer.PREF_pin, pin)
 		//dodać funkcję która ustawi ten PIN w pamięci apki i na severze
 	}
 	private fun checkStartPurpose(){
 		val purposeFieldName = resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
 		val activityStartReasonStr = intent.getStringExtra(purposeFieldName)
 		when(activityStartReasonStr){
-			resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[0] -> this.puprose = PURPOSE.SET
-			resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[1] -> this.puprose = PURPOSE.AUTH
-			resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[2] -> this.puprose = PURPOSE.CHANGE
+			resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[0] -> this.puprose =
+				PURPOSE.SET
+			resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[1] -> this.puprose =
+				PURPOSE.AUTH
+			resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[2] -> this.puprose =
+				PURPOSE.CHANGE
 			else -> this.puprose = PURPOSE.AUTH
 		}
 	}

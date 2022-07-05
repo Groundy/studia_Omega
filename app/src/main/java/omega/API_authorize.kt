@@ -1,12 +1,6 @@
-package com.example.omega
+package omega
 
-import android.app.Activity
-import android.app.Dialog
-import android.os.Looper
 import android.util.Log
-import android.widget.ProgressBar
-import androidx.test.core.app.ActivityScenario.launch
-import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
@@ -52,7 +46,7 @@ class API_authorize {
 		val uuidStr = ApiFuncs.getUUID()
 		val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/authorize"
 		val currentTimeStr = ApiFuncs.getCurrentTimeStr()
-		val endValidityTimeStr = ApiFuncs.getCurrentTimeStr(65*60)
+		val endValidityTimeStr = ApiFuncs.getCurrentTimeStr(65 * 60)
 
 		val requestBodyJson = JSONObject()
 			.put("requestHeader",JSONObject()
@@ -64,12 +58,12 @@ class API_authorize {
 				.put("isCompanyContext", false)
 			)
 			.put("response_type","code")
-			.put("client_id",ApiConsts.userId_ALIOR)
+			.put("client_id", ApiConsts.userId_ALIOR)
 			.put("scope","ais")
 			.put("scope_details",getScopeDetailsObject(endValidityTimeStr))
-			.put("redirect_uri",ApiConsts.REDIRECT_URI)
+			.put("redirect_uri", ApiConsts.REDIRECT_URI)
 			.put("state",stateStr)
-		return ApiFuncs.bodyToRequest(url, requestBodyJson,uuidStr)
+		return ApiFuncs.bodyToRequest(url, requestBodyJson, uuidStr)
 	}
 	private fun getScopeDetailsObject(expTimeStr : String) : JSONObject{
 		var permissionListArray = JSONArray()

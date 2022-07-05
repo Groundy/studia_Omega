@@ -1,11 +1,9 @@
-package com.example.omega
+package omega
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.nfc.NfcAdapter
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -25,7 +23,7 @@ class SettingsActivity : AppCompatActivity() {
 		val phoneHasNfc = NfcAdapter.getDefaultAdapter(this) != null
 		val nfcSwitch = findViewById<Switch>(R.id.turnOnNFCWhenAppStartsSwitch)
 		if(phoneHasNfc)
-			nfcSwitch.isChecked = Utilites.readPref_Bool(this,R.bool.PREF_turnNfcOnAppStart)
+			nfcSwitch.isChecked = Utilites.readPref_Bool(this, R.bool.PREF_turnNfcOnAppStart)
 		else
 			nfcSwitch.isVisible = false
 
@@ -57,7 +55,8 @@ class SettingsActivity : AppCompatActivity() {
 			dialog.selectAuthMethodeButton_finger.isVisible = false
 		dialog.selectAuthMethodeButton_patern.isVisible = false //TODO to nie jest zaimplementowane
 		val radioButtonGroup = dialog.selectAuthMethodeButtonGroup
-		val userPreferredMethodeCode = Utilites.readPref_Int(this,R.integer.PREF_preferedAuthMethode)
+		val userPreferredMethodeCode =
+			Utilites.readPref_Int(this, R.integer.PREF_preferedAuthMethode)
 		when(userPreferredMethodeCode){
 			0 -> {dialog.selectAuthMethodeButton_PIN.isChecked = true}
 			1 -> {dialog.selectAuthMethodeButton_patern.isChecked = true}
@@ -66,7 +65,7 @@ class SettingsActivity : AppCompatActivity() {
 					dialog.selectAuthMethodeButton_finger.isChecked = true
 				else {
 					dialog.selectAuthMethodeButton_PIN.isChecked = true
-					Utilites.savePref(this,R.integer.PREF_preferedAuthMethode,0)
+					Utilites.savePref(this, R.integer.PREF_preferedAuthMethode, 0)
 				}
 			}
 		}
@@ -76,7 +75,7 @@ class SettingsActivity : AppCompatActivity() {
 		radioButtonGroup.setOnCheckedChangeListener(radioButtonGroupListener)
 
 		val dialogOnDismissListener = DialogInterface.OnDismissListener{
-			var methodCode = Utilites.readPref_Int(this,R.integer.PREF_preferedAuthMethode)
+			var methodCode = Utilites.readPref_Int(this, R.integer.PREF_preferedAuthMethode)
 			var methodeName = when(methodCode){
 				0->getString(R.string.GUI_selectAuthMethodeText_pin)
 				1->getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
@@ -97,7 +96,7 @@ class SettingsActivity : AppCompatActivity() {
 					methodCode = 2
 				}
 			}
-			Utilites.savePref(this,R.integer.PREF_preferedAuthMethode,methodCode)
+			Utilites.savePref(this, R.integer.PREF_preferedAuthMethode, methodCode)
 			val textToSetOnWidget = getString(R.string.Settings_GUI_selectAuthMethodeTextBase) + methodeName
 			findViewById<TextView>(R.id.selectAuthMethodeTextView).text = textToSetOnWidget
 		}

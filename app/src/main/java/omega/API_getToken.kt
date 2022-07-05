@@ -1,12 +1,8 @@
-package com.example.omega
+package omega
 
-import android.app.Activity
 import android.util.Log
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.lang.Exception
 
@@ -58,7 +54,7 @@ class API_getToken {
 
 			val scopeToSet = when(scope){
 				"ais" -> ApiConsts.scopeValues.AIS
-				"ais-accounts" ->ApiConsts.scopeValues.AIS_ACC
+				"ais-accounts" -> ApiConsts.scopeValues.AIS_ACC
 				"pis" -> ApiConsts.scopeValues.PIS
 				else -> null
 			}
@@ -95,11 +91,11 @@ class API_getToken {
 					.put("sendDate", currentTimeStr)
 					.put("tppId", ApiConsts.TTP_ID)
 					.put("isCompanyContext", false))
-				.put("Code",UserData.authCode)
+				.put("Code", UserData.authCode)
 				.put("grant_type","authorization_code")
-				.put("redirect_uri",ApiConsts.REDIRECT_URI)
-				.put("client_id",ApiConsts.userId_ALIOR)
-				.put("client_secret",ApiConsts.appSecret_ALIOR)
+				.put("redirect_uri", ApiConsts.REDIRECT_URI)
+				.put("client_id", ApiConsts.userId_ALIOR)
+				.put("client_secret", ApiConsts.appSecret_ALIOR)
 
 
 			return ApiFuncs.bodyToRequest(url, requestBodyJson, uuidStr)

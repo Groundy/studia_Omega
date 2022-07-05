@@ -1,4 +1,4 @@
-package com.example.omega
+package omega
 
 import android.util.Log
 import org.json.JSONObject

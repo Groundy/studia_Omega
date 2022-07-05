@@ -1,6 +1,4 @@
-package com.example.omega
-
-import android.content.Context
+package omega
 
 class ApiConsts {
 	enum class scopeValues {AIS,AIS_ACC,PIS}

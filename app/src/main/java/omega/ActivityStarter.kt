@@ -1,8 +1,7 @@
-package com.example.omega
+package omega
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 
 class ActivityStarter {
 	companion object{
@@ -29,11 +28,11 @@ class ActivityStarter {
 			activity.startActivity(settingsActivityIntent)
 		}
 		fun startTransferActivityFromMenu(activity: Activity){
-			val transferIntent = Intent(activity,BasicTransferActivity::class.java)
+			val transferIntent = Intent(activity, BasicTransferActivity::class.java)
 			activity.startActivity(transferIntent)
 		}
 		fun startRBlikCodeCreatorActivity(activity: Activity){
-			val RBLIKCodeCreatorIntent = Intent(activity,RBLIKCodeCreator::class.java)
+			val RBLIKCodeCreatorIntent = Intent(activity, RBLIKCodeCreator::class.java)
 			activity.startActivity(RBLIKCodeCreatorIntent)
 		}
 		fun startResultActivity(activity: Activity, textIdToDisplay: Int){

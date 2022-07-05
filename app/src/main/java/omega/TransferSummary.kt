@@ -1,4 +1,4 @@
-package com.example.omega
+package omega
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -34,7 +34,7 @@ class TransferSummary : AppCompatActivity() {
 	}
 	private fun authClicked(){
 		val description  = transferData.toString()
-		ActivityStarter.startAuthActivity(this,description,null)
+		ActivityStarter.startAuthActivity(this, description, null)
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -46,9 +46,9 @@ class TransferSummary : AppCompatActivity() {
 
 		if(isAuthCode){
 			if(resultCode == RESULT_OK)
-				ActivityStarter.startResultActivity(this,R.string.Result_GUI_OK)
+				ActivityStarter.startResultActivity(this, R.string.Result_GUI_OK)
 			else
-				ActivityStarter.startResultActivity(this,R.string.Result_GUI_WRONG_AUTH)
+				ActivityStarter.startResultActivity(this, R.string.Result_GUI_WRONG_AUTH)
 		}
 		this.finish()
 	}

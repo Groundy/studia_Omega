@@ -1,4 +1,4 @@
-package com.example.omega
+package omega
 
 import android.app.Activity
 import android.util.Log

@@ -1,4 +1,4 @@
-package com.example.omega
+package omega
 
 import android.util.Log
 import org.json.JSONObject
@@ -12,23 +12,23 @@ class UserData  {
 		var refreshToken : String? = null
 		var listOfAccounts : ArrayList<PaymentAccount>? = null
 
-		fun setTokenType(tokenTypeToSet : String?) : AccessTokenStruct{
+		fun setTokenType(tokenTypeToSet : String?) : AccessTokenStruct {
 			this.tokenType = tokenTypeToSet
 			return this
 		}
-		fun setTokenContent(tokenContToSet : String?) : AccessTokenStruct{
+		fun setTokenContent(tokenContToSet : String?) : AccessTokenStruct {
 			this.tokenContent = tokenContToSet
 			return this
 		}
-		fun setTokenScope(scope : ApiConsts.scopeValues?) : AccessTokenStruct{
+		fun setTokenScope(scope : ApiConsts.scopeValues?) : AccessTokenStruct {
 			this.scope = scope
 			return this
 		}
-		fun setTokenExpirationTime(time: String) : AccessTokenStruct{
+		fun setTokenExpirationTime(time: String) : AccessTokenStruct {
 			this.expirationTime = time
 			return this
 		}
-		fun setRefreshToken(refreshToken: String) : AccessTokenStruct{
+		fun setRefreshToken(refreshToken: String) : AccessTokenStruct {
 			this.refreshToken = refreshToken
 			return this
 		}
@@ -39,7 +39,7 @@ class UserData  {
 		fun refresh(){
 			//todo
 		}
-		fun addAccounts(list : ArrayList<PaymentAccount>?) : AccessTokenStruct{
+		fun addAccounts(list : ArrayList<PaymentAccount>?) : AccessTokenStruct {
 			this.listOfAccounts = list
 			return this
 		}

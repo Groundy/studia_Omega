@@ -1,4 +1,4 @@
-package com.example.omega
+package omega
 
 import android.Manifest
 import android.app.PendingIntent
@@ -20,7 +20,6 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.navigation.findNavController
 import com.google.firebase.FirebaseApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -77,10 +76,11 @@ class MainActivity : AppCompatActivity() {
 					if(errorCode == 13){
 						val descriptionFieldName = resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
 						val description = data.extras?.getString(descriptionFieldName)
-						ActivityStarter.startAuthActivity(this,description,0)
+						ActivityStarter.startAuthActivity(this, description, 0)
 					}
 					else{
-						val textToShow = Utilites.getMessageToDisplayToUserAfterBiometricAuthError(errorCode!!)
+						val textToShow =
+							Utilites.getMessageToDisplayToUserAfterBiometricAuthError(errorCode!!)
 						Utilites.showToast(this, textToShow)
 						Utilites.authFailed(this)
 					}
@@ -92,7 +92,10 @@ class MainActivity : AppCompatActivity() {
 				}
 				else{
 					//TODO to tworzy infinity loop w ktorym urzytkownik do upadlego jest proszony o pin
-					Utilites.showToast(this,getString(R.string.PIN_UserMsg_failedToSetNewPin_differentPinsInserted))
+					Utilites.showToast(
+						this,
+						getString(R.string.PIN_UserMsg_failedToSetNewPin_differentPinsInserted)
+					)
 					ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 				}
 			}
@@ -129,7 +132,7 @@ class MainActivity : AppCompatActivity() {
 						return
 					}
 
-					ActivityStarter.openBrowserForLogin(this,authUrl,state)
+					ActivityStarter.openBrowserForLogin(this, authUrl, state)
 				}
 				else{
 					//todo
@@ -149,13 +152,13 @@ class MainActivity : AppCompatActivity() {
 	}
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when(item.itemId){
-			R.id.ConfigurationsTab->
+			R.id.ConfigurationsTab ->
 				ActivityStarter.startConfigurationActivity(this)
-			R.id.TransferTab->
+			R.id.TransferTab ->
 				ActivityStarter.startTransferActivityFromMenu(this)
-			R.id.AskForTokenTab->
+			R.id.AskForTokenTab ->
 				ActivityStarter.startUserPermissionListActivity(this)
-			R.id.GenerateBlikCodeTab->
+			R.id.GenerateBlikCodeTab ->
 				ActivityStarter.startRBlikCodeCreatorActivity(this)
 		}
 		return true
@@ -187,20 +190,23 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 
-		ActivityStarter.startTransferSummaryActivity(this,transferData.serialize()!!)
+		ActivityStarter.startTransferSummaryActivity(this, transferData.serialize()!!)
 	}
 	private fun checkIfNfcIsTurnedOnPhone(): Boolean {
 		val deviceHasNfc = this.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
 		if (!deviceHasNfc) {
 			Log.e(Utilites.TagProduction, "There's no NFC hardware on user's phone")
-			Utilites.showToast(this,resources.getString(R.string.NFC_UserMsg_NoHardwareSupport))
+			Utilites.showToast(this, resources.getString(R.string.NFC_UserMsg_NoHardwareSupport))
 			return false
 		}
 
 		val permissionListener = object : PermissionListener {
 			override fun onPermissionGranted(response: PermissionGrantedResponse?) {}
 			override fun onPermissionDenied(response: PermissionDeniedResponse?) {
-				Utilites.showToast(this@MainActivity, resources.getString(R.string.NFC_UserMsg_NeedPermission))
+				Utilites.showToast(
+					this@MainActivity,
+					resources.getString(R.string.NFC_UserMsg_NeedPermission)
+				)
 				Log.e(Utilites.TagProduction, "User denied permission to use NFC")
 			}
 
@@ -213,7 +219,10 @@ class MainActivity : AppCompatActivity() {
 		val permissionNfcDenied = checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_DENIED
 		if (permissionNfcDenied) {
 			Log.e(Utilites.TagProduction, "There's no permission to use")
-			Utilites.showToast(this@MainActivity, resources.getString(R.string.NFC_UserMsg_NeedPermission))
+			Utilites.showToast(
+				this@MainActivity,
+				resources.getString(R.string.NFC_UserMsg_NeedPermission)
+			)
 			return false
 		}
 		val manager = this.getSystemService(NFC_SERVICE) as NfcManager
@@ -314,6 +323,6 @@ class MainActivity : AppCompatActivity() {
 			Utilites.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")
 			return
 		}
-		ActivityStarter.openBrowserForLogin(this,authUrl,state)
+		ActivityStarter.openBrowserForLogin(this, authUrl, state)
 	}
 }
