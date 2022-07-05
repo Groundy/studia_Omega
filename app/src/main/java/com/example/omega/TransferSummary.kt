@@ -46,9 +46,9 @@ class TransferSummary : AppCompatActivity() {
 
 		if(isAuthCode){
 			if(resultCode == RESULT_OK)
-				ActivityStarter.startResultActivity(this,R.string.GUI_result_OK)
+				ActivityStarter.startResultActivity(this,R.string.Result_GUI_OK)
 			else
-				ActivityStarter.startResultActivity(this,R.string.GUI_result_WRONG_AUTH)
+				ActivityStarter.startResultActivity(this,R.string.Result_GUI_WRONG_AUTH)
 		}
 		this.finish()
 	}

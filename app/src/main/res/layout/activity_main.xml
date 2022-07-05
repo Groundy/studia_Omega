@@ -12,10 +12,10 @@
 	<FrameLayout
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		android:layout_marginStart="@dimen/activity_horizontal_margin"
-		android:layout_marginTop="@dimen/activity_vertical_margin"
-		android:layout_marginEnd="@dimen/activity_horizontal_margin"
-		android:layout_marginBottom="@dimen/activity_vertical_margin"
+		android:layout_marginStart="@dimen/marginSizeX"
+		android:layout_marginTop="@dimen/marginSizeY"
+		android:layout_marginEnd="@dimen/marginSizeX"
+		android:layout_marginBottom="@dimen/marginSizeY"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
@@ -27,10 +27,10 @@
 			android:orientation="vertical">
 
 			<Button
-				android:id="@+id/goToQRScannerButton"
+				android:id="@+id/goToQrScannerButton"
 				android:layout_width="match_parent"
 				android:layout_height="71dp"
-				android:text="@string/GUI_QR_scanner_buttonText"
+				android:text="@string/QrScanner_GUI_buttonText"
 				android:textSize="24sp" />
 
 			<Button

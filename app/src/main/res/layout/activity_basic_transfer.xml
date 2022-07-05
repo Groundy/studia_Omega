@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-								xmlns:tools="http://schemas.android.com/tools"
-								xmlns:app="http://schemas.android.com/apk/res-auto"
-								android:layout_width="match_parent"
-								android:layout_height="match_parent"
-								tools:context=".BasicTransferActivity">
+	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".BasicTransferActivity">
 
 	<FrameLayout
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		android:layout_marginStart="@dimen/activity_vertical_margin"
-		android:layout_marginTop="@dimen/activity_horizontal_margin"
-		android:layout_marginEnd="@dimen/activity_vertical_margin"
-		android:layout_marginBottom="@dimen/activity_horizontal_margin"
+		android:layout_marginStart="@dimen/marginSizeY"
+		android:layout_marginTop="@dimen/marginSizeX"
+		android:layout_marginEnd="@dimen/marginSizeY"
+		android:layout_marginBottom="@dimen/marginSizeX"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
 				<TextView
 					android:id="@+id/basicTransfer_accountList_textView"
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:layout_height="@dimen/basicTransfer_textFieldY"
 					android:layout_gravity="fill_vertical|end"
 					android:gravity="center_horizontal"
 					android:text="@string/GUI_basicTransfer_chooseAccountTextView" />
@@ -43,7 +43,7 @@
 				<Spinner
 					android:id="@+id/basicTransfer_accountList_Spinner"
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
+					android:layout_height="@dimen/basicTransfer_inputFieldY"
 					android:dropDownWidth="300dp"
 					android:scrollbarSize="40dp"
 					android:spinnerMode="dropdown"
@@ -51,7 +51,7 @@
 
 				<Space
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_spacer_Y" />
+					android:layout_height="@dimen/basicTransfer_spacer_Y" />
 
 			</LinearLayout>
 
@@ -64,14 +64,14 @@
 				<TextView
 					android:id="@+id/basicTransfer_recvierName_textView"
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:layout_height="@dimen/basicTransfer_textFieldY"
 					android:gravity="center"
 					android:text="@string/GUI_basicTransfer_ReceiverNameTextView" />
 
 				<EditText
 					android:id="@+id/basicTransfer_reciverName_EditText"
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
+					android:layout_height="@dimen/basicTransfer_inputFieldY"
 					android:ems="10"
 					android:inputType="textPersonName"
 					android:maxLength="50"
@@ -81,7 +81,7 @@
 
 				<Space
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_spacer_Y" />
+					android:layout_height="@dimen/basicTransfer_spacer_Y" />
 
 			</LinearLayout>
 
@@ -94,14 +94,14 @@
 				<TextView
 					android:id="@+id/basicTransfer_reciverNumber_textView"
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:layout_height="@dimen/basicTransfer_textFieldY"
 					android:gravity="center"
 					android:text="@string/GUI_basicTransfer_ReceiverNumberTextView" />
 
 				<EditText
 					android:id="@+id/basicTransfer_receiverNumber_EditText"
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
+					android:layout_height="@dimen/basicTransfer_inputFieldY"
 					android:backgroundTint="@color/black"
 					android:ems="10"
 					android:inputType="number"
@@ -112,7 +112,7 @@
 
 				<Space
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_spacer_Y" />
+					android:layout_height="@dimen/basicTransfer_spacer_Y" />
 
 			</LinearLayout>
 
@@ -125,14 +125,14 @@
 				<TextView
 					android:id="@+id/basicTransfer_Amount_TextView"
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:layout_height="@dimen/basicTransfer_textFieldY"
 					android:gravity="center"
 					android:text="@string/GUI_basicTransfer_AmountOfTransferTextView" />
 
 				<EditText
 					android:id="@+id/basicTransfer_amount_editText"
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
+					android:layout_height="@dimen/basicTransfer_inputFieldY"
 					android:ems="10"
 					android:inputType="numberDecimal"
 					android:textColor="@color/black"
@@ -142,12 +142,12 @@
 				<TextView
 					android:id="@+id/basicTransfer_amountAfterTransfer_TextView"
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:layout_height="@dimen/basicTransfer_textFieldY"
 					android:textColor="@color/black" />
 
 				<Space
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_spacer_Y" />
+					android:layout_height="@dimen/basicTransfer_spacer_Y" />
 
 			</LinearLayout>
 
@@ -160,14 +160,14 @@
 				<TextView
 					android:id="@+id/basicTransfer_transfTitle_textView"
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_textFieldY"
+					android:layout_height="@dimen/basicTransfer_textFieldY"
 					android:gravity="center"
 					android:text="@string/GUI_basicTransfer_TitleOfTransferTextView" />
 
 				<EditText
 					android:id="@+id/basicTransfer_transferTitle_EditText"
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
+					android:layout_height="@dimen/basicTransfer_inputFieldY"
 					android:ems="10"
 					android:inputType="textPersonName"
 					android:maxLength="50"
@@ -177,14 +177,14 @@
 
 				<Space
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/DIM_basicTransfer_spacer_Y" />
+					android:layout_height="@dimen/basicTransfer_spacer_Y" />
 
 			</LinearLayout>
 
 			<Button
-				android:id="@+id/BlikCodeGenerator_goNext_button"
+				android:id="@+id/RBlikCodeGenerator_goNext_button"
 				android:layout_width="match_parent"
-				android:layout_height="@dimen/DIM_basicTransfer_inputFieldY"
+				android:layout_height="@dimen/basicTransfer_inputFieldY"
 				android:text="@string/GUI_basicTransfer_goNextButtonText" />
 
 			<Space

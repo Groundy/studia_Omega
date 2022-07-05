@@ -59,9 +59,9 @@ class MainActivity : AppCompatActivity() {
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 		when(requestCode){
-			resources.getInteger(R.integer.ACT_RETCODE_QR_SCANNER) -> {
+			resources.getInteger(R.integer.ACT_RETCODE_QrScanner) -> {
 				if(resultCode == RESULT_OK && data != null) {
-					val returnFieldName = resources.getString(R.string.ACT_COM_QR_SCANNER_FIELD_NAME)
+					val returnFieldName = resources.getString(R.string.ACT_COM_QrScanner_FIELD_NAME)
 					val returnedCode = data.getIntExtra(returnFieldName, -1)
 					val vailCode = returnedCode in 0..999999
 					if (vailCode)
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
 				}
 				else{
 					//TODO to tworzy infinity loop w ktorym urzytkownik do upadlego jest proszony o pin
-					Utilites.showToast(this,getString(R.string.USER_MSG_PIN_FAILED_TO_SET_NEW_PIN_DIFFRENT_PINS_INSERTED))
+					Utilites.showToast(this,getString(R.string.PIN_UserMsg_failedToSetNewPin_differentPinsInserted))
 					ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 				}
 			}
@@ -156,7 +156,7 @@ class MainActivity : AppCompatActivity() {
 			R.id.AskForTokenTab->
 				ActivityStarter.startUserPermissionListActivity(this)
 			R.id.GenerateBlikCodeTab->
-				ActivityStarter.startBlikCodeCreatorActivity(this)
+				ActivityStarter.startRBlikCodeCreatorActivity(this)
 		}
 		return true
 	}
@@ -183,7 +183,7 @@ class MainActivity : AppCompatActivity() {
 		codeField.text.clear()
 		val transferData = Utilites.checkBlikCode(code)
 		if(transferData == null){
-			ActivityStarter.startResultActivity(this, R.string.GUI_result_WRONG_CODE)
+			ActivityStarter.startResultActivity(this, R.string.Result_GUI_WRONG_CODE)
 			return
 		}
 
@@ -193,14 +193,14 @@ class MainActivity : AppCompatActivity() {
 		val deviceHasNfc = this.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
 		if (!deviceHasNfc) {
 			Log.e(Utilites.TagProduction, "There's no NFC hardware on user's phone")
-			Utilites.showToast(this,resources.getString(R.string.USER_MSG_NFC_NO_HW_SUPP))
+			Utilites.showToast(this,resources.getString(R.string.NFC_UserMsg_NoHardwareSupport))
 			return false
 		}
 
 		val permissionListener = object : PermissionListener {
 			override fun onPermissionGranted(response: PermissionGrantedResponse?) {}
 			override fun onPermissionDenied(response: PermissionDeniedResponse?) {
-				Utilites.showToast(this@MainActivity, resources.getString(R.string.USER_MSG_NFC_NEED_PERMISSION))
+				Utilites.showToast(this@MainActivity, resources.getString(R.string.NFC_UserMsg_NeedPermission))
 				Log.e(Utilites.TagProduction, "User denied permission to use NFC")
 			}
 
@@ -213,13 +213,13 @@ class MainActivity : AppCompatActivity() {
 		val permissionNfcDenied = checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_DENIED
 		if (permissionNfcDenied) {
 			Log.e(Utilites.TagProduction, "There's no permission to use")
-			Utilites.showToast(this@MainActivity, resources.getString(R.string.USER_MSG_NFC_NEED_PERMISSION))
+			Utilites.showToast(this@MainActivity, resources.getString(R.string.NFC_UserMsg_NeedPermission))
 			return false
 		}
 		val manager = this.getSystemService(NFC_SERVICE) as NfcManager
 		val nfcIsOn = manager.defaultAdapter.isEnabled
 		if (!nfcIsOn) {
-			Utilites.showToast(this@MainActivity, resources.getString(R.string.USER_MSG_NFC_TURN_OFF))
+			Utilites.showToast(this@MainActivity, resources.getString(R.string.NFC_UserMsg_TurnOff))
 			Log.e(Utilites.TagProduction, "User denied permission to use NFC")
 			return false
 		}
@@ -290,12 +290,12 @@ class MainActivity : AppCompatActivity() {
 		codeField.requestFocus()
 	}
 	private fun initQR(){
-		val goQRScannerButtonListener = View.OnClickListener {
-			val qRScannerActivityIntent = Intent(this, QRScannerActivity::class.java)
-			startActivityForResult(qRScannerActivityIntent, resources.getInteger(R.integer.ACT_RETCODE_QR_SCANNER))
+		val goQrScannerButtonListener = View.OnClickListener {
+			val QrScannerActivityIntent = Intent(this, QrScannerActivity::class.java)
+			startActivityForResult(QrScannerActivityIntent, resources.getInteger(R.integer.ACT_RETCODE_QrScanner))
 		}
-		goQRActivityButton = findViewById(R.id.goToQRScannerButton)
-		goQRActivityButton.setOnClickListener(goQRScannerButtonListener)
+		goQRActivityButton = findViewById(R.id.goToQrScannerButton)
+		goQRActivityButton.setOnClickListener(goQrScannerButtonListener)
 	}
 	private fun startNfcOnStartIfUserWishTo(){
 		//TODO ten kod mimo iż jest kopią kodu z przycisku włączającego wyłączającego, ale nie chce się uruchomić automatycznie

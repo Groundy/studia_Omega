@@ -33,12 +33,12 @@ class SettingsActivity : AppCompatActivity() {
 		val methodeCode = Utilites.readPref_Int(this, R.integer.PREF_preferedAuthMethode)
 		var methodeName = when(methodeCode){
 			0->getString(R.string.GUI_selectAuthMethodeText_pin)
-			1->getString(R.string.GUI_selectAuthMethodeText_pattern)
-			2->getString(R.string.GUI_selectAuthMethodeText_finger)
+			1->getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
+			2->getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
 			else ->getString(R.string.GUI_selectAuthMethodeText_pin)
 		}
 
-		val textToSetOnSelectAuthMethode = getString(R.string.GUI_selectAuthMethodeText_base) + methodeName
+		val textToSetOnSelectAuthMethode = getString(R.string.Settings_GUI_selectAuthMethodeTextBase) + methodeName
 		selectAuthMethodeField.text = textToSetOnSelectAuthMethode
 	}
 	private fun saveResults() {
@@ -79,8 +79,8 @@ class SettingsActivity : AppCompatActivity() {
 			var methodCode = Utilites.readPref_Int(this,R.integer.PREF_preferedAuthMethode)
 			var methodeName = when(methodCode){
 				0->getString(R.string.GUI_selectAuthMethodeText_pin)
-				1->getString(R.string.GUI_selectAuthMethodeText_pattern)
-				2->getString(R.string.GUI_selectAuthMethodeText_finger)
+				1->getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
+				2->getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
 				else ->getString(R.string.GUI_selectAuthMethodeText_pin)
 			}
 			when(radioButtonGroup.checkedRadioButtonId){
@@ -89,16 +89,16 @@ class SettingsActivity : AppCompatActivity() {
 					methodCode = 0
 				}
 				dialog.selectAuthMethodeButton_patern.id ->{
-					methodeName = getString(R.string.GUI_selectAuthMethodeText_pattern)
+					methodeName = getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
 					methodCode = 1
 				}
 				dialog.selectAuthMethodeButton_finger.id ->{
-					methodeName = getString(R.string.GUI_selectAuthMethodeText_finger)
+					methodeName = getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
 					methodCode = 2
 				}
 			}
 			Utilites.savePref(this,R.integer.PREF_preferedAuthMethode,methodCode)
-			val textToSetOnWidget = getString(R.string.GUI_selectAuthMethodeText_base) + methodeName
+			val textToSetOnWidget = getString(R.string.Settings_GUI_selectAuthMethodeTextBase) + methodeName
 			findViewById<TextView>(R.id.selectAuthMethodeTextView).text = textToSetOnWidget
 		}
 		dialog.setOnDismissListener(dialogOnDismissListener)

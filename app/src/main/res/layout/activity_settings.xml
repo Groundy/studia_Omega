@@ -1,54 +1,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-								xmlns:app="http://schemas.android.com/apk/res-auto"
-								android:layout_width="match_parent"
-								android:layout_height="match_parent"
-								android:orientation="vertical"
-								android:background="#00FFFFFF">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:background="#00FFFFFF">
 
-				<Switch
-												android:text="@string/GUI_turnNfcOnAppStart_settingText"
-												android:layout_width="match_parent"
-												android:layout_height="@dimen/DIM_field_height_settings"
-												android:id="@+id/turnOnNFCWhenAppStartsSwitch"
-												android:minHeight="50dp"
-												android:showText="false"
-												android:textSize="@dimen/DIM_font_size_settings"
-												android:height="@dimen/DIM_field_height_settings"
-												android:textColor="@color/black"
-												android:gravity="center_vertical" />
+	<Switch
+		android:text="@string/Settings_GUI_turnNfcOnAppStartText"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/DIM_field_height_settings"
+		android:id="@+id/turnOnNFCWhenAppStartsSwitch"
+		android:minHeight="50dp"
+		android:showText="false"
+		android:textSize="@dimen/DIM_font_size_settings"
+		android:height="@dimen/DIM_field_height_settings"
+		android:textColor="@color/black"
+		android:gravity="center_vertical" />
 
-				<View
-												android:layout_width="match_parent"
-												android:layout_height="@dimen/DIM_spacer_height_settings"
-												android:id="@+id/spacer1"
-												android:backgroundTint="@android:color/darker_gray"
-												android:background="@android:color/darker_gray" />
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/DIM_spacer_height_settings"
+		android:id="@+id/spacer1"
+		android:backgroundTint="@android:color/darker_gray"
+		android:background="@android:color/darker_gray" />
 
-				<TextView
-												android:layout_width="match_parent"
-												android:layout_height="@dimen/DIM_field_height_settings"
-												android:id="@+id/selectAuthMethodeTextView"
-												android:text="@string/GUI_PreferredAuthMethode"
-												android:textAlignment="gravity"
-												android:textSize="@dimen/DIM_font_size_settings"
-												android:height="@dimen/DIM_field_height_settings"
-												android:textColor="@color/black"
-												android:gravity="center_vertical" />
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/DIM_field_height_settings"
+		android:id="@+id/selectAuthMethodeTextView"
+		android:text="@string/Settings_GUI_preferredAuthMethode"
+		android:textAlignment="gravity"
+		android:textSize="@dimen/DIM_font_size_settings"
+		android:height="@dimen/DIM_field_height_settings"
+		android:textColor="@color/black"
+		android:gravity="center_vertical" />
 
-				<View
-												android:layout_width="match_parent"
-												android:layout_height="@dimen/DIM_spacer_height_settings"
-												android:id="@+id/spacer2"
-												android:backgroundTint="@android:color/darker_gray"
-												android:background="@android:color/darker_gray" />
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/DIM_spacer_height_settings"
+		android:id="@+id/spacer2"
+		android:backgroundTint="@android:color/darker_gray"
+		android:background="@android:color/darker_gray" />
 
-				<TextView
-												android:text="@string/GUI_SETTINGS_change_pin_text"
-												android:layout_width="match_parent"
-												android:layout_height="@dimen/DIM_field_height_settings"
-												android:id="@+id/changePinSettingsTextView"
-												android:textSize="@dimen/DIM_font_size_settings"
-												android:textColor="@color/black"
-												android:gravity="center_vertical" />
+	<TextView
+		android:text="@string/Settings_GUI_changePinText"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/DIM_field_height_settings"
+		android:id="@+id/changePinSettingsTextView"
+		android:textSize="@dimen/DIM_font_size_settings"
+		android:textColor="@color/black"
+		android:gravity="center_vertical" />
 
 </LinearLayout>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<!--basic transfer-->
+	<string name="GUI_basicTransfer_chooseAccountTextView">Z Rachunku: </string>
+	<string name="GUI_basicTransfer_ReceiverNameTextView">Odbiorca: </string>
+	<string name="GUI_basicTransfer_ReceiverNumberTextView">Numer rachunku odbiorcy: </string>
+	<string name="GUI_basicTransfer_AmountOfTransferTextView">Kwota: </string>
+	<string name="GUI_basicTransfer_TitleOfTransferTextView">Tytuł przelewu: </string>
+	<string name="GUI_basicTransfer_goNextButtonText">Dalej </string>
+	<string name="GUI_basicTransfer_amountAfterTransfer">Pozostało: </string>
+	<string name="GUI_basicTransfer_amountAfterTransfer_less_than_zero">Nie posiadasz wystarczjących środków</string>
+
+	<string name="UserMsg_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER">Numer odbiorcy musi mieć 26 cyfr.</string>
+	<string name="UserMsg_basicTransfer_Amount_too_hight">Kwota przelewu jest większa niż dostępne na rachunku środki.</string>
+	<string name="UserMsg_basicTransfer_Amount_zero">Kwota przelewu nie musi być większa niż zero.</string>
+	<string name="UserMsg_basicTransfer_wrong_receiver_name">Nazwa odbiorca musi mieć między 3 a 50 znaków</string>
+	<string name="UserMsg_basicTransfer_wrong_title">Tytuł przelewu musi mieć między 3 a 50 znaków</string>
+	<string name="UserMsg_basicTransfer_error_reciving_acc_balance">Błąd pobierania informacji o środkach na rachunku, płatność niemożliwa.</string>
+	<string name="UserMsg_basicTransfer_unkownError">Nieznany błąd, płatność niemożliwa.</string>
+
+	<!-- RBLIK code generator  -->
+	<string name="GUI_RBlikCodeGenerator_chooseAccountTextView">Na rachunek: </string>
+	<string name="GUI_RBlikCodeGenerator_ReceiverNameTextView">Nazwa odbiorcy: </string>
+	<string name="GUI_RBlikCodeGenerator_AmountOfTransferTextView">Kwota: </string>
+	<string name="GUI_RBlikCodeGenerator_TitleOfTransferTextView">Tytuł przelewu: </string>
+	<string name="GUI_RBlikCodeGenerator_goNextButtonText">Dalej </string>
+
+	<string name="UserMsg_RBlikCodeGenerator_Amount_zero">Kwota przelewu musi być większa niż zero.</string>
+	<string name="UserMsg_RBlikCodeGenerator_wrong_receiver_name">Nazwa odbiorca musi mieć między 3 a 50 znaków</string>
+	<string name="UserMsg_RBlikCodeGenerator_wrong_title">Tytuł przelewu musi mieć między 3 a 50 znaków</string>
+	<string name="UserMsg_RBlikCodeGenerator_acc_not_chosen">Należy wybrać rachunek docelowy.</string>
+	<string name="UserMsg_RBlikCodeGenerator_error_reciving_acc_balance">Błąd pobierania informacji o środkach na rachunku, płatność niemożliwa.</string>
+	<string name="UserMsg_RBlikCodeGenerator_unkownError">Nieznany błąd, płatność niemożliwa.</string>
+
+	<!-- RBLIK code display  -->
+	<string name="RBLIKDISPLAY_GUI_buttonText">Wstecz</string>
+	<string name="RBLIKDISPLAY_UserMsg_incorrectCodePassed">Kod niepoprawny. Wygenerowanie kodu RBlik jest niemożliwa.</string>
+	<string name="RBLIKDISPLAY_UserMsg_qrGeneratorError">Błąd generatora kodów QR.</string>
+
+	<!-- Transfer summary -->
+	<string name="TransferSummary_GUI_BackButtonText">Anuluj</string>
+	<string name="TransferSummary_GUI_AuthButtonText">Autoryzuj</string>
+	<string name="TransferSummary_GUI_SenderAcc">Z rachunku: </string>
+	<string name="TransferSummary_GUI_ReceiverName">Nazwa odbiorcy:</string>
+	<string name="TransferSummary_GUI_ReceiverAcc">Numer rachunku odbiorcy:</string>
+	<string name="TransferSummary_GUI_Title">Tytuł przelewu:</string>
+	<string name="TransferSummary_GUI_Amount">Kwota:</string>
+
+	<!-- PIN activity -->
+	<string name="PIN_UserMsg_triesLeft2">Pozostały 2 próby</string>
+	<string name="PIN_UserMsg_triesLeft1">Pozostała ostatnia próba</string>
+	<string name="PIN_UserMsg_haveToUseAllTheDigits">PIN musi zawierać wszystkie możliwe cyfry</string>
+	<string name="PIN_UserMsg_failedToSetNewPin_differentPinsInserted">Nie udało się ustawić nowego PINu, dwa wprowadzone piny nie były identyczne. Spróbuj ponownie.</string>
+	<string name="PIN_UserMsg_failedToSetNewPin">Nie udało się zmienić PINu.</string>
+	<string name="PIN_UserMsg_newPinSet">Pin pomyślnie zmieniony.</string>
+
+	<string name="GUI_selectAuthMethodeText_pin">PIN</string>
+	<string name="PIN_GUI_setPinTitle">Ustaw swój PIN</string>
+	<string name="PIN_GUI_setPinAgainTitle">Wprowadź PIN ponownie</string>
+	<string name="PIN_GUI_changeDescription_old">Wprowadź stary pin</string>
+	<string name="PIN_GUI_changeDescription_new">Wprowadź nowy pin</string>
+	<string name="PIN_GUI_changeDescription_newAgain">Wprowadź ponownie nowy pin</string>
+	<string name="PIN_GUI_changeTitle">Zmiana Pinu</string>
+
+	<!-- QR scanner activity -->
+	<string name="QrScanner_UserMsg_wrongQrFormat">Odczytany QR jest w złym formacie</string>
+	<string name="QrScanner_UserMsg_permissionNeeded">Skaner kodów QR musi mieć dostęp do kamery.</string>
+	<string name="QrScanner_GUI_buttonText">skaner QR</string>
+
+	<!-- NFC -->
+	<string name="NFC_UserMsg_NeedPermission">Do płatności zbliżeniowych konieczne jest pozwolenie do komunikacji NFC</string>
+	<string name="NFC_UserMsg_TurnOff">Do płatności zbliżeniowych konieczne jest włączenie NFC</string>
+	<string name="NFC_UserMsg_NoHardwareSupport">Urządzenie nie obsługuje NFC</string>
+
+	<!-- settings -->
+	<string name="Settings_GUI_selectAuthMethodeTextFinger">Odcisk palca</string>
+	<string name="Settings_GUI_selectAuthMethodeTextPattern">Wzór</string>
+	<string name="Settings_GUI_selectAuthMethodeTextBase">"Preferowana metoda autoryzacji: "</string>
+	<string name="Settings_GUI_preferredAuthMethode">Preferowana metoda autoryzacji: </string>
+	<string name="Settings_GUI_turnNfcOnAppStartText">Włącz NFC po starcie aplikacji</string>
+	<string name="Settings_GUI_changePinText">Zmień pin</string>
+
+
+	<!-- other -->
+	<string name="UserMsg_UNKNOWN_ERROR">Wystąpił nieznany bład</string>
+	<string name="GUI_usePinInsteadOfFingerPrint">Użyj pinu</string>
+	<string name="GUI_authTransactionTitle">Potwierdź transakcje</string>
+	<string name="GUI_CANCEL_FINGER_AUTH_TEXT">Czy chcesz anulować uwierzytelnianie za pomocą linii papilarnych?</string>
+	<string name="GUI_CANCEL_FINGER_AUTH_YES_BUTTON">TAK</string>
+	<string name="GUI_CANCEL_FINGER_AUTH_NO_BUTTON">NIE</string>
+
+	<!-- result activity -->
+	<string name="Result_GUI_OK">Transakcja zakończona pomyślnie.</string>
+	<string name="Result_GUI_WRONG_CODE">Transakcja zakończona niepowodzeniem. Wprowadzono błędny kod.</string>
+	<string name="Result_GUI_WRONG_AUTH">Transakcja zakończona niepowodzeniem. Błąd autoryzacji.</string>
+	<string name="Result_GUI_WRONG_ELSE">Transakcja zakończona niepowodzeniem z nieznanego powodu.</string>
+
+</resources>

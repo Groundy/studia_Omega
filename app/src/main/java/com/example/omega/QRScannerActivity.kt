@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_qrscanner.*
 import android.content.Intent
 
-class QRScannerActivity() : AppCompatActivity() {
+class QrScannerActivity() : AppCompatActivity() {
 	var imgAnalyzer = ImageAnalysis.Builder().build()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,19 +33,19 @@ class QRScannerActivity() : AppCompatActivity() {
 		val permissionListener = object : MultiplePermissionsListener {
 			override fun onPermissionsChecked(report: MultiplePermissionsReport) {
 				if (report.isAnyPermissionPermanentlyDenied or !report.areAllPermissionsGranted()) {
-					val toastText = getString(R.string.USER_MSG_QR_SCANNER_NEEDS_PERMISSION)
-					Toast.makeText(this@QRScannerActivity,toastText,Toast.LENGTH_LONG).show()
-					endActivity(this@QRScannerActivity, false)
+					val toastText = getString(R.string.QrScanner_UserMsg_permissionNeeded)
+					Toast.makeText(this@QrScannerActivity,toastText,Toast.LENGTH_LONG).show()
+					endActivity(this@QrScannerActivity, false)
 				}
 			}
 			override fun onPermissionRationaleShouldBeShown(permissions: MutableList<PermissionRequest>?,token: PermissionToken?) {
 				token!!.continuePermissionRequest()
 			}
 		}
-		Dexter.withActivity(this@QRScannerActivity).withPermissions(Manifest.permission.CAMERA).withListener(permissionListener).onSameThread().check()
+		Dexter.withActivity(this@QrScannerActivity).withPermissions(Manifest.permission.CAMERA).withListener(permissionListener).onSameThread().check()
 	}
 	private fun startCamera() {
-		val cameraProviderFuture = ProcessCameraProvider.getInstance( this@QRScannerActivity)
+		val cameraProviderFuture = ProcessCameraProvider.getInstance( this@QrScannerActivity)
 		val cameraListener = Runnable {
 			val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()// Used to bind the lifecycle of cameras to the lifecycle owner
 			val preview = Preview.Builder().build().also {
@@ -64,9 +64,9 @@ class QRScannerActivity() : AppCompatActivity() {
 	}
 
 
-	private class YourImageAnalyzer(val context : QRScannerActivity) : ImageAnalysis.Analyzer {
+	private class YourImageAnalyzer(val context : QrScannerActivity) : ImageAnalysis.Analyzer {
 		val scanner = BarcodeScanning.getClient()
-		private fun processCode(context: QRScannerActivity, rawValue : String?){
+		private fun processCode(context: QrScannerActivity, rawValue : String?){
 			if(rawValue == null || rawValue.length != 6)
 				return
 			val codeValue = rawValue.toInt()
@@ -74,7 +74,7 @@ class QRScannerActivity() : AppCompatActivity() {
 			if(properValue)
 				context.endActivity(context, true,rawValue.toInt())
 			else
-				Utilites.showToast(context, context.resources.getString(R.string.USER_MSG_QR_WRONG_FORMAT))
+				Utilites.showToast(context, context.resources.getString(R.string.QrScanner_UserMsg_wrongQrFormat))
 		}
 		@SuppressLint("UnsafeExperimentalUsageError")
 		override fun analyze(imageProxy: ImageProxy) {
@@ -92,7 +92,7 @@ class QRScannerActivity() : AppCompatActivity() {
 	private fun endActivity(activity: Activity, success : Boolean, code : Int = 0){
 		if(success){
 			val output = Intent()
-			val fieldName = activity.resources.getString(R.string.ACT_COM_QR_SCANNER_FIELD_NAME)
+			val fieldName = activity.resources.getString(R.string.ACT_COM_QrScanner_FIELD_NAME)
 			output.putExtra(fieldName, code)
 			activity.setResult(RESULT_OK, output)
 		}

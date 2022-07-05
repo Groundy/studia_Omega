@@ -8,10 +8,9 @@ import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
-import kotlin.random.Random
 
 
-class BlikCodeCreator : AppCompatActivity() {
+class RBLIKCodeCreator : AppCompatActivity() {
 	private lateinit var amountField : EditText
 	private lateinit var titleField : EditText
 	private lateinit var receiverNameField : EditText
@@ -20,16 +19,16 @@ class BlikCodeCreator : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_blik_code_creator)
+		setContentView(R.layout.activity_rblik_code_creator)
 		setUpGui()
 		DEVELOPER_fillWidgets()
 	}
 	private fun setUpGui(){
-		amountField = findViewById(R.id.BlikCodeGenerator_amount_editText)
-		titleField = findViewById(R.id.BlikCodeGenerator_transferTitle_EditText)
-		receiverNameField = findViewById(R.id.BlikCodeGenerator_reciverName_EditText)
-		accountSpinner = findViewById(R.id.BlikCodeGenerator_accountList_Spinner)
-		goNextActivityButton = findViewById(R.id.BlikCodeGenerator_goNext_button)
+		amountField = findViewById(R.id.RBlikCodeGenerator_amount_editText)
+		titleField = findViewById(R.id.RBlikCodeGenerator_transferTitle_EditText)
+		receiverNameField = findViewById(R.id.RBlikCodeGenerator_reciverName_EditText)
+		accountSpinner = findViewById(R.id.RBlikCodeGenerator_accountList_Spinner)
+		goNextActivityButton = findViewById(R.id.RBlikCodeGenerator_goNext_button)
 
 
 		goNextActivityButton.setOnClickListener(){
@@ -68,32 +67,32 @@ class BlikCodeCreator : AppCompatActivity() {
 	private fun validateDataToGenBlikCode() : Boolean{
 		val accountChosen = true//todo
 		if(!accountChosen){
-			val textToShow = getString(R.string.USER_MSG_BlikCodeGenerator_acc_not_chosen)
+			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_acc_not_chosen)
 			Utilites.showToast(this,textToShow)
 			return false
 		}
 
-		val receiverName = findViewById<EditText>(R.id.BlikCodeGenerator_reciverName_EditText).text.toString()
+		val receiverName = findViewById<EditText>(R.id.RBlikCodeGenerator_reciverName_EditText).text.toString()
 		val receiverNameOk = receiverName.length in 3..50
 		if(!receiverNameOk){
-			val textToShow = getString(R.string.USER_MSG_BlikCodeGenerator_wrong_receiver_name)
+			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_wrong_receiver_name)
 			Utilites.showToast(this,textToShow)
 			return false
 		}
 
-		val amountText = findViewById<EditText>(R.id.BlikCodeGenerator_amount_editText).text.toString()
+		val amountText = findViewById<EditText>(R.id.RBlikCodeGenerator_amount_editText).text.toString()
 		val amountOk = amountText.toDouble() > 0.0
 		if(!amountOk){
-			val textToShow = getString(R.string.USER_MSG_BlikCodeGenerator_Amount_zero)
+			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_Amount_zero)
 			Utilites.showToast(this,textToShow)
 			return false
 		}
 
 
-		val titleText = findViewById<EditText>(R.id.BlikCodeGenerator_transferTitle_EditText).text.toString()
+		val titleText = findViewById<EditText>(R.id.RBlikCodeGenerator_transferTitle_EditText).text.toString()
 		val titleOk = titleText.length in 3..50
 		if(!titleOk){
-			val textToShow = getString(R.string.USER_MSG_BlikCodeGenerator_wrong_title)
+			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_wrong_title)
 			Utilites.showToast(this,textToShow)
 			return false
 		}
@@ -114,7 +113,7 @@ class BlikCodeCreator : AppCompatActivity() {
 	}
 
 	private fun openDisplayActivityWithCode(codeFromServer : Int){
-		val codeDisplayIntent = Intent(this, BlikCodeDisplayActivity::class.java)
+		val codeDisplayIntent = Intent(this, RBlikCodeDisplayActivity::class.java)
 		codeDisplayIntent.putExtra(getString(R.string.ACT_COM_CODEGENERATOR_CODE_FOR_DISPLAY), codeFromServer)
 		this.startActivity(codeDisplayIntent)
 	}

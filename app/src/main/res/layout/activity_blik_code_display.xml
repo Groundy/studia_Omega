@@ -5,15 +5,15 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".BlikCodeDisplayActivity">
+	tools:context=".RBlikCodeDisplayActivity">
 
 	<FrameLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_marginStart="20dp"
-		android:layout_marginTop="10dp"
-		android:layout_marginEnd="20dp"
-		android:layout_marginBottom="10dp"
+		android:layout_marginStart="@dimen/marginSizeX"
+		android:layout_marginTop="@dimen/marginSizeY"
+		android:layout_marginEnd="@dimen/marginSizeX"
+		android:layout_marginBottom="@dimen/marginSizeY"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +28,7 @@
 			<ImageView
 				android:id="@+id/BLIKDISPLAY_QR_ImageView"
 				android:layout_width="match_parent"
-				android:layout_height="@dimen/BLIKDISPLAY_min_QR_DIM"
+				android:layout_height="@dimen/RBLIKDISPLAY_min_QR_DIM"
 				android:layout_weight="2"
 				android:scaleType="fitCenter"
 				tools:srcCompat="@tools:sample/avatars" />
@@ -46,7 +46,7 @@
 				android:text="000000"
 				android:textAlignment="center"
 				android:textColor="@color/black"
-				android:textSize="@dimen/BLIKDISPLAY_code_Size"
+				android:textSize="@dimen/RBLIKDISPLAY_code_Size"
 				android:textStyle="bold" />
 
 			<Space
@@ -57,10 +57,10 @@
 			<Button
 				android:id="@+id/BLIKDISPLAY_back_button"
 				android:layout_width="match_parent"
-				android:layout_height="@dimen/BLIKDISPLAY_ButtonHeight"
+				android:layout_height="@dimen/RBLIKDISPLAY_ButtonHeight"
 				android:layout_weight="0"
-				android:maxHeight="@dimen/BLIKDISPLAY_ButtonHeight"
-				android:text="@string/BLIKDISPLAY_buttonText" />
+				android:maxHeight="@dimen/RBLIKDISPLAY_ButtonHeight"
+				android:text="@string/RBLIKDISPLAY_GUI_buttonText" />
 
 		</LinearLayout>
 	</FrameLayout>

@@ -21,7 +21,7 @@ class ResultActivity : AppCompatActivity() {
 		findViewById<TextView>(R.id.result_TextView).text = textToSet
 
 		val imageToSet = when(textToSet){
-			resources.getString(R.string.GUI_result_OK)->resources.getDrawable(R.drawable.ok_img)
+			resources.getString(R.string.Result_GUI_OK)->resources.getDrawable(R.drawable.ok_img)
 			else -> resources.getDrawable(R.drawable.wrong_img)
 		}
 		findViewById<ImageView>(R.id.result_imageView).setImageDrawable(imageToSet)

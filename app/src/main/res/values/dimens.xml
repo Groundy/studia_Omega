@@ -1,10 +1,10 @@
 <resources>
 	<!-- Default screen margins, per the Android Design guidelines. -->
-	<dimen name="activity_horizontal_margin">20dp</dimen>
-	<dimen name="activity_vertical_margin">10dp</dimen>
+	<dimen name="marginSizeX">20dp</dimen>
+	<dimen name="marginSizeY">10dp</dimen>
 	<dimen name="fab_margin">16dp</dimen>
-	<dimen name="DIM_infoTextSize">15sp</dimen>
-	<dimen name="DIM_variableTextSize">40sp</dimen>
+	<dimen name="infoTextSize">15sp</dimen>
+	<dimen name="variableTextSize">40sp</dimen>
 
 
 	<!--Pin act-->
@@ -27,4 +27,28 @@
 	<dimen name="DIM_CancelFingerAuthText_WIDTH">300dp</dimen><!--Double button width-->
 	<dimen name="DIM_CancelFingerAuthText_HEIGHT">100dp</dimen><!--Double button width-->
 	<dimen name="DIM_CancelFingerAuthFontSize">20sp</dimen>
+
+	<!--Display RBlik Activity-->
+	<dimen name="RBLIKDISPLAY_ButtonHeight">100dp</dimen>
+	<dimen name="RBLIKDISPLAY_min_QR_DIM">350dp</dimen>
+	<dimen name="RBLIKDISPLAY_code_Size">50sp</dimen>
+
+	<!--BlikCodeGenerator Activity-->
+	<dimen name="RBlikCodeGenerator_spacer_Y">20dp</dimen>
+	<dimen name="RBlikCodeGenerator_inputFieldY">50dp</dimen>
+	<dimen name="RBlikCodeGenerator_textFieldY">20dp</dimen>
+	<dimen name="RBlikCodeGenerator_textSize">10dp</dimen>
+
+	<!--Transfer summary Activity-->
+	<dimen name="TransferSummary_infoFieldY">20dp</dimen>
+	<dimen name="TransferSummary_valueFieldY">50dp</dimen>
+	<dimen name="TransferSummary_spaceBetweenFields">15dp</dimen>
+
+	<!--Transfer Activity-->
+	<dimen name="basicTransfer_spacer_Y">20dp</dimen>
+	<dimen name="basicTransfer_inputFieldY">50dp</dimen>
+	<dimen name="basicTransfer_textFieldY">20dp</dimen>
+	<dimen name="basicTransfer_textSize">10dp</dimen>
+
+
 </resources>

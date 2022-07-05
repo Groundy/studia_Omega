@@ -32,9 +32,9 @@ class ActivityStarter {
 			val transferIntent = Intent(activity,BasicTransferActivity::class.java)
 			activity.startActivity(transferIntent)
 		}
-		fun startBlikCodeCreatorActivity(activity: Activity){
-			val blikCodeCreatorIntent = Intent(activity,BlikCodeCreator::class.java)
-			activity.startActivity(blikCodeCreatorIntent)
+		fun startRBlikCodeCreatorActivity(activity: Activity){
+			val RBLIKCodeCreatorIntent = Intent(activity,RBLIKCodeCreator::class.java)
+			activity.startActivity(RBLIKCodeCreatorIntent)
 		}
 		fun startResultActivity(activity: Activity, textIdToDisplay: Int){
 			val resultIntent = Intent(activity, ResultActivity::class.java)
@@ -56,17 +56,17 @@ class ActivityStarter {
 				preferredMethodeCode = forcedMethodeCode
 			val preferredMethodeName = when(preferredMethodeCode){
 				0->context.getString(R.string.GUI_selectAuthMethodeText_pin)
-				1->context.getString(R.string.GUI_selectAuthMethodeText_pattern)
-				2->context.getString(R.string.GUI_selectAuthMethodeText_finger)
+				1->context.getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
+				2->context.getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
 				else ->context.getString(R.string.GUI_selectAuthMethodeText_pin)
 			}
 			when(preferredMethodeName){
 				context.getString(R.string.GUI_selectAuthMethodeText_pin) -> authByPin(context,description)
-				context.getString(R.string.GUI_selectAuthMethodeText_pattern) -> Utilites.authByPattern(
+				context.getString(R.string.Settings_GUI_selectAuthMethodeTextPattern) -> Utilites.authByPattern(
 					context,
 					description
 				)
-				context.getString(R.string.GUI_selectAuthMethodeText_finger) -> authByFingerPrint(context,description)
+				context.getString(R.string.Settings_GUI_selectAuthMethodeTextFinger) -> authByFingerPrint(context,description)
 			}
 		}
 		private fun authByPin(activity: Activity, description : String?){

@@ -170,11 +170,11 @@ class PinActivity : AppCompatActivity() {
 			}
 			PURPOSE.SET -> {
 				descriptionField.text = null
-				titleField.text = resources.getString(R.string.GUI_PIN_setPinTitle)
+				titleField.text = resources.getString(R.string.PIN_GUI_setPinTitle)
 			}
 			PURPOSE.CHANGE -> {
-				descriptionField.text = resources.getString(R.string.GUI_PIN_changeDescription_old)
-				titleField.text = resources.getString(R.string.GUI_PIN_changeTitle)
+				descriptionField.text = resources.getString(R.string.PIN_GUI_changeDescription_old)
+				titleField.text = resources.getString(R.string.PIN_GUI_changeTitle)
 			}
 		}
 		descriptionField.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
@@ -200,7 +200,7 @@ class PinActivity : AppCompatActivity() {
 			}
 		}
 		else
-			Utilites.showToast(this,resources.getString(R.string.USER_MSG_PIN_HAVE_TO_USE_ALL_DIGITS))
+			Utilites.showToast(this,resources.getString(R.string.PIN_UserMsg_haveToUseAllTheDigits))
 	}
 	private fun requestFocusOnActivityStart(){
 		digits[0].requestFocus()
@@ -233,9 +233,9 @@ class PinActivity : AppCompatActivity() {
 			val allowUserToTryOtherPin = pinTriesLeft > 0
 			if(allowUserToTryOtherPin){
 				val textToShow = when(pinTriesLeft){
-					2 -> resources.getString(R.string.USER_MSG_2_TRIES_LEFT)
-					1 -> resources.getString(R.string.USER_MSG_LAST_TRY_LEFT)
-					else -> resources.getString(R.string.USER_MSG_UNKNOWN_ERROR)
+					2 -> resources.getString(R.string.PIN_UserMsg_triesLeft2)
+					1 -> resources.getString(R.string.PIN_UserMsg_triesLeft1)
+					else -> resources.getString(R.string.UserMsg_UNKNOWN_ERROR)
 				}
 				Utilites.showToast(this,textToShow)
 				clearDigitsFields()
@@ -247,46 +247,46 @@ class PinActivity : AppCompatActivity() {
 	private fun processChange(pin : Int){
 		when(phaseOfChangePinProcess){
 			CHANGE_PIN_PROCESS_PHASES.OLD_PIN ->{
-				descriptionField.text = resources.getString(R.string.GUI_PIN_changeDescription_old)
+				descriptionField.text = resources.getString(R.string.PIN_GUI_changeDescription_old)
 				clearDigitsFields()
 				val properOldPin = checkIfPinIsCorrect(pin)
 				if(properOldPin) {
 					phaseOfChangePinProcess = CHANGE_PIN_PROCESS_PHASES.NEW_PIN
-					descriptionField.text =	resources.getString(R.string.GUI_PIN_changeDescription_new)
+					descriptionField.text =	resources.getString(R.string.PIN_GUI_changeDescription_new)
 				}
 				else{
 					pinTriesLeft--
 					when(pinTriesLeft){
 						2 -> {
-							Utilites.showToast(this, resources.getString(R.string.USER_MSG_2_TRIES_LEFT))
+							Utilites.showToast(this, resources.getString(R.string.PIN_UserMsg_triesLeft2))
 							return
 						}
 						1 -> {
-							Utilites.showToast(this, resources.getString(R.string.USER_MSG_LAST_TRY_LEFT))
+							Utilites.showToast(this, resources.getString(R.string.PIN_UserMsg_triesLeft1))
 							return
 						}
 						else -> {
-							Utilites.showToast(this, resources.getString(R.string.USER_MSG_FAILED_TO_SET_NEW_PIN))
+							Utilites.showToast(this, resources.getString(R.string.PIN_UserMsg_failedToSetNewPin))
 							finishActivity(false)
 						}
 					}
 				}
 			}
 			CHANGE_PIN_PROCESS_PHASES.NEW_PIN ->{
-				descriptionField.text = resources.getString(R.string.GUI_PIN_changeDescription_new)
+				descriptionField.text = resources.getString(R.string.PIN_GUI_changeDescription_new)
 				tmpPIN = pin
 				phaseOfChangePinProcess = CHANGE_PIN_PROCESS_PHASES.NEW_PIN_AGAIN
 			}
 			CHANGE_PIN_PROCESS_PHASES.NEW_PIN_AGAIN->{
-				descriptionField.text = resources.getString(R.string.GUI_PIN_changeDescription_newAgain)
+				descriptionField.text = resources.getString(R.string.PIN_GUI_changeDescription_newAgain)
 				val twoPinsAreSame = pin == tmpPIN
 				if(twoPinsAreSame){
-					Utilites.showToast(this, resources.getString(R.string.USER_MSG_SUCESS_IN_SETTING_NEW_PIN))
+					Utilites.showToast(this, resources.getString(R.string.PIN_UserMsg_newPinSet))
 					saveNewPinInMemory(pin)
 					finishActivity(true)
 				}
 				else{
-					Utilites.showToast(this, resources.getString(R.string.USER_MSG_FAILED_TO_SET_NEW_PIN))
+					Utilites.showToast(this, resources.getString(R.string.PIN_UserMsg_failedToSetNewPin))
 					finishActivity(false)
 				}
 			}
@@ -295,7 +295,7 @@ class PinActivity : AppCompatActivity() {
 	private fun processSet(pin: Int) {
 		val itsFirstAttemptToSetPin = tmpPIN == 0
 		if(itsFirstAttemptToSetPin){
-			descriptionField.text = resources.getString(R.string.GUI_PIN_setPinAgainTitle)
+			descriptionField.text = resources.getString(R.string.PIN_GUI_setPinAgainTitle)
 			clearDigitsFields()
 			tmpPIN = pin
 		}

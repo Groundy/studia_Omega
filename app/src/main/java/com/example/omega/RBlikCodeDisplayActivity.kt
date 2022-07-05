@@ -17,7 +17,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.scale
 
 
-class BlikCodeDisplayActivity : AppCompatActivity() {
+class RBlikCodeDisplayActivity : AppCompatActivity() {
 	private lateinit var imgWidget : ImageView
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +30,7 @@ class BlikCodeDisplayActivity : AppCompatActivity() {
 
 		val code = getCodeFromIntent()
 		if(code == -1){
-			Utilites.showToast(this,getString(R.string.USER_MSG_RBlikDisplay_incorrectCodePassed))
+			Utilites.showToast(this,getString(R.string.RBLIKDISPLAY_UserMsg_incorrectCodePassed))
 			Log.e(Utilites.TagProduction, "Error, passed code to display RBlik class was incorrect")
 			finish()
 		}
@@ -43,7 +43,7 @@ class BlikCodeDisplayActivity : AppCompatActivity() {
 			imgWidget.setImageBitmap(qrCodeBitmap)
 		}
 		else{
-			Utilites.showToast(this,getString(R.string.USER_MSG_RBlikDisplay_qrGeneratorError))
+			Utilites.showToast(this,getString(R.string.RBLIKDISPLAY_UserMsg_qrGeneratorError))
 			Log.e(Utilites.TagProduction, "Error in RBlik display class, qr generator return null instead of bitmap.")
 			val errorImg = resources.getDrawable(R.drawable.wrong_img).toBitmap()
 			imgWidget.setImageBitmap(errorImg)

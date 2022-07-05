@@ -64,7 +64,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
 				val success = getInfoAboutChosenPaymentAccount()
 				if(!success)
-					finishThisActivity(false,getString(R.string.USER_MSG_basicTransfer_error_reciving_acc_balance))
+					finishThisActivity(false,getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance))
 				amountEditText.text = null
 			}
 
@@ -83,7 +83,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		amountEditText = findViewById(R.id.basicTransfer_amount_editText)
 		receiverNameEditText = findViewById(R.id.basicTransfer_reciverName_EditText)
 		transferTitle = findViewById(R.id.basicTransfer_transferTitle_EditText)
-		goNextButton = findViewById(R.id.BlikCodeGenerator_goNext_button)
+		goNextButton = findViewById(R.id.RBlikCodeGenerator_goNext_button)
 		amountAfterTransferTextView = findViewById(R.id.basicTransfer_amountAfterTransfer_TextView)
 		spinner = findViewById<Spinner>(R.id.basicTransfer_accountList_Spinner)
 
@@ -118,27 +118,27 @@ class BasicTransferActivity : AppCompatActivity() {
 	private fun getErrorInputText() : String?{
 		val amountAfterTransfer = getAccountBalanceAfterTransfer()
 		if(amountAfterTransfer == null)
-			return resources.getString(R.string.USER_MSG_basicTransfer_error_reciving_acc_balance)
+			return resources.getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 
 		val properAmount = amountAfterTransfer >= 0
 		if(!properAmount)
-			return resources.getString(R.string.USER_MSG_basicTransfer_Amount_too_hight)
+			return resources.getString(R.string.UserMsg_basicTransfer_Amount_too_hight)
 
 		val amountInserted = amountEditText.text.toString().toDoubleOrNull()
 		if(amountInserted == null || amountInserted == 0.0)
-			return getString(R.string.USER_MSG_basicTransfer_Amount_zero)
+			return getString(R.string.UserMsg_basicTransfer_Amount_zero)
 
 		val receiverAccNumberCorrect = receiverNumberEditText.text.length == polishBankAccountNumberLength
 		if(!receiverAccNumberCorrect)
-			return resources.getString(R.string.USER_MSG_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER)
+			return resources.getString(R.string.UserMsg_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER)
 
 		val receiverNameCorrect = receiverNameEditText.text.length in 3..50
 		if(!receiverNameCorrect)
-			return resources.getString(R.string.USER_MSG_basicTransfer_wrong_receiver_name)
+			return resources.getString(R.string.UserMsg_basicTransfer_wrong_receiver_name)
 
 		val titleCorrect = transferTitle.text.length in 3..50
 		if(!titleCorrect)
-			return resources.getString(R.string.USER_MSG_basicTransfer_wrong_title)
+			return resources.getString(R.string.UserMsg_basicTransfer_wrong_title)
 
 		return null
 	}
@@ -156,7 +156,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	private fun fillListOfAccounts(){
 		val obtainedAccountData = API_getPaymentAccDetails.run(this)
 		if(!obtainedAccountData){
-			val errorCodeTextToDisplay = getString(R.string.USER_MSG_basicTransfer_error_reciving_acc_balance)
+			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivity(false,errorCodeTextToDisplay)
 			return
 		}
@@ -213,6 +213,6 @@ class BasicTransferActivity : AppCompatActivity() {
 			finishThisActivity(true)
 		}
 		else
-			finishThisActivity(false, getString(R.string.USER_MSG_basicTransfer_unkownError))
+			finishThisActivity(false, getString(R.string.UserMsg_basicTransfer_unkownError))
 	}
 }

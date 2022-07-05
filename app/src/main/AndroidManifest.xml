@@ -11,10 +11,10 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
 		<activity
-			android:name=".BlikCodeDisplayActivity"
+			android:name=".RBlikCodeDisplayActivity"
 			android:exported="false" />
 		<activity
-			android:name=".BlikCodeCreator"
+			android:name=".RBLIKCodeCreator"
 			android:exported="false" />
 		<activity
 			android:name=".UserPermissionList"
@@ -62,9 +62,9 @@
 			android:exported="false"
 			android:label="@string/title_activity_settings" />
 		<activity
-			android:name=".QRScannerActivity"
+			android:name=".QrScannerActivity"
 			android:exported="false"
-			android:label="@string/title_activity_qr_scanner"
+			android:label="@string/title_activity_QrScanner"
 			android:theme="@style/NoActionBar" />
 		<activity
 			android:name=".MainActivity"

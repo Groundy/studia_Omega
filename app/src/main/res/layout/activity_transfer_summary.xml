@@ -9,10 +9,10 @@
 	<FrameLayout
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		android:layout_marginStart="@dimen/activity_vertical_margin"
-		android:layout_marginTop="@dimen/activity_horizontal_margin"
-		android:layout_marginEnd="@dimen/activity_vertical_margin"
-		android:layout_marginBottom="@dimen/activity_horizontal_margin"
+		android:layout_marginStart="@dimen/marginSizeY"
+		android:layout_marginTop="@dimen/marginSizeX"
+		android:layout_marginEnd="@dimen/marginSizeY"
+		android:layout_marginBottom="@dimen/marginSizeX"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
@@ -32,9 +32,9 @@
 					android:id="@+id/Transfer_senderAccNumber_textView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_infoFieldY"
-					android:text="@string/TransferSummary_SenderAcc"
+					android:text="@string/TransferSummary_GUI_SenderAcc"
 					android:textColor="@color/black"
-					android:textSize="@dimen/DIM_infoTextSize" />
+					android:textSize="@dimen/infoTextSize" />
 
 				<TextView
 					android:id="@+id/transferSummary_senderAcc"
@@ -42,7 +42,7 @@
 					android:layout_height="@dimen/TransferSummary_valueFieldY"
 					android:text="00000000000000000000000000"
 					android:textColor="@color/black"
-					android:textSize="@dimen/DIM_variableTextSize" />
+					android:textSize="@dimen/variableTextSize" />
 
 				<Space
 					android:layout_width="match_parent"
@@ -59,9 +59,9 @@
 					android:id="@+id/transferSummary_receiverName_TextView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_infoFieldY"
-					android:text="@string/TransferSummary_ReceiverName"
+					android:text="@string/TransferSummary_GUI_ReceiverName"
 					android:textColor="@color/black"
-					android:textSize="@dimen/DIM_infoTextSize" />
+					android:textSize="@dimen/infoTextSize" />
 
 				<TextView
 					android:id="@+id/transferSummary_receName"
@@ -69,7 +69,7 @@
 					android:layout_height="@dimen/TransferSummary_valueFieldY"
 					android:text="------------------------------------------------------------------------"
 					android:textColor="@color/black"
-					android:textSize="@dimen/DIM_variableTextSize" />
+					android:textSize="@dimen/variableTextSize" />
 
 				<Space
 					android:layout_width="match_parent"
@@ -85,9 +85,9 @@
 					android:id="@+id/transferSummary_receiverAcc_TextView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_infoFieldY"
-					android:text="@string/TransferSummary_ReceiverAcc"
+					android:text="@string/TransferSummary_GUI_ReceiverAcc"
 					android:textColor="@color/black"
-					android:textSize="@dimen/DIM_infoTextSize" />
+					android:textSize="@dimen/infoTextSize" />
 
 				<TextView
 					android:id="@+id/transferSummary_receAcc"
@@ -95,7 +95,7 @@
 					android:layout_height="@dimen/TransferSummary_valueFieldY"
 					android:text="00000000000000000000000000000000000000"
 					android:textColor="@color/black"
-					android:textSize="@dimen/DIM_variableTextSize" />
+					android:textSize="@dimen/variableTextSize" />
 
 				<Space
 					android:layout_width="match_parent"
@@ -111,9 +111,9 @@
 					android:id="@+id/transferSummary_title_TextView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_infoFieldY"
-					android:text="@string/TransferSummary_Title"
+					android:text="@string/TransferSummary_GUI_Title"
 					android:textColor="@color/black"
-					android:textSize="@dimen/DIM_infoTextSize" />
+					android:textSize="@dimen/infoTextSize" />
 
 				<TextView
 					android:id="@+id/transferSummary_title"
@@ -121,7 +121,7 @@
 					android:layout_height="@dimen/TransferSummary_valueFieldY"
 					android:text="------------------------------------------------------------------------------------------------------"
 					android:textColor="@color/black"
-					android:textSize="@dimen/DIM_variableTextSize" />
+					android:textSize="@dimen/variableTextSize" />
 
 				<Space
 					android:layout_width="match_parent"
@@ -137,9 +137,9 @@
 					android:id="@+id/transferSummary_amount_TextView"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/TransferSummary_infoFieldY"
-					android:text="@string/TransferSummary_Amount"
+					android:text="@string/TransferSummary_GUI_Amount"
 					android:textColor="@color/black"
-					android:textSize="@dimen/DIM_infoTextSize" />
+					android:textSize="@dimen/infoTextSize" />
 
 				<TextView
 					android:id="@+id/transferSummary_amount"
@@ -147,7 +147,7 @@
 					android:layout_height="@dimen/TransferSummary_valueFieldY"
 					android:text=" 0.00 PLN"
 					android:textColor="@color/black"
-					android:textSize="@dimen/DIM_variableTextSize" />
+					android:textSize="@dimen/variableTextSize" />
 
 			</LinearLayout>
 
@@ -161,14 +161,14 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
-					android:text="@string/TransferSummarySUMMARY_BACK_BUTTON_TEXT" />
+					android:text="@string/TransferSummary_GUI_BackButtonText" />
 
 				<Button
 					android:id="@+id/TransferSummary_auth_Button"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
-					android:text="@string/TransferSummary_AUTH_BUTTON_TEXT" />
+					android:text="@string/TransferSummary_GUI_AuthButtonText" />
 			</LinearLayout>
 
 			<Space
