@@ -4,7 +4,10 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".BasicTransferActivity">
+	tools:context=".BasicTransferActivity"
+	android:background="@color/background"
+	>
+
 
 	<FrameLayout
 		android:layout_width="0dp"
@@ -76,7 +79,7 @@
 					android:inputType="textPersonName"
 					android:maxLength="50"
 					android:textColor="@color/black"
-					android:textColorHint="@color/black"
+					android:textColorHint="@color/hintColor"
 					tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
 				<Space
@@ -104,10 +107,11 @@
 					android:layout_height="@dimen/basicTransfer_inputFieldY"
 					android:backgroundTint="@color/black"
 					android:ems="10"
+					android:hint="0123456..."
 					android:inputType="number"
 					android:maxLength="26"
 					android:textColor="@color/black"
-					android:textColorHint="@color/black"
+					android:textColorHint="@color/hintColor"
 					tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
 				<Space
@@ -134,9 +138,10 @@
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/basicTransfer_inputFieldY"
 					android:ems="10"
+					android:hint="0,00"
 					android:inputType="numberDecimal"
 					android:textColor="@color/black"
-					android:textColorHint="@color/black"
+					android:textColorHint="@color/hintColor"
 					tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
 				<TextView
@@ -169,10 +174,11 @@
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/basicTransfer_inputFieldY"
 					android:ems="10"
+					android:hint="np. Opłata czynszu"
 					android:inputType="textPersonName"
 					android:maxLength="50"
 					android:textColor="@color/black"
-					android:textColorHint="@color/black"
+					android:textColorHint="@color/hintColor"
 					tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
 				<Space
