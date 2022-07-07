@@ -28,20 +28,17 @@ class QrScannerActivity() : AppCompatActivity() {
 			.setBarcodeFormats(Barcode.FORMAT_QR_CODE)
 			.build()
 		val scanner = BarcodeScanning.getClient(options)
+
 		@SuppressLint("UnsafeExperimentalUsageError")
 		override fun analyze(imageProxy: ImageProxy) {
-			val mediaImage = imageProxy.image
-			if (mediaImage != null) {
-				val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-				scanner.process(image).addOnSuccessListener{barcodes ->
-					if(barcodes.size > 0)
-						context.processCode(barcodes[0].rawValue)
-					imageProxy.close()
-				}
+			val mediaImage = imageProxy.image ?: return
+			val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+			scanner.process(image).addOnSuccessListener{barcodes ->
+				if(barcodes.size > 0)
+					context.processCode(barcodes[0].rawValue)
+				imageProxy.close()
 			}
 		}
-
-
 	}
 
 	var imgAnalyzer = ImageAnalysis.Builder().build()
@@ -86,7 +83,7 @@ class QrScannerActivity() : AppCompatActivity() {
 			val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()//bind the lifecycle of camera to the lifecycle owner
 			val preview = Preview.Builder().build()
 			preview.setSurfaceProvider(this.cameraPreview.surfaceProvider)
-			
+
 			try {
 				cameraProvider.unbindAll()// Unbind use cases before rebinding
 				val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA			// Select back camera as a default
