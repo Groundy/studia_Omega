@@ -1,4 +1,4 @@
-package omega
+package com.example.omega
 
 import android.Manifest
 import android.app.PendingIntent
@@ -143,11 +143,12 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.main_app_menu, menu)
+		/*
 		//todo delete that
 		if (menu != null) {
 			onOptionsItemSelected(menu.findItem(R.id.GenerateBlikCodeTab))
 		}
-		//
+		*/
 		return super.onCreateOptionsMenu(menu)
 	}
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {

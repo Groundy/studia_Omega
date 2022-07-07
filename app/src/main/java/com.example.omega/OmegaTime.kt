@@ -1,4 +1,4 @@
-package omega
+package com.example.omega
 
 import android.util.Log
 import java.lang.Exception

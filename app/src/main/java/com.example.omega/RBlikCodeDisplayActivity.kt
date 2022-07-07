@@ -1,4 +1,4 @@
-package omega
+package com.example.omega
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

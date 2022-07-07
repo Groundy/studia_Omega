@@ -1,4 +1,4 @@
-package omega
+package com.example.omega
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent

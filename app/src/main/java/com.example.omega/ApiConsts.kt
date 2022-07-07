@@ -1,4 +1,4 @@
-package omega
+package com.example.omega
 
 class ApiConsts {
 	enum class scopeValues {AIS,AIS_ACC,PIS}

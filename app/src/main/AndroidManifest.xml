@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
-	package="omega">
+	package="com.example.omega">
 
 	<application
 		android:allowBackup="true"
@@ -11,63 +11,63 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
 		<activity
-			android:name="omega.RBlikCodeDisplayActivity"
+			android:name="com.example.omega.RBlikCodeDisplayActivity"
 			android:exported="false" />
 		<activity
-			android:name="omega.RBLIKCodeCreator"
+			android:name="com.example.omega.RBLIKCodeCreator"
 			android:exported="false" />
 		<activity
-			android:name="omega.UserPermissionList"
+			android:name="com.example.omega.UserPermissionList"
 			android:exported="false"
 			android:label="@string/title_activity_settings"
 			android:theme="@style/Theme.AppCompat.Dialog" />
 		<activity
-			android:name="omega.OAuth"
+			android:name="com.example.omega.OAuth"
 			android:exported="false"
 			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
-			android:name="omega.TransferSummary"
+			android:name="com.example.omega.TransferSummary"
 			android:exported="false"
 			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
-			android:name="omega.ResultActivity"
+			android:name="com.example.omega.ResultActivity"
 			android:exported="false"
 			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
-			android:name="omega.BasicTransferActivity"
+			android:name="com.example.omega.BasicTransferActivity"
 			android:exported="false"
 			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
-			android:name="omega.PinActivity"
+			android:name="com.example.omega.PinActivity"
 			android:exported="false"
 			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
-			android:name="omega.CancelBioAuthDialogActivity"
+			android:name="com.example.omega.CancelBioAuthDialogActivity"
 			android:exported="false"
 			android:label="@string/title_activity_settings"
 			android:theme="@style/Theme.AppCompat.Light.Dialog.Alert"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
-			android:name="omega.ScanFingerActivity"
+			android:name="com.example.omega.ScanFingerActivity"
 			android:exported="false"
 			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
-			android:name="omega.SettingsActivity"
+			android:name="com.example.omega.SettingsActivity"
 			android:exported="false"
 			android:label="@string/title_activity_settings" />
 		<activity
-			android:name="omega.QrScannerActivity"
+			android:name="com.example.omega.QrScannerActivity"
 			android:exported="false"
 			android:label="@string/title_activity_QrScanner"
 			android:theme="@style/NoActionBar" />
 		<activity
-			android:name="omega.MainActivity"
+			android:name="com.example.omega.MainActivity"
 			android:label="@string/app_name"
 			android:windowSoftInputMode="stateAlwaysVisible">
 			<intent-filter>

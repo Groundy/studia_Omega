@@ -1,4 +1,4 @@
-package omega
+package com.example.omega
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

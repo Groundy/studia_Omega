@@ -1,4 +1,4 @@
-package omega
+package com.example.omega
 
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity

@@ -1,4 +1,4 @@
-package omega
+package com.example.omega
 
 class TestClass {
 	companion object{
