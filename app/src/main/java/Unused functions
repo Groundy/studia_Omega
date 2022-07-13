@@ -1,23 +1,4 @@
-package com.example.omega
-
-import android.os.Environment
-import android.util.Log
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.security.Keys
-import java.io.File
-import java.io.FileOutputStream
-import java.net.Inet4Address
-import java.net.InetAddress
-import java.net.NetworkInterface
-import java.security.Key
-import java.time.Duration
-import java.time.LocalDateTime
-import java.util.*
-
-class zzz_unused {
-	companion object{
-		fun getUUID_Old() : String{
+	fun getUUID_Old() : String{
 			val random = Random()
 			val random63BitLong = random.nextLong() and 0x3FFFFFFFFFFFFFFFL
 			val variant1BitFlag : Long = (-0x6000000000000000L).toLong()
@@ -33,7 +14,6 @@ class zzz_unused {
 			val uuid = UUID(most64SigBits, least64SigBits)
 			return uuid.toString()
 		}
-
 		fun getJWS(payload : String): String {
 			val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 			val jws = Jwts.builder()
@@ -101,6 +81,3 @@ class zzz_unused {
 				e.printStackTrace()
 			}
 		}
-
-	}
-}

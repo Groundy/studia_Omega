@@ -27,9 +27,6 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_settings.*
-import okhttp3.*
 
 //  Minimize: CTRL + SHFT + '-'
 //  Expand:   CTRL + SHFT + '+'
@@ -187,7 +184,7 @@ class MainActivity : AppCompatActivity() {
 		codeField.text.clear()
 		val transferData = Utilites.checkBlikCode(code)
 		if(transferData == null){
-			ActivityStarter.startResultActivity(this, R.string.Result_GUI_WRONG_CODE)
+			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_WRONG_CODE)
 			return
 		}
 

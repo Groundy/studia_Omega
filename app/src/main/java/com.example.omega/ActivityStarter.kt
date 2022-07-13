@@ -32,10 +32,10 @@ class ActivityStarter {
 			activity.startActivity(transferIntent)
 		}
 		fun startRBlikCodeCreatorActivity(activity: Activity){
-			val RBLIKCodeCreatorIntent = Intent(activity, RBLIKCodeCreator::class.java)
-			activity.startActivity(RBLIKCodeCreatorIntent)
+			val rblikCodeCreatorIntent = Intent(activity, RBLIKCodeCreator::class.java)
+			activity.startActivity(rblikCodeCreatorIntent)
 		}
-		fun startResultActivity(activity: Activity, textIdToDisplay: Int){
+		fun startOperationResultActivity(activity: Activity, textIdToDisplay: Int){
 			val resultIntent = Intent(activity, ResultActivity::class.java)
 			val textToDisplay = activity.resources.getString(textIdToDisplay)
 			val textFieldName = activity.resources.getString(R.string.ACT_COM_RESULT_TEXT_FIELD_NAME)

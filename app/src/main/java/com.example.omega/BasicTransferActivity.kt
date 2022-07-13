@@ -172,7 +172,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		spinner.adapter = adapter
 	}
 	private fun finishThisActivity(success : Boolean, errorCode : String? = null){
-		if(errorCode!=null && success == false)
+		if(errorCode!=null && !success)
 			Utilites.showToast(this, errorCode)
 		this.finish()
 	}

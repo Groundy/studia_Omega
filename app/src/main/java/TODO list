@@ -19,3 +19,18 @@
 3.  Pokazywać NFC tylko jeżeli urządzenie posiada NFC
 2.  Dodać obsługę switcha od NFC w konfiguracji
 1.  Włączać NFC przy starcie aplikacji jeżeli użytkownik zaznaczył taką opcje.
+
+
+
+
+
+
+//CONCERNS
+1.  W listener w PIN activity byc moze trzeba ustawic sprawdzanie czy akcja klawisza to faktycznie
+ jego wcisniecie a nie np podniesienie, poki co to jest to opcja zakomentowana bo z jakis powodow
+ KeyEvent.action zawsze zwracal null
+2.  W listener w PIN activity keyListner ktory nasluchuje na backspace'a nie zawsze musi dzialac, uzyte opcje dzialaja roznie w zaleznosci od SDK
+3.  NFC nasłuchuje dla wszystkich możliwych tagów nfc bo podano za argument pusty obiekt techlist, który jest też xmlem, należałoby zrobić coś zbyt ten argument był wczytywany z listy
+
+//TIPS
+w content type w requestach trzeba dostarczać byte arrays a nie strings, dzięki temu content type będzie application/json a nie application/json charset=utf-8
