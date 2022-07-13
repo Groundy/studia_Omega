@@ -7,7 +7,7 @@ import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
 
-class API_getPaymentAccDetails {
+class ApiGetPaymentAccDetails {
 	companion object{
 		fun run(activity: Activity,accNumber: String? = null): Boolean {
 			val getDetailsOfOnlyOneAcc = accNumber != null
@@ -17,7 +17,7 @@ class API_getPaymentAccDetails {
 					try {
 						isSuccess = getAccInfo(accNumber!!)
 					}catch (e: Exception) {
-						Log.e(Utilites.TagProduction,"Failed to obtain information for account with nummber[${accNumber}] [${e.toString()}]")
+						Log.e(Utilites.TagProduction,"Failed to obtain information for account with number[${accNumber}] [$e]")
 					}
 				}
 				thread.start()
@@ -26,23 +26,23 @@ class API_getPaymentAccDetails {
 			}
 			else{
 				try {
-					var listOfThreadCheckingAccInfro = arrayListOf<Thread>()
+					var listOfThreadCheckingAccInfo = arrayListOf<Thread>()
 					val amountOfAccToCheck = UserData.accessTokenStruct?.listOfAccounts!!.size
 					for (i in 0 until amountOfAccToCheck){
 						val accNumber = UserData.accessTokenStruct?.listOfAccounts!!.get(i).accNumber!!
 						val thread = Thread {
 							val success = getAccInfo(accNumber)
 						}
-						listOfThreadCheckingAccInfro.add(thread)
+						listOfThreadCheckingAccInfo.add(thread)
 					}
-					for (i in 0 until  listOfThreadCheckingAccInfro.size)
-						listOfThreadCheckingAccInfro[i].start()
-					for(i in 0 until  listOfThreadCheckingAccInfro.size)
-						listOfThreadCheckingAccInfro[i].join(ApiFuncs.requestTimeOut)
+					for (i in 0 until  listOfThreadCheckingAccInfo.size)
+						listOfThreadCheckingAccInfo[i].start()
+					for(i in 0 until  listOfThreadCheckingAccInfo.size)
+						listOfThreadCheckingAccInfo[i].join(ApiFuncs.requestTimeOut)
 					return true
 
 				}catch (e: Exception) {
-					Log.e(Utilites.TagProduction,"Failed to obtain information for at account with nummber[${accNumber}] [${e.toString()}]")
+					Log.e(Utilites.TagProduction,"Failed to obtain information for at account with number[${accNumber}] [$e]")
 					return false
 				}
 			}
@@ -67,24 +67,23 @@ class API_getPaymentAccDetails {
 				)
 				.put("accountNumber", accNumber)
 
-			val additionalHeaderList = arrayListOf<Pair<String,String>>(Pair("AUTHORIZATION",authFieldValue))
+			val additionalHeaderList = arrayListOf(Pair("AUTHORIZATION",authFieldValue))
 			return ApiFuncs.bodyToRequest(url, requestBodyJson, uuidStr, additionalHeaderList)
 		}
 		private fun getAccInfo(accNumber: String) : Boolean{
 			val request = getPaymentAccDetailsRequest(accNumber)
 			val response = OkHttpClient().newCall(request).execute()
 			val responseCodeOk = response.code == 200
-			if(!responseCodeOk){
+			if(!responseCodeOk)
 				return false//todo
-			}
-			try {
+
+			return try {
 				var responseBodyJson = JSONObject(response.body?.string())
-				val success = parseResponseJson(responseBodyJson)
-				return success
+				parseResponseJson(responseBodyJson)
 			}
 			catch (e : Exception){
 				Log.e(Utilites.TagProduction, e.toString())
-				return false
+				false
 			}
 		}
 		private fun parseResponseJson(obj : JSONObject) : Boolean{

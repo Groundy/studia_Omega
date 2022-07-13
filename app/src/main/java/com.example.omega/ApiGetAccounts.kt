@@ -7,7 +7,7 @@ import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
 
-class API_getAccounts {
+class ApiGetAccounts {
 	private lateinit var activity : Activity
 	constructor(activity: Activity){
 		this.activity = activity
@@ -69,7 +69,7 @@ class API_getAccounts {
 			return null//todo
 		}
 
-		try {
+		val accountsList = return try {
 			val responseJson = JSONObject(bodyStr)
 			val accountsArray = responseJson.getJSONArray("accounts")
 			var accountList = ArrayList<UserData.PaymentAccount>()
@@ -79,10 +79,11 @@ class API_getAccounts {
 				val tmpAcc = UserData.PaymentAccount(accountNumber)
 				accountList.add(tmpAcc)
 			}
-			return accountList
+			accountList
 		}catch (e : Exception){
 			Log.e(Utilites.TagProduction,e.toString())
-			return null
+			null
 		}
+		return accountsList
 	}
 }

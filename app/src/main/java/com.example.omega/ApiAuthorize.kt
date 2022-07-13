@@ -7,7 +7,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.Exception
 
-class API_authorize {
+class ApiAuthorize {
 	private var permissionsList : List<ApiConsts.priviliges>? = null
 	fun run(stateValue : String,  permissions : List<ApiConsts.priviliges>? = null) : String?{
 		var authUrl : String? = null

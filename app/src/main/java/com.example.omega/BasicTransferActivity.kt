@@ -158,7 +158,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		return floor(balanceAfterTransfer * 100) / 100 //trim decimal after 2 digits
 	}
 	private fun fillListOfAccounts(){
-		val obtainedAccountData = API_getPaymentAccDetails.run(this)
+		val obtainedAccountData = ApiGetPaymentAccDetails.run(this)
 		if(!obtainedAccountData){
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivity(false,errorCodeTextToDisplay)

@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
 						return
 					}
 					UserData.authCode = code
-					API_getToken.run()
+					ApiGetToken.run()
 				}
 				else{
 					//todo
@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
 						permissionList = PermissionList(serializedPermissionList)
 
 					val state = ApiFuncs.getRandomStateValue()
-					val authUrl = API_authorize().run(state, permissionList.permissions)
+					val authUrl = ApiAuthorize().run(state, permissionList.permissions)
 
 					if(authUrl.isNullOrEmpty()){
 						Log.e(Utilites.TagProduction, "Failed to obtain auth url")
@@ -315,7 +315,7 @@ class MainActivity : AppCompatActivity() {
 
 	private fun TEST_getAccessToken(){
 		val state = ApiFuncs.getRandomStateValue()
-		val authUrl = API_authorize().run(state)
+		val authUrl = ApiAuthorize().run(state)
 		if(authUrl.isNullOrEmpty()){
 			Log.e(Utilites.TagProduction, "Failed to obtain auth url")
 			Utilites.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")

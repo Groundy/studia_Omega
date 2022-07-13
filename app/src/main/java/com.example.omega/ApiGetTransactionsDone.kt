@@ -7,7 +7,7 @@ import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
 
-class API_getTransactionsDone {
+class ApiGetTransactionsDone {
 
 	companion object{
 		fun run(activity: Activity, accNumber: String? = null): Boolean {

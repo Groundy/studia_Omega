@@ -6,7 +6,7 @@ import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
 
-class API_getToken {
+class ApiGetToken {
 	companion object{
 		fun run() : Boolean{
 			var success = false
