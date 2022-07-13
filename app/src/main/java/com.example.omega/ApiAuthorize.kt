@@ -9,6 +9,7 @@ import java.lang.Exception
 
 class ApiAuthorize {
 	private var permissionsList : List<ApiConsts.priviliges>? = null
+
 	fun run(stateValue : String,  permissions : List<ApiConsts.priviliges>? = null) : String?{
 		var authUrl : String? = null
 		permissionsList = permissions
@@ -17,7 +18,7 @@ class ApiAuthorize {
 			authUrl = startAuthorize(stateValue)
 		}
 		thread.start()
-		thread.join(ApiFuncs.requestTimeOut)
+		thread.join(ApiFunctions.requestTimeOut)
 		return authUrl
 	}
 
@@ -29,7 +30,7 @@ class ApiAuthorize {
 			val responseCodeOk = response.code == 200
 			return if(responseCodeOk){
 				val responseBody = response.body?.string()
-				val responseJsonObject = JSONObject(responseBody)
+				val responseJsonObject = JSONObject(responseBody!!)
 				val fieldName = "aspspRedirectUri"
 				val authUrl = responseJsonObject.get(fieldName).toString()
 				authUrl
@@ -43,16 +44,16 @@ class ApiAuthorize {
 		}
 	}
 	private fun getAuthRequest(stateStr : String) : Request {
-		val uuidStr = ApiFuncs.getUUID()
+		val uuidStr = ApiFunctions.getUUID()
 		val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/authorize"
-		val currentTimeStr = ApiFuncs.getCurrentTimeStr()
-		val endValidityTimeStr = ApiFuncs.getCurrentTimeStr(65 * 60)
+		val currentTimeStr = ApiFunctions.getCurrentTimeStr()
+		val endValidityTimeStr = ApiFunctions.getCurrentTimeStr(65 * 60)
 
 		val requestBodyJson = JSONObject()
 			.put("requestHeader",JSONObject()
 				.put("requestId", uuidStr)
-				.put("userAgent", ApiFuncs.getUserAgent())
-				.put("ipAddress", ApiFuncs.getPublicIPByInternetService())
+				.put("userAgent", ApiFunctions.getUserAgent())
+				.put("ipAddress", ApiFunctions.getPublicIPByInternetService())
 				.put("sendDate", currentTimeStr)
 				.put("tppId", ApiConsts.TTP_ID)
 				.put("isCompanyContext", false)
@@ -63,12 +64,12 @@ class ApiAuthorize {
 			.put("scope_details",getScopeDetailsObject(endValidityTimeStr))
 			.put("redirect_uri", ApiConsts.REDIRECT_URI)
 			.put("state",stateStr)
-		return ApiFuncs.bodyToRequest(url, requestBodyJson, uuidStr)
+		return ApiFunctions.bodyToRequest(url, requestBodyJson, uuidStr)
 	}
 	private fun getScopeDetailsObject(expTimeStr : String) : JSONObject{
-		var permissionListArray = JSONArray()
+		val permissionListArray = JSONArray()
 		if(!permissionsList.isNullOrEmpty()){
-			var toAddObject = JSONObject()
+			val toAddObject = JSONObject()
 
 			if(permissionsList!!.contains(ApiConsts.priviliges.accountsHistory)){
 				toAddObject.put("ais:getTransactionsDone",JSONObject()
@@ -99,12 +100,11 @@ class ApiAuthorize {
 			)
 		}
 
-		var scopeDetailsObjToRet = JSONObject()
+		return JSONObject() // scopeDetailsObj
 			.put("privilegeList", permissionListArray)
 			.put("scopeGroupType", "ais")
 			.put("consentId", "123456789")
 			.put("scopeTimeLimit", expTimeStr)
 			.put("throttlingPolicy", "psd2Regulatory")
-		return scopeDetailsObjToRet
 	}
 }

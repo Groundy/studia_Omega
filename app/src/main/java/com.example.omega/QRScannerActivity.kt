@@ -18,10 +18,9 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_qrscanner.*
 
-class QrScannerActivity() : AppCompatActivity() {
+class QrScannerActivity : AppCompatActivity() {
 
 	private class YourImageAnalyzerClass(val context : QrScannerActivity) : ImageAnalysis.Analyzer {
 		val options =  BarcodeScannerOptions.Builder()
@@ -41,7 +40,7 @@ class QrScannerActivity() : AppCompatActivity() {
 		}
 	}
 
-	var imgAnalyzer = ImageAnalysis.Builder().build()
+	private var imgAnalyzer = ImageAnalysis.Builder().build()
 
 	private fun processCode(rawValue : String?){
 		if(rawValue == null || rawValue.length != 6)

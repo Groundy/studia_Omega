@@ -13,7 +13,7 @@ import org.json.JSONObject
 
 
 
-class ApiFuncs {
+class ApiFunctions {
 	companion object{
 		const val requestTimeOut = 4000L * 50L
 		fun bodyToRequest(url : String, requestBodyJson: JSONObject, uuidStr : String, additionalHeaders: List<Pair<String,String>>? = null): Request {
@@ -52,30 +52,30 @@ class ApiFuncs {
 			val c: Calendar = Calendar.getInstance()
 			c.timeInMillis += 1000*secFromNow
 
-			var Y = (c.get(Calendar.YEAR)).toString()
-			var M = (c.get(Calendar.MONTH) + 1).toString()//0-11 -> 1-12
-			var D = (c.get(Calendar.DAY_OF_MONTH)).toString()
-			var HH = (c.get(Calendar.HOUR_OF_DAY)).toString()
-			var MM = (c.get(Calendar.MINUTE)).toString()
-			var SS = (c.get(Calendar.SECOND)).toString()
-			var ZZZ = (c.get(Calendar.MILLISECOND)).toString()
+			val y = (c.get(Calendar.YEAR)).toString()
+			var m = (c.get(Calendar.MONTH) + 1).toString()//0-11 -> 1-12
+			var d = (c.get(Calendar.DAY_OF_MONTH)).toString()
+			var hh = (c.get(Calendar.HOUR_OF_DAY)).toString()
+			var mm = (c.get(Calendar.MINUTE)).toString()
+			var ss = (c.get(Calendar.SECOND)).toString()
+			var zzz = (c.get(Calendar.MILLISECOND)).toString()
 
-			if(M.length == 1)
-				M = "0${M}"
-			if(D.length == 1)
-				D = "0${D}"
-			if(HH.length == 1)
-				HH = "0${HH}"
-			if(MM.length == 1)
-				MM = "0${MM}"
-			if(SS.length == 1)
-				SS = "0${SS}"
-			if(ZZZ.length == 1)
-				ZZZ = "00${ZZZ}"
-			if(ZZZ.length == 2)
-				ZZZ = "0${ZZZ}"
+			if(m.length == 1)
+				m = "0${m}"
+			if(d.length == 1)
+				d = "0${d}"
+			if(hh.length == 1)
+				hh = "0${hh}"
+			if(mm.length == 1)
+				mm = "0${mm}"
+			if(ss.length == 1)
+				ss = "0${ss}"
+			if(zzz.length == 1)
+				zzz = "00${zzz}"
+			if(zzz.length == 2)
+				zzz = "0${zzz}"
 
-			return "${Y}-${M}-${D}T${HH}:${MM}:${SS}.${ZZZ}Z"
+			return "${y}-${m}-${d}T${hh}:${mm}:${ss}.${zzz}Z"
 		}
 		fun getUserAgent() : String{
 			val result = StringBuilder(64)
@@ -83,25 +83,26 @@ class ApiFuncs {
 			result.append(System.getProperty("java.vm.version")) // such as 1.1.0
 			result.append(" (Linux; U; Android ")
 			val version = Build.VERSION.RELEASE // "1.0" or "3.4b5"
-			result.append(if (version.length > 0) version else "1.0")
+			result.append(version.ifEmpty { "1.0" })
 			// add the model for the release build
 			if ("REL" == Build.VERSION.CODENAME) {
 				val model = Build.MODEL
-				if (model.length > 0) {
+				if (model.isNotEmpty()) {
 					result.append("; ")
 					result.append(model)
 				}
 			}
 			val id = Build.ID // "MASTER" or "M4-rc20"
-			if (id.length > 0) {
+			if (id.isNotEmpty()) {
 				result.append(" Build/")
 				result.append(id)
 			}
 			result.append(")")
 			return result.toString()
-		}fun getPublicIPByInternetService() : String{
-			return "213.134.179.174"		//TODO for speed
+		}
 
+		fun getPublicIPByInternetService() : String{
+			//return "213.134.179.174"		//tmp for speed
 			var ip = ""
 			val request: Request = Request.Builder()
 				.url("https://wtfismyip.com/text")
@@ -134,7 +135,7 @@ class ApiFuncs {
 		}
 		fun getRandomStateValue(length: Int = 13) : String{
 			val availableChars="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-			var toRet : String = ""
+			var toRet = ""
 			repeat(length){
 				val randomIndex = Random().nextInt(length)
 				toRet += availableChars[randomIndex]

@@ -5,36 +5,37 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
-
 
 class RBLIKCodeCreator : AppCompatActivity() {
 	private lateinit var amountField : EditText
 	private lateinit var titleField : EditText
 	private lateinit var receiverNameField : EditText
-	private lateinit var accountSpinner : Spinner
+	private lateinit var accountListSpinner : Spinner
 	private lateinit var goNextActivityButton : Button
+	private var userAccountsAvailable = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_rblik_code_creator)
+		userAccountsAvailable = ApiGetPaymentAccDetails.run()
 		setUpGui()
+		fillListOfAccounts()
 		DEVELOPER_fillWidgets()
 	}
 	private fun setUpGui(){
 		amountField = findViewById(R.id.RBlikCodeGenerator_amount_editText)
 		titleField = findViewById(R.id.RBlikCodeGenerator_transferTitle_EditText)
 		receiverNameField = findViewById(R.id.RBlikCodeGenerator_reciverName_EditText)
-		accountSpinner = findViewById(R.id.RBlikCodeGenerator_accountList_Spinner)
+		accountListSpinner = findViewById(R.id.RBlikCodeGenerator_accountList_Spinner)
 		goNextActivityButton = findViewById(R.id.RBlikCodeGenerator_goNext_button)
-
 
 		goNextActivityButton.setOnClickListener(){
 			goNextButtonClicked()
 		}
-
 
 		val amountEditTextListener = object : TextWatcher {
 			var previousValue : String = ""
@@ -55,7 +56,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		amountField.addTextChangedListener(amountEditTextListener)
 	}
 	private fun goNextButtonClicked(){
-		val dataOk = validateDataToGenBlikCode()
+		val dataOk = validateDataToGenRBlikCode()
 		if(!dataOk)
 			return//todo
 
@@ -67,8 +68,21 @@ class RBLIKCodeCreator : AppCompatActivity() {
 
 		openDisplayActivityWithCode(codeAssociated)
 	}
-
-	private fun validateDataToGenBlikCode() : Boolean{
+	private fun fillListOfAccounts(){
+		if(!userAccountsAvailable){
+			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
+			Utilites.showToast(this, errorCodeTextToDisplay)
+			finish()
+			return
+		}
+		val listOfAccountFromToken = UserData.accessTokenStruct?.listOfAccounts!!
+		val adapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item)
+		listOfAccountFromToken.forEach{
+			adapter.add(it.getDisplayString())
+		}
+		accountListSpinner.adapter = adapter
+	}
+	private fun validateDataToGenRBlikCode() : Boolean{
 		val accountChosen = true//todo
 		if(!accountChosen){
 			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_acc_not_chosen)

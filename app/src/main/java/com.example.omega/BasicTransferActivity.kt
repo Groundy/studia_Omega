@@ -36,7 +36,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			var previousValue : String = ""
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				if(p0 != null)
-					previousValue = p0!!.toString()
+					previousValue = p0.toString()
 			}
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun afterTextChanged(p0: Editable?) {
@@ -89,7 +89,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		transferTitle = findViewById(R.id.basicTransfer_transferTitle_EditText)
 		goNextButton = findViewById(R.id.RBlikCodeGenerator_goNext_button)
 		amountAfterTransferTextView = findViewById(R.id.basicTransfer_amountAfterTransfer_TextView)
-		spinner = findViewById<Spinner>(R.id.basicTransfer_accountList_Spinner)
+		spinner = findViewById(R.id.basicTransfer_accountList_Spinner)
 
 	}
 	private fun printAmountAfterTransfer(){
@@ -154,11 +154,11 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(transferAmount == null)
 			transferAmount = 0.0
 
-		var balanceAfterTransfer = balance - transferAmount
+		val balanceAfterTransfer = balance - transferAmount
 		return floor(balanceAfterTransfer * 100) / 100 //trim decimal after 2 digits
 	}
 	private fun fillListOfAccounts(){
-		val obtainedAccountData = ApiGetPaymentAccDetails.run(this)
+		val obtainedAccountData = ApiGetPaymentAccDetails.run()//todo
 		if(!obtainedAccountData){
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivity(false,errorCodeTextToDisplay)
@@ -201,7 +201,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	private fun goNextActivityButtonClicked(){
 		val inputErrorText : String? = getErrorInputText()
 		if(inputErrorText != null){
-			Utilites.showToast(this, inputErrorText!!)
+			Utilites.showToast(this, inputErrorText)
 			return
 		}
 
@@ -213,7 +213,7 @@ class BasicTransferActivity : AppCompatActivity() {
 
 		val transferDataSerialized = transferData.serialize()
 		if(!transferDataSerialized.isNullOrEmpty()){
-			ActivityStarter.startTransferSummaryActivity(this, transferDataSerialized!!)
+			ActivityStarter.startTransferSummaryActivity(this, transferDataSerialized)
 			finishThisActivity(true)
 		}
 		else

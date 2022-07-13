@@ -1,4 +1,6 @@
 //TODO
+20 - strona loginu do banku nie dziala
+
 14. Zapisać bezpiecznie PIN wprowadzony przez użytkownika{https://www.androidauthority.com/where-is-the-best-place-to-store-a-password-in-your-android-app-597197/}
 9.  Dodadć logowanie w aplikacji (001 ze schematu z raprotu)
 8.  W errorAuth dodać rozóznienie między tym gdy użytkownik chce autoryzacji za pomocą innej metody a innym błędem.

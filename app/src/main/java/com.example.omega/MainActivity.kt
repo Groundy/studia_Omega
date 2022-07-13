@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
 					if(!serializedPermissionList.isNullOrEmpty())
 						permissionList = PermissionList(serializedPermissionList)
 
-					val state = ApiFuncs.getRandomStateValue()
+					val state = ApiFunctions.getRandomStateValue()
 					val authUrl = ApiAuthorize().run(state, permissionList.permissions)
 
 					if(authUrl.isNullOrEmpty()){
@@ -298,8 +298,8 @@ class MainActivity : AppCompatActivity() {
 	}
 	private fun initQR(){
 		val goQrScannerButtonListener = View.OnClickListener {
-			val QrScannerActivityIntent = Intent(this, QrScannerActivity::class.java)
-			startActivityForResult(QrScannerActivityIntent, resources.getInteger(R.integer.ACT_RETCODE_QrScanner))
+			val qrScannerActivityIntent = Intent(this, QrScannerActivity::class.java)
+			startActivityForResult(qrScannerActivityIntent, resources.getInteger(R.integer.ACT_RETCODE_QrScanner))
 		}
 		goQRActivityButton = findViewById(R.id.goToQrScannerButton)
 		goQRActivityButton.setOnClickListener(goQrScannerButtonListener)
@@ -314,7 +314,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun TEST_getAccessToken(){
-		val state = ApiFuncs.getRandomStateValue()
+		val state = ApiFunctions.getRandomStateValue()
 		val authUrl = ApiAuthorize().run(state)
 		if(authUrl.isNullOrEmpty()){
 			Log.e(Utilites.TagProduction, "Failed to obtain auth url")

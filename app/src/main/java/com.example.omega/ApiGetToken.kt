@@ -20,7 +20,7 @@ class ApiGetToken {
 				}
 			}
 			thread.start()
-			thread.join(ApiFuncs.requestTimeOut)
+			thread.join(ApiFunctions.requestTimeOut)
 			return success
 		}
 		private fun getTokenJson() : JSONObject?{
@@ -35,21 +35,21 @@ class ApiGetToken {
 			if(bodyStr.isNullOrEmpty())
 				return null//todo
 
-			try {
-				return JSONObject(bodyStr)
+			return try {
+				JSONObject(bodyStr)
 			}catch (e : Exception){
 				Log.e(Utilites.TagProduction,e.toString())
-				return null
+				null
 			}
 		}
 		private fun parseJsonResponse(responseJson : JSONObject) : Boolean{
 			val tokenType = responseJson.get("token_type")
 			val accessTokenCont = responseJson.get("access_token")
 			val refreshToken = responseJson.get("refresh_token")
-			val expiresIn = responseJson.get("expires_in")
+			//val expiresIn = responseJson.get("expires_in") // unused
 			val scope = responseJson.get("scope")
 			val scopeDetails = responseJson.getJSONObject("scope_details")
-			val responseHeader = responseJson.get("responseHeader")
+			//val responseHeader = responseJson.get("responseHeader")// unused
 
 
 			val scopeToSet = when(scope){
@@ -81,13 +81,13 @@ class ApiGetToken {
 
 		private fun getTokenRequest() : Request {
 			val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/token"
-			val uuidStr = ApiFuncs.getUUID()
-			val currentTimeStr = ApiFuncs.getCurrentTimeStr()
+			val uuidStr = ApiFunctions.getUUID()
+			val currentTimeStr = ApiFunctions.getCurrentTimeStr()
 			val requestBodyJson = JSONObject()
 				.put("requestHeader", JSONObject()
 					.put("requestId", uuidStr)
-					.put("userAgent", ApiFuncs.getUserAgent())
-					.put("ipAddress", ApiFuncs.getPublicIPByInternetService())
+					.put("userAgent", ApiFunctions.getUserAgent())
+					.put("ipAddress", ApiFunctions.getPublicIPByInternetService())
 					.put("sendDate", currentTimeStr)
 					.put("tppId", ApiConsts.TTP_ID)
 					.put("isCompanyContext", false))
@@ -98,7 +98,7 @@ class ApiGetToken {
 				.put("client_secret", ApiConsts.appSecret_ALIOR)
 
 
-			return ApiFuncs.bodyToRequest(url, requestBodyJson, uuidStr)
+			return ApiFunctions.bodyToRequest(url, requestBodyJson, uuidStr)
 		}
 	}
 }

@@ -29,20 +29,20 @@ class ApiGetAccounts {
 			}
 		}
 		thread.start()
-		thread.join(ApiFuncs.requestTimeOut)
+		thread.join(ApiFunctions.requestTimeOut)
 	}
 
 	private fun getAccountsRequest() : Request {
 		val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccounts"
-		val uuidStr = ApiFuncs.getUUID()
-		val currentTimeStr = ApiFuncs.getCurrentTimeStr()
+		val uuidStr = ApiFunctions.getUUID()
+		val currentTimeStr = ApiFunctions.getCurrentTimeStr()
 
 		val authFieldValue = "${UserData.accessTokenStruct?.tokenType} ${UserData.accessTokenStruct?.tokenContent}"
 		val requestBodyJson = JSONObject()
 			.put("requestHeader", JSONObject()
 				.put("requestId", uuidStr)
-				.put("userAgent", ApiFuncs.getUserAgent())
-				.put("ipAddress", ApiFuncs.getPublicIPByInternetService())
+				.put("userAgent", ApiFunctions.getUserAgent())
+				.put("ipAddress", ApiFunctions.getPublicIPByInternetService())
 				.put("sendDate", currentTimeStr)
 				.put("tppId", "requiredValueThatIsNotValidated")
 				.put("token", authFieldValue)
@@ -51,7 +51,7 @@ class ApiGetAccounts {
 		)
 
 		val additionalHeaderList = arrayListOf<Pair<String,String>>(Pair("AUTHORIZATION",authFieldValue))
-		val request = ApiFuncs.bodyToRequest(url, requestBodyJson, uuidStr, additionalHeaderList)
+		val request = ApiFunctions.bodyToRequest(url, requestBodyJson, uuidStr, additionalHeaderList)
 		return request
 	}
 

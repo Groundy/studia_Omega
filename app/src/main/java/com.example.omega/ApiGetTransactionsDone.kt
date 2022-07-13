@@ -22,7 +22,7 @@ class ApiGetTransactionsDone {
 					}
 				}
 				thread.start()
-				thread.join(ApiFuncs.requestTimeOut)
+				thread.join(ApiFunctions.requestTimeOut)
 				return isSuccess
 			}
 			else{
@@ -39,7 +39,7 @@ class ApiGetTransactionsDone {
 					for (i in 0 until  listOfThreadCheckingAccInfro.size)
 						listOfThreadCheckingAccInfro[i].start()
 					for(i in 0 until  listOfThreadCheckingAccInfro.size)
-						listOfThreadCheckingAccInfro[i].join(ApiFuncs.requestTimeOut)
+						listOfThreadCheckingAccInfro[i].join(ApiFunctions.requestTimeOut)
 					return true
 
 				}catch (e: Exception) {
@@ -51,15 +51,15 @@ class ApiGetTransactionsDone {
 		}
 		private fun getPaymentAccHistoryRequest(accNumber: String) : Request {
 			val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getTransactionsDone"
-			val uuidStr = ApiFuncs.getUUID()
-			val currentTimeStr = ApiFuncs.getCurrentTimeStr()
+			val uuidStr = ApiFunctions.getUUID()
+			val currentTimeStr = ApiFunctions.getCurrentTimeStr()
 
 
 			val requestBodyJson = JSONObject()
 				.put("requestHeader", JSONObject()
 					.put("requestId", uuidStr)
-					.put("userAgent", ApiFuncs.getUserAgent())
-					.put("ipAddress", ApiFuncs.getPublicIPByInternetService())
+					.put("userAgent", ApiFunctions.getUserAgent())
+					.put("ipAddress", ApiFunctions.getPublicIPByInternetService())
 					.put("sendDate", currentTimeStr)
 					.put("tppId", ApiConsts.TTP_ID)
 					.put("token", UserData.accessTokenStruct?.tokenContent)
@@ -81,7 +81,7 @@ class ApiGetTransactionsDone {
 
 			val authFieldValue = "${UserData.accessTokenStruct?.tokenType} ${UserData.accessTokenStruct?.tokenContent}"
 			val additionalHeaderList = arrayListOf(Pair("authorization",authFieldValue))
-			return ApiFuncs.bodyToRequest(url, requestBodyJson, uuidStr, additionalHeaderList)
+			return ApiFunctions.bodyToRequest(url, requestBodyJson, uuidStr, additionalHeaderList)
 		}
 		private fun getAccHistory(accNumber: String) : Boolean{
 			val request = getPaymentAccHistoryRequest(accNumber)
