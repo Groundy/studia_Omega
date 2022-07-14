@@ -8,6 +8,7 @@ import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.view.isVisible
 
 class OAuth : AppCompatActivity() {
 	private lateinit var webView: WebView
@@ -23,30 +24,31 @@ class OAuth : AppCompatActivity() {
 	}
 
 	private fun setWebView(){
-		webView = this.findViewById(R.id.webView)
+		webView = this.findViewById(R.id.OAuth_webView)
 		webView.settings.javaScriptEnabled = true
 		webView.settings.allowContentAccess = true
 		webView.settings.allowFileAccess = true
 		webView.settings.databaseEnabled = true
 		webView.settings.domStorageEnabled = true
+
 		webView.webViewClient = object : WebViewClient() {
 			override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
 				request?.let {
-					val url = request.url
-					val isProperRedirectUri = url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
+					view?.isVisible = false
+					val isProperRedirectUri = it.url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
 					if(!isProperRedirectUri){
-						Log.e(Utilites.TagProduction, "Failed to obtain code[request not started with my app callBack], request [${request.url}]")
+						Log.e(Utilites.TagProduction, "Failed to obtain code[request not started with app callBack], request [${request.url}]")
 						finishThisActivity(false)
 					}
 
-					val responseState = url.getQueryParameter("state")// To prevent CSRF attacks, check that we got the same state value we sent,
+					val responseState = it.url.getQueryParameter("state")// To prevent CSRF attacks, check that we got the same state value we sent,
 					val responseStateCorrect = responseState == expectedRedirectState
 					if (!responseStateCorrect) {
 						Log.e(Utilites.TagProduction, "Failed to obtain code[wrong state], request [${request.url}]")
 						finishThisActivity(false)
 					}
 
-					val code : String? = url.getQueryParameter("code")
+					val code : String? = it.url.getQueryParameter("code")
 					if (code == null) {
 						Log.e(Utilites.TagProduction, "Failed to obtain code[no code], request [${request.url}]")
 						finishThisActivity(false)

@@ -8,3 +8,5 @@
 .externalNativeBuild
 hs_err_pid11716.log
 *.log
+.idea/deploymentTargetDropDown.xml
+.idea/misc.xml
