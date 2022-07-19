@@ -50,7 +50,7 @@ class ActivityStarter {
 		}
 		fun startAuthActivity(context : Activity, description : String?, forcedMethodeCode : Int?){
 			var preferredMethodeCode =
-				Utilites.readPref_Int(context, R.integer.PREF_preferedAuthMethode)
+				PreferencesOperator.readPrefInt(context, R.integer.PREF_preferedAuthMethode)
 			if(forcedMethodeCode != null && forcedMethodeCode in 0..2)
 				preferredMethodeCode = forcedMethodeCode
 			val preferredMethodeName = when(preferredMethodeCode){

@@ -223,9 +223,9 @@ class PinActivity : AppCompatActivity() {
 		titleField = findViewById<TextView>(R.id.PIN_Title_TextView)
 	}
 	private fun checkIfPinIsCorrect(pin : Int) : Boolean{
-		//TODO Dodać sprawdzanie czy pin jest OK
-		val pinSavedInPrefs = Utilites.readPref_Int(this, R.integer.PREF_pin)
-		return pin == pinSavedInPrefs
+		val savedPinHash = PreferencesOperator.readPrefStr(this, R.string.PREF_hashPin)
+		val inputPinHash = Utilites.hashMd5(pin.toString())
+		return inputPinHash == savedPinHash
 	}
 	private fun processAuth(pin : Int){
 		val authCorrect = checkIfPinIsCorrect(pin)
@@ -322,9 +322,8 @@ class PinActivity : AppCompatActivity() {
 		}
 	}
 	private fun saveNewPinInMemory(pin : Int){
-		//TODO
-		Utilites.savePref(this, R.integer.PREF_pin, pin)
-		//dodać funkcję która ustawi ten PIN w pamięci apki i na severze
+		val hashedPin = Utilites.hashMd5(pin.toString())
+		PreferencesOperator.savePref(this, R.string.PREF_hashPin, hashedPin)		//TODO dodać to w mode private
 	}
 	private fun checkStartPurpose(){
 		val purposeFieldName = resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)

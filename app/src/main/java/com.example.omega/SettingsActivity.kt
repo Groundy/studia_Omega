@@ -23,12 +23,12 @@ class SettingsActivity : AppCompatActivity() {
 		val phoneHasNfc = NfcAdapter.getDefaultAdapter(this) != null
 		val nfcSwitch = findViewById<Switch>(R.id.turnOnNFCWhenAppStartsSwitch)
 		if(phoneHasNfc)
-			nfcSwitch.isChecked = Utilites.readPref_Bool(this, R.bool.PREF_turnNfcOnAppStart)
+			nfcSwitch.isChecked = PreferencesOperator.readPrefBool(this, R.bool.PREF_turnNfcOnAppStart)
 		else
 			nfcSwitch.isVisible = false
 
 		val selectAuthMethodeField = findViewById<TextView>(R.id.selectAuthMethodeTextView)
-		val methodeCode = Utilites.readPref_Int(this, R.integer.PREF_preferedAuthMethode)
+		val methodeCode = PreferencesOperator.readPrefInt(this, R.integer.PREF_preferedAuthMethode)
 		var methodeName = when(methodeCode){
 			0->getString(R.string.GUI_selectAuthMethodeText_pin)
 			1->getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
@@ -43,7 +43,7 @@ class SettingsActivity : AppCompatActivity() {
 		val phoneHasNfc = NfcAdapter.getDefaultAdapter(this) != null
 		if(phoneHasNfc){
 			val nfcSwitch = findViewById<Switch>(R.id.turnOnNFCWhenAppStartsSwitch)
-			Utilites.savePref(this, R.bool.PREF_turnNfcOnAppStart, nfcSwitch.isChecked)
+			PreferencesOperator.savePref(this, R.bool.PREF_turnNfcOnAppStart, nfcSwitch.isChecked)
 		}
 
 	}
@@ -56,7 +56,7 @@ class SettingsActivity : AppCompatActivity() {
 		dialog.selectAuthMethodeButton_patern.isVisible = false //TODO to nie jest zaimplementowane
 		val radioButtonGroup = dialog.selectAuthMethodeButtonGroup
 		val userPreferredMethodeCode =
-			Utilites.readPref_Int(this, R.integer.PREF_preferedAuthMethode)
+			PreferencesOperator.readPrefInt(this, R.integer.PREF_preferedAuthMethode)
 		when(userPreferredMethodeCode){
 			0 -> {dialog.selectAuthMethodeButton_PIN.isChecked = true}
 			1 -> {dialog.selectAuthMethodeButton_patern.isChecked = true}
@@ -65,7 +65,7 @@ class SettingsActivity : AppCompatActivity() {
 					dialog.selectAuthMethodeButton_finger.isChecked = true
 				else {
 					dialog.selectAuthMethodeButton_PIN.isChecked = true
-					Utilites.savePref(this, R.integer.PREF_preferedAuthMethode, 0)
+					PreferencesOperator.savePref(this, R.integer.PREF_preferedAuthMethode, 0)
 				}
 			}
 		}
@@ -75,7 +75,7 @@ class SettingsActivity : AppCompatActivity() {
 		radioButtonGroup.setOnCheckedChangeListener(radioButtonGroupListener)
 
 		val dialogOnDismissListener = DialogInterface.OnDismissListener{
-			var methodCode = Utilites.readPref_Int(this, R.integer.PREF_preferedAuthMethode)
+			var methodCode = PreferencesOperator.readPrefInt(this, R.integer.PREF_preferedAuthMethode)
 			var methodeName = when(methodCode){
 				0->getString(R.string.GUI_selectAuthMethodeText_pin)
 				1->getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
@@ -96,7 +96,7 @@ class SettingsActivity : AppCompatActivity() {
 					methodCode = 2
 				}
 			}
-			Utilites.savePref(this, R.integer.PREF_preferedAuthMethode, methodCode)
+			PreferencesOperator.savePref(this, R.integer.PREF_preferedAuthMethode, methodCode)
 			val textToSetOnWidget = getString(R.string.Settings_GUI_selectAuthMethodeTextBase) + methodeName
 			findViewById<TextView>(R.id.selectAuthMethodeTextView).text = textToSetOnWidget
 		}

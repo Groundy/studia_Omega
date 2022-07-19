@@ -8,26 +8,17 @@ import android.text.SpannableStringBuilder
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import java.math.BigInteger
+import java.security.MessageDigest
 import kotlin.random.Random
 
-fun getSharedProperties(activity: Activity) : SharedPreferences{
-	val fileName = activity.getString(R.string.preference_file_key)
-	val sharedPref = activity.getSharedPreferences(fileName,MODE_PRIVATE)
-	return sharedPref
-}
 
-class Utilites {
+class PreferencesOperator{
 	companion object{
-		val TagProduction = "WookieTag"
-		fun showMsg(activity: Activity, stringToDisplay:String) {
-			val dialogBuilder = AlertDialog.Builder(activity)
-			val dialogInterfaceVar = DialogInterface.OnClickListener { p0, p1 -> p0.dismiss() }
-			dialogBuilder.setMessage(stringToDisplay).setPositiveButton("Ok", dialogInterfaceVar)
-			val dialog: AlertDialog = dialogBuilder.create()
-			dialog.show()
-		}
-		fun showToast(activity: Activity, stringToDisplay:String){
-			Toast.makeText(activity,stringToDisplay, Toast.LENGTH_LONG).show()
+		private fun getSharedProperties(activity: Activity) : SharedPreferences{
+			val fileName = activity.getString(R.string.preference_file_key)
+			val sharedPrefObj = activity.getSharedPreferences(fileName,MODE_PRIVATE)
+			return sharedPrefObj
 		}
 
 		fun savePref(activity: Activity, strResourceId : Int, value : Int){
@@ -55,25 +46,51 @@ class Utilites {
 			editor.commit()
 		}
 
-		fun readPref_Bool(activity: Activity, strResourceId : Int) : Boolean{
+		fun readPrefBool(activity: Activity, strResourceId : Int) : Boolean{
 			val fieldName = activity.getString(strResourceId)
 			val prefs = getSharedProperties(activity)
 			return prefs.getBoolean(fieldName,false)
 		}
-		fun readPref_Int(activity: Activity, strResourceId : Int) : Int{
+		fun readPrefInt(activity: Activity, strResourceId : Int) : Int{
 			val fieldName = activity.getString(strResourceId)
 			val prefs = getSharedProperties(activity)
 			return prefs.getInt(fieldName,0)
 		}
-		fun readPref_Str(activity: Activity, strResourceId : Int) : String {
+		fun readPrefStr(activity: Activity, strResourceId : Int) : String {
 			val fieldName = activity.getString(strResourceId)
 			val prefs = getSharedProperties(activity)
 			return prefs.getString(fieldName, "")!!
 		}
-		fun readPref_Float(activity: Activity, strResourceId : Int) : Float{
+		fun readPrefFloat(activity: Activity, strResourceId : Int) : Float{
 			val fieldName = activity.getString(strResourceId)
 			val prefs = getSharedProperties(activity)
 			return prefs.getFloat(fieldName,0f)
+		}
+
+
+		fun encrypt(text : String, key : String) : String{
+			//TODO
+			return ""
+		}
+		fun decrypt(encryptedText : String, key : String) : String{
+			//TODO
+			return ""
+		}
+	}
+}
+
+class Utilites {
+	companion object{
+		val TagProduction = "WookieTag"
+		fun showMsg(activity: Activity, stringToDisplay:String) {
+			val dialogBuilder = AlertDialog.Builder(activity)
+			val dialogInterfaceVar = DialogInterface.OnClickListener { p0, p1 -> p0.dismiss() }
+			dialogBuilder.setMessage(stringToDisplay).setPositiveButton("Ok", dialogInterfaceVar)
+			val dialog: AlertDialog = dialogBuilder.create()
+			dialog.show()
+		}
+		fun showToast(activity: Activity, stringToDisplay:String){
+			Toast.makeText(activity,stringToDisplay, Toast.LENGTH_LONG).show()
 		}
 		fun authByPattern(activity: Activity, description : String?){
 			//TODO
@@ -88,37 +105,22 @@ class Utilites {
 		}
 		fun checkIfAppHasAlreadySetPin(activity: Activity): Boolean {
 			//TODO tymczasowo PIN jest zapisywany w pamięci telefonu w plain text, należy to koniecznie zmienić
-			val pinRead = readPref_Int(activity, R.integer.PREF_pin)
-			return pinRead in 1..99999
+			val savedPinHash = PreferencesOperator.readPrefStr(activity, R.string.PREF_hashPin)
+			return savedPinHash.isNotEmpty()
 		}
-		fun getMessageToDisplayToUserAfterBiometricAuthError(errCode : Int) : String{
-			return when(errCode){
-				//0 -> "Uzyskano autoryzację!"
-				1 -> "Sensor jest chwilowo niedostępny, należy spróbować później."
-				2 -> "Czujnik nie był w stanie przetworzyć odcisku palca."
-				3 -> "Nie wykryto palca przez 30s."
-				4 -> "Urządzenie nie ma wystarczającej ilości miejsca żeby wykonać operacje."
-				5,10 -> "Użytkownik anulował uwierzytelnianie za pomocą biometrii."
-				7 -> "Pięciorkotnie nierozpoznano odcisku palca, sensor będzie dostępny ponownie za 30s."
-				9 -> "Sensor jest zablokowany, należy go odblokować wporwadzająć wzór/pin telefonu."
-				11 -> "Nieznany błąd, upewnij się czy w twoim urządzeniu jest zapisany odcis palca."
-				12 -> "Urządzenie nie posiada odpowiedniego sensora."
-				14 -> "Urządzenie musi posiadać pin,wzór lub hasło."
-				15 -> "Operacja nie może zostać wykonana bez aktualizacji systemu."
-				else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
-			}
-		}
+
 		fun checkBlikCode(code : Int) : TransferData?{
 			//TODO implement
 			val properCode = 111111
 			val isProperCode = code == properCode
-			if(isProperCode){
+			return if(isProperCode){
 				val transferData = TransferData("0123456789012345678901234567","0001112223334445556667778889","Jan Kowalski","zwrot pożyczki" ,13.57 ,  "PLN")
-				return transferData
+				transferData
 			}
 			else
-				return null
+				null
 		}
+
 		fun stopUserFromPuttingMoreThan2DigitsAfterComma(editText : EditText, oldVal : String, newVal : String){
 			val indexOfDecimal = newVal.indexOf('.')
 			if(indexOfDecimal != -1){
@@ -129,8 +131,14 @@ class Utilites {
 				}
 			}
 		}
+
 		fun getRandomTestCode() : Int{
 			return Random.nextInt(999999)
+		}
+
+		fun hashMd5(inputStr : String) : String{
+			val md = MessageDigest.getInstance("MD5")
+			return BigInteger(1, md.digest(inputStr.toByteArray())).toString(16).padStart(32, '0')
 		}
 	}
 }
