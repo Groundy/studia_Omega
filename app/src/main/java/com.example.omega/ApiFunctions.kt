@@ -11,11 +11,10 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
-
-
 class ApiFunctions {
 	companion object{
 		const val requestTimeOut = 4000L * 50L
+
 		fun bodyToRequest(url : String, requestBodyJson: JSONObject, uuidStr : String, additionalHeaders: List<Pair<String,String>>? = null): Request {
 			val mediaType : MediaType = ApiConsts.CONTENT_TYPE.toMediaType()
 			val requestBodyStr = requestBodyJson.toString().toByteArray().toRequestBody(mediaType)
@@ -44,7 +43,6 @@ class ApiFunctions {
 
 			return request.build()
 		}
-
 		fun getUUID() : String{
 			return Generators.timeBasedGenerator().generate().toString()
 		}
@@ -100,7 +98,6 @@ class ApiFunctions {
 			result.append(")")
 			return result.toString()
 		}
-
 		fun getPublicIPByInternetService() : String{
 			//return "213.134.179.174"		//tmp for speed
 			var ip = ""

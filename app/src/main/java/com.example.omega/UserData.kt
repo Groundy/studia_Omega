@@ -7,7 +7,7 @@ class UserData  {
 	class AccessTokenStruct{
 		var tokenType : String? = null
 		var tokenContent : String? = null
-		var scope : ApiConsts.scopeValues? = null
+		var scope : ApiConsts.ScopeValues? = null
 		var expirationTime : String? = null
 		var refreshToken : String? = null
 		var listOfAccounts : ArrayList<PaymentAccount>? = null
@@ -20,7 +20,7 @@ class UserData  {
 			this.tokenContent = tokenContToSet
 			return this
 		}
-		fun setTokenScope(scope : ApiConsts.scopeValues?) : AccessTokenStruct {
+		fun setTokenScope(scope : ApiConsts.ScopeValues?) : AccessTokenStruct {
 			this.scope = scope
 			return this
 		}

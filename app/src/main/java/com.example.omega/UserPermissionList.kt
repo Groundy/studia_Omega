@@ -7,24 +7,24 @@ import android.widget.Button
 import android.widget.CheckBox
 
 class PermissionList(){
-	var permissions = arrayListOf<ApiConsts.priviliges>()
+	var permissions = arrayListOf<ApiConsts.Privileges>()
 	private val separator = ";;;"
 
 	override fun toString() : String{
 		var toRet = String()
-		ApiConsts.priviliges.values().forEach {
+		ApiConsts.Privileges.values().forEach {
 			if(permissions.contains(it))
 				toRet = toRet.plus(it.text).plus(separator)
 		}
 		return toRet
 	}
 	constructor(inputString : String) : this() {
-		ApiConsts.priviliges.values().forEach {
+		ApiConsts.Privileges.values().forEach {
 			if(inputString.contains(it.text))
 				this.permissions.add(it)
 		}
 	}
-	fun add(permission : ApiConsts.priviliges){
+	fun add(permission : ApiConsts.Privileges){
 		this.permissions.add(permission)
 	}
 }
@@ -45,10 +45,10 @@ class UserPermissionList : AppCompatActivity() {
 		var permissionsList = PermissionList()
 
 		if(findViewById<CheckBox>(R.id.userPermisionList_accDetails_checkBox).isChecked)
-			permissionsList.add(ApiConsts.priviliges.accountsDetails)
+			permissionsList.add(ApiConsts.Privileges.accountsDetails)
 
 		if(findViewById<CheckBox>(R.id.userPermisionList_accHistory_checkBox).isChecked)
-			permissionsList.add(ApiConsts.priviliges.accountsHistory)
+			permissionsList.add(ApiConsts.Privileges.accountsHistory)
 
 		endActivity(true, permissionsList)
 	}

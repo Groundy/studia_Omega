@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity() {
 	}
 	override fun onNewIntent(intent: Intent) {
 		super.onNewIntent(intent)
-		val tagFromIntent: Tag? = intent?.getParcelableExtra(NfcAdapter.EXTRA_TAG)
+		val tagFromIntent: Tag? = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
 		if (tagFromIntent != null) {
 			val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
 			val relayRecord = (rawMsgs!![0] as NdefMessage).records[0]
