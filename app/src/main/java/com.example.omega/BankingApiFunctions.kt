@@ -22,7 +22,7 @@ class ApiGetPaymentAccDetails {
                     }
                 }
                 thread.start()
-                thread.join(ApiFunctions.requestTimeOut)
+                thread.join(ApiConsts.requestTimeOut)
                 return isSuccess
             }
             else{
@@ -39,7 +39,7 @@ class ApiGetPaymentAccDetails {
                     for (i in 0 until  listOfThreadCheckingAccInfo.size)
                         listOfThreadCheckingAccInfo[i].start()
                     for(i in 0 until  listOfThreadCheckingAccInfo.size)
-                        listOfThreadCheckingAccInfo[i].join(ApiFunctions.requestTimeOut)
+                        listOfThreadCheckingAccInfo[i].join(ApiConsts.requestTimeOut)
                     return true
 
                 }catch (e: Exception) {
@@ -109,9 +109,8 @@ class ApiGetAccounts {
         val thread = Thread{
             try {
                 accountListTmp = getAccInfo()
-                if(accountListTmp != null){
+                if(accountListTmp != null)
                     UserData.accessTokenStruct?.listOfAccounts = accountListTmp
-                }
                 else{
                     //todo
                 }
@@ -120,7 +119,7 @@ class ApiGetAccounts {
             }
         }
         thread.start()
-        thread.join(ApiFunctions.requestTimeOut)
+        thread.join(ApiConsts.requestTimeOut)
     }
 
     private fun getAccountsRequest() : Request {
@@ -193,7 +192,7 @@ class ApiGetToken {
                 }
             }
             thread.start()
-            thread.join(ApiFunctions.requestTimeOut)
+            thread.join(ApiConsts.requestTimeOut)
             return success
         }
         private fun getTokenJson() : JSONObject?{
@@ -291,7 +290,7 @@ class ApiGetTransactionsDone {
                     }
                 }
                 thread.start()
-                thread.join(ApiFunctions.requestTimeOut)
+                thread.join(ApiConsts.requestTimeOut)
                 return isSuccess
             }
             else{
@@ -308,7 +307,7 @@ class ApiGetTransactionsDone {
                     for (i in 0 until  listOfThreadCheckingAccInfro.size)
                         listOfThreadCheckingAccInfro[i].start()
                     for(i in 0 until  listOfThreadCheckingAccInfro.size)
-                        listOfThreadCheckingAccInfro[i].join(ApiFunctions.requestTimeOut)
+                        listOfThreadCheckingAccInfro[i].join(ApiConsts.requestTimeOut)
                     return true
 
                 }catch (e: Exception) {
@@ -386,7 +385,7 @@ class ApiAuthorize {
             authUrl = startAuthorize(stateValue)
         }
         thread.start()
-        thread.join(ApiFunctions.requestTimeOut)
+        thread.join(ApiConsts.requestTimeOut)
         return authUrl
     }
 
