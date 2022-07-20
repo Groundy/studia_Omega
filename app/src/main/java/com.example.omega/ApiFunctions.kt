@@ -13,8 +13,6 @@ import org.json.JSONObject
 
 class ApiFunctions {
 	companion object{
-		const val requestTimeOut = 4000L * 50L
-
 		fun bodyToRequest(url : String, requestBodyJson: JSONObject, uuidStr : String, additionalHeaders: List<Pair<String,String>>? = null): Request {
 			val mediaType : MediaType = ApiConsts.CONTENT_TYPE.toMediaType()
 			val requestBodyStr = requestBodyJson.toString().toByteArray().toRequestBody(mediaType)
