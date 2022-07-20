@@ -1,94 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	package="com.example.omega">
-
 	<application
 		android:allowBackup="true"
 		android:icon="@mipmap/ic_launcher"
-		android:label="@string/app_name"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
-		android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+		android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 		<activity
 			android:name="com.example.omega.RBlikCodeDisplayActivity"
 			android:exported="false" />
 		<activity
 			android:name="com.example.omega.RBLIKCodeCreator"
-			android:exported="false" />
+			android:exported="false"
+			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name="com.example.omega.UserPermissionList"
 			android:exported="false"
-			android:label="@string/title_activity_settings"
-			android:theme="@style/Theme.AppCompat.Dialog" />
+			android:theme="@style/Theme.AppCompat.DayNight.Dialog"/>
 		<activity
 			android:name="com.example.omega.OAuth"
 			android:exported="false"
-			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name="com.example.omega.TransferSummary"
 			android:exported="false"
-			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name="com.example.omega.ResultActivity"
 			android:exported="false"
-			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name="com.example.omega.BasicTransferActivity"
 			android:exported="false"
-			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name="com.example.omega.PinActivity"
 			android:exported="false"
-			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name="com.example.omega.CancelBioAuthDialogActivity"
 			android:exported="false"
-			android:label="@string/title_activity_settings"
 			android:theme="@style/Theme.AppCompat.Light.Dialog.Alert"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name="com.example.omega.ScanFingerActivity"
 			android:exported="false"
-			android:label="@string/title_activity_settings"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
 			android:name="com.example.omega.SettingsActivity"
-			android:exported="false"
-			android:label="@string/title_activity_settings" />
+			android:exported="false" />
 		<activity
 			android:name="com.example.omega.QrScannerActivity"
-			android:exported="false"
-			android:label="@string/title_activity_QrScanner"
-			android:theme="@style/NoActionBar" />
+			android:exported="false"/>
 		<activity
 			android:name="com.example.omega.MainActivity"
+			android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
 			android:label="@string/app_name"
 			android:windowSoftInputMode="stateAlwaysVisible">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
-
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 			<intent-filter>
 				<action android:name="android.nfc.action.NDEF_DISCOVERED" />
 				<action android:name="android.nfc.action.TAG_DISCOVERED" />
-
 				<data android:mimeType="text/plain" />
 			</intent-filter>
 			<intent-filter tools:ignore="AppLinkUrlError"> <!-- TESTTESTESTTESTTESTETSTEST$ETSEST -->
 				<action android:name="android.intent.action.VIEW" />
-
 				<data
 					android:host="oauthdemo.developer.aliorbank.pl"
 					android:scheme="https" />
 			</intent-filter> <!-- TESTTESTESTTESTTESTETSTEST$ETSEST -->
-
 			<meta-data
 				android:name="android.nfc.action.TECH_DISCOVERED"
 				android:resource="@xml/techlist" />

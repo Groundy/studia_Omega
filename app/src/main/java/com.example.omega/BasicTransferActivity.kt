@@ -41,7 +41,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun afterTextChanged(p0: Editable?) {
 				if(p0 != null)
-					Utilites.stopUserFromPuttingMoreThan2DigitsAfterComma(
+					Utilities.stopUserFromPuttingMoreThan2DigitsAfterComma(
 						amountEditText,
 						previousValue,
 						p0.toString()
@@ -173,7 +173,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	}
 	private fun finishThisActivity(success : Boolean, errorCode : String? = null){
 		if(errorCode!=null && !success)
-			Utilites.showToast(this, errorCode)
+			Utilities.showToast(this, errorCode)
 		this.finish()
 	}
 	private fun getInfoAboutChosenPaymentAccount() : Boolean{
@@ -201,7 +201,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	private fun goNextActivityButtonClicked(){
 		val inputErrorText : String? = getErrorInputText()
 		if(inputErrorText != null){
-			Utilites.showToast(this, inputErrorText)
+			Utilities.showToast(this, inputErrorText)
 			return
 		}
 

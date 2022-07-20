@@ -29,8 +29,8 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 
 		val code = getCodeFromIntent()
 		if(code == -1){
-			Utilites.showToast(this, getString(R.string.RBLIKDISPLAY_UserMsg_incorrectCodePassed))
-			Log.e(Utilites.TagProduction, "Error, passed code to display RBlik class was incorrect")
+			Utilities.showToast(this, getString(R.string.RBLIKDISPLAY_UserMsg_incorrectCodePassed))
+			Log.e(Utilities.TagProduction, "Error, passed code to display RBlik class was incorrect")
 			finish()
 		}
 		setProperWidgetText(code)
@@ -42,8 +42,8 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 			imgWidget.setImageBitmap(qrCodeBitmap)
 		}
 		else{
-			Utilites.showToast(this, getString(R.string.RBLIKDISPLAY_UserMsg_qrGeneratorError))
-			Log.e(Utilites.TagProduction, "Error in RBlik display class, qr generator return null instead of bitmap.")
+			Utilities.showToast(this, getString(R.string.RBLIKDISPLAY_UserMsg_qrGeneratorError))
+			Log.e(Utilities.TagProduction, "Error in RBlik display class, qr generator return null instead of bitmap.")
 			val errorImg = resources.getDrawable(R.drawable.wrong_img).toBitmap()
 			imgWidget.setImageBitmap(errorImg)
 		}

@@ -25,7 +25,7 @@ class ApiGetAccounts {
 					//todo
 				}
 			} catch (e: Exception) {
-				Log.e(Utilites.TagProduction,e.toString())//todo
+				Log.e(Utilities.TagProduction,e.toString())//todo
 			}
 		}
 		thread.start()
@@ -81,7 +81,7 @@ class ApiGetAccounts {
 			}
 			accountList
 		}catch (e : Exception){
-			Log.e(Utilites.TagProduction,e.toString())
+			Log.e(Utilities.TagProduction,e.toString())
 			null
 		}
 		return accountsList

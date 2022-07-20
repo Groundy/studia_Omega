@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 				val errorCodeFieldName = getString(R.string.ACT_COM_FINGER_FIELD_NAME)
 				val errorCode = data?.getIntExtra(errorCodeFieldName, -1)
 				if(resultCode == RESULT_OK)
-					Utilites.authSuccessed(this)
+					Utilities.authSuccessed(this)
 				else{
 					if(errorCode == 13){
 						val descriptionFieldName = resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
@@ -91,8 +91,8 @@ class MainActivity : AppCompatActivity() {
 							15 -> "Operacja nie może zostać wykonana bez aktualizacji systemu."
 							else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
 						}
-						Utilites.showToast(this, textToShow)
-						Utilites.authFailed(this)
+						Utilities.showToast(this, textToShow)
+						Utilities.authFailed(this)
 					}
 				}
 			}
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
 				}
 				else{
 					//TODO to tworzy infinity loop w ktorym urzytkownik do upadlego jest proszony o pin
-					Utilites.showToast(
+					Utilities.showToast(
 						this,
 						getString(R.string.PIN_UserMsg_failedToSetNewPin_differentPinsInserted)
 					)
@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
 					val codeFieldName = getString(R.string.ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME)
 					val code = data?.getStringExtra(codeFieldName)
 					if(code.isNullOrEmpty()){
-						Log.e(Utilites.TagProduction,"OAuth return null code")
+						Log.e(Utilities.TagProduction,"OAuth return null code")
 						return
 					}
 					UserData.authCode = code
@@ -137,8 +137,8 @@ class MainActivity : AppCompatActivity() {
 					val authUrl = ApiAuthorize().run(state, permissionList.permissions)
 
 					if(authUrl.isNullOrEmpty()){
-						Log.e(Utilites.TagProduction, "Failed to obtain auth url")
-						Utilites.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")
+						Log.e(Utilities.TagProduction, "Failed to obtain auth url")
+						Utilities.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")
 						return
 					}
 
@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity() {
 				val codeCandidate = tagData.takeLast(6).toIntOrNull()
 				if (codeCandidate != null && codeCandidate in 0..999999) {
 					val code = codeCandidate.toInt()
-					Log.i(Utilites.TagProduction, "NFC TAG data found:$tagData")
+					Log.i(Utilities.TagProduction, "NFC TAG data found:$tagData")
 					codeField.setText(code.toString())
 				}
 			}
@@ -195,7 +195,7 @@ class MainActivity : AppCompatActivity() {
 
 	private fun processCode(code: Int) {
 		codeField.text.clear()
-		val transferData = Utilites.checkBlikCode(code)
+		val transferData = Utilities.checkBlikCode(code)
 		if(transferData == null){
 			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_WRONG_CODE)
 			return
@@ -206,19 +206,19 @@ class MainActivity : AppCompatActivity() {
 	private fun checkIfNfcIsTurnedOnPhone(): Boolean {
 		val deviceHasNfc = this.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
 		if (!deviceHasNfc) {
-			Log.e(Utilites.TagProduction, "There's no NFC hardware on user's phone")
-			Utilites.showToast(this, resources.getString(R.string.NFC_UserMsg_NoHardwareSupport))
+			Log.e(Utilities.TagProduction, "There's no NFC hardware on user's phone")
+			Utilities.showToast(this, resources.getString(R.string.NFC_UserMsg_NoHardwareSupport))
 			return false
 		}
 
 		val permissionListener = object : PermissionListener {
 			override fun onPermissionGranted(response: PermissionGrantedResponse?) {}
 			override fun onPermissionDenied(response: PermissionDeniedResponse?) {
-				Utilites.showToast(
+				Utilities.showToast(
 					this@MainActivity,
 					resources.getString(R.string.NFC_UserMsg_NeedPermission)
 				)
-				Log.e(Utilites.TagProduction, "User denied permission to use NFC")
+				Log.e(Utilities.TagProduction, "User denied permission to use NFC")
 			}
 
 			override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
@@ -229,8 +229,8 @@ class MainActivity : AppCompatActivity() {
 			.withListener(permissionListener).check()
 		val permissionNfcDenied = checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_DENIED
 		if (permissionNfcDenied) {
-			Log.e(Utilites.TagProduction, "There's no permission to use")
-			Utilites.showToast(
+			Log.e(Utilities.TagProduction, "There's no permission to use")
+			Utilities.showToast(
 				this@MainActivity,
 				resources.getString(R.string.NFC_UserMsg_NeedPermission)
 			)
@@ -239,8 +239,8 @@ class MainActivity : AppCompatActivity() {
 		val manager = this.getSystemService(NFC_SERVICE) as NfcManager
 		val nfcIsOn = manager.defaultAdapter.isEnabled
 		if (!nfcIsOn) {
-			Utilites.showToast(this@MainActivity, resources.getString(R.string.NFC_UserMsg_TurnOff))
-			Log.e(Utilites.TagProduction, "User denied permission to use NFC")
+			Utilities.showToast(this@MainActivity, resources.getString(R.string.NFC_UserMsg_TurnOff))
+			Log.e(Utilities.TagProduction, "User denied permission to use NFC")
 			return false
 		}
 		return true
@@ -330,8 +330,8 @@ class MainActivity : AppCompatActivity() {
 		val state = ApiFunctions.getRandomStateValue()
 		val authUrl = ApiAuthorize().run(state)
 		if(authUrl.isNullOrEmpty()){
-			Log.e(Utilites.TagProduction, "Failed to obtain auth url")
-			Utilites.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")
+			Log.e(Utilities.TagProduction, "Failed to obtain auth url")
+			Utilities.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")
 			return
 		}
 		ActivityStarter.openBrowserForLogin(this, authUrl, state)

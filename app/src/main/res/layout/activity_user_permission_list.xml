@@ -7,63 +7,54 @@
 	android:layout_height="match_parent"
 	tools:context="com.example.omega.UserPermissionList">
 
-	<FrameLayout
+	<LinearLayout
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginStart="20dp"
-		android:layout_marginTop="10dp"
-		android:layout_marginEnd="20dp"
-		android:layout_marginBottom="10dp"
+		android:layout_gravity="center_horizontal"
+		android:gravity="center_horizontal"
+		android:orientation="vertical"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
 
+		<CheckBox
+			android:id="@+id/userPermisionList_accHistory_checkBox"
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
+			android:text="@string/userPermissionList_accHistory_checkBox" />
+
+		<CheckBox
+			android:id="@+id/userPermisionList_accDetails_checkBox"
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
+			android:text="@string/userPermissionList_accDetails_checkBox" />
 
 		<LinearLayout
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_gravity="center_horizontal"
-			android:gravity="center_horizontal"
-			android:orientation="vertical">
+			android:orientation="horizontal">
 
-			<CheckBox
-				android:id="@+id/userPermisionList_accHistory_checkBox"
-				android:layout_width="match_parent"
+			<Button
+				android:id="@+id/userPermisionList_continue_Button"
+				android:layout_width="@dimen/userPermissionList_ButtonSizeX_dim"
 				android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
-				android:text="@string/userPermissionList_accHistory_checkBox" />
+				android:layout_gravity="center_horizontal"
+				android:minWidth="48dp"
+				android:text="@string/userPermissionList_continue_Button"
+				android:textSize="14sp"
+				style="?android:attr/buttonBarButtonStyle" />
 
-			<CheckBox
-				android:id="@+id/userPermisionList_accDetails_checkBox"
-				android:layout_width="match_parent"
+			<Button
+				android:id="@+id/userPermisionList_cancel_Button"
+				android:layout_width="@dimen/userPermissionList_ButtonSizeX_dim"
 				android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
-				android:text="@string/userPermissionList_accDetails_checkBox" />
-
-			<LinearLayout
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal">
-
-				<Button
-					android:id="@+id/userPermisionList_continue_Button"
-					android:layout_width="@dimen/userPermissionList_ButtonSizeX_dim"
-					android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
-					android:layout_gravity="center_horizontal"
-					android:minWidth="48dp"
-					android:text="@string/userPermissionList_continue_Button"
-					android:textSize="14sp" />
-
-				<Button
-					android:id="@+id/userPermisionList_cancel_Button"
-					android:layout_width="@dimen/userPermissionList_ButtonSizeX_dim"
-					android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
-					android:text="@string/userPermissionList_cancel_Button"
-					android:textSize="14sp" />
-
-			</LinearLayout>
+				android:text="@string/userPermissionList_cancel_Button"
+				android:textSize="14sp"
+				style="?android:attr/buttonBarButtonStyle" />
 
 		</LinearLayout>
 
-	</FrameLayout>
+	</LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

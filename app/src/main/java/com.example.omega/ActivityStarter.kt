@@ -11,7 +11,7 @@ class ActivityStarter {
 			activity.startActivityForResult(intent,retCode)
 		}
 		fun startActToSetPinIfTheresNoSavedPin(activity: Activity){
-			val pinAlreadySet = Utilites.checkIfAppHasAlreadySetPin(activity)
+			val pinAlreadySet = Utilities.checkIfAppHasAlreadySetPin(activity)
 			if(!pinAlreadySet){
 				val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
 
@@ -61,7 +61,7 @@ class ActivityStarter {
 			}
 			when(preferredMethodeName){
 				context.getString(R.string.GUI_selectAuthMethodeText_pin) -> authByPin(context,description)
-				context.getString(R.string.Settings_GUI_selectAuthMethodeTextPattern) -> Utilites.authByPattern(
+				context.getString(R.string.Settings_GUI_selectAuthMethodeTextPattern) -> Utilities.authByPattern(
 					context,
 					description
 				)

@@ -109,7 +109,7 @@ class ApiFunctions {
 				.build()
 			val callbackRequest = object : Callback {
 				override fun onFailure(call: Call, e: IOException) {
-					Log.e(Utilites.TagProduction, "bład pobierania publicznego ip z internetu")
+					Log.e(Utilities.TagProduction, "bład pobierania publicznego ip z internetu")
 				}
 				override fun onResponse(call: Call, response: Response) {
 					val bytes : ByteArray? = response.body?.bytes()
@@ -117,7 +117,7 @@ class ApiFunctions {
 						val str = String(bytes, StandardCharsets.ISO_8859_1)
 						if(str.length > 3){
 							ip = str.take(str.length - 1) // delete newLine char
-							Log.i(Utilites.TagProduction, "Publiczne ip użytkownika:${str}")
+							Log.i(Utilities.TagProduction, "Publiczne ip użytkownika:${str}")
 						}
 					}
 				}

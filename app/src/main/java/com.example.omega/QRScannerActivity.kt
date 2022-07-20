@@ -51,7 +51,7 @@ class QrScannerActivity : AppCompatActivity() {
 			this.endActivity(this, true,rawValue.toInt())
 		else{
 			val userMsg = resources.getString(R.string.QrScanner_UserMsg_wrongQrFormat)
-			Utilites.showToast(this, userMsg)
+			Utilities.showToast(this, userMsg)
 		}
 	}
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +89,7 @@ class QrScannerActivity : AppCompatActivity() {
 				cameraProvider.bindToLifecycle(this, cameraSelector,imgAnalyzer, preview)// Bind use cases to camera
 			}
 			catch(exc: Exception) {
-				Utilites.showMsg(this, exc.toString())
+				Utilities.showMsg(this, exc.toString())
 			}
 		}
 		cameraProviderFuture.addListener(cameraListener, ContextCompat.getMainExecutor(this))

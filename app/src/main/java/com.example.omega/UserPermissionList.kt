@@ -9,6 +9,7 @@ import android.widget.CheckBox
 class PermissionList(){
 	var permissions = arrayListOf<ApiConsts.priviliges>()
 	private val separator = ";;;"
+
 	override fun toString() : String{
 		var toRet = String()
 		ApiConsts.priviliges.values().forEach {

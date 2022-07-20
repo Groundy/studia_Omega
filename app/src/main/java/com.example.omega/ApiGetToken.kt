@@ -16,7 +16,7 @@ class ApiGetToken {
 					if(responseJson != null)
 						success = parseJsonResponse(responseJson)
 				} catch (e: Exception) {
-					Log.e(Utilites.TagProduction,e.toString())
+					Log.e(Utilities.TagProduction,e.toString())
 				}
 			}
 			thread.start()
@@ -38,7 +38,7 @@ class ApiGetToken {
 			return try {
 				JSONObject(bodyStr)
 			}catch (e : Exception){
-				Log.e(Utilites.TagProduction,e.toString())
+				Log.e(Utilities.TagProduction,e.toString())
 				null
 			}
 		}

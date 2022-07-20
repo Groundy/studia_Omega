@@ -35,11 +35,11 @@ class ApiAuthorize {
 				val authUrl = responseJsonObject.get(fieldName).toString()
 				authUrl
 			} else{
-				Log.e(Utilites.TagProduction, "Got auth response, Code=${response.code}, body=${response.body?.byteString()}")
+				Log.e(Utilities.TagProduction, "Got auth response, Code=${response.code}, body=${response.body?.byteString()}")
 				null
 			}
 		}catch (e : Exception){
-			Log.e(Utilites.TagProduction,e.toString())
+			Log.e(Utilities.TagProduction,e.toString())
 			return null
 		}
 	}

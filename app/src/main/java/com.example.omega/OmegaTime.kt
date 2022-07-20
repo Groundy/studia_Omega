@@ -63,7 +63,7 @@ class OmegaTime {
 				return milSecFromNow
 			}
 			catch(e : Exception){
-				Log.e(Utilites.TagProduction, "Wrong format of time object string! [$e]")
+				Log.e(Utilities.TagProduction, "Wrong format of time object string! [$e]")
 				return null
 			}
 		}

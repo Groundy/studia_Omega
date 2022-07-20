@@ -43,17 +43,17 @@ class PinActivity : AppCompatActivity() {
 				if (pressedKeyIsEnter) {
 					val everyDigitIsOk = checkIfAllFieldsHaveEnteredDigits()
 					if(everyDigitIsOk){
-						Log.i(Utilites.TagProduction,"Pressed enter in PIN activity, pin is in CORRECT format")
+						Log.i(Utilities.TagProduction,"Pressed enter in PIN activity, pin is in CORRECT format")
 						processPIN()
 						return false
 					}
 					else{
-						Log.e(Utilites.TagProduction,"Pressed enter in PIN activity, pin is in WRONG format")
+						Log.e(Utilities.TagProduction,"Pressed enter in PIN activity, pin is in WRONG format")
 						return true
 					}
 				}
 				else
-					Log.i(Utilites.TagProduction,"Pressed not enter key in PIN activity")
+					Log.i(Utilities.TagProduction,"Pressed not enter key in PIN activity")
 				return true
 			}
 		}
@@ -200,7 +200,7 @@ class PinActivity : AppCompatActivity() {
 			}
 		}
 		else
-			Utilites.showToast(
+			Utilities.showToast(
 				this,
 				resources.getString(R.string.PIN_UserMsg_haveToUseAllTheDigits)
 			)
@@ -224,7 +224,7 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun checkIfPinIsCorrect(pin : Int) : Boolean{
 		val savedPinHash = PreferencesOperator.readPrefStr(this, R.string.PREF_hashPin)
-		val inputPinHash = Utilites.hashMd5(pin.toString())
+		val inputPinHash = Utilities.hashMd5(pin.toString())
 		return inputPinHash == savedPinHash
 	}
 	private fun processAuth(pin : Int){
@@ -240,7 +240,7 @@ class PinActivity : AppCompatActivity() {
 					1 -> resources.getString(R.string.PIN_UserMsg_triesLeft1)
 					else -> resources.getString(R.string.UserMsg_UNKNOWN_ERROR)
 				}
-				Utilites.showToast(this, textToShow)
+				Utilities.showToast(this, textToShow)
 				clearDigitsFields()
 			}
 			else
@@ -261,21 +261,21 @@ class PinActivity : AppCompatActivity() {
 					pinTriesLeft--
 					when(pinTriesLeft){
 						2 -> {
-							Utilites.showToast(
+							Utilities.showToast(
 								this,
 								resources.getString(R.string.PIN_UserMsg_triesLeft2)
 							)
 							return
 						}
 						1 -> {
-							Utilites.showToast(
+							Utilities.showToast(
 								this,
 								resources.getString(R.string.PIN_UserMsg_triesLeft1)
 							)
 							return
 						}
 						else -> {
-							Utilites.showToast(
+							Utilities.showToast(
 								this,
 								resources.getString(R.string.PIN_UserMsg_failedToSetNewPin)
 							)
@@ -293,12 +293,12 @@ class PinActivity : AppCompatActivity() {
 				descriptionField.text = resources.getString(R.string.PIN_GUI_changeDescription_newAgain)
 				val twoPinsAreSame = pin == tmpPIN
 				if(twoPinsAreSame){
-					Utilites.showToast(this, resources.getString(R.string.PIN_UserMsg_newPinSet))
+					Utilities.showToast(this, resources.getString(R.string.PIN_UserMsg_newPinSet))
 					saveNewPinInMemory(pin)
 					finishActivity(true)
 				}
 				else{
-					Utilites.showToast(
+					Utilities.showToast(
 						this,
 						resources.getString(R.string.PIN_UserMsg_failedToSetNewPin)
 					)
@@ -322,7 +322,7 @@ class PinActivity : AppCompatActivity() {
 		}
 	}
 	private fun saveNewPinInMemory(pin : Int){
-		val hashedPin = Utilites.hashMd5(pin.toString())
+		val hashedPin = Utilities.hashMd5(pin.toString())
 		PreferencesOperator.savePref(this, R.string.PREF_hashPin, hashedPin)		//TODO dodać to w mode private
 	}
 	private fun checkStartPurpose(){

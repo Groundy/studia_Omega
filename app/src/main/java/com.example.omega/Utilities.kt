@@ -17,7 +17,7 @@ class PreferencesOperator{
 	companion object{
 		private fun getSharedProperties(activity: Activity) : SharedPreferences{
 			val fileName = activity.getString(R.string.preference_file_key)
-			val sharedPrefObj = activity.getSharedPreferences(fileName,MODE_PRIVATE)
+			val sharedPrefObj = activity.getSharedPreferences(fileName, MODE_PRIVATE)
 			return sharedPrefObj
 		}
 
@@ -79,7 +79,7 @@ class PreferencesOperator{
 	}
 }
 
-class Utilites {
+class Utilities {
 	companion object{
 		val TagProduction = "WookieTag"
 		fun showMsg(activity: Activity, stringToDisplay:String) {
@@ -104,7 +104,6 @@ class Utilites {
 			showToast(context as Activity, "Auth failed!")
 		}
 		fun checkIfAppHasAlreadySetPin(activity: Activity): Boolean {
-			//TODO tymczasowo PIN jest zapisywany w pamięci telefonu w plain text, należy to koniecznie zmienić
 			val savedPinHash = PreferencesOperator.readPrefStr(activity, R.string.PREF_hashPin)
 			return savedPinHash.isNotEmpty()
 		}

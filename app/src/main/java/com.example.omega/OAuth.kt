@@ -37,20 +37,20 @@ class OAuth : AppCompatActivity() {
 					view?.isVisible = false
 					val isProperRedirectUri = it.url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
 					if(!isProperRedirectUri){
-						Log.e(Utilites.TagProduction, "Failed to obtain code[request not started with app callBack], request [${request.url}]")
+						Log.e(Utilities.TagProduction, "Failed to obtain code[request not started with app callBack], request [${request.url}]")
 						finishThisActivity(false)
 					}
 
 					val responseState = it.url.getQueryParameter("state")// To prevent CSRF attacks, check that we got the same state value we sent,
 					val responseStateCorrect = responseState == expectedRedirectState
 					if (!responseStateCorrect) {
-						Log.e(Utilites.TagProduction, "Failed to obtain code[wrong state], request [${request.url}]")
+						Log.e(Utilities.TagProduction, "Failed to obtain code[wrong state], request [${request.url}]")
 						finishThisActivity(false)
 					}
 
 					val code : String? = it.url.getQueryParameter("code")
 					if (code == null) {
-						Log.e(Utilites.TagProduction, "Failed to obtain code[no code], request [${request.url}]")
+						Log.e(Utilities.TagProduction, "Failed to obtain code[no code], request [${request.url}]")
 						finishThisActivity(false)
 					}
 					finishThisActivity(true, code)
@@ -60,12 +60,12 @@ class OAuth : AppCompatActivity() {
 
 			override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
 				super.onPageStarted(view, url, favicon)
-				Log.i(Utilites.TagProduction, "login to bank webpage started loading")
+				Log.i(Utilities.TagProduction, "login to bank webpage started loading")
 
 			}
 			override fun onPageFinished(view: WebView?, url: String?) {
 				super.onPageFinished(view, url)
-				Log.i(Utilites.TagProduction, "login to bank webpage ended loading")
+				Log.i(Utilities.TagProduction, "login to bank webpage ended loading")
 			}
 		}
 	}
@@ -74,13 +74,13 @@ class OAuth : AppCompatActivity() {
 		val stateField = resources.getString(R.string.ACT_COM_WEBVIEW_STATE_FIELDNAME)
 		uri = intent.getStringExtra(uriField).toString()
 		if(uri == null){
-			Log.e(Utilites.TagProduction, "Failed to authorize, wrong Uri passed to login activity")
+			Log.e(Utilities.TagProduction, "Failed to authorize, wrong Uri passed to login activity")
 			finishThisActivity(false)
 		}
 
 		expectedRedirectState = intent.getStringExtra(stateField).toString()
 		if(expectedRedirectState == null){
-			Log.e(Utilites.TagProduction, "Failed to authorize, Uri passed to login activity has no state parameter")
+			Log.e(Utilities.TagProduction, "Failed to authorize, Uri passed to login activity has no state parameter")
 			finishThisActivity(false)
 		}
 	}

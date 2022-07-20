@@ -128,7 +128,7 @@ class UserData  {
 				this.ownerName = ownerName
 				this.ownerName = ownerName
 			}catch (e : Exception){
-				Log.e(Utilites.TagProduction, "Failed to convert response body from getAccount methode to Account obj [${e.toString()}]")
+				Log.e(Utilities.TagProduction, "Failed to convert response body from getAccount methode to Account obj [${e.toString()}]")
 			}
 		}
 		constructor(accNumber: String){

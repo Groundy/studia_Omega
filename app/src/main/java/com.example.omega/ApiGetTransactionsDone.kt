@@ -18,7 +18,7 @@ class ApiGetTransactionsDone {
 					try {
 						isSuccess = getAccHistory(accNumber!!)
 					}catch (e: Exception) {
-						Log.e(Utilites.TagProduction,"Failed to obtain information for account with nummber[${accNumber}] [${e.toString()}]")
+						Log.e(Utilities.TagProduction,"Failed to obtain information for account with nummber[${accNumber}] [${e.toString()}]")
 					}
 				}
 				thread.start()
@@ -43,7 +43,7 @@ class ApiGetTransactionsDone {
 					return true
 
 				}catch (e: Exception) {
-					Log.e(Utilites.TagProduction,"Failed to obtain information for at account with nummber[${accNumber}] [${e.toString()}]")
+					Log.e(Utilities.TagProduction,"Failed to obtain information for at account with nummber[${accNumber}] [${e.toString()}]")
 					return false
 				}
 			}
@@ -95,7 +95,7 @@ class ApiGetTransactionsDone {
 				return parseResponseJson(responseBodyJson)
 			}
 			catch (e : Exception){
-				Log.e(Utilites.TagProduction, e.toString())
+				Log.e(Utilities.TagProduction, e.toString())
 				return false
 			}
 		}

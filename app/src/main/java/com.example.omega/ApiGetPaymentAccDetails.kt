@@ -16,7 +16,7 @@ class ApiGetPaymentAccDetails {
 					try {
 						isSuccess = getAccInfo(accNumber!!)
 					}catch (e: Exception) {
-						Log.e(Utilites.TagProduction,"Failed to obtain information for account with number[${accNumber}] [$e]")
+						Log.e(Utilities.TagProduction,"Failed to obtain information for account with number[${accNumber}] [$e]")
 					}
 				}
 				thread.start()
@@ -41,7 +41,7 @@ class ApiGetPaymentAccDetails {
 					return true
 
 				}catch (e: Exception) {
-					Log.e(Utilites.TagProduction,"Failed to obtain information for at account with number[${accNumber}] [$e]")
+					Log.e(Utilities.TagProduction,"Failed to obtain information for at account with number[${accNumber}] [$e]")
 					return false
 				}
 			}
@@ -81,7 +81,7 @@ class ApiGetPaymentAccDetails {
 				parseResponseJson(responseBodyJson)
 			}
 			catch (e : Exception){
-				Log.e(Utilites.TagProduction, e.toString())
+				Log.e(Utilities.TagProduction, e.toString())
 				false
 			}
 		}
