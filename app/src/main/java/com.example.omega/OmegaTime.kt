@@ -2,39 +2,16 @@ package com.example.omega
 
 import android.util.Log
 import java.lang.Exception
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class OmegaTime {
 	companion object{
-
-		fun  getCurrentTime(timeFromNow : Int = 0) : String{
-			val c: Calendar = Calendar.getInstance()
-			c.timeInMillis += 1000*timeFromNow
-
-			var Y = (c.get(Calendar.YEAR)).toString()
-			var M = (c.get(Calendar.MONTH) + 1).toString()//0-11 -> 1-12
-			var D = (c.get(Calendar.DAY_OF_MONTH)).toString()
-			var HH = (c.get(Calendar.HOUR_OF_DAY)).toString()
-			var MM = (c.get(Calendar.MINUTE)).toString()
-			var SS = (c.get(Calendar.SECOND)).toString()
-			var ZZZ = (c.get(Calendar.MILLISECOND)).toString()
-
-			if(M.length == 1)
-				M = "0${M}"
-			if(D.length == 1)
-				D = "0${D}"
-			if(HH.length == 1)
-				HH = "0${HH}"
-			if(MM.length == 1)
-				MM = "0${MM}"
-			if(SS.length == 1)
-				SS = "0${SS}"
-			if(ZZZ.length == 1)
-				ZZZ = "00${ZZZ}"
-			if(ZZZ.length == 2)
-				ZZZ = "0${ZZZ}"
-
-			return "${Y}-${M}-${D}T${HH}:${MM}:${SS}.${ZZZ}Z"
+		fun getCurrentTime(secondsFromNow : Int = 0) : String{
+			var time = Instant.now().plusSeconds(secondsFromNow.toLong())
+			val currentTimeStr = DateTimeFormatter.ISO_INSTANT.format(time)
+			return currentTimeStr
 		}
 		fun miliSecToLeft(endTime : String) : Long? {
 			try{
@@ -67,6 +44,5 @@ class OmegaTime {
 				return null
 			}
 		}
-
 	}
 }
