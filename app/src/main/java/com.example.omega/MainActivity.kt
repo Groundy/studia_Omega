@@ -28,8 +28,8 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 
-//  Minimize: CTRL + SHFT + '-'
-//  Expand:   CTRL + SHFT + '+'
+//  Minimize: CTRL + SHIFT + '-'
+//  Expand:   CTRL + SHIFT + '+'
 //  Ctrl + B go to definition
 
 class MainActivity : AppCompatActivity() {
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
-		//Utilites.savePref(this,R.integer.PREF_pin,0)
+		//Utilities.savePref(this,R.integer.PREF_pin,0)
 		// ApiConsts.pathToSaveFolder = this.getExternalFilesDir(null).toString()
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initUIVariables()
@@ -120,22 +120,19 @@ class MainActivity : AppCompatActivity() {
 					UserData.authCode = code
 					ApiGetToken.run()
 				}
-				else{
-					//todo
-				}
 			}
 			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST)->{
 				if(resultCode == RESULT_OK){
 					val field = getString(R.string.userPermissionList_outputField)
 					val serializedPermissionList = data?.getStringExtra(field)
-
-					var permissionList = PermissionList()
-					if(!serializedPermissionList.isNullOrEmpty())
-						permissionList = PermissionList(serializedPermissionList)
-
-					val state = ApiFunctions.getRandomStateValue()
-					val authUrl = ApiAuthorize().run(state, permissionList.permissions)
-
+					val obtainNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, serializedPermissionList)
+					if(obtainNewAuthUrl){
+						val permissionList = PermissionList(serializedPermissionList!!)
+						val tmpStateValue = ApiFunctions.getRandomStateValue()
+						ApiAuthorize().run(this, tmpStateValue, permissionList.permissions)
+					}
+					val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
+					val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
 					if(authUrl.isNullOrEmpty()){
 						Log.e(Utilities.TagProduction, "Failed to obtain auth url")
 						Utilities.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")
@@ -144,21 +141,13 @@ class MainActivity : AppCompatActivity() {
 
 					ActivityStarter.openBrowserForLogin(this, authUrl, state)
 				}
-				else{
-					//todo
-				}
 			}
 		}
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.main_app_menu, menu)
-		/*
-		//todo delete that
-		if (menu != null) {
-			onOptionsItemSelected(menu.findItem(R.id.GenerateBlikCodeTab))
-		}
-		*/
+		//onOptionsItemSelected(menu!!.findItem(R.id.GenerateBlikCodeTab))	//todo delete that
 		return super.onCreateOptionsMenu(menu)
 	}
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -324,16 +313,5 @@ class MainActivity : AppCompatActivity() {
 			findViewById<Button>(R.id.nfcButton).setBackgroundResource(R.drawable.nfc_on_icon)
 			switchNfcSignalCatching()
 		}
-	}
-
-	private fun TEST_getAccessToken(){
-		val state = ApiFunctions.getRandomStateValue()
-		val authUrl = ApiAuthorize().run(state)
-		if(authUrl.isNullOrEmpty()){
-			Log.e(Utilities.TagProduction, "Failed to obtain auth url")
-			Utilities.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")
-			return
-		}
-		ActivityStarter.openBrowserForLogin(this, authUrl, state)
 	}
 }

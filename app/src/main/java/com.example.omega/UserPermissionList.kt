@@ -24,6 +24,9 @@ class PermissionList(){
 				this.permissions.add(it)
 		}
 	}
+	constructor(privilegesArray : List<ApiConsts.Privileges>) : this() {
+		this.permissions = privilegesArray as ArrayList<ApiConsts.Privileges>
+	}
 	fun add(permission : ApiConsts.Privileges){
 		this.permissions.add(permission)
 	}
@@ -59,7 +62,8 @@ class UserPermissionList : AppCompatActivity() {
 		}
 
 		val serializedData = permissionList.toString()
-		val outputIntent = Intent().putExtra(getString(R.string.userPermissionList_outputField), serializedData)
+		val dataField = getString(R.string.userPermissionList_outputField)
+		val outputIntent = Intent().putExtra(dataField, serializedData)
 		setResult(RESULT_OK, outputIntent)
 		finish()
 	}

@@ -286,7 +286,7 @@ class ApiGetTransactionsDone {
                     try {
                         isSuccess = getAccHistory(accNumber!!)
                     }catch (e: Exception) {
-                        Log.e(Utilities.TagProduction,"Failed to obtain information for account with nummber[${accNumber}] [${e.toString()}]")
+                        Log.e(Utilities.TagProduction,"Failed to obtain information for account with number[${accNumber}] [${e.toString()}]")
                     }
                 }
                 thread.start()
@@ -295,19 +295,19 @@ class ApiGetTransactionsDone {
             }
             else{
                 try {
-                    var listOfThreadCheckingAccInfro = arrayListOf<Thread>()
+                    var listOfThreadCheckingAccInfo = arrayListOf<Thread>()
                     val amountOfAccToCheck = UserData.accessTokenStruct?.listOfAccounts!!.size
                     for (i in 0 until amountOfAccToCheck){
                         val accNumber = UserData.accessTokenStruct?.listOfAccounts!!.get(i).accNumber!!
                         val thread = Thread {
                             val success = getAccHistory(accNumber)
                         }
-                        listOfThreadCheckingAccInfro.add(thread)
+                        listOfThreadCheckingAccInfo.add(thread)
                     }
-                    for (i in 0 until  listOfThreadCheckingAccInfro.size)
-                        listOfThreadCheckingAccInfro[i].start()
-                    for(i in 0 until  listOfThreadCheckingAccInfro.size)
-                        listOfThreadCheckingAccInfro[i].join(ApiConsts.requestTimeOut)
+                    for (i in 0 until  listOfThreadCheckingAccInfo.size)
+                        listOfThreadCheckingAccInfo[i].start()
+                    for(i in 0 until  listOfThreadCheckingAccInfo.size)
+                        listOfThreadCheckingAccInfo[i].join(ApiConsts.requestTimeOut)
                     return true
 
                 }catch (e: Exception) {
@@ -375,22 +375,24 @@ class ApiGetTransactionsDone {
 }
 
 class ApiAuthorize {
-    private var permissionsList : List<ApiConsts.Privileges>? = null
+    private var permissionsList : PermissionList? = null
+    private lateinit var callerActivity : Activity
 
-    fun run(stateValue : String,  permissions : List<ApiConsts.Privileges>? = null) : String?{
-        var authUrl : String? = null
-        permissionsList = permissions
+    fun run(activity: Activity, stateValue : String,  permissionsInput : List<ApiConsts.Privileges>? = null) : Boolean{
+        var success = false
+        permissionsList = PermissionList(permissionsInput!!)
+        callerActivity = activity
 
         val thread = Thread{
-            authUrl = startAuthorize(stateValue)
+            success = startAuthorize(stateValue)
         }
         thread.start()
         thread.join(ApiConsts.requestTimeOut)
-        return authUrl
+        return success
     }
 
-    private fun startAuthorize(stateValue : String) : String?{
-        try{
+    private fun startAuthorize(stateValue : String) : Boolean{
+        return try{
             val request = getAuthRequest(stateValue)
             val response = OkHttpClient().newCall(request).execute()
 
@@ -398,23 +400,31 @@ class ApiAuthorize {
             return if(responseCodeOk){
                 val responseBody = response.body?.string()
                 val responseJsonObject = JSONObject(responseBody!!)
-                val fieldName = "aspspRedirectUri"
-                val authUrl = responseJsonObject.get(fieldName).toString()
-                authUrl
+                val authUrl = responseJsonObject.get("aspspRedirectUri").toString()
+                if(!authUrl.isNullOrEmpty()){//save to prefs
+                    PreferencesOperator.savePref(callerActivity, R.string.PREF_authURL, authUrl)
+                    PreferencesOperator.savePref(callerActivity, R.string.PREF_lastRandomValue, stateValue)
+                    PreferencesOperator.savePref(callerActivity, R.string.PREF_lastUsedPermissionsForAuth, permissionsList.toString())
+                    val validityTime = OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds)
+                    PreferencesOperator.savePref(callerActivity, R.string.PREF_authUrlValidityTimeEnd, validityTime)
+                    true
+                }
+                else
+                    false
             } else{
                 Log.e(Utilities.TagProduction, "Got auth response, Code=${response.code}, body=${response.body?.byteString()}")
-                null
+                false
             }
         }catch (e : Exception){
             Log.e(Utilities.TagProduction,e.toString())
-            return null
+            false
         }
     }
     private fun getAuthRequest(stateStr : String) : Request {
         val uuidStr = ApiFunctions.getUUID()
         val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/authorize"
         val currentTimeStr = ApiFunctions.getCurrentTimeStr()
-        val endValidityTimeStr = ApiFunctions.getCurrentTimeStr(65 * 60)
+        val endValidityTimeStr = ApiFunctions.getCurrentTimeStr(ApiConsts.AuthUrlValidityTimeSeconds)
 
         val requestBodyJson = JSONObject()
             .put("requestHeader",JSONObject()
@@ -435,16 +445,16 @@ class ApiAuthorize {
     }
     private fun getScopeDetailsObject(expTimeStr : String) : JSONObject{
         val permissionListArray = JSONArray()
-        if(!permissionsList.isNullOrEmpty()){
+        if(!permissionsList!!.permissions.isNullOrEmpty()){
             val toAddObject = JSONObject()
 
-            if(permissionsList!!.contains(ApiConsts.Privileges.accountsHistory)){
+            if(permissionsList!!.permissions.contains(ApiConsts.Privileges.accountsHistory)){
                 toAddObject.put("ais:getTransactionsDone",JSONObject()
                     .put("scopeUsageLimit","multiple")
                     .put("maxAllowedHistoryLong",11)
                 )
             }
-            if(permissionsList!!.contains(ApiConsts.Privileges.accountsDetails)){
+            if(permissionsList!!.permissions.contains(ApiConsts.Privileges.accountsDetails)){
                 toAddObject.put("ais:getAccount",JSONObject()
                     .put("scopeUsageLimit","multiple")
                 )
@@ -473,5 +483,28 @@ class ApiAuthorize {
             .put("consentId", "123456789")
             .put("scopeTimeLimit", expTimeStr)
             .put("throttlingPolicy", "psd2Regulatory")
+    }
+
+    companion object{
+        fun obtainingNewAuthUrlIsNecessary(activity: Activity, permissionsStr : String?) : Boolean{
+            val lastPermissionListStr= PreferencesOperator.readPrefStr(activity, R.string.PREF_lastUsedPermissionsForAuth)
+            if(lastPermissionListStr.isNullOrEmpty())
+                return true
+            if(lastPermissionListStr != permissionsStr)
+                return true
+
+            val lastAuthUrlValidityTime = PreferencesOperator.readPrefStr(activity, R.string.PREF_authUrlValidityTimeEnd)
+            if(lastAuthUrlValidityTime.isNullOrEmpty())
+                return true
+            val authTimeIsStillValid = OmegaTime.timestampIsValid(lastAuthUrlValidityTime)
+            if(!authTimeIsStillValid)
+                return true
+
+            val lastTimeUsedRandomStateValue = PreferencesOperator.readPrefStr(activity, R.string.PREF_lastRandomValue)
+            if(lastTimeUsedRandomStateValue.isNullOrEmpty())
+                return true
+
+            return false
+        }
     }
 }
