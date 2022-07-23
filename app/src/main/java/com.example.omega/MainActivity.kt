@@ -57,12 +57,12 @@ class MainActivity : AppCompatActivity() {
 			resources.getInteger(R.integer.ACT_RETCODE_PIN_SET) ->pinActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)->webViewActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST)->tokenActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage) -> askIfUserWantToLoginToBankDialogActivityResult(resultCode, data)
 		}
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.main_app_menu, menu)
-		//onOptionsItemSelected(menu!!.findItem(R.id.GenerateBlikCodeTab))	//todo delete that
 		return super.onCreateOptionsMenu(menu)
 	}
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -320,5 +320,12 @@ class MainActivity : AppCompatActivity() {
 			if (vailCode)
 				codeField.setText(returnedCode.toString())
 		}
+	}
+	private fun askIfUserWantToLoginToBankDialogActivityResult(resultCode: Int, data: Intent?){
+		if(resultCode != RESULT_OK)
+			return
+		PreferencesOperator.clearAuthData(this)
+		ActivityStarter.startUserPermissionListActivity(this)
+		PreferencesOperator.clearPreferences(this)
 	}
 }

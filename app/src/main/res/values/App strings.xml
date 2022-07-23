@@ -86,14 +86,19 @@
 	<string name="UserMsg_UNKNOWN_ERROR">Wystąpił nieznany bład</string>
 	<string name="GUI_usePinInsteadOfFingerPrint">Użyj pinu</string>
 	<string name="GUI_authTransactionTitle">Potwierdź transakcje</string>
-	<string name="GUI_CANCEL_FINGER_AUTH_TEXT">Czy chcesz anulować uwierzytelnianie za pomocą linii papilarnych?</string>
-	<string name="GUI_CANCEL_FINGER_AUTH_YES_BUTTON">TAK</string>
-	<string name="GUI_CANCEL_FINGER_AUTH_NO_BUTTON">NIE</string>
+
 
 	<!-- result activity -->
 	<string name="Result_GUI_OK">Transakcja zakończona pomyślnie.</string>
 	<string name="Result_GUI_WRONG_CODE">Transakcja zakończona niepowodzeniem. Wprowadzono błędny kod.</string>
 	<string name="Result_GUI_WRONG_AUTH">Transakcja zakończona niepowodzeniem. Błąd autoryzacji.</string>
 	<string name="Result_GUI_WRONG_ELSE">Transakcja zakończona niepowodzeniem z nieznanego powodu.</string>
+
+	<!-- dialog -->
+	<string name="GUI_DIALOG_CancelBioAuth_TEXT">Czy chcesz anulować uwierzytelnianie za pomocą linii papilarnych?</string>
+	<string name="GUI_DIALOG_AskForChangeOptionsForAccountsInBankWebPage_TEXT">Udzielono już takich zgód, czy chcesz zalogować się do banku w celu zmian kont ich dotyczących?</string>
+	<string name="GUI_DIALOG_DEFULT_TEXT">Text który powinnien zostać zastąpiony pytaniem</string>
+	<string name="GUI_DIALOG_YES">TAK</string>
+	<string name="GUI_DIALOG_NO">NIE</string>
 
 </resources>

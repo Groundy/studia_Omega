@@ -36,6 +36,7 @@ class PermissionList(){
 class UserPermissionList : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		//supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
 		setContentView(R.layout.activity_user_permission_list)
 		setListeners()
 	}

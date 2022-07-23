@@ -35,7 +35,7 @@ class ScanFingerActivity : AppCompatActivity() {
 						Log.i(Utilities.TagProduction, "User wants to other auth methode than fingerPrint")
 						finishActivity(false, errorCode)
 					}
-					BiometricPrompt.ERROR_USER_CANCELED -> showCancelDialog(this@ScanFingerActivity)
+					BiometricPrompt.ERROR_USER_CANCELED -> ActivityStarter.openDialogAskIfUserWantToCancelBioAuth(this@ScanFingerActivity)
 					else -> finishActivity(false,errorCode)
 				}
 			}
@@ -88,20 +88,13 @@ class ScanFingerActivity : AppCompatActivity() {
 		return intent.getStringExtra(getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME))
 	}
 
-	private fun showCancelDialog(activity: ScanFingerActivity){
-		val activityIntent = Intent(this@ScanFingerActivity, CancelBioAuthDialogActivity::class.java)
-		startActivityForResult(activityIntent,resources.getInteger(R.integer.ACT_RETCODE_CANCEL_BIO_AUTH))
-	}
-
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
-		if(requestCode == resources.getInteger(R.integer.ACT_RETCODE_CANCEL_BIO_AUTH)){
-			if(resultCode == RESULT_OK){
+		if(requestCode == resources.getInteger(R.integer.ACT_RETCODE_DIALOG_CancelBioAuth)){
+			if(resultCode == RESULT_OK)
 				finishActivity(false,BiometricPrompt.ERROR_USER_CANCELED)
-			}
-			else{
+			else
 				showAuthDialog()
-			}
 		}
 	}
 

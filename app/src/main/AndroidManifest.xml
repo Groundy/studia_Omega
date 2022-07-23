@@ -41,7 +41,7 @@
 			android:exported="false"
 			android:windowSoftInputMode="adjustPan" />
 		<activity
-			android:name="com.example.omega.CancelBioAuthDialogActivity"
+			android:name="com.example.omega.YesNoDialogActivity"
 			android:exported="false"
 			android:theme="@style/Theme.AppCompat.Light.Dialog.Alert"
 			android:windowSoftInputMode="adjustPan" />

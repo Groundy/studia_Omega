@@ -2,6 +2,7 @@ package com.example.omega
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 
 class ActivityStarter {
 	companion object{
@@ -95,6 +96,14 @@ class ActivityStarter {
 			 intent.putExtra(stateField,expectedState)
 
 			 activity.startActivityForResult(intent,returnCode)
+		}
+		fun openDialogAskIfUserWantToCancelBioAuth(activity: Activity){
+			val yesNoDialog = Intent(activity, YesNoDialogActivity::class.java)
+			val field = activity.getString(R.string.ACT_COM_DIALOG_TEXT_FIELDSNAME)
+			val msgToDisplay = activity.getString(R.string.GUI_DIALOG_CancelBioAuth_TEXT)
+			yesNoDialog.putExtra(field,msgToDisplay)
+			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_CancelBioAuth)
+			activity.startActivityForResult(yesNoDialog, retCode)
 		}
 	}
 }

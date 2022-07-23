@@ -19,42 +19,44 @@
 		app:layout_constraintEnd_toEndOf="parent">
 
 		<TextView
-			android:text="@string/GUI_CANCEL_FINGER_AUTH_TEXT"
+			android:id="@+id/DialogAct_TextView"
 			android:layout_width="@dimen/DIM_CancelFingerAuthText_WIDTH"
 			android:layout_height="@dimen/DIM_CancelFingerAuthText_HEIGHT"
-			android:id="@+id/fingerAuthCancelMsgTextView"
-			android:textSize="@dimen/DIM_CancelFingerAuthFontSize"
-			android:textAlignment="center"
 			android:gravity="center|center_vertical"
-			android:textColor="@color/black" />
+			android:text="@string/GUI_DIALOG_DEFULT_TEXT"
+			android:textAlignment="center"
+			android:textColor="@color/black"
+			android:textSize="@dimen/DIM_CancelFingerAuthFontSize" />
 
 		<LinearLayout
 			android:orientation="horizontal"
 			android:layout_width="300dp"
 			android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT">
 
-			<TextView
-				android:text="@string/GUI_CANCEL_FINGER_AUTH_YES_BUTTON"
+			<Button
+				android:id="@+id/DialogAct_OK_Button"
 				android:layout_width="@dimen/DIM_CancelFingerAuthButton_WIDTH"
 				android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT"
-				android:id="@+id/fingerAuthCancelOkTextTextView"
 				android:layout_weight="1"
-				android:textSize="@dimen/DIM_CancelFingerAuthFontSize"
-				android:textAlignment="center"
 				android:gravity="center|center_vertical"
-				android:textColor="@color/mainColor" />
+				android:text="@string/GUI_DIALOG_YES"
+				android:textAlignment="center"
+				android:textColor="@color/mainColor"
+				android:textSize="@dimen/DIM_CancelFingerAuthFontSize"
+				style="?android:attr/buttonBarButtonStyle" />
 
-			<TextView
-				android:text="@string/GUI_CANCEL_FINGER_AUTH_NO_BUTTON"
+			<Button
+				android:id="@+id/DialogAct_No_Button"
 				android:layout_width="@dimen/DIM_CancelFingerAuthButton_WIDTH"
 				android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT"
-				android:id="@+id/fingerAuthCancelCancelTextTextView"
 				android:layout_weight="1"
-				android:textSize="@dimen/DIM_CancelFingerAuthFontSize"
-				android:textAlignment="center"
 				android:gravity="center_vertical"
+				android:text="@string/GUI_DIALOG_NO"
+				android:textAlignment="center"
 				android:textColor="@color/mainColor"
-				tools:ignore="RtlCompat" />
+				android:textSize="@dimen/DIM_CancelFingerAuthFontSize"
+				tools:ignore="RtlCompat"
+				style="?android:attr/buttonBarButtonStyle" />
 		</LinearLayout>
 	</LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
