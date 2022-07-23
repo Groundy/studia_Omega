@@ -42,11 +42,8 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
-		//Utilities.savePref(this,R.integer.PREF_pin,0)
-		// ApiConsts.pathToSaveFolder = this.getExternalFilesDir(null).toString()
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
-		initUIVariables()
-		//getAccessToken()
+		initGUI()
 		DEVELOPER_initaialFun()
 	}
 	private fun DEVELOPER_initaialFun(){
@@ -55,93 +52,11 @@ class MainActivity : AppCompatActivity() {
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 		when(requestCode){
-			resources.getInteger(R.integer.ACT_RETCODE_QrScanner) -> {
-				if(resultCode == RESULT_OK && data != null) {
-					val returnFieldName = resources.getString(R.string.ACT_COM_QrScanner_FIELD_NAME)
-					val returnedCode = data.getIntExtra(returnFieldName, -1)
-					val vailCode = returnedCode in 0..999999
-					if (vailCode)
-						codeField.setText(returnedCode.toString())
-				}
-			}
-			resources.getInteger(R.integer.ACT_RETCODE_FINGER) ->{
-				val errorCodeFieldName = getString(R.string.ACT_COM_FINGER_FIELD_NAME)
-				val errorCode = data?.getIntExtra(errorCodeFieldName, -1)
-				if(resultCode == RESULT_OK)
-					Utilities.authSuccessed(this)
-				else{
-					if(errorCode == 13){
-						val descriptionFieldName = resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
-						val description = data.extras?.getString(descriptionFieldName)
-						ActivityStarter.startAuthActivity(this, description, 0)
-					}
-					else{
-						val textToShow = when(errorCode){
-							//0 -> "Uzyskano autoryzację!"
-							1 -> "Sensor jest chwilowo niedostępny, należy spróbować później."
-							2 -> "Czujnik nie był w stanie przetworzyć odcisku palca."
-							3 -> "Nie wykryto palca przez 30s."
-							4 -> "Urządzenie nie ma wystarczającej ilości miejsca żeby wykonać operacje."
-							5,10 -> "Użytkownik anulował uwierzytelnianie za pomocą biometrii."
-							7 -> "Pięciorkotnie nierozpoznano odcisku palca, sensor będzie dostępny ponownie za 30s."
-							9 -> "Sensor jest zablokowany, należy go odblokować wporwadzająć wzór/pin telefonu."
-							11 -> "Nieznany błąd, upewnij się czy w twoim urządzeniu jest zapisany odcis palca."
-							12 -> "Urządzenie nie posiada odpowiedniego sensora."
-							14 -> "Urządzenie musi posiadać pin,wzór lub hasło."
-							15 -> "Operacja nie może zostać wykonana bez aktualizacji systemu."
-							else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
-						}
-						Utilities.showToast(this, textToShow)
-						Utilities.authFailed(this)
-					}
-				}
-			}
-			resources.getInteger(R.integer.ACT_RETCODE_PIN_SET) ->{
-				if(resultCode == RESULT_OK){
-					//do nothing
-				}
-				else{
-					//TODO to tworzy infinity loop w ktorym urzytkownik do upadlego jest proszony o pin
-					Utilities.showToast(
-						this,
-						getString(R.string.PIN_UserMsg_failedToSetNewPin_differentPinsInserted)
-					)
-					ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
-				}
-			}
-			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)->{
-				if(resultCode == RESULT_OK){
-					val codeFieldName = getString(R.string.ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME)
-					val code = data?.getStringExtra(codeFieldName)
-					if(code.isNullOrEmpty()){
-						Log.e(Utilities.TagProduction,"OAuth return null code")
-						return
-					}
-					UserData.authCode = code
-					ApiGetToken.run()
-				}
-			}
-			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST)->{
-				if(resultCode == RESULT_OK){
-					val field = getString(R.string.userPermissionList_outputField)
-					val serializedPermissionList = data?.getStringExtra(field)
-					val obtainNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, serializedPermissionList)
-					if(obtainNewAuthUrl){
-						val permissionList = PermissionList(serializedPermissionList!!)
-						val tmpStateValue = ApiFunctions.getRandomStateValue()
-						ApiAuthorize().run(this, tmpStateValue, permissionList.permissions)
-					}
-					val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
-					val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
-					if(authUrl.isNullOrEmpty()){
-						Log.e(Utilities.TagProduction, "Failed to obtain auth url")
-						Utilities.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")
-						return
-					}
-
-					ActivityStarter.openBrowserForLogin(this, authUrl, state)
-				}
-			}
+			resources.getInteger(R.integer.ACT_RETCODE_QrScanner) -> qrScannerActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_FINGER) ->fingerAuthActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_PIN_SET) ->pinActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)->webViewActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST)->tokenActivityResult(resultCode, data)
 		}
 	}
 
@@ -257,7 +172,7 @@ class MainActivity : AppCompatActivity() {
 			nfcSignalCatchingIsOn = true
 		}
 	}
-	private fun initUIVariables() {
+	private fun initGUI() {
 		initQR()
 		initCodeField()
 		initNFC()
@@ -312,6 +227,98 @@ class MainActivity : AppCompatActivity() {
 		if(turnNfcOnAppStart && !nfcSignalCatchingIsOn){
 			findViewById<Button>(R.id.nfcButton).setBackgroundResource(R.drawable.nfc_on_icon)
 			switchNfcSignalCatching()
+		}
+	}
+
+	//Intents
+	private fun tokenActivityResult(resultCode: Int, data: Intent?){
+		if(resultCode == RESULT_OK){
+			val field = getString(R.string.userPermissionList_outputField)
+			val serializedPermissionList = data?.getStringExtra(field)
+			val obtainNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, serializedPermissionList)
+			if(obtainNewAuthUrl){
+				val permissionList = PermissionList(serializedPermissionList!!)
+				val tmpStateValue = ApiFunctions.getRandomStateValue()
+				ApiAuthorize().run(this, tmpStateValue, permissionList.permissions)
+			}
+			else
+				Log.i(Utilities.TagProduction, "Skipped obtaining AuthUrl")
+			val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
+			val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
+			if(authUrl.isNullOrEmpty()){
+				Log.e(Utilities.TagProduction, "Failed to obtain auth url")
+				Utilities.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")
+				return
+			}
+
+			ActivityStarter.openBrowserForLogin(this, authUrl, state)
+		}
+	}
+	private fun webViewActivityResult(resultCode: Int, data: Intent?){
+		if(resultCode == RESULT_OK){
+			val codeFieldName = getString(R.string.ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME)
+			val code = data?.getStringExtra(codeFieldName)
+			if(code.isNullOrEmpty()){
+				Log.e(Utilities.TagProduction,"OAuth return null code")
+				Utilities.showToast(this, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
+				return
+			}
+			UserData.authCode = code
+			ApiGetToken.run()
+		}
+	}
+	private fun pinActivityResult(resultCode: Int, data: Intent?){
+		if(resultCode == RESULT_OK){
+			//do nothing
+		}
+		else{
+			//TODO to tworzy infinity loop w ktorym urzytkownik do upadlego jest proszony o pin
+			Utilities.showToast(
+				this,
+				getString(R.string.PIN_UserMsg_failedToSetNewPin_differentPinsInserted)
+			)
+			ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
+		}
+	}
+	private fun fingerAuthActivityResult(resultCode: Int, data: Intent?){
+		val errorCodeFieldName = getString(R.string.ACT_COM_FINGER_FIELD_NAME)
+		val errorCode = data?.getIntExtra(errorCodeFieldName, -1)
+		if(resultCode == RESULT_OK)
+			Utilities.authSuccessed(this)
+		else{
+			if(errorCode == 13){
+				val descriptionFieldName = resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
+				val description = data.extras?.getString(descriptionFieldName)
+				ActivityStarter.startAuthActivity(this, description, 0)
+			}
+			else{
+				val textToShow = when(errorCode){
+					//0 -> "Uzyskano autoryzację!"
+					1 -> "Sensor jest chwilowo niedostępny, należy spróbować później."
+					2 -> "Czujnik nie był w stanie przetworzyć odcisku palca."
+					3 -> "Nie wykryto palca przez 30s."
+					4 -> "Urządzenie nie ma wystarczającej ilości miejsca żeby wykonać operacje."
+					5,10 -> "Użytkownik anulował uwierzytelnianie za pomocą biometrii."
+					7 -> "Pięciorkotnie nierozpoznano odcisku palca, sensor będzie dostępny ponownie za 30s."
+					9 -> "Sensor jest zablokowany, należy go odblokować wporwadzająć wzór/pin telefonu."
+					11 -> "Nieznany błąd, upewnij się czy w twoim urządzeniu jest zapisany odcis palca."
+					12 -> "Urządzenie nie posiada odpowiedniego sensora."
+					14 -> "Urządzenie musi posiadać pin,wzór lub hasło."
+					15 -> "Operacja nie może zostać wykonana bez aktualizacji systemu."
+					else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
+				}
+				Utilities.showToast(this, textToShow)
+				Utilities.authFailed(this)
+			}
+		}
+	}
+	private fun qrScannerActivityResult(resultCode: Int, data: Intent?){
+		if(resultCode == RESULT_OK && data != null) {
+			val returnFieldName = resources.getString(R.string.ACT_COM_QrScanner_FIELD_NAME)
+			val returnedCode = data.getIntExtra(returnFieldName, -1)
+			val vailCode = returnedCode in 0..999999
+			if (vailCode)
+				codeField.setText(returnedCode.toString())
 		}
 	}
 }

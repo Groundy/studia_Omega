@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<bool name="PREF_turnNfcOnAppStart">false</bool>
-	<string name="PREF_hashPin">HashPinField</string> <!--tutaj jest 6 cyfr, pin musi byc 5 cyfrowy-->
+	<string name="PREF_hashPin">HashPinField</string>
 	<integer name="PREF_preferedAuthMethode">0</integer> <!--0-PIN, 1-Symbol, 2-fingerPrint-->
 
 	<string name="PREF_lastUsedPermissionsForAuth">lastUsedPermissionsForAuthField</string>
 	<string name="PREF_lastRandomValue">lastRandomValueField</string>
 	<string name="PREF_authUrlValidityTimeEnd">authUrlValidityTimeEndField</string>
 	<string name="PREF_authURL">AuthUrlField</string>
+
+	<string name="PREF_listOfAccNumbersAccociatedWithToken">listOfAccNumbersAccociatedWithToken</string>
+	<string name="PREF_authCode">authCode</string>
+	<string name="PREF_authCodeValidityTime">authCodeValidityTime</string>
 </resources>

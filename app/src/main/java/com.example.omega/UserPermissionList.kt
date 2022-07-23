@@ -45,7 +45,7 @@ class UserPermissionList : AppCompatActivity() {
 	}
 
 	private fun okClicked(){
-		var permissionsList = PermissionList()
+		val permissionsList = PermissionList()
 
 		if(findViewById<CheckBox>(R.id.userPermisionList_accDetails_checkBox).isChecked)
 			permissionsList.add(ApiConsts.Privileges.accountsDetails)
