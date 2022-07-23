@@ -140,7 +140,6 @@ class UserData  {
 	}
 
 	companion object{
-		var authCode : String? = null
 		var accessTokenStruct : AccessTokenStruct? = null
 	}
 }

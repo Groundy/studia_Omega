@@ -266,7 +266,7 @@ class ApiGetToken {
                     .put("sendDate", currentTimeStr)
                     .put("tppId", ApiConsts.TTP_ID)
                     .put("isCompanyContext", false))
-                .put("Code", UserData.authCode)
+                .put("Code", PreferencesOperator.readPrefStr(callerActivity, R.string.PREF_authCode))
                 .put("grant_type","authorization_code")
                 .put("redirect_uri", ApiConsts.REDIRECT_URI)
                 .put("client_id", ApiConsts.userId_ALIOR)
@@ -488,6 +488,10 @@ class ApiAuthorize {
 
     companion object{
         fun obtainingNewAuthUrlIsNecessary(activity: Activity, permissionsStr : String?) : Boolean{
+            val authUrl = PreferencesOperator.readPrefStr(activity, R.string.PREF_authURL)
+            if(authUrl.isNullOrEmpty())
+                return true
+
             val lastPermissionListStr= PreferencesOperator.readPrefStr(activity, R.string.PREF_lastUsedPermissionsForAuth)
             if(lastPermissionListStr.isNullOrEmpty())
                 return true

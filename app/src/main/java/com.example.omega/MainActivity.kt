@@ -322,6 +322,21 @@ class MainActivity : AppCompatActivity() {
 			codeField.setText(returnedCode.toString())
 
 	}
+	private fun nfcIntentGet(intent: Intent){
+		val tagFromIntent: Tag? = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
+		if (tagFromIntent != null) {
+			val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+			val relayRecord = (rawMsgs!![0] as NdefMessage).records[0]
+			val tagData = String(relayRecord.payload)
+			//format UNKOWN_BYTE,LAUNGAGE BYTES(probably 2 bytes), CODE
+			if (tagData.count() >= 6) {
+				val codeCandidate = tagData.takeLast(6).toIntOrNull()
+				if (codeCandidate != null && codeCandidate in 0..999999) {
+					val code = codeCandidate.toInt()
+					Log.i(Utilities.TagProduction, "NFC TAG data found:$tagData")
+					codeField.setText(code.toString())
+				}
+			}
 		}
 	}
 	private fun askIfUserWantToLoginToBankDialogActivityResult(resultCode: Int, data: Intent?){

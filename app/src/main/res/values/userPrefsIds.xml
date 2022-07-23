@@ -11,5 +11,4 @@
 
 	<string name="PREF_listOfAccNumbersAccociatedWithToken">listOfAccNumbersAccociatedWithToken</string>
 	<string name="PREF_authCode">authCode</string>
-	<string name="PREF_authCodeValidityTime">authCodeValidityTime</string>
 </resources>

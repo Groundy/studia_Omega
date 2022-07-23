@@ -15,6 +15,30 @@ import kotlin.random.Random
 
 class PreferencesOperator{
 	companion object{
+		fun clearPreferences(activity: Activity, vararg fields : Int){
+			val preferencesFields = arrayOf(
+				R.string.PREF_authURL,
+				R.string.PREF_authCode,
+				R.string.PREF_lastRandomValue,
+				R.string.PREF_lastUsedPermissionsForAuth,
+				R.string.PREF_authUrlValidityTimeEnd,
+				R.string.PREF_listOfAccNumbersAccociatedWithToken)
+
+				fields.forEach {
+					if (preferencesFields.contains(it))
+						savePref(activity, it, String())
+				}
+		}
+		fun clearAuthData(activity: Activity){
+			clearPreferences(activity,
+				R.string.PREF_authURL,
+				R.string.PREF_lastRandomValue,
+				R.string.PREF_authCode,
+				R.string.PREF_authUrlValidityTimeEnd,
+				R.string.PREF_listOfAccNumbersAccociatedWithToken,
+				R.string.PREF_lastUsedPermissionsForAuth
+			)
+		}
 		private fun getSharedProperties(activity: Activity) : SharedPreferences{
 			val fileName = activity.getString(R.string.preference_file_key)
 			val sharedPrefObj = activity.getSharedPreferences(fileName, MODE_PRIVATE)
