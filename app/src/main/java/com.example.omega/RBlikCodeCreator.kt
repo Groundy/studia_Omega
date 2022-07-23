@@ -132,7 +132,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 
 	private fun openDisplayActivityWithCode(codeFromServer : Int){
 		val codeDisplayIntent = Intent(this, RBlikCodeDisplayActivity::class.java)
-		codeDisplayIntent.putExtra(getString(R.string.ACT_COM_CODEGENERATOR_CODE_FOR_DISPLAY), codeFromServer)
+		codeDisplayIntent.putExtra(getString(R.string.ACT_COM_CODEGENERATOR_CODE_FOR_DISPLAY_FIELDNAME), codeFromServer)
 		this.startActivity(codeDisplayIntent)
 	}
 	private fun DEVELOPER_fillWidgets(){

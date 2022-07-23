@@ -3,6 +3,7 @@ package com.example.omega
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Window
 import android.widget.Button
 import android.widget.CheckBox
 
@@ -41,8 +42,10 @@ class UserPermissionList : AppCompatActivity() {
 		setListeners()
 	}
 	private fun setListeners(){
-		findViewById<Button>(R.id.userPermisionList_continue_Button).setOnClickListener{okClicked()}
-		findViewById<Button>(R.id.userPermisionList_cancel_Button).setOnClickListener{endActivity(false)}
+		findViewById<Button>(R.id.userPermisionList_continue_Button).setOnClickListener{
+			okClicked()}
+		findViewById<Button>(R.id.userPermisionList_cancel_Button).setOnClickListener{
+			endActivity(false)}
 	}
 
 	private fun okClicked(){

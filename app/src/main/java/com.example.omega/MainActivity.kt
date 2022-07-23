@@ -27,10 +27,10 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
-
 //  Minimize: CTRL + SHIFT + '-'
 //  Expand:   CTRL + SHIFT + '+'
 //  Ctrl + B go to definition
+
 
 class MainActivity : AppCompatActivity() {
 	private var nfcSignalCatchingIsOn: Boolean = false
@@ -42,12 +42,10 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
+
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initGUI()
 		DEVELOPER_initaialFun()
-	}
-	private fun DEVELOPER_initaialFun(){
-
 	}
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
@@ -55,12 +53,11 @@ class MainActivity : AppCompatActivity() {
 			resources.getInteger(R.integer.ACT_RETCODE_QrScanner) -> qrScannerActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_FINGER) ->fingerAuthActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_PIN_SET) ->pinActivityResult(resultCode, data)
-			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)->webViewActivityResult(resultCode, data)
-			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST)->tokenActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW) ->webViewActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> tokenActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage) -> askIfUserWantToLoginToBankDialogActivityResult(resultCode, data)
 		}
 	}
-
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.main_app_menu, menu)
 		return super.onCreateOptionsMenu(menu)
@@ -78,23 +75,9 @@ class MainActivity : AppCompatActivity() {
 		}
 		return true
 	}
-	override fun onNewIntent(intent: Intent) {
+	override fun onNewIntent(intent: Intent){
 		super.onNewIntent(intent)
-		val tagFromIntent: Tag? = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
-		if (tagFromIntent != null) {
-			val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
-			val relayRecord = (rawMsgs!![0] as NdefMessage).records[0]
-			val tagData = String(relayRecord.payload)
-			//format UNKOWN_BYTE,LAUNGAGE BYTES(probably 2 bytes), CODE
-			if (tagData.count() >= 6) {
-				val codeCandidate = tagData.takeLast(6).toIntOrNull()
-				if (codeCandidate != null && codeCandidate in 0..999999) {
-					val code = codeCandidate.toInt()
-					Log.i(Utilities.TagProduction, "NFC TAG data found:$tagData")
-					codeField.setText(code.toString())
-				}
-			}
-		}
+		nfcIntentGet(intent)
 	}
 
 	private fun processCode(code: Int) {
@@ -230,42 +213,57 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 
+	private fun DEVELOPER_initaialFun(){
+	}
 	//Intents
 	private fun tokenActivityResult(resultCode: Int, data: Intent?){
-		if(resultCode == RESULT_OK){
-			val field = getString(R.string.userPermissionList_outputField)
-			val serializedPermissionList = data?.getStringExtra(field)
-			val obtainNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, serializedPermissionList)
-			if(obtainNewAuthUrl){
-				val permissionList = PermissionList(serializedPermissionList!!)
-				val tmpStateValue = ApiFunctions.getRandomStateValue()
-				ApiAuthorize().run(this, tmpStateValue, permissionList.permissions)
-			}
-			else
-				Log.i(Utilities.TagProduction, "Skipped obtaining AuthUrl")
-			val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
-			val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
-			if(authUrl.isNullOrEmpty()){
-				Log.e(Utilities.TagProduction, "Failed to obtain auth url")
-				Utilities.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")
-				return
-			}
-
-			ActivityStarter.openBrowserForLogin(this, authUrl, state)
+		if(resultCode != RESULT_OK){
+			Log.i(Utilities.TagProduction, "Canceled getting authUrl")
+			return
 		}
+
+		val field = getString(R.string.userPermissionList_outputField)
+		val serializedPermissionList = data?.getStringExtra(field)
+		val obtainNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, serializedPermissionList)
+		if(obtainNewAuthUrl){
+			PreferencesOperator.clearAuthData(this)
+			val permissionList = PermissionList(serializedPermissionList!!)
+			val tmpStateValue = ApiFunctions.getRandomStateValue()
+			ApiAuthorize().run(this, tmpStateValue, permissionList.permissions)
+		}
+		else
+			Log.i(Utilities.TagProduction, "Skipped obtaining AuthUrl, going to Bank login webpage")
+		val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
+		val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
+		val fieldsAreFilled = !authUrl.isNullOrEmpty() && !state.isNullOrEmpty()
+		if(!fieldsAreFilled){
+			Log.e(Utilities.TagProduction, "Failed to obtain auth url, there's no authUrl or stateValue")
+			Utilities.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")//todo TOFILE
+			return
+		}
+
+		val authCodeAlreadyExist = !PreferencesOperator.readPrefStr(this,R.string.PREF_authCode).isNullOrEmpty()
+		if(authCodeAlreadyExist)
+			ActivityStarter.openDialogAskIfUserWantToLoginToBankDialog(this)
+		else
+			ActivityStarter.openBrowserForLogin(this, authUrl, state)
 	}
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
-		if(resultCode == RESULT_OK){
-			val codeFieldName = getString(R.string.ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME)
-			val code = data?.getStringExtra(codeFieldName)
-			if(code.isNullOrEmpty()){
-				Log.e(Utilities.TagProduction,"OAuth return null code")
-				Utilities.showToast(this, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
-				return
-			}
-			UserData.authCode = code
-			ApiGetToken.run()
+		if(resultCode != RESULT_OK){
+			Log.e(Utilities.TagProduction,"OAuth return resultCode other than OK")
+			Utilities.showToast(this, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
+			return
 		}
+
+		val codeFieldName = getString(R.string.ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME)
+		val code = data?.getStringExtra(codeFieldName)
+		if(code.isNullOrEmpty()){
+			Log.e(Utilities.TagProduction,"OAuth return null code")
+			Utilities.showToast(this, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
+			return
+		}
+		PreferencesOperator.savePref(this, R.string.PREF_authCode, code)
+		ApiGetToken.run(this)
 	}
 	private fun pinActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode == RESULT_OK){
@@ -281,44 +279,49 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 	private fun fingerAuthActivityResult(resultCode: Int, data: Intent?){
+		if(resultCode == RESULT_OK){
+			Utilities.authSuccessed(this)
+			return
+		}
+
 		val errorCodeFieldName = getString(R.string.ACT_COM_FINGER_FIELD_NAME)
 		val errorCode = data?.getIntExtra(errorCodeFieldName, -1)
-		if(resultCode == RESULT_OK)
-			Utilities.authSuccessed(this)
+		if(errorCode == 13){
+			val descriptionFieldName = resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
+			val description = data.extras?.getString(descriptionFieldName)
+			ActivityStarter.startAuthActivity(this, description, 0)
+		}
 		else{
-			if(errorCode == 13){
-				val descriptionFieldName = resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
-				val description = data.extras?.getString(descriptionFieldName)
-				ActivityStarter.startAuthActivity(this, description, 0)
+			val textToShow = when(errorCode){
+				//0 -> "Uzyskano autoryzację!"
+				1 -> "Sensor jest chwilowo niedostępny, należy spróbować później."
+				2 -> "Czujnik nie był w stanie przetworzyć odcisku palca."
+				3 -> "Nie wykryto palca przez 30s."
+				4 -> "Urządzenie nie ma wystarczającej ilości miejsca żeby wykonać operacje."
+				5,10 -> "Użytkownik anulował uwierzytelnianie za pomocą biometrii."
+				7 -> "Pięciorkotnie nierozpoznano odcisku palca, sensor będzie dostępny ponownie za 30s."
+				9 -> "Sensor jest zablokowany, należy go odblokować wporwadzająć wzór/pin telefonu."
+				11 -> "Nieznany błąd, upewnij się czy w twoim urządzeniu jest zapisany odcis palca."
+				12 -> "Urządzenie nie posiada odpowiedniego sensora."
+				14 -> "Urządzenie musi posiadać pin,wzór lub hasło."
+				15 -> "Operacja nie może zostać wykonana bez aktualizacji systemu."
+				else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
 			}
-			else{
-				val textToShow = when(errorCode){
-					//0 -> "Uzyskano autoryzację!"
-					1 -> "Sensor jest chwilowo niedostępny, należy spróbować później."
-					2 -> "Czujnik nie był w stanie przetworzyć odcisku palca."
-					3 -> "Nie wykryto palca przez 30s."
-					4 -> "Urządzenie nie ma wystarczającej ilości miejsca żeby wykonać operacje."
-					5,10 -> "Użytkownik anulował uwierzytelnianie za pomocą biometrii."
-					7 -> "Pięciorkotnie nierozpoznano odcisku palca, sensor będzie dostępny ponownie za 30s."
-					9 -> "Sensor jest zablokowany, należy go odblokować wporwadzająć wzór/pin telefonu."
-					11 -> "Nieznany błąd, upewnij się czy w twoim urządzeniu jest zapisany odcis palca."
-					12 -> "Urządzenie nie posiada odpowiedniego sensora."
-					14 -> "Urządzenie musi posiadać pin,wzór lub hasło."
-					15 -> "Operacja nie może zostać wykonana bez aktualizacji systemu."
-					else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
-				}
-				Utilities.showToast(this, textToShow)
-				Utilities.authFailed(this)
-			}
+			Utilities.showToast(this, textToShow)
+			Utilities.authFailed(this)
 		}
 	}
 	private fun qrScannerActivityResult(resultCode: Int, data: Intent?){
-		if(resultCode == RESULT_OK && data != null) {
-			val returnFieldName = resources.getString(R.string.ACT_COM_QrScanner_FIELD_NAME)
-			val returnedCode = data.getIntExtra(returnFieldName, -1)
-			val vailCode = returnedCode in 0..999999
-			if (vailCode)
-				codeField.setText(returnedCode.toString())
+		if(resultCode != RESULT_OK || data == null)
+			return //todo maybe?
+
+		val returnFieldName = resources.getString(R.string.ACT_COM_QrScanner_FIELD_NAME)
+		val returnedCode = data.getIntExtra(returnFieldName, -1)
+		val vailCode = returnedCode in 0..999999
+		if (vailCode)
+			codeField.setText(returnedCode.toString())
+
+	}
 		}
 	}
 	private fun askIfUserWantToLoginToBankDialogActivityResult(resultCode: Int, data: Intent?){

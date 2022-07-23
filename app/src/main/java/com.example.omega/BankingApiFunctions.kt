@@ -178,9 +178,12 @@ class ApiGetAccounts {
     }
 }
 
+
 class ApiGetToken {
     companion object{
-        fun run() : Boolean{
+        private lateinit var callerActivity: Activity
+        fun run(activity: Activity) : Boolean{
+            callerActivity = activity
             var success = false
             val thread = Thread{
                 try {
@@ -268,7 +271,6 @@ class ApiGetToken {
                 .put("redirect_uri", ApiConsts.REDIRECT_URI)
                 .put("client_id", ApiConsts.userId_ALIOR)
                 .put("client_secret", ApiConsts.appSecret_ALIOR)
-
 
             return ApiFunctions.bodyToRequest(url, requestBodyJson, uuidStr)
         }
@@ -373,7 +375,6 @@ class ApiGetTransactionsDone {
         }
     }
 }
-
 class ApiAuthorize {
     private var permissionsList : PermissionList? = null
     private lateinit var callerActivity : Activity

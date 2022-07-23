@@ -7,7 +7,7 @@
 	<string name="PREF_lastUsedPermissionsForAuth">lastUsedPermissionsForAuthField</string>
 	<string name="PREF_lastRandomValue">lastRandomValueField</string>
 	<string name="PREF_authUrlValidityTimeEnd">authUrlValidityTimeEndField</string>
-	<string name="PREF_authURL">AuthUrlField</string>
+	<string name="PREF_authURL">authUrlField</string>
 
 	<string name="PREF_listOfAccNumbersAccociatedWithToken">listOfAccNumbersAccociatedWithToken</string>
 	<string name="PREF_authCode">authCode</string>

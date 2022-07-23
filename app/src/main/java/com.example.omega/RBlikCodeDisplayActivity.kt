@@ -59,7 +59,7 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 		return bitmap
 	}
 	private fun getCodeFromIntent() : Int{
-		val fieldName = getString(R.string.ACT_COM_CODEGENERATOR_CODE_FOR_DISPLAY)
+		val fieldName = getString(R.string.ACT_COM_CODEGENERATOR_CODE_FOR_DISPLAY_FIELDNAME)
 		return intent.getIntExtra(fieldName, -1)
 	}
 	private fun setProperWidgetText(code : Int){

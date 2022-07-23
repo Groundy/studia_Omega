@@ -323,7 +323,7 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun saveNewPinInMemory(pin : Int){
 		val hashedPin = Utilities.hashMd5(pin.toString())
-		PreferencesOperator.savePref(this, R.string.PREF_hashPin, hashedPin)		//TODO dodać to w mode private
+		PreferencesOperator.savePref(this, R.string.PREF_hashPin, hashedPin)
 	}
 	private fun checkStartPurpose(){
 		val purposeFieldName = resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
