@@ -97,6 +97,14 @@ class ActivityStarter {
 
 			 activity.startActivityForResult(intent,returnCode)
 		}
+		fun openDialogAskIfUserWantToLoginToBankDialog(activity: Activity){
+			val yesNoDialog = Intent(activity, YesNoDialogActivity::class.java)
+			val field = activity.getString(R.string.ACT_COM_DIALOG_TEXT_FIELDSNAME)
+			val msgToDisplay = activity.getString(R.string.GUI_DIALOG_AskForChangeOptionsForAccountsInBankWebPage_TEXT)
+			yesNoDialog.putExtra(field,msgToDisplay)
+			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage)
+			activity.startActivityForResult(yesNoDialog, retCode)
+		}
 		fun openDialogAskIfUserWantToCancelBioAuth(activity: Activity){
 			val yesNoDialog = Intent(activity, YesNoDialogActivity::class.java)
 			val field = activity.getString(R.string.ACT_COM_DIALOG_TEXT_FIELDSNAME)
