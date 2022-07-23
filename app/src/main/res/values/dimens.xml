@@ -51,4 +51,8 @@
 	<dimen name="basicTransfer_textSize">10dp</dimen>
 
 
+	<!--permission list -->
+	<dimen name="userPermissionList_fieldSizeY_dim">48dp</dimen>
+	<dimen name="userPermissionList_fieldSizeX_dim">200dp</dimen>
+	<dimen name="userPermissionList_ButtonSizeX_dim">100dp</dimen>
 </resources>

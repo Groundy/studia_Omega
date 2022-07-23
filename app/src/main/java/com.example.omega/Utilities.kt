@@ -49,25 +49,25 @@ class PreferencesOperator{
 			val fieldName = activity.getString(strResourceId)
 			val editor = getSharedProperties(activity).edit()
 			editor.putInt(fieldName,value)
-			editor.commit()
+			editor.apply()
 		}
 		fun savePref(activity: Activity, strResourceId : Int, value : Boolean){
 			val fieldName = activity.getString(strResourceId)
 			val editor = getSharedProperties(activity).edit()
 			editor.putBoolean(fieldName,value)
-			editor.commit()
+			editor.apply()
 		}
 		fun savePref(activity: Activity, strResourceId : Int, value : Float){
 			val fieldName = activity.getString(strResourceId)
 			val editor = getSharedProperties(activity).edit()
 			editor.putFloat(fieldName,value)
-			editor.commit()
+			editor.apply()
 		}
 		fun savePref(activity: Activity, strResourceId : Int, value : String){
 			val fieldName = activity.getString(strResourceId)
 			val editor = getSharedProperties(activity).edit()
 			editor.putString(fieldName,value)
-			editor.commit()
+			editor.apply()
 		}
 
 		fun readPrefBool(activity: Activity, strResourceId : Int) : Boolean{
@@ -98,6 +98,7 @@ class PreferencesOperator{
 		}
 		fun decrypt(encryptedText : String, key : String) : String{
 			//TODO
+
 			return ""
 		}
 	}
@@ -105,10 +106,10 @@ class PreferencesOperator{
 
 class Utilities {
 	companion object{
-		val TagProduction = "WookieTag"
+		const val TagProduction = "WookieTag"
 		fun showMsg(activity: Activity, stringToDisplay:String) {
 			val dialogBuilder = AlertDialog.Builder(activity)
-			val dialogInterfaceVar = DialogInterface.OnClickListener { p0, p1 -> p0.dismiss() }
+			val dialogInterfaceVar = DialogInterface.OnClickListener { p0, _ -> p0.dismiss() }
 			dialogBuilder.setMessage(stringToDisplay).setPositiveButton("Ok", dialogInterfaceVar)
 			val dialog: AlertDialog = dialogBuilder.create()
 			dialog.show()

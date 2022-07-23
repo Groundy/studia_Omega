@@ -52,10 +52,10 @@ class MainActivity : AppCompatActivity() {
 		when(requestCode){
 			resources.getInteger(R.integer.ACT_RETCODE_QrScanner) -> qrScannerActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_FINGER) ->fingerAuthActivityResult(resultCode, data)
-			resources.getInteger(R.integer.ACT_RETCODE_PIN_SET) ->pinActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_PIN_SET) ->pinActivityResult(resultCode)
 			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW) ->webViewActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> tokenActivityResult(resultCode, data)
-			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage) -> askIfUserWantToLoginToBankDialogActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage) -> askIfUserWantToLoginToBankDialogActivityResult(resultCode)
 		}
 	}
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -222,7 +222,7 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 
-		val field = getString(R.string.userPermissionList_outputField)
+		val field = getString(R.string.ACT_COM_USERPERMISSIONLIST_FIELDNAME)
 		val serializedPermissionList = data?.getStringExtra(field)
 		val obtainNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, serializedPermissionList)
 		if(obtainNewAuthUrl){
@@ -235,14 +235,14 @@ class MainActivity : AppCompatActivity() {
 			Log.i(Utilities.TagProduction, "Skipped obtaining AuthUrl, going to Bank login webpage")
 		val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
 		val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
-		val fieldsAreFilled = !authUrl.isNullOrEmpty() && !state.isNullOrEmpty()
+		val fieldsAreFilled = authUrl.isNotEmpty() && state.isNotEmpty()
 		if(!fieldsAreFilled){
 			Log.e(Utilities.TagProduction, "Failed to obtain auth url, there's no authUrl or stateValue")
 			Utilities.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")//todo TOFILE
 			return
 		}
 
-		val authCodeAlreadyExist = !PreferencesOperator.readPrefStr(this,R.string.PREF_authCode).isNullOrEmpty()
+		val authCodeAlreadyExist = PreferencesOperator.readPrefStr(this,R.string.PREF_authCode).isNotEmpty()
 		if(authCodeAlreadyExist)
 			ActivityStarter.openDialogAskIfUserWantToLoginToBankDialog(this)
 		else
@@ -265,7 +265,7 @@ class MainActivity : AppCompatActivity() {
 		PreferencesOperator.savePref(this, R.string.PREF_authCode, code)
 		ApiGetToken.run(this)
 	}
-	private fun pinActivityResult(resultCode: Int, data: Intent?){
+	private fun pinActivityResult(resultCode: Int){
 		if(resultCode == RESULT_OK){
 			//do nothing
 		}
@@ -339,7 +339,7 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 	}
-	private fun askIfUserWantToLoginToBankDialogActivityResult(resultCode: Int, data: Intent?){
+	private fun askIfUserWantToLoginToBankDialogActivityResult(resultCode: Int){
 		if(resultCode != RESULT_OK)
 			return
 		PreferencesOperator.clearAuthData(this)

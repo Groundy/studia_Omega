@@ -2,7 +2,6 @@ package com.example.omega
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 
 class ActivityStarter {
 	companion object{
@@ -52,8 +51,10 @@ class ActivityStarter {
 		fun startAuthActivity(context : Activity, description : String?, forcedMethodeCode : Int?){
 			var preferredMethodeCode =
 				PreferencesOperator.readPrefInt(context, R.integer.PREF_preferedAuthMethode)
+			
 			if(forcedMethodeCode != null && forcedMethodeCode in 0..2)
 				preferredMethodeCode = forcedMethodeCode
+			
 			val preferredMethodeName = when(preferredMethodeCode){
 				0->context.getString(R.string.GUI_selectAuthMethodeText_pin)
 				1->context.getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
@@ -99,16 +100,16 @@ class ActivityStarter {
 		}
 		fun openDialogAskIfUserWantToLoginToBankDialog(activity: Activity){
 			val yesNoDialog = Intent(activity, YesNoDialogActivity::class.java)
-			val field = activity.getString(R.string.ACT_COM_DIALOG_TEXT_FIELDSNAME)
-			val msgToDisplay = activity.getString(R.string.GUI_DIALOG_AskForChangeOptionsForAccountsInBankWebPage_TEXT)
+			val field = activity.getString(R.string.ACT_COM_DIALOG_TEXT_FIELDNAME)
+			val msgToDisplay = activity.getString(R.string.DIALOG_GUI_AskForChangeOptionsForAccountsInBankWebPage_TEXT)
 			yesNoDialog.putExtra(field,msgToDisplay)
 			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage)
 			activity.startActivityForResult(yesNoDialog, retCode)
 		}
 		fun openDialogAskIfUserWantToCancelBioAuth(activity: Activity){
 			val yesNoDialog = Intent(activity, YesNoDialogActivity::class.java)
-			val field = activity.getString(R.string.ACT_COM_DIALOG_TEXT_FIELDSNAME)
-			val msgToDisplay = activity.getString(R.string.GUI_DIALOG_CancelBioAuth_TEXT)
+			val field = activity.getString(R.string.ACT_COM_DIALOG_TEXT_FIELDNAME)
+			val msgToDisplay = activity.getString(R.string.DIALOG_GUI_CancelBioAuthMsgText)
 			yesNoDialog.putExtra(field,msgToDisplay)
 			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_CancelBioAuth)
 			activity.startActivityForResult(yesNoDialog, retCode)

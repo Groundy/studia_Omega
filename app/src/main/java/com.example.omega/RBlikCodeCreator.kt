@@ -32,8 +32,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		receiverNameField = findViewById(R.id.RBlikCodeGenerator_reciverName_EditText)
 		accountListSpinner = findViewById(R.id.RBlikCodeGenerator_accountList_Spinner)
 		goNextActivityButton = findViewById(R.id.RBlikCodeGenerator_goNext_button)
-
-		goNextActivityButton.setOnClickListener(){
+		goNextActivityButton.setOnClickListener{
 			goNextButtonClicked()
 		}
 
@@ -41,7 +40,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			var previousValue : String = ""
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				if(p0 != null)
-					previousValue = p0!!.toString()
+					previousValue = p0.toString()
 			}
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun afterTextChanged(p0: Editable?) {
@@ -62,9 +61,8 @@ class RBLIKCodeCreator : AppCompatActivity() {
 
 		val data = serializeDataForServer()
 		val codeAssociated = getCodeFromServer(data)
-		if(codeAssociated == null){
+		if(codeAssociated == null)
 			return//todo
-		}
 
 		openDisplayActivityWithCode(codeAssociated)
 	}
@@ -118,7 +116,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		return true
 	}
 	private fun getCodeFromServer(transferData: TransferData) : Int?{
-		return Utilities.getRandomTestCode()        //todo
+		return Utilities.getRandomTestCode()      //todo
 	}
 	private fun serializeDataForServer() : TransferData {
 		val amount = amountField.text.toString().toDouble()
@@ -126,8 +124,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		val currency = "PLN"//todo
 		val receiverAccNumberAcc = "0123456789012345678901234567" //todo
 		val receiverName = receiverNameField.text.toString()
-		val data = TransferData(null, receiverAccNumberAcc, receiverName, title, amount, currency)
-		return data
+		return TransferData(null, receiverAccNumberAcc, receiverName, title, amount, currency)
 	}
 
 	private fun openDisplayActivityWithCode(codeFromServer : Int){
@@ -136,8 +133,8 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		this.startActivity(codeDisplayIntent)
 	}
 	private fun DEVELOPER_fillWidgets(){
-		amountField.setText("5")
-		titleField.setText("rrrr")
-		receiverNameField.setText("444")
+		amountField.text = Editable.Factory.getInstance().newEditable("aaa")
+		titleField.text = Editable.Factory.getInstance().newEditable("aaa")
+		receiverNameField.text = Editable.Factory.getInstance().newEditable(12345.toString())
 	}
 }

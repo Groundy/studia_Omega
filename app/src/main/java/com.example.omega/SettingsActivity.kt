@@ -29,7 +29,7 @@ class SettingsActivity : AppCompatActivity() {
 
 		val selectAuthMethodeField = findViewById<TextView>(R.id.selectAuthMethodeTextView)
 		val methodeCode = PreferencesOperator.readPrefInt(this, R.integer.PREF_preferedAuthMethode)
-		var methodeName = when(methodeCode){
+		val methodeName = when(methodeCode){
 			0->getString(R.string.GUI_selectAuthMethodeText_pin)
 			1->getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
 			2->getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
@@ -45,10 +45,9 @@ class SettingsActivity : AppCompatActivity() {
 			val nfcSwitch = findViewById<Switch>(R.id.turnOnNFCWhenAppStartsSwitch)
 			PreferencesOperator.savePref(this, R.bool.PREF_turnNfcOnAppStart, nfcSwitch.isChecked)
 		}
-
 	}
 	private fun showSelectAuthMethodeDialog(){
-		val dialog : Dialog = Dialog(this)
+		val dialog = Dialog(this)
 		dialog.setContentView(R.layout.dialog_select_auth_methode)
 		val phoneHasFingerSensor = phoneHasFingerSensor()
 		if(!phoneHasFingerSensor)
@@ -69,7 +68,7 @@ class SettingsActivity : AppCompatActivity() {
 				}
 			}
 		}
-		val radioButtonGroupListener = RadioGroup.OnCheckedChangeListener { radioButtonGroup, radioButtonId -> // checkedId is the RadioButton selected
+		val radioButtonGroupListener = RadioGroup.OnCheckedChangeListener { _, _ -> // checkedId is the RadioButton selected
 			dialog.dismiss()
 		}
 		radioButtonGroup.setOnCheckedChangeListener(radioButtonGroupListener)

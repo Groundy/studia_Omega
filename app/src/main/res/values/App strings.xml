@@ -95,10 +95,16 @@
 	<string name="Result_GUI_WRONG_ELSE">Transakcja zakończona niepowodzeniem z nieznanego powodu.</string>
 
 	<!-- dialog -->
-	<string name="GUI_DIALOG_CancelBioAuth_TEXT">Czy chcesz anulować uwierzytelnianie za pomocą linii papilarnych?</string>
-	<string name="GUI_DIALOG_AskForChangeOptionsForAccountsInBankWebPage_TEXT">Udzielono już takich zgód, czy chcesz zalogować się do banku w celu zmian kont ich dotyczących?</string>
-	<string name="GUI_DIALOG_DEFULT_TEXT">Text który powinnien zostać zastąpiony pytaniem</string>
-	<string name="GUI_DIALOG_YES">TAK</string>
-	<string name="GUI_DIALOG_NO">NIE</string>
+	<string name="DIALOG_GUI_CancelBioAuthMsgText">Czy chcesz anulować uwierzytelnianie za pomocą linii papilarnych?</string>
+	<string name="DIALOG_GUI_AskForChangeOptionsForAccountsInBankWebPage_TEXT">Udzielono już takich zgód, czy chcesz zalogować się do banku w celu zmian kont ich dotyczących?</string>
+	<string name="DIALOG_GUI_DefaultMsgText">Text który powinnien zostać zastąpiony pytaniem</string>
+	<string name="DIALOG_GUI_YES">TAK</string>
+	<string name="DIALOG_GUI_No">NIE</string>
+
+	<!-- PERMISSIONLIST -->
+	<string name="UserPermListDialog_GUI_accHistoryCheckBoxText">Historia rachunków</string>
+	<string name="UserPermListDialog_GUI_accDetailsCheckBoxText">Szczegóły rachunków</string>
+	<string name="UserPermListDialog_GUI_continueButtonText">OK</string>
+	<string name="UserPermListDialog_GUI_cancelButtonText">Anuluj</string>
 
 </resources>

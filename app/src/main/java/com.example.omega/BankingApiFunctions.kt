@@ -32,7 +32,7 @@ class ApiGetPaymentAccDetails {
                     for (i in 0 until amountOfAccToCheck){
                         val accountNumber = UserData.accessTokenStruct?.listOfAccounts!![i].accNumber
                         val thread = Thread {
-                            getAccInfo(accountNumber)
+                            getAccInfo(accountNumber!!)
                         }
                         listOfThreadCheckingAccInfo.add(thread)
                     }
@@ -449,13 +449,13 @@ class ApiAuthorize {
         if(!permissionsList!!.permissions.isNullOrEmpty()){
             val toAddObject = JSONObject()
 
-            if(permissionsList!!.permissions.contains(ApiConsts.Privileges.accountsHistory)){
+            if(permissionsList!!.permissions.contains(ApiConsts.Privileges.AccountsHistory)){
                 toAddObject.put("ais:getTransactionsDone",JSONObject()
                     .put("scopeUsageLimit","multiple")
                     .put("maxAllowedHistoryLong",11)
                 )
             }
-            if(permissionsList!!.permissions.contains(ApiConsts.Privileges.accountsDetails)){
+            if(permissionsList!!.permissions.contains(ApiConsts.Privileges.AccountsDetails)){
                 toAddObject.put("ais:getAccount",JSONObject()
                     .put("scopeUsageLimit","multiple")
                 )

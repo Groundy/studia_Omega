@@ -30,7 +30,7 @@ class YesNoDialogActivity : AppCompatActivity() {
 		}
 	}
 	private fun setText(){
-		val fieldName = getString(R.string.ACT_COM_DIALOG_TEXT_FIELDSNAME)
+		val fieldName = getString(R.string.ACT_COM_DIALOG_TEXT_FIELDNAME)
 		val mainTextToDisplay = intent.getStringExtra(fieldName)
 		findViewById<TextView>(R.id.DialogAct_TextView).text = mainTextToDisplay
 	}

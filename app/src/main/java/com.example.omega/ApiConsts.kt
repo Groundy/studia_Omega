@@ -3,7 +3,7 @@ package com.example.omega
 class ApiConsts {
 	enum class ScopeValues {AIS,AIS_ACC,PIS}
 	enum class Privileges(val text : String){
-		accountsDetails("ACC_DETAILS"), accountsHistory("ACC_HISTORY"), single_payment("SINGLE_PAYMENT")
+		AccountsDetails("ACC_DETAILS"), AccountsHistory("ACC_HISTORY"), SinglePayment("SINGLE_PAYMENT")
 	}
 	companion object {
 		const val PREFERED_CHARSET = "utf-8"
@@ -16,6 +16,6 @@ class ApiConsts {
 		const val TTP_ID = "requiredValueThatIsNotValidated"
 
 		const val AuthUrlValidityTimeSeconds = 24 * 60 * 60
-		const val requestTimeOut = 4000L * 50L
+		const val requestTimeOut = 1000L * 120
 	}
 }

@@ -44,14 +44,14 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 		else{
 			Utilities.showToast(this, getString(R.string.RBLIKDISPLAY_UserMsg_qrGeneratorError))
 			Log.e(Utilities.TagProduction, "Error in RBlik display class, qr generator return null instead of bitmap.")
-			val errorImg = resources.getDrawable(R.drawable.wrong_img).toBitmap()
+			val errorImg = resources.getDrawable(R.drawable.wrong_img, null).toBitmap()
 			imgWidget.setImageBitmap(errorImg)
 		}
 	}
 
 	private fun generateQRCodeImg(code: Int) : Bitmap?{
 		val qrgEncoder = QRGEncoder(code.toString(), null, QRGContents.Type.TEXT, 300)
-		var bitmap = try {
+		val bitmap = try {
 			qrgEncoder.encodeAsBitmap()
 		} catch (e: WriterException) {
 			null//todo

@@ -14,13 +14,13 @@ import android.view.inputmethod.InputMethodManager
 
 class PinActivity : AppCompatActivity() {
 	private enum class PURPOSE{SET, CHANGE, AUTH}
-	private enum class CHANGE_PIN_PROCESS_PHASES{OLD_PIN, NEW_PIN, NEW_PIN_AGAIN}
+	private enum class ChangePinProcessPhases{OLD_PIN, NEW_PIN, NEW_PIN_AGAIN}
 
 	private var puprose : PURPOSE = PURPOSE.AUTH//tmp
 	private var digits : MutableList<EditText> = arrayListOf()
 	private var pinTriesLeft = 3
 	private var tmpPIN : Int = 0
-	private var phaseOfChangePinProcess = CHANGE_PIN_PROCESS_PHASES.OLD_PIN
+	private var phaseOfChangePinProcess = ChangePinProcessPhases.OLD_PIN
 	private lateinit var descriptionField : TextView
 	private lateinit var titleField : TextView
 	
@@ -39,17 +39,17 @@ class PinActivity : AppCompatActivity() {
 			//zwracana wartosc oznacza czy zamknac klawiature
 			override fun onEditorAction(field: TextView?, actionId: Int, keyEvent: KeyEvent?): Boolean {
 				//val keyPressed = keyEvent?.action == KeyEvent.ACTION_DOWN
-				val pressedKeyIsEnter = actionId === EditorInfo.IME_ACTION_DONE
+				val pressedKeyIsEnter = actionId == EditorInfo.IME_ACTION_DONE
 				if (pressedKeyIsEnter) {
 					val everyDigitIsOk = checkIfAllFieldsHaveEnteredDigits()
-					if(everyDigitIsOk){
+					return if(everyDigitIsOk){
 						Log.i(Utilities.TagProduction,"Pressed enter in PIN activity, pin is in CORRECT format")
 						processPIN()
-						return false
+						false
 					}
 					else{
 						Log.e(Utilities.TagProduction,"Pressed enter in PIN activity, pin is in WRONG format")
-						return true
+						true
 					}
 				}
 				else
@@ -214,13 +214,13 @@ class PinActivity : AppCompatActivity() {
 		digits[0].postDelayed(showKeyboardObj, 250)
 	}
 	private fun findElements(){
-		digits.add(findViewById<EditText>(R.id.PIN_digit1_TextView))
-		digits.add(findViewById<EditText>(R.id.PIN_digit2_TextView))
-		digits.add(findViewById<EditText>(R.id.PIN_digit3_TextView))
-		digits.add(findViewById<EditText>(R.id.PIN_digit4_TextView))
-		digits.add(findViewById<EditText>(R.id.PIN_digit5_TextView))
-		descriptionField = findViewById<TextView>(R.id.PIN_Description_TextView)
-		titleField = findViewById<TextView>(R.id.PIN_Title_TextView)
+		digits.add(findViewById(R.id.PIN_digit1_TextView))
+		digits.add(findViewById(R.id.PIN_digit2_TextView))
+		digits.add(findViewById(R.id.PIN_digit3_TextView))
+		digits.add(findViewById(R.id.PIN_digit4_TextView))
+		digits.add(findViewById(R.id.PIN_digit5_TextView))
+		descriptionField = findViewById(R.id.PIN_Description_TextView)
+		titleField = findViewById(R.id.PIN_Title_TextView)
 	}
 	private fun checkIfPinIsCorrect(pin : Int) : Boolean{
 		val savedPinHash = PreferencesOperator.readPrefStr(this, R.string.PREF_hashPin)
@@ -249,12 +249,12 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun processChange(pin : Int){
 		when(phaseOfChangePinProcess){
-			CHANGE_PIN_PROCESS_PHASES.OLD_PIN ->{
+			ChangePinProcessPhases.OLD_PIN ->{
 				descriptionField.text = resources.getString(R.string.PIN_GUI_changeDescription_old)
 				clearDigitsFields()
 				val properOldPin = checkIfPinIsCorrect(pin)
 				if(properOldPin) {
-					phaseOfChangePinProcess = CHANGE_PIN_PROCESS_PHASES.NEW_PIN
+					phaseOfChangePinProcess = ChangePinProcessPhases.NEW_PIN
 					descriptionField.text =	resources.getString(R.string.PIN_GUI_changeDescription_new)
 				}
 				else{
@@ -284,12 +284,12 @@ class PinActivity : AppCompatActivity() {
 					}
 				}
 			}
-			CHANGE_PIN_PROCESS_PHASES.NEW_PIN ->{
+			ChangePinProcessPhases.NEW_PIN ->{
 				descriptionField.text = resources.getString(R.string.PIN_GUI_changeDescription_new)
 				tmpPIN = pin
-				phaseOfChangePinProcess = CHANGE_PIN_PROCESS_PHASES.NEW_PIN_AGAIN
+				phaseOfChangePinProcess = ChangePinProcessPhases.NEW_PIN_AGAIN
 			}
-			CHANGE_PIN_PROCESS_PHASES.NEW_PIN_AGAIN ->{
+			ChangePinProcessPhases.NEW_PIN_AGAIN ->{
 				descriptionField.text = resources.getString(R.string.PIN_GUI_changeDescription_newAgain)
 				val twoPinsAreSame = pin == tmpPIN
 				if(twoPinsAreSame){

@@ -7,9 +7,9 @@ class UserData  {
 	class AccessTokenStruct{
 		var tokenType : String? = null
 		var tokenContent : String? = null
-		var scope : ApiConsts.ScopeValues? = null
-		var expirationTime : String? = null
-		var refreshToken : String? = null
+		private var scope : ApiConsts.ScopeValues? = null
+		private var expirationTime : String? = null
+		private var refreshToken : String? = null
 		var listOfAccounts : ArrayList<PaymentAccount>? = null
 
 		fun setTokenType(tokenTypeToSet : String?) : AccessTokenStruct {
@@ -70,15 +70,15 @@ class UserData  {
 		}
 	}
 	class PaymentAccount{
-		var accNumber : String = String()
-		var accType : String? = null
+		var accNumber : String? = null
+		private var accType : String? = null
 		var currency :String? = null
 		var availableBalance : Double? = null
-		var bookingBalance : Double? = null
-		var accountHolderType : String? = null
-		var bankName  : String? = null
-		var bankAddress : String? = null
-		var ownerName : String? = null
+		private var bookingBalance : Double? = null
+		private var accountHolderType : String? = null
+		private var bankName  : String? = null
+		private var bankAddress : String? = null
+		private var ownerName : String? = null
 
 		fun isValid() : Boolean{
 			val isWrong =
@@ -128,7 +128,7 @@ class UserData  {
 				this.ownerName = ownerName
 				this.ownerName = ownerName
 			}catch (e : Exception){
-				Log.e(Utilities.TagProduction, "Failed to convert response body from getAccount methode to Account obj [${e.toString()}]")
+				Log.e(Utilities.TagProduction, "Failed to convert response body from getAccount methode to Account obj [$e]")
 			}
 		}
 		constructor(accNumber: String){

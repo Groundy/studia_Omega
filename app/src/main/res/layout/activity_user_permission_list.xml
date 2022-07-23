@@ -22,13 +22,13 @@
 			android:id="@+id/userPermisionList_accHistory_checkBox"
 			android:layout_width="match_parent"
 			android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
-			android:text="@string/userPermissionList_accHistory_checkBox" />
+			android:text="@string/UserPermListDialog_GUI_accHistoryCheckBoxText" />
 
 		<CheckBox
 			android:id="@+id/userPermisionList_accDetails_checkBox"
 			android:layout_width="match_parent"
 			android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
-			android:text="@string/userPermissionList_accDetails_checkBox" />
+			android:text="@string/UserPermListDialog_GUI_accDetailsCheckBoxText" />
 
 		<LinearLayout
 			android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
 				android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
 				android:layout_gravity="center_horizontal"
 				android:minWidth="48dp"
-				android:text="@string/userPermissionList_continue_Button"
+				android:text="@string/UserPermListDialog_GUI_continueButtonText"
 				android:textSize="14sp"
 				style="?android:attr/buttonBarButtonStyle" />
 
@@ -49,7 +49,7 @@
 				android:id="@+id/userPermisionList_cancel_Button"
 				android:layout_width="@dimen/userPermissionList_ButtonSizeX_dim"
 				android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
-				android:text="@string/userPermissionList_cancel_Button"
+				android:text="@string/UserPermListDialog_GUI_cancelButtonText"
 				android:textSize="14sp"
 				style="?android:attr/buttonBarButtonStyle" />
 

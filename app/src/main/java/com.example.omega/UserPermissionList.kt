@@ -3,7 +3,6 @@ package com.example.omega
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Window
 import android.widget.Button
 import android.widget.CheckBox
 
@@ -52,10 +51,10 @@ class UserPermissionList : AppCompatActivity() {
 		val permissionsList = PermissionList()
 
 		if(findViewById<CheckBox>(R.id.userPermisionList_accDetails_checkBox).isChecked)
-			permissionsList.add(ApiConsts.Privileges.accountsDetails)
+			permissionsList.add(ApiConsts.Privileges.AccountsDetails)
 
 		if(findViewById<CheckBox>(R.id.userPermisionList_accHistory_checkBox).isChecked)
-			permissionsList.add(ApiConsts.Privileges.accountsHistory)
+			permissionsList.add(ApiConsts.Privileges.AccountsHistory)
 
 		endActivity(true, permissionsList)
 	}
@@ -66,7 +65,7 @@ class UserPermissionList : AppCompatActivity() {
 		}
 
 		val serializedData = permissionList.toString()
-		val dataField = getString(R.string.userPermissionList_outputField)
+		val dataField = getString(R.string.ACT_COM_USERPERMISSIONLIST_FIELDNAME)
 		val outputIntent = Intent().putExtra(dataField, serializedData)
 		setResult(RESULT_OK, outputIntent)
 		finish()
