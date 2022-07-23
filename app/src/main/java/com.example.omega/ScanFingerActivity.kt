@@ -35,7 +35,8 @@ class ScanFingerActivity : AppCompatActivity() {
 						Log.i(Utilities.TagProduction, "User wants to other auth methode than fingerPrint")
 						finishActivity(false, errorCode)
 					}
-					BiometricPrompt.ERROR_USER_CANCELED -> ActivityStarter.openDialogAskIfUserWantToCancelBioAuth(this@ScanFingerActivity)
+					BiometricPrompt.ERROR_USER_CANCELED ->
+						ActivityStarter.openDialogWithDefinedPurpose(this@ScanFingerActivity, YesNoDialogActivity.Companion.DialogPurpose.CancelBioAuth)
 					else -> finishActivity(false,errorCode)
 				}
 			}

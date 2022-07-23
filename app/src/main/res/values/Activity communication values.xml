@@ -15,18 +15,20 @@
 	<string name="ACT_COM_WEBVIEW_URI_FIELDNAME">ACT_COM_WEBVIEW_URI_FIELDNAME</string>
 	<string name="ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME">ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME</string>
 	<string name="ACT_COM_CODEGENERATOR_CODE_FOR_DISPLAY_FIELDNAME">ACT_COM_CODE_FOR_DISPLAY_FIELDNAME</string>
-	<string name="ACT_COM_DIALOG_TEXT_FIELDNAME">ACT_COM_DIALOG_TEXT_FIELDNAME</string>
+	<string name="ACT_COM_DIALOG_PURPOSE_FIELDNAME">ACT_COM_DIALOG_PURPOSE_FIELDNAME</string>
+	<string name="ACT_COM_DIALOG_TextToDisplay_FIELDNAME">ACT_COM_DIALOG_TextToDisplay_FIELDNAME</string>
 	<string name="ACT_COM_USERPERMISSIONLIST_FIELDNAME">ACT_COM_USERPERMISSIONLIST_FIELDNAME</string>
 
 
 	<!--ACTIVIES ret codes-->
 	<integer name="ACT_RETCODE_QrScanner">1001</integer>
 	<integer name="ACT_RETCODE_FINGER">1002</integer>
-	<integer name="ACT_RETCODE_DIALOG_CancelBioAuth">1003</integer>
+
 	<integer name="ACT_RETCODE_PIN_AUTH">1004</integer>
 	<integer name="ACT_RETCODE_PIN_SET">1005</integer>
 	<integer name="ACT_RETCODE_PIN_CHANGE">1006</integer>
 	<integer name="ACT_RETCODE_WEBVIEW">1007</integer>
 	<integer name="ACT_RETCODE_PERMISSION_LIST">1008</integer>
 	<integer name="ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage">1009</integer>
+	<integer name="ACT_RETCODE_DIALOG_CancelBioAuth">1003</integer>
 </resources>

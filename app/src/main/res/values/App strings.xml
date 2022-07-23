@@ -18,6 +18,8 @@
 	<string name="UserMsg_basicTransfer_wrong_title">Tytuł przelewu musi mieć między 3 a 50 znaków</string>
 	<string name="UserMsg_basicTransfer_error_reciving_acc_balance">Błąd pobierania informacji o środkach na rachunku, płatność niemożliwa.</string>
 	<string name="UserMsg_basicTransfer_unkownError">Nieznany błąd, płatność niemożliwa.</string>
+	<string name="UserMsg_Banking_errorObtaingToken">Wystąpił nieznany bład w uzyskiwaniu tokenu dostępowego z banku.</string>
+	<string name="UserMsg_Banking_errorUnauthorizedRequest">Żądanie dostępu do informacji o rachunku nie było autoryzowane!</string>
 
 	<!-- RBLIK code generator  -->
 	<string name="GUI_RBlikCodeGenerator_chooseAccountTextView">Na rachunek: </string>

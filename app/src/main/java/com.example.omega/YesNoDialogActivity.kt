@@ -7,6 +7,9 @@ import android.view.Window
 import android.widget.TextView
 
 class YesNoDialogActivity : AppCompatActivity() {
+	companion object{
+		enum class DialogPurpose{ CancelBioAuth, ResetAuthUrl}
+	}
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -16,22 +19,20 @@ class YesNoDialogActivity : AppCompatActivity() {
 		setText()
 	}
 
-	private fun closeActivity(ok: Boolean){
-		val returnValue = if(ok) RESULT_OK else RESULT_CANCELED
-		setResult(returnValue, Intent())
-		finish()
-	}
 	private fun setListenersToButtons(){
 		findViewById<TextView>(R.id.DialogAct_OK_Button).setOnClickListener {
-			closeActivity(true)
+			setResult(RESULT_OK, Intent())
+			finish()
 		}
 		findViewById<TextView>(R.id.DialogAct_No_Button).setOnClickListener {
-			closeActivity(false)
+			setResult(RESULT_CANCELED, Intent())
+			finish()
 		}
 	}
 	private fun setText(){
-		val fieldName = getString(R.string.ACT_COM_DIALOG_TEXT_FIELDNAME)
+		val fieldName = getString(R.string.ACT_COM_DIALOG_TextToDisplay_FIELDNAME)
 		val mainTextToDisplay = intent.getStringExtra(fieldName)
 		findViewById<TextView>(R.id.DialogAct_TextView).text = mainTextToDisplay
 	}
+
 }

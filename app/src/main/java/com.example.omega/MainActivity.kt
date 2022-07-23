@@ -244,7 +244,7 @@ class MainActivity : AppCompatActivity() {
 
 		val authCodeAlreadyExist = PreferencesOperator.readPrefStr(this,R.string.PREF_authCode).isNotEmpty()
 		if(authCodeAlreadyExist)
-			ActivityStarter.openDialogAskIfUserWantToLoginToBankDialog(this)
+			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl)
 		else
 			ActivityStarter.openBrowserForLogin(this, authUrl, state)
 	}
