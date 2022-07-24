@@ -31,7 +31,6 @@ import com.karumi.dexter.listener.single.PermissionListener
 //  Expand:   CTRL + SHIFT + '+'
 //  Ctrl + B go to definition
 
-
 class MainActivity : AppCompatActivity() {
 	private var nfcSignalCatchingIsOn: Boolean = false
 	private var nfcAdapter: NfcAdapter? = null
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
-
+		PreferencesOperator.clearAuthData(this)
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initGUI()
 		DEVELOPER_initaialFun()
@@ -55,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 			resources.getInteger(R.integer.ACT_RETCODE_PIN_SET) ->pinActivityResult(resultCode)
 			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW) ->webViewActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> tokenActivityResult(resultCode, data)
-			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage) -> askIfUserWantToLoginToBankDialogActivityResult(resultCode)
+			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank) -> askIfUserWantToLoginToBankDialogActivityResult(resultCode)
 		}
 	}
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -67,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 			R.id.ConfigurationsTab ->
 				ActivityStarter.startConfigurationActivity(this)
 			R.id.TransferTab ->
-				ActivityStarter.startTransferActivityFromMenu(this)
+				openBasicTransferTabClicked()
 			R.id.AskForTokenTab ->
 				ActivityStarter.startUserPermissionListActivity(this)
 			R.id.GenerateBlikCodeTab ->
@@ -117,16 +116,15 @@ class MainActivity : AppCompatActivity() {
 		val permissionNfcDenied = checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_DENIED
 		if (permissionNfcDenied) {
 			Log.e(Utilities.TagProduction, "There's no permission to use")
-			Utilities.showToast(
-				this@MainActivity,
-				resources.getString(R.string.NFC_UserMsg_NeedPermission)
-			)
+			val displayMsg = resources.getString(R.string.NFC_UserMsg_NeedPermission)
+			Utilities.showToast(this, displayMsg)
 			return false
 		}
 		val manager = this.getSystemService(NFC_SERVICE) as NfcManager
 		val nfcIsOn = manager.defaultAdapter.isEnabled
 		if (!nfcIsOn) {
-			Utilities.showToast(this@MainActivity, resources.getString(R.string.NFC_UserMsg_TurnOff))
+			val displayMsg = resources.getString(R.string.NFC_UserMsg_TurnOff)
+			Utilities.showToast(this, displayMsg)
 			Log.e(Utilities.TagProduction, "User denied permission to use NFC")
 			return false
 		}
@@ -181,7 +179,6 @@ class MainActivity : AppCompatActivity() {
 			nfcOnOffButton.isVisible = false
 	}
 	private fun initCodeField(){
-		codeField = findViewById(R.id.enterCodeField)
 		val codeFieldTextListener = object : TextWatcher {
 			override fun afterTextChanged(s: Editable) {
 				if (s.length == 6) {
@@ -193,6 +190,7 @@ class MainActivity : AppCompatActivity() {
 			override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 			override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 		}
+		codeField = findViewById(R.id.enterCodeField)
 		codeField.addTextChangedListener(codeFieldTextListener)
 		codeField.requestFocus()
 	}
@@ -214,7 +212,11 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun DEVELOPER_initaialFun(){
+		findViewById<Button>(R.id.testButton).setOnClickListener{
+			openBasicTransferTabClicked()
+		}
 	}
+
 	//Intents
 	private fun tokenActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode != RESULT_OK){
@@ -224,12 +226,11 @@ class MainActivity : AppCompatActivity() {
 
 		val field = getString(R.string.ACT_COM_USERPERMISSIONLIST_FIELDNAME)
 		val serializedPermissionList = data?.getStringExtra(field)
-		val obtainNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, serializedPermissionList)
+		val permissionListObject = PermissionList(serializedPermissionList!!)
+		val obtainNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, permissionListObject)
 		if(obtainNewAuthUrl){
 			PreferencesOperator.clearAuthData(this)
-			val permissionList = PermissionList(serializedPermissionList!!)
-			val tmpStateValue = ApiFunctions.getRandomStateValue()
-			ApiAuthorize().run(this, tmpStateValue, permissionList.permissions)
+			ApiAuthorize().run(this, permissionListObject)
 		}
 		else
 			Log.i(Utilities.TagProduction, "Skipped obtaining AuthUrl, going to Bank login webpage")
@@ -237,7 +238,7 @@ class MainActivity : AppCompatActivity() {
 		val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
 		val fieldsAreFilled = authUrl.isNotEmpty() && state.isNotEmpty()
 		if(!fieldsAreFilled){
-			Log.e(Utilities.TagProduction, "Failed to obtain auth url, there's no authUrl or stateValue")
+			Log.e(Utilities.TagProduction, "Failed to obtain auth url, tried to pass no authUrl or stateValue")
 			Utilities.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")//todo TOFILE
 			return
 		}
@@ -246,24 +247,15 @@ class MainActivity : AppCompatActivity() {
 		if(authCodeAlreadyExist)
 			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl)
 		else
-			ActivityStarter.openBrowserForLogin(this, authUrl, state)
+			ActivityStarter.openBrowserForLogin(this)
 	}
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
-		if(resultCode != RESULT_OK){
-			Log.e(Utilities.TagProduction,"OAuth return resultCode other than OK")
-			Utilities.showToast(this, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
-			return
+		if(resultCode == RESULT_OK){
+			//todo
 		}
-
-		val codeFieldName = getString(R.string.ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME)
-		val code = data?.getStringExtra(codeFieldName)
-		if(code.isNullOrEmpty()){
-			Log.e(Utilities.TagProduction,"OAuth return null code")
-			Utilities.showToast(this, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
-			return
+		else{
+			//todo
 		}
-		PreferencesOperator.savePref(this, R.string.PREF_authCode, code)
-		ApiGetToken.run(this)
 	}
 	private fun pinActivityResult(resultCode: Int){
 		if(resultCode == RESULT_OK){
@@ -342,8 +334,29 @@ class MainActivity : AppCompatActivity() {
 	private fun askIfUserWantToLoginToBankDialogActivityResult(resultCode: Int){
 		if(resultCode != RESULT_OK)
 			return
-		PreferencesOperator.clearAuthData(this)
-		ActivityStarter.startUserPermissionListActivity(this)
-		PreferencesOperator.clearPreferences(this)
+
+		val permissionList = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
+		val needNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, permissionList)
+		if(needNewAuthUrl)
+			ApiAuthorize().run(this, permissionList)
+		ActivityStarter.openBrowserForLogin(this)
+		val g = 3
+	}
+
+
+	private fun openBasicTransferTabClicked(){
+		val authCodeNotAvaible = PreferencesOperator.readPrefStr(this, R.string.PREF_authCode).isNullOrEmpty()
+		if(authCodeNotAvaible){
+			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.LoginToBankAccount)
+			return
+		}
+
+		PreferencesOperator.DEVELOPER_showPref(this)
+		val gotAcessToAccounts = ApiGetToken.run(this)
+		if(gotAcessToAccounts)
+			ActivityStarter.startTransferActivityFromMenu(this)
+		else
+			;//todo
+
 	}
 }

@@ -1,8 +1,9 @@
 //TODO
-21. usunąc action bar z permission dialog.
+22. Dodać powrót z loginToBankWindow do przelewu jednorazoweho czy cokolwiek użytkownik dalej robił
 8.  W errorAuth dodać rozóznienie między tym gdy użytkownik chce autoryzacji za pomocą innej metody a innym błędem.
 
 //DONE
+21. usunąc action bar z permission dialog.
 20. strona loginu do banku nie dziala
 19. Dodać obsługę kodu
 18. Usunąc opcje uwierzytelniania palcem dla telefonów bez czujnika

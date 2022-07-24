@@ -8,7 +8,7 @@ import android.widget.TextView
 
 class YesNoDialogActivity : AppCompatActivity() {
 	companion object{
-		enum class DialogPurpose{ CancelBioAuth, ResetAuthUrl}
+		enum class DialogPurpose{ CancelBioAuth, ResetAuthUrl, LoginToBankAccount}
 	}
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)

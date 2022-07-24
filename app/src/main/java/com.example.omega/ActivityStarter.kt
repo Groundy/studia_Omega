@@ -87,15 +87,9 @@ class ActivityStarter {
 			val retCodeForActivity  = activity.resources.getInteger(R.integer.ACT_RETCODE_FINGER)
 			activity.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
 		}
-		fun openBrowserForLogin(activity: Activity, authUrl : String, expectedState: String){
+		fun openBrowserForLogin(activity: Activity){
 			 val intent = Intent(activity, OAuth::class.java)
-			 val uriField = activity.resources.getString(R.string.ACT_COM_WEBVIEW_URI_FIELDNAME)
-			 val stateField = activity.resources.getString(R.string.ACT_COM_WEBVIEW_STATE_FIELDNAME)
 			 val returnCode = activity.resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)
-
-			 intent.putExtra(uriField,authUrl)
-			 intent.putExtra(stateField,expectedState)
-
 			 activity.startActivityForResult(intent,returnCode)
 		}
 		fun openDialogWithDefinedPurpose(activity: Activity, purpose : YesNoDialogActivity.Companion.DialogPurpose){
@@ -104,13 +98,17 @@ class ActivityStarter {
 			var retCode = 0
 			when(purpose){
 				YesNoDialogActivity.Companion.DialogPurpose.CancelBioAuth ->{
-					retCode = R.integer.ACT_RETCODE_DIALOG_CancelBioAuth
+					retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_CancelBioAuth)
 					msgToDisplay = activity.getString(R.string.DIALOG_GUI_CancelBioAuthMsgText)
 				}
 				YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl ->{
-					retCode = R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage
+					retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage)
 					msgToDisplay = activity.getString(R.string.DIALOG_GUI_AskForChangeOptionsForAccountsInBankWebPage_TEXT)
 
+				}
+				YesNoDialogActivity.Companion.DialogPurpose.LoginToBankAccount ->{
+					retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank)
+					msgToDisplay = activity.getString(R.string.DIALOG_GUI_AskUserIfHeWantToLoginToBank_TEXT)
 				}
 			}
 			val field = activity.getString(R.string.ACT_COM_DIALOG_TextToDisplay_FIELDNAME)

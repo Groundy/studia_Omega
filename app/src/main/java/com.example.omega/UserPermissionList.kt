@@ -7,13 +7,13 @@ import android.widget.Button
 import android.widget.CheckBox
 
 class PermissionList(){
-	var permissions = arrayListOf<ApiConsts.Privileges>()
+	var permissionsArray = arrayListOf<ApiConsts.Privileges>()
 	private val separator = ";;;"
 
 	override fun toString() : String{
 		var toRet = String()
 		ApiConsts.Privileges.values().forEach {
-			if(permissions.contains(it))
+			if(permissionsArray.contains(it))
 				toRet = toRet.plus(it.text).plus(separator)
 		}
 		return toRet
@@ -21,14 +21,19 @@ class PermissionList(){
 	constructor(inputString : String) : this() {
 		ApiConsts.Privileges.values().forEach {
 			if(inputString.contains(it.text))
-				this.permissions.add(it)
+				permissionsArray.add(it)
 		}
 	}
 	constructor(privilegesArray : List<ApiConsts.Privileges>) : this() {
-		this.permissions = privilegesArray as ArrayList<ApiConsts.Privileges>
+		permissionsArray = privilegesArray as ArrayList<ApiConsts.Privileges>
+	}
+	constructor(vararg permissions : ApiConsts.Privileges) : this() {
+		permissions.forEach {
+			permissionsArray.add(permissionsArray.size, it)
+		}
 	}
 	fun add(permission : ApiConsts.Privileges){
-		this.permissions.add(permission)
+		this.permissionsArray.add(permission)
 	}
 }
 

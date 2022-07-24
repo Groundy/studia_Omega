@@ -12,15 +12,19 @@ import androidx.core.view.isVisible
 
 class OAuth : AppCompatActivity() {
 	private lateinit var webView: WebView
-	private var expectedRedirectState : String? = null
-	private var uri : String? = null
+	private var expectedState = String()
+	private var url = String()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_oauth)
+		val readValuesOk = readPrefValues()
+		if(!readValuesOk){
+			setResult(RESULT_CANCELED)
+			finish()
+		}
 		setWebView()
-		getDataFromIntent()
-		webView.loadUrl(uri.toString())
+		webView.loadUrl(url)
 	}
 
 	private fun setWebView(){
@@ -30,30 +34,38 @@ class OAuth : AppCompatActivity() {
 		webView.settings.allowFileAccess = true
 		webView.settings.databaseEnabled = true
 		webView.settings.domStorageEnabled = true
-
 		webView.webViewClient = object : WebViewClient() {
 			override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+				view?.isVisible = false
 				request?.let {
-					view?.isVisible = false
 					val isProperRedirectUri = it.url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
 					if(!isProperRedirectUri){
 						Log.e(Utilities.TagProduction, "Failed to obtain code[request not started with app callBack], request [${request.url}]")
-						finishThisActivity(false)
+						setResult(RESULT_CANCELED)
+						finish()
 					}
 
 					val responseState = it.url.getQueryParameter("state")// To prevent CSRF attacks, check that we got the same state value we sent,
-					val responseStateCorrect = responseState == expectedRedirectState
+					val responseStateCorrect = responseState == expectedState
 					if (!responseStateCorrect) {
+						Utilities.showToast(this@OAuth, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
 						Log.e(Utilities.TagProduction, "Failed to obtain code[wrong state], request [${request.url}]")
-						finishThisActivity(false)
+						setResult(RESULT_CANCELED)
+						finish()
 					}
 
 					val code : String? = it.url.getQueryParameter("code")
-					if (code == null) {
+					if (code.isNullOrEmpty()) {
 						Log.e(Utilities.TagProduction, "Failed to obtain code[no code], request [${request.url}]")
-						finishThisActivity(false)
+						Utilities.showToast(this@OAuth, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
+						setResult(RESULT_CANCELED)
+						finish()
 					}
-					finishThisActivity(true, code)
+					else {
+						PreferencesOperator.savePref(this@OAuth, R.string.PREF_authCode, code)
+						setResult(RESULT_OK)
+						finish()
+					}
 				}
 				return super.shouldOverrideUrlLoading(view, request)
 			}
@@ -69,30 +81,45 @@ class OAuth : AppCompatActivity() {
 			}
 		}
 	}
-	private fun getDataFromIntent(){
-		val uriField = resources.getString(R.string.ACT_COM_WEBVIEW_URI_FIELDNAME)
-		val stateField = resources.getString(R.string.ACT_COM_WEBVIEW_STATE_FIELDNAME)
-		uri = intent.getStringExtra(uriField).toString()
-		if(uri == null){
-			Log.e(Utilities.TagProduction, "Failed to authorize, wrong Uri passed to login activity")
-			finishThisActivity(false)
+
+	private fun readPrefValues() : Boolean{
+		expectedState = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
+		url = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
+		val urlValidityTime = PreferencesOperator.readPrefStr(this, R.string.PREF_authUrlValidityTimeEnd)
+		val urlVaild = OmegaTime.timestampIsValid(urlValidityTime)
+		val valuesAreOk = urlVaild && url.isNotEmpty() && expectedState.isNotEmpty()
+		return valuesAreOk
+	}
+	/*
+	private fun reciveInfoFromBank(view: WebView?, request: WebResourceRequest){
+		val isProperRedirectUri = request.url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
+		if(!isProperRedirectUri){
+			Log.e(Utilities.TagProduction, "Failed to obtain code[request not started with app callBack], request [${request.url}]")
+			setResult(RESULT_CANCELED)
+			finish()
 		}
 
-		expectedRedirectState = intent.getStringExtra(stateField).toString()
-		if(expectedRedirectState == null){
-			Log.e(Utilities.TagProduction, "Failed to authorize, Uri passed to login activity has no state parameter")
-			finishThisActivity(false)
+		val responseState = request.url.getQueryParameter("state")// To prevent CSRF attacks, check that we got the same state value we sent,
+		val responseStateCorrect = responseState == expectedState
+		if (!responseStateCorrect) {
+			Utilities.showToast(this, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
+			Log.e(Utilities.TagProduction, "Failed to obtain code[wrong state], request [${request.url}]")
+			setResult(RESULT_CANCELED)
+			finish()
 		}
-	}
-	private fun finishThisActivity(success : Boolean, code : String? = null){
-		if(!success || code == null)
-			finishActivity(RESULT_CANCELED)
-		else{
-			val codeReturnField = resources.getString(R.string.ACT_COM_WEBVIEW_AUTHCODE_FIELDNAME)
-			val output = Intent()
-				.putExtra(codeReturnField, code)
-			setResult(RESULT_OK, output)
+
+		val code : String? = request.url.getQueryParameter("code")
+		if (code.isNullOrEmpty()) {
+			Log.e(Utilities.TagProduction, "Failed to obtain code[no code], request [${request.url}]")
+			Utilities.showToast(this, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
+			setResult(RESULT_CANCELED)
+			finish()
+		}
+		else {
+			PreferencesOperator.savePref(this, R.string.PREF_authCode, code)
+			setResult(RESULT_OK)
 			finish()
 		}
 	}
+*/
 }

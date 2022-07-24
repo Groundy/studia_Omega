@@ -45,6 +45,7 @@
 				android:id="@+id/testButton"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:rotationX="1"
 				android:text="TEST_TEST_TEST_TEST" />
 
 			<EditText

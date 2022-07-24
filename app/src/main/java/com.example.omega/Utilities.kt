@@ -5,6 +5,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.text.SpannableStringBuilder
+import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -39,6 +40,24 @@ class PreferencesOperator{
 				R.string.PREF_lastUsedPermissionsForAuth
 			)
 		}
+
+		fun DEVELOPER_showPref(activity: Activity){
+			val preferencesFields = arrayOf(
+				R.string.PREF_authURL,
+				R.string.PREF_authCode,
+				R.string.PREF_lastRandomValue,
+				R.string.PREF_lastUsedPermissionsForAuth,
+				R.string.PREF_authUrlValidityTimeEnd,
+				R.string.PREF_listOfAccNumbersAccociatedWithToken)
+
+			preferencesFields.forEach {
+				val str = readPrefStr(activity, it)
+				val t = activity.getString(it)
+				val hg = "$t ---> $str"
+				Log.i(Utilities.TagProduction, hg)
+			}
+		}
+
 		private fun getSharedProperties(activity: Activity) : SharedPreferences{
 			val fileName = activity.getString(R.string.preference_file_key)
 			val sharedPrefObj = activity.getSharedPreferences(fileName, MODE_PRIVATE)
