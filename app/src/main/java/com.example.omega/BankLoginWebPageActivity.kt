@@ -1,7 +1,5 @@
 package com.example.omega
 
-import android.content.Intent
-import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +8,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.view.isVisible
 
-class OAuth : AppCompatActivity() {
+class BankLoginWebPageActivity : AppCompatActivity() {
 	private lateinit var webView: WebView
 	private var expectedState = String()
 	private var url = String()
@@ -48,7 +46,7 @@ class OAuth : AppCompatActivity() {
 					val responseState = it.url.getQueryParameter("state")// To prevent CSRF attacks, check that we got the same state value we sent,
 					val responseStateCorrect = responseState == expectedState
 					if (!responseStateCorrect) {
-						Utilities.showToast(this@OAuth, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
+						Utilities.showToast(this@BankLoginWebPageActivity, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
 						Log.e(Utilities.TagProduction, "Failed to obtain code[wrong state], request [${request.url}]")
 						setResult(RESULT_CANCELED)
 						finish()
@@ -57,12 +55,12 @@ class OAuth : AppCompatActivity() {
 					val code : String? = it.url.getQueryParameter("code")
 					if (code.isNullOrEmpty()) {
 						Log.e(Utilities.TagProduction, "Failed to obtain code[no code], request [${request.url}]")
-						Utilities.showToast(this@OAuth, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
+						Utilities.showToast(this@BankLoginWebPageActivity, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
 						setResult(RESULT_CANCELED)
 						finish()
 					}
 					else {
-						PreferencesOperator.savePref(this@OAuth, R.string.PREF_authCode, code)
+						PreferencesOperator.savePref(this@BankLoginWebPageActivity, R.string.PREF_authCode, code)
 						setResult(RESULT_OK)
 						finish()
 					}

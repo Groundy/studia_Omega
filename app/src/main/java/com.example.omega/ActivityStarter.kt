@@ -88,7 +88,7 @@ class ActivityStarter {
 			activity.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
 		}
 		fun openBrowserForLogin(activity: Activity){
-			 val intent = Intent(activity, OAuth::class.java)
+			 val intent = Intent(activity, BankLoginWebPageActivity::class.java)
 			 val returnCode = activity.resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)
 			 activity.startActivityForResult(intent,returnCode)
 		}
