@@ -11,4 +11,5 @@
 
 	<string name="PREF_listOfAccNumbersAccociatedWithToken">listOfAccNumbersAccociatedWithToken</string>
 	<string name="PREF_authCode">authCode</string>
+	<string name="PREF_accessToken">accessToken</string>
 </resources>

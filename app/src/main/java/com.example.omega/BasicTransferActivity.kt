@@ -19,6 +19,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	private val polishBankAccountNumberLength = 28
 	private lateinit var amountAfterTransferTextView : TextView
 	private lateinit var spinner : Spinner
+	private lateinit var token : Token
 
 	private var availableBalance : Double? = null
 	private var accountCurrency : String? = null
@@ -27,9 +28,13 @@ class BasicTransferActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_basic_transfer)
+		if(PreferencesOperator.isTokenAvaible())
+			token = PreferencesOperator.getTokenCopy()
+		else
+			finish()//todo przetestować to.
 		findGuiElements()
 		setListenersToGuiElements()
-		fillListOfAccounts()
+		fillListOfAccounts()//todo
 	}
 	private fun setListenersToGuiElements(){
 		val amountEditTextListener = object :TextWatcher{
@@ -66,7 +71,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		}
 		val selectedItemChangedListener = object :  AdapterView.OnItemSelectedListener {
 			override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-				val success = getInfoAboutChosenPaymentAccount()
+				val success = getInfoAboutChosenPaymentAccount(token)
 				if(!success)
 					finishThisActivity(false,getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance))
 				amountEditText.text = null
@@ -158,17 +163,16 @@ class BasicTransferActivity : AppCompatActivity() {
 		return floor(balanceAfterTransfer * 100) / 100 //trim decimal after 2 digits
 	}
 	private fun fillListOfAccounts(){
-		//ApiGetToken.run(this)
-		val obtainedAccountData = ApiGetPaymentAccDetails.run()//todo
+		val obtainedAccountData = ApiGetPaymentAccDetails(token).run()//todo
 		if(!obtainedAccountData){
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivity(false,errorCodeTextToDisplay)
 			return
 		}
-		val listOfAccountFromToken = UserData.accessTokenStruct?.listOfAccounts!!
+		val listOfAccountFromToken = token.listOfAccounts!!
 		val adapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item)
 		listOfAccountFromToken.forEach{
-			adapter.add(it.getDisplayString())
+			adapter.add(it.toString())
 		}
 		spinner.adapter = adapter
 	}
@@ -177,7 +181,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			Utilities.showToast(this, errorCode)
 		this.finish()
 	}
-	private fun getInfoAboutChosenPaymentAccount() : Boolean{
+	private fun getInfoAboutChosenPaymentAccount(token: Token) : Boolean{
 		val currentChosenItem = spinner.selectedItem.toString()
 		val separator = "]  "
 		val indexOfStartAccNumber = currentChosenItem.indexOf(separator)
@@ -185,12 +189,9 @@ class BasicTransferActivity : AppCompatActivity() {
 			return false//todo
 
 		val accountNumber = currentChosenItem.substring(indexOfStartAccNumber + separator.length)
-		val accessToken = UserData.accessTokenStruct
-		if(accessToken == null)
-			return false //todo
 
-		val accountBalance = accessToken.getBalanceOfAccount(accountNumber)
-		val accountCurrency = accessToken.getCurrencyOfAccount(accountNumber)
+		val accountBalance = token.getBalanceOfAccount(accountNumber)
+		val accountCurrency = token.getCurrencyOfAccount(accountNumber)
 		if(accountBalance == null || accountCurrency.isNullOrEmpty())
 			return false //todo
 
@@ -219,5 +220,9 @@ class BasicTransferActivity : AppCompatActivity() {
 		}
 		else
 			finishThisActivity(false, getString(R.string.UserMsg_basicTransfer_unkownError))
+	}
+	private fun getToken() : Token{
+		//todo
+		return Token()
 	}
 }

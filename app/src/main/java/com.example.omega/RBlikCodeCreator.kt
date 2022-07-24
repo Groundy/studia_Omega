@@ -17,11 +17,16 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	private lateinit var accountListSpinner : Spinner
 	private lateinit var goNextActivityButton : Button
 	private var userAccountsAvailable = false
+	private lateinit var token : Token
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_rblik_code_creator)
-		userAccountsAvailable = ApiGetPaymentAccDetails.run()
+		if(PreferencesOperator.isTokenAvaible())
+			token = PreferencesOperator.getTokenCopy()
+		else
+			finish()//todo przetestować to.
+		userAccountsAvailable = ApiGetPaymentAccDetails(token).run()
 		setUpGui()
 		fillListOfAccounts()
 		DEVELOPER_fillWidgets()
@@ -73,10 +78,10 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			finish()
 			return
 		}
-		val listOfAccountFromToken = UserData.accessTokenStruct?.listOfAccounts!!
+		val listOfAccountFromToken = token.listOfAccounts!!
 		val adapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item)
 		listOfAccountFromToken.forEach{
-			adapter.add(it.getDisplayString())
+			adapter.add(it.toString())
 		}
 		accountListSpinner.adapter = adapter
 	}

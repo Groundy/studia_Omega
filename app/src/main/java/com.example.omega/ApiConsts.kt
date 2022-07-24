@@ -16,6 +16,6 @@ class ApiConsts {
 		const val TTP_ID = "requiredValueThatIsNotValidated"
 
 		const val AuthUrlValidityTimeSeconds = 24 * 60 * 60
-		const val requestTimeOut = 1000L * 120
+		const val requestTimeOut = 1000L * 60 * 8
 	}
 }

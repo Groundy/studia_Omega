@@ -40,7 +40,6 @@ class PreferencesOperator{
 				R.string.PREF_lastUsedPermissionsForAuth
 			)
 		}
-
 		fun DEVELOPER_showPref(activity: Activity){
 			val preferencesFields = arrayOf(
 				R.string.PREF_authURL,
@@ -56,6 +55,12 @@ class PreferencesOperator{
 				val hg = "$t ---> $str"
 				Log.i(Utilities.TagProduction, hg)
 			}
+		}
+		fun getTokenCopy() : Token{
+			return Token()
+		}
+		fun isTokenAvaible() : Boolean{
+			return false
 		}
 
 		private fun getSharedProperties(activity: Activity) : SharedPreferences{
@@ -74,12 +79,6 @@ class PreferencesOperator{
 			val fieldName = activity.getString(strResourceId)
 			val editor = getSharedProperties(activity).edit()
 			editor.putBoolean(fieldName,value)
-			editor.apply()
-		}
-		fun savePref(activity: Activity, strResourceId : Int, value : Float){
-			val fieldName = activity.getString(strResourceId)
-			val editor = getSharedProperties(activity).edit()
-			editor.putFloat(fieldName,value)
 			editor.apply()
 		}
 		fun savePref(activity: Activity, strResourceId : Int, value : String){
@@ -104,13 +103,6 @@ class PreferencesOperator{
 			val prefs = getSharedProperties(activity)
 			return prefs.getString(fieldName, "")!!
 		}
-		fun readPrefFloat(activity: Activity, strResourceId : Int) : Float{
-			val fieldName = activity.getString(strResourceId)
-			val prefs = getSharedProperties(activity)
-			return prefs.getFloat(fieldName,0f)
-		}
-
-
 		fun encrypt(text : String, key : String) : String{
 			//TODO
 			return ""

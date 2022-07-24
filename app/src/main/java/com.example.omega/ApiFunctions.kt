@@ -44,35 +44,6 @@ class ApiFunctions {
 		fun getUUID() : String{
 			return Generators.timeBasedGenerator().generate().toString()
 		}
-		fun getCurrentTimeStr(secFromNow : Int = 0): String {
-			val c: Calendar = Calendar.getInstance()
-			c.timeInMillis += 1000*secFromNow
-
-			val y = (c.get(Calendar.YEAR)).toString()
-			var m = (c.get(Calendar.MONTH) + 1).toString()//0-11 -> 1-12
-			var d = (c.get(Calendar.DAY_OF_MONTH)).toString()
-			var hh = (c.get(Calendar.HOUR_OF_DAY)).toString()
-			var mm = (c.get(Calendar.MINUTE)).toString()
-			var ss = (c.get(Calendar.SECOND)).toString()
-			var zzz = (c.get(Calendar.MILLISECOND)).toString()
-
-			if(m.length == 1)
-				m = "0${m}"
-			if(d.length == 1)
-				d = "0${d}"
-			if(hh.length == 1)
-				hh = "0${hh}"
-			if(mm.length == 1)
-				mm = "0${mm}"
-			if(ss.length == 1)
-				ss = "0${ss}"
-			if(zzz.length == 1)
-				zzz = "00${zzz}"
-			if(zzz.length == 2)
-				zzz = "0${zzz}"
-
-			return "${y}-${m}-${d}T${hh}:${mm}:${ss}.${zzz}Z"
-		}
 		fun getUserAgent() : String{
 			val result = StringBuilder(64)
 			result.append("Dalvik/")

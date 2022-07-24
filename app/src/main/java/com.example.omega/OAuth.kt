@@ -69,16 +69,6 @@ class OAuth : AppCompatActivity() {
 				}
 				return super.shouldOverrideUrlLoading(view, request)
 			}
-
-			override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-				super.onPageStarted(view, url, favicon)
-				Log.i(Utilities.TagProduction, "login to bank webpage started loading")
-
-			}
-			override fun onPageFinished(view: WebView?, url: String?) {
-				super.onPageFinished(view, url)
-				Log.i(Utilities.TagProduction, "login to bank webpage ended loading")
-			}
 		}
 	}
 

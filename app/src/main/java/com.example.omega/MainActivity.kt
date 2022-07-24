@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
-		PreferencesOperator.clearAuthData(this)
+		//PreferencesOperator.clearAuthData(this)
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initGUI()
 		DEVELOPER_initaialFun()
@@ -215,6 +215,8 @@ class MainActivity : AppCompatActivity() {
 		findViewById<Button>(R.id.testButton).setOnClickListener{
 			openBasicTransferTabClicked()
 		}
+		//ApiAuthorize().run(this, PermissionList(ApiConsts.Privileges.AccountsHistory, ApiConsts.Privileges.AccountsDetails))
+		//ActivityStarter.openBrowserForLogin(this)
 	}
 
 	//Intents
@@ -251,7 +253,8 @@ class MainActivity : AppCompatActivity() {
 	}
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode == RESULT_OK){
-			//todo
+			openBasicTransferTabClicked()//todo //TEST
+		//todo
 		}
 		else{
 			//todo
@@ -351,7 +354,6 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 
-		PreferencesOperator.DEVELOPER_showPref(this)
 		val gotAcessToAccounts = ApiGetToken.run(this)
 		if(gotAcessToAccounts)
 			ActivityStarter.startTransferActivityFromMenu(this)
