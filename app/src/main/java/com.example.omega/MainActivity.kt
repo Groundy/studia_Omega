@@ -215,8 +215,8 @@ class MainActivity : AppCompatActivity() {
 		findViewById<Button>(R.id.testButton).setOnClickListener{
 			openBasicTransferTabClicked()
 		}
-		//ApiAuthorize().run(this, PermissionList(ApiConsts.Privileges.AccountsHistory, ApiConsts.Privileges.AccountsDetails))
-		//ActivityStarter.openBrowserForLogin(this)
+		ApiAuthorize().run(this, PermissionList(ApiConsts.Privileges.AccountsHistory, ApiConsts.Privileges.AccountsDetails))
+		ActivityStarter.openBrowserForLogin(this)
 	}
 
 	//Intents
@@ -253,8 +253,7 @@ class MainActivity : AppCompatActivity() {
 	}
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode == RESULT_OK){
-			openBasicTransferTabClicked()//todo //TEST
-		//todo
+
 		}
 		else{
 			//todo
@@ -345,8 +344,6 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.openBrowserForLogin(this)
 		val g = 3
 	}
-
-
 	private fun openBasicTransferTabClicked(){
 		val authCodeNotAvaible = PreferencesOperator.readPrefStr(this, R.string.PREF_authCode).isNullOrEmpty()
 		if(authCodeNotAvaible){

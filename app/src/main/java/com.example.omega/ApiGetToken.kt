@@ -6,22 +6,20 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
-
 class ApiGetToken {
 	companion object{
 		private lateinit var callerActivity: Activity
 		private var errorToDisplay = String()
 
 		fun run(activity: Activity) : Boolean{
+			Log.i(Utilities.TagProduction, "GetToken function started")
 			callerActivity = activity
-
 			var success = false
 			val thread = Thread{
 				try {
 					val responseJson = getTokenJson()
 					if(responseJson != null)
 						success = parseJsonResponse(responseJson)
-					if(success)
 						return@Thread
 				} catch (e: Exception) {
 					Log.e(Utilities.TagProduction,e.toString())
@@ -56,7 +54,6 @@ class ApiGetToken {
 				errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
 				return null
 			}
-
 			return try {
 				JSONObject(bodyStr)
 			}catch (e : Exception){
@@ -66,9 +63,11 @@ class ApiGetToken {
 		}
 		private fun parseJsonResponse(responseJson : JSONObject) : Boolean{
 			val accessToken = Token(responseJson)
-			val accessTokenSerialized = accessToken.serialize()
+			if(!accessToken.isOk())
+				return false
+
+			val accessTokenSerialized = accessToken.toString()
 			PreferencesOperator.savePref(callerActivity, R.string.PREF_accessToken, accessTokenSerialized)
-			PreferencesOperator.clearPreferences(callerActivity, R.string.PREF_authCode)
 			return true
 		}
 		private fun getTokenRequest() : Request {
