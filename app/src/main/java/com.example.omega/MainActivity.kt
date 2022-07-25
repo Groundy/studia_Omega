@@ -342,7 +342,6 @@ class MainActivity : AppCompatActivity() {
 		if(needNewAuthUrl)
 			ApiAuthorize().run(this, permissionList)
 		ActivityStarter.openBrowserForLogin(this)
-		val g = 3
 	}
 	private fun openBasicTransferTabClicked(){
 		val authCodeNotAvaible = PreferencesOperator.readPrefStr(this, R.string.PREF_authCode).isNullOrEmpty()
@@ -351,7 +350,7 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 
-		val gotAcessToAccounts = ApiGetToken.run(this)
+		val gotAcessToAccounts = ApiGetToken().run(this)
 		if(gotAcessToAccounts)
 			ActivityStarter.startTransferActivityFromMenu(this)
 		else
