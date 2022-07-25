@@ -30,12 +30,16 @@ class ApiGetTransactionsDone {
 				thread.join(ApiConsts.requestTimeOut)
 				return isSuccess
 			}
-			else{
-				try {
+			else{//todo
+			/*
+								try {
 					var listOfThreadCheckingAccInfo = arrayListOf<Thread>()
-					val amountOfAccToCheck = token.listOfAccounts!!.size
+					val listOfAccounts = token.getListOfAccounts()
+					if(listOfAccounts == null)
+					;//todo
+					val amountOfAccToCheck = listOfAccounts.size
 					for (i in 0 until amountOfAccToCheck){
-						val accNumber = token.listOfAccounts!![i].accNumber!!
+						val accNumber = listOfAccounts[i].getAccountNumber()
 						val thread = Thread {
 							val success = getAccHistory(accNumber)
 						}
@@ -51,8 +55,9 @@ class ApiGetTransactionsDone {
 					Log.e(Utilities.TagProduction,"Failed to obtain information for at account with nummber[${accNumber}] [${e.toString()}]")
 					return false
 				}
+			*/
+				return false
 			}
-
 		}
 	private fun getPaymentAccHistoryRequest(accNumber: String) : Request {
 			val uuidStr = ApiFunctions.getUUID()
@@ -66,7 +71,7 @@ class ApiGetTransactionsDone {
 					.put("ipAddress", ApiFunctions.getPublicIPByInternetService())
 					.put("sendDate", currentTimeStr)
 					.put("tppId", ApiConsts.TTP_ID)
-					.put("token", token.tokenContent)
+					.put("token", token.getAccessToken())
 					.put("isDirectPsu",false)
 					//.put("callbackURL",ApiConsts.REDIRECT_URI)//??
 					//.put("apiKey", ApiConsts.appSecret_ALIOR)//??
@@ -83,7 +88,7 @@ class ApiGetTransactionsDone {
 				//.put("perPage",10)//??
 				.put("type","DEBIT")//??
 
-			val authFieldValue = "${token.tokenType} ${token.tokenContent}"
+			val authFieldValue = token.getAuthFieldValue()
 			val additionalHeaderList = arrayListOf(Pair("authorization",authFieldValue))
 			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone.text, requestBodyJson, uuidStr, additionalHeaderList)
 		}

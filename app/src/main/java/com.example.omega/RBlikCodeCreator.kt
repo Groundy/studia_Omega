@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -17,16 +18,13 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	private lateinit var accountListSpinner : Spinner
 	private lateinit var goNextActivityButton : Button
 	private var userAccountsAvailable = false
-	private lateinit var token : Token
+	private lateinit var tokenCpy : Token
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_rblik_code_creator)
-		if(PreferencesOperator.isTokenAvaible())
-			token = PreferencesOperator.getTokenCopy()
-		else
-			finish()//todo przetestować to.
-		userAccountsAvailable = ApiGetPaymentAccDetails(token).run()
+
+		//userAccountsAvailable = ApiGetPaymentAccDetails.run()
 		setUpGui()
 		fillListOfAccounts()
 		DEVELOPER_fillWidgets()
@@ -78,12 +76,21 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			finish()
 			return
 		}
-		val listOfAccountFromToken = token.listOfAccounts!!
+		/*//todo
+		val listOfAccountFromToken = token.getListOfAccounts()
+		if(listOfAccountFromToken == null){
+			Log.e(Utilities.TagProduction, "fillListOfAccounts/RBLIKCodeCreator token returned null accountList")
+			return //maybe
+		}
+
 		val adapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item)
 		listOfAccountFromToken.forEach{
 			adapter.add(it.toString())
 		}
+
+
 		accountListSpinner.adapter = adapter
+				 */
 	}
 	private fun validateDataToGenRBlikCode() : Boolean{
 		val accountChosen = true//todo
@@ -141,5 +148,12 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		amountField.text = Editable.Factory.getInstance().newEditable("aaa")
 		titleField.text = Editable.Factory.getInstance().newEditable("aaa")
 		receiverNameField.text = Editable.Factory.getInstance().newEditable(12345.toString())
+	}
+	private fun getToken(){
+		val tokenTmp = PreferencesOperator.getToken(this)
+		if(tokenTmp != null)
+			tokenCpy = tokenTmp
+		else
+			finish()
 	}
 }

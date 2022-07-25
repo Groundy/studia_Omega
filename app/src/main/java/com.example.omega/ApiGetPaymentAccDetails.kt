@@ -8,56 +8,33 @@ import java.lang.Exception
 
 
 class ApiGetPaymentAccDetails {
-	lateinit var token : Token
-	constructor(token: Token){
+	lateinit var token: Token
+	constructor(token: Token) {
 		this.token = token
 	}
-	fun run(accNumber: String? = null): Boolean {
-			val getDetailsOfOnlyOneAcc = accNumber != null
-			if(getDetailsOfOnlyOneAcc){
-				var isSuccess = false
-				val thread = Thread{
-					try {
-						isSuccess = getAccInfo(accNumber!!)
-					}catch (e: Exception) {
-						Log.e(Utilities.TagProduction,"Failed to obtain information for account with number[${accNumber}] [$e]")
-					}
-				}
-				thread.start()
-				thread.join(ApiConsts.requestTimeOut)
-				return isSuccess
-			}
-			else{
-				try {
-					val listOfThreadCheckingAccInfo = arrayListOf<Thread>()
-					val amountOfAccToCheck = token.listOfAccounts!!.size
-					for (i in 0 until amountOfAccToCheck){
-						val accountNumber = token.listOfAccounts!![i].accNumber
-						val thread = Thread {
-							getAccInfo(accountNumber!!)
-						}
-						listOfThreadCheckingAccInfo.add(thread)
-					}
-					for (i in 0 until  listOfThreadCheckingAccInfo.size)
-						listOfThreadCheckingAccInfo[i].start()
-					for(i in 0 until  listOfThreadCheckingAccInfo.size)
-						listOfThreadCheckingAccInfo[i].join(ApiConsts.requestTimeOut)
-					return true
+	private var accountToSet : ArrayList<PaymentAccount> = ArrayList()
 
-				}catch (e: Exception) {
-					Log.e(Utilities.TagProduction,"Failed to obtain information for at account with number[${accNumber}] [$e]")
-					return false
-				}
-			}
+	fun run(accNumbers: List<String>): Boolean {
+		if(accNumbers.isNullOrEmpty())
+			return false
 
+		val success = getAccDetailsForAllAccounts(accNumbers)
+		return if(success){
+			token.updateListOfAccountWithDetails(accountToSet)
+			true
 		}
-	private fun getPaymentAccDetailsRequest(accNumber: String) : Request {
-			val uuidStr = ApiFunctions.getUUID()
-			val currentTimeStr = OmegaTime.getCurrentTime()
+		else
+			false
+	}
 
-			val authFieldValue = "${token.tokenType} ${token.tokenContent}"
-			val requestBodyJson = JSONObject()
-				.put("requestHeader", JSONObject()
+	private fun getPaymentAccDetailsRequest(accNumber: String): Request {
+		val uuidStr = ApiFunctions.getUUID()
+		val currentTimeStr = OmegaTime.getCurrentTime()
+
+		val authFieldValue = token.getAuthFieldValue()
+		val requestBodyJson = JSONObject()
+			.put(
+				"requestHeader", JSONObject()
 					.put("requestId", uuidStr)
 					.put("userAgent", ApiFunctions.getUserAgent())
 					.put("ipAddress", ApiFunctions.getPublicIPByInternetService())
@@ -66,34 +43,70 @@ class ApiGetPaymentAccDetails {
 					.put("token", authFieldValue)
 					.put("isDirectPsu", false)
 					.put("directPsu", false)
-				)
-				.put("accountNumber", accNumber)
+			)
+			.put("accountNumber", accNumber)
 
-			val additionalHeaderList = arrayListOf(Pair("AUTHORIZATION",authFieldValue))
-			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetPaymentAccount.text, requestBodyJson, uuidStr, additionalHeaderList)
-		}
-	private fun getAccInfo(accNumber: String) : Boolean{
-			val request = getPaymentAccDetailsRequest(accNumber)
-			val response = OkHttpClient().newCall(request).execute()
-			val responseCodeOk = response.code == 200
-			if(!responseCodeOk)
-				return false//todo
+		val additionalHeaderList = arrayListOf(Pair("AUTHORIZATION", authFieldValue))
+		return ApiFunctions.bodyToRequest(
+			ApiConsts.BankUrls.GetPaymentAccount.text,
+			requestBodyJson,
+			uuidStr,
+			additionalHeaderList
+		)
+	}
+	private fun getAccInfo(accNumber: String): Boolean {
+		Log.i(Utilities.TagProduction, "Started checking bank proccedure for details for acc $accNumber")
 
-			return try {
-				val responseBodyJson = JSONObject(response.body?.string()!!)
-				parseResponseJson(responseBodyJson)
-			}
-			catch (e : Exception){
-				Log.e(Utilities.TagProduction, e.toString())
-				false
-			}
-		}
-	private fun parseResponseJson(obj : JSONObject) : Boolean{
-			val tmpPaymentAcc = PaymentAccount(obj)
-			val isValid = tmpPaymentAcc.isValid()
-			if(isValid){
-				return token.swapPaymentAccountToFilledOne(tmpPaymentAcc)!!
-			}
+		val request = getPaymentAccDetailsRequest(accNumber)
+		val response = OkHttpClient().newCall(request).execute()
+		val responseCodeOk = response.code == 200
+		if (!responseCodeOk) {
+			Log.e(Utilities.TagProduction,"[getAccInfo/${this.javaClass.name}] returned code ${response.code} for accInfo $accNumber")
 			return false
 		}
+		return try {
+			val responseBodyJson = JSONObject(response.body?.string()!!)
+			parseResponseJson(responseBodyJson)
+		} catch (e: Exception) {
+			Log.e(Utilities.TagProduction, e.toString())
+			false
+		}
+	}
+
+	private fun parseResponseJson(obj: JSONObject): Boolean {
+		val tmpPaymentAcc = PaymentAccount(obj)
+		return if (tmpPaymentAcc.isValid()) {
+			this.accountToSet.add(tmpPaymentAcc)
+			true
+		} else
+			false
+	}
+
+	private fun getAccDetailsForAllAccounts(accNumbers: List<String>): Boolean {
+	//starts many threads, each of them ask Bank for details of specific accNumbe
+		return try {
+			val listOfThreadCheckingAccInfo = arrayListOf<Thread>()
+			val boolsOfThreadsSuccessfullness = ArrayList<Boolean>()
+			for (i in accNumbers.indices) {
+				val thread = Thread {
+					val success = getAccInfo(accNumbers[i])
+					boolsOfThreadsSuccessfullness.add(success)
+				}
+				listOfThreadCheckingAccInfo.add(thread)
+			}
+			Log.i(Utilities.TagProduction, "started checking")//todo tmp
+			for (i in 0 until listOfThreadCheckingAccInfo.size)
+				listOfThreadCheckingAccInfo[i].start()
+			for (i in 0 until listOfThreadCheckingAccInfo.size)
+				listOfThreadCheckingAccInfo[i].join(ApiConsts.requestTimeOut)
+			Log.i(Utilities.TagProduction, "ended checking")//todo tmp
+			return !boolsOfThreadsSuccessfullness.contains(false)
+		} catch (e: Exception) {
+			Log.e(
+				Utilities.TagProduction,
+				"Failed to obtain information for at account with numbers[$accNumbers] [$e]"
+			)
+			false
+		}
+	}
 }

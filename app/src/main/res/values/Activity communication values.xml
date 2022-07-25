@@ -18,7 +18,6 @@
 	<string name="ACT_COM_DIALOG_TextToDisplay_FIELDNAME">ACT_COM_DIALOG_TextToDisplay_FIELDNAME</string>
 	<string name="ACT_COM_USERPERMISSIONLIST_FIELDNAME">ACT_COM_USERPERMISSIONLIST_FIELDNAME</string>
 
-
 	<!--ACTIVIES ret codes-->
 	<integer name="ACT_RETCODE_QrScanner">0</integer>
 	<integer name="ACT_RETCODE_FINGER">1</integer>
@@ -27,10 +26,6 @@
 	<integer name="ACT_RETCODE_PIN_CHANGE">4</integer>
 	<integer name="ACT_RETCODE_WEBVIEW">5</integer>
 	<integer name="ACT_RETCODE_PERMISSION_LIST">6</integer>
-
-
-
-
 
 	<integer name="ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage">100</integer>
 	<integer name="ACT_RETCODE_DIALOG_CancelBioAuth">101</integer>

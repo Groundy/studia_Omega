@@ -1,4 +1,5 @@
 //TODO
+23. Dodac zarzadzanie czasem Tokenu!(jego serylizacja zapis odczyt
 22. Dodać powrót z loginToBankWindow do przelewu jednorazoweho czy cokolwiek użytkownik dalej robił
 8.  W errorAuth dodać rozóznienie między tym gdy użytkownik chce autoryzacji za pomocą innej metody a innym błędem.
 

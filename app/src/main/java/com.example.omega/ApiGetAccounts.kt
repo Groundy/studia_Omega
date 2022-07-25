@@ -6,7 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
-
+//Czy to do cholery jest w ogóle potrzebne?!
 
 class ApiGetAccounts {
 	private lateinit var callerActivity : Activity
@@ -17,12 +17,15 @@ class ApiGetAccounts {
 		this.token = token
 	}
 	fun run() {
-		var accountListTmp : ArrayList<PaymentAccount>?
+		/*
+				var accountListTmp : ArrayList<PaymentAccount>?
 		val thread = Thread{
 			try {
 				accountListTmp = getAccInfo()
-				if(accountListTmp != null)
-					token.listOfAccounts = accountListTmp
+				if(accountListTmp != null){
+					val listOfAcc = accountListTmp?.toList()!!//todo rename it better
+					token.fillAllAccWithDetails(listOfAcc)
+				}
 				else{
 					//todo
 				}
@@ -32,13 +35,15 @@ class ApiGetAccounts {
 		}
 		thread.start()
 		thread.join(ApiConsts.requestTimeOut)
+		*/
+
 	}
 
 	private fun getAccountsRequest() : Request {
 		val uuidStr = ApiFunctions.getUUID()
 		val currentTimeStr = OmegaTime.getCurrentTime()
 
-		val authFieldValue = "${token.tokenType} ${token.tokenContent}"
+		val authFieldValue = token.getAuthFieldValue()
 		val requestBodyJson = JSONObject()
 			.put("requestHeader", JSONObject()
 				.put("requestId", uuidStr)
@@ -76,7 +81,7 @@ class ApiGetAccounts {
 			for (i in 0 until accountsArray.length()){
 				val accObj =  accountsArray.getJSONObject(i)
 				val accountNumber = accObj.getString("accountNumber")
-				val tmpAcc = PaymentAccount(accountNumber)
+				val tmpAcc = PaymentAccount()//val tmpAcc = PaymentAccount(accountNumber)
 				accountList.add(tmpAcc)
 			}
 			accountList

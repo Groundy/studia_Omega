@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import org.json.JSONObject
 import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.random.Random
@@ -56,13 +57,16 @@ class PreferencesOperator{
 				Log.i(Utilities.TagProduction, hg)
 			}
 		}
-		fun getTokenCopy() : Token{
-			return Token()
+		fun getToken(callActivity: Activity) : Token?{
+			val tokenCpy = try {
+				val tokenStr = PreferencesOperator.readPrefStr(callActivity, R.string.PREF_accessToken)
+				val tokenJsonObj = JSONObject(tokenStr)
+				Token(tokenJsonObj)
+			}catch (e : Exception){
+				null
+			}
+			return tokenCpy
 		}
-		fun isTokenAvaible() : Boolean{
-			return false
-		}
-
 		private fun getSharedProperties(activity: Activity) : SharedPreferences{
 			val fileName = activity.getString(R.string.preference_file_key)
 			val sharedPrefObj = activity.getSharedPreferences(fileName, MODE_PRIVATE)

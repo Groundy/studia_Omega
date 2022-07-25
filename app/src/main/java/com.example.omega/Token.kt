@@ -97,89 +97,65 @@ class Token  {
 	}
 	fun serialize(): String {
 		var listOfAccountsAsStr = String()
-		listOfAccounts!!.forEach {
-			listOfAccountsAsStr = listOfAccountsAsStr.plus(it.serialize())
+	fun getAuthFieldValue() : String{
+		if(tokenObj == null) {
 		}
-		return String()
 			.plus(tokenType).plus(separator)
 			.plus(tokenContent).plus(separator)
-			.plus(scope).plus(separator)
-			.plus(expirationTime).plus(separator)
 			.plus(refreshToken).plus(separator)
 			.plus(listOfAccountsAsStr).plus(separator)
-	}
 
 
-	fun addAccounts(list : ArrayList<PaymentAccount>?) : Token {
-			this.listOfAccounts = list
 			return this
+		return try {
+			val tokenType = tokenObj!!.getString(ResponseFieldsNames.TokenType.text).toString()
+			"$tokenType $accessToken"
+		}catch (e : Exception){
+			Log.e(Utilities.TagProduction, "[getAuthFieldValue/${this.javaClass.name}] null values of accessToken or tokenType")
+			""
 		}
-	fun swapPaymentAccountToFilledOne(tmpPaymentAccount : PaymentAccount) : Boolean{
-			val accList = this.listOfAccounts!!
-			for (i in 0..accList.size){
 				val accountMaths = accList[i].accNumber == tmpPaymentAccount.accNumber
-				if(accountMaths){
 					accList[i] = tmpPaymentAccount
 					return true
-				}
+	}
+	fun getListOfAccountsToDisplay() : List<String>?{
+		return try {
+			this.accounts!!.forEach {
+				displayableStringsToRet.add(it.toDisplayableString())
 			}
 			return false
+			displayableStringsToRet.toList()
+			null
 		}
 	fun getBalanceOfAccount(accountNumber : String) : Double?{
-			listOfAccounts?.forEach{
-				if(it.accNumber == accountNumber)
-					return it.availableBalance
-			}
-			return null
+	fun getAccessToken() : String{
+		if(tokenObj == null){
+			Log.e(Utilities.TagProduction, "[getAccessToken()/${this.javaClass.name}] Error, cant get accessToken from Token Json, json is null")
+			String()
 		}
-	fun getCurrencyOfAccount(accountNumber : String) : String?{
-			listOfAccounts?.forEach{
 				if(it.accNumber == accountNumber)
-					return it.currency
-			}
-			return null
+		return try {
+			tokenObj!!.get(ResponseFieldsNames.AccessToken.text).toString()
 		}
 }
 
 class PaymentAccount{
-	var accNumber : String? = null
-	private var accType : String? = null
-	var currency :String? = null
-	var availableBalance : Double? = null
 	private var bookingBalance : Double? = null
 	private var accountHolderType : String? = null
-	private var bankName  : String? = null
 	private var bankAddress : String? = null
 	private var ownerName : String? = null
-
 	fun isValid() : Boolean{
-		val isWrong =
 			accNumber.isNullOrEmpty() ||
-			accType.isNullOrEmpty() ||
-			currency.isNullOrEmpty() ||
 			availableBalance == null ||
-			bookingBalance == null ||
-			accountHolderType.isNullOrEmpty() ||
-			bankName.isNullOrEmpty() ||
 			bankAddress.isNullOrEmpty() ||
-			ownerName.isNullOrEmpty()
 		return !isWrong
 	}
-	constructor(responseObj : JSONObject){
-		try{
-			val accountDetailsObj = responseObj.getJSONObject("account")
 			val accNumber = accountDetailsObj.getString("accountNumber")
-			val accountTypeName = accountDetailsObj.getString("accountTypeName")
-			val currency = accountDetailsObj.getString("currency")
-			val availableBalance = accountDetailsObj.getString("availableBalance")
-			val bookingBalance = accountDetailsObj.getString("bookingBalance")
 			val accountHolderType = accountDetailsObj.getString("accountHolderType")
-			val bankName = accountDetailsObj.getJSONObject("bank").getString("name")
+		BookingBalance("bookingBalance"),
+		AccountHolderType("accountHolderType"),
 
-			val bankAddressArray = accountDetailsObj.getJSONObject("bank").getJSONObject("address").getJSONArray("value")
-			var bankAddress = ""
 			for (i in 0 until bankAddressArray.length())
-				bankAddress += "${bankAddressArray[i]},"
 			bankAddress = bankAddress.substring(0,bankAddress.length-1)
 
 			val ownerNameArray = accountDetailsObj.getJSONObject("nameAddress").getJSONArray("value")
