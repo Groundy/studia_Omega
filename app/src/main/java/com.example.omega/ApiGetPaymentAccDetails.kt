@@ -8,22 +8,23 @@ import java.lang.Exception
 
 
 class ApiGetPaymentAccDetails {
-	lateinit var token: Token
+	var token: Token
+
 	constructor(token: Token) {
 		this.token = token
 	}
-	private var accountToSet : ArrayList<PaymentAccount> = ArrayList()
+
+	private var accountToSet: ArrayList<PaymentAccount> = ArrayList()
 
 	fun run(accNumbers: List<String>): Boolean {
-		if(accNumbers.isNullOrEmpty())
+		if (accNumbers.isNullOrEmpty())
 			return false
 
 		val success = getAccDetailsForAllAccounts(accNumbers)
-		return if(success){
+		return if (success) {
 			token.updateListOfAccountWithDetails(accountToSet)
 			true
-		}
-		else
+		} else
 			false
 	}
 
@@ -33,18 +34,16 @@ class ApiGetPaymentAccDetails {
 
 		val authFieldValue = token.getAuthFieldValue()
 		val requestBodyJson = JSONObject()
-			.put(
-				"requestHeader", JSONObject()
-					.put("requestId", uuidStr)
-					.put("userAgent", ApiFunctions.getUserAgent())
-					.put("ipAddress", ApiFunctions.getPublicIPByInternetService())
-					.put("sendDate", currentTimeStr)
-					.put("tppId", ApiConsts.TTP_ID)
-					.put("token", authFieldValue)
-					.put("isDirectPsu", false)
-					.put("directPsu", false)
-			)
-			.put("accountNumber", accNumber)
+			.put("requestHeader", JSONObject()
+				.put("requestId", uuidStr)
+				.put("userAgent", ApiFunctions.getUserAgent())
+				.put("ipAddress", ApiFunctions.getPublicIPByInternetService())
+				.put("sendDate", currentTimeStr)
+				.put("tppId", ApiConsts.TTP_ID)
+				.put("token", authFieldValue)
+				.put("isDirectPsu", false)
+				.put("directPsu", false)
+			).put("accountNumber", accNumber)
 
 		val additionalHeaderList = arrayListOf(Pair("AUTHORIZATION", authFieldValue))
 		return ApiFunctions.bodyToRequest(
@@ -54,14 +53,21 @@ class ApiGetPaymentAccDetails {
 			additionalHeaderList
 		)
 	}
+
 	private fun getAccInfo(accNumber: String): Boolean {
-		Log.i(Utilities.TagProduction, "Started checking bank proccedure for details for acc $accNumber")
+		Log.i(
+			Utilities.TagProduction,
+			"Started checking bank proccedure for details for acc $accNumber"
+		)
 
 		val request = getPaymentAccDetailsRequest(accNumber)
 		val response = OkHttpClient().newCall(request).execute()
 		val responseCodeOk = response.code == 200
 		if (!responseCodeOk) {
-			Log.e(Utilities.TagProduction,"[getAccInfo/${this.javaClass.name}] returned code ${response.code} for accInfo $accNumber")
+			Log.e(
+				Utilities.TagProduction,
+				"[getAccInfo/${this.javaClass.name}] returned code ${response.code} for accInfo $accNumber"
+			)
 			return false
 		}
 		return try {
@@ -83,7 +89,7 @@ class ApiGetPaymentAccDetails {
 	}
 
 	private fun getAccDetailsForAllAccounts(accNumbers: List<String>): Boolean {
-	//starts many threads, each of them ask Bank for details of specific accNumbe
+		//starts many threads, each of them ask Bank for details of specific accNumbe
 		return try {
 			val listOfThreadCheckingAccInfo = arrayListOf<Thread>()
 			val boolsOfThreadsSuccessfullness = ArrayList<Boolean>()
