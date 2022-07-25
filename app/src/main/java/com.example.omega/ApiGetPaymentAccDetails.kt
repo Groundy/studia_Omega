@@ -52,7 +52,6 @@ class ApiGetPaymentAccDetails {
 
 		}
 	private fun getPaymentAccDetailsRequest(accNumber: String) : Request {
-			val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccount"
 			val uuidStr = ApiFunctions.getUUID()
 			val currentTimeStr = OmegaTime.getCurrentTime()
 
@@ -71,7 +70,7 @@ class ApiGetPaymentAccDetails {
 				.put("accountNumber", accNumber)
 
 			val additionalHeaderList = arrayListOf(Pair("AUTHORIZATION",authFieldValue))
-			return ApiFunctions.bodyToRequest(url, requestBodyJson, uuidStr, additionalHeaderList)
+			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetPaymentAccount.text, requestBodyJson, uuidStr, additionalHeaderList)
 		}
 	private fun getAccInfo(accNumber: String) : Boolean{
 			val request = getPaymentAccDetailsRequest(accNumber)

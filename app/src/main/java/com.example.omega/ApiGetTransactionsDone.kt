@@ -55,7 +55,6 @@ class ApiGetTransactionsDone {
 
 		}
 	private fun getPaymentAccHistoryRequest(accNumber: String) : Request {
-			val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getTransactionsDone"
 			val uuidStr = ApiFunctions.getUUID()
 			val currentTimeStr = OmegaTime.getCurrentTime()
 
@@ -86,7 +85,7 @@ class ApiGetTransactionsDone {
 
 			val authFieldValue = "${token.tokenType} ${token.tokenContent}"
 			val additionalHeaderList = arrayListOf(Pair("authorization",authFieldValue))
-			return ApiFunctions.bodyToRequest(url, requestBodyJson, uuidStr, additionalHeaderList)
+			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone.text, requestBodyJson, uuidStr, additionalHeaderList)
 		}
 	private fun getAccHistory(accNumber: String) : Boolean{
 			val request = getPaymentAccHistoryRequest(accNumber)
