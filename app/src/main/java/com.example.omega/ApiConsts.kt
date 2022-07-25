@@ -22,6 +22,21 @@ class ApiConsts {
 		AisGetAccount("ais:getAccount"),
 		;
 	}
+	enum class ApiRequestsBodyFields(val text : String){
+		RequestHeader("requestHeader"),
+		RequestId("requestId"),
+		UserAgent("userAgent"),
+		IpAddress("ipAddress"),
+		SendDate("sendDate"),
+		TppId("tppId"),
+		IsCompanyContext("isCompanyContext"),
+		Code("Code"),
+		GrantType("grant_type"),
+		RedirectUri("redirect_uri"),
+		ClientId("client_id"),
+		ClientSecret("client_secret")
+		;
+	}
 
 	companion object {
 		const val PREFERED_CHARSET = "utf-8"
