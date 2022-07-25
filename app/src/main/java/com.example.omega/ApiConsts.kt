@@ -1,10 +1,26 @@
 package com.example.omega
 
 class ApiConsts {
-	enum class ScopeValues {AIS,AIS_ACC,PIS}
-	enum class Privileges(val text : String){
-		AccountsDetails("ACC_DETAILS"), AccountsHistory("ACC_HISTORY"), SinglePayment("SINGLE_PAYMENT")
+	enum class ScopeValues(val text : String) {
+		Ais("ais"),AisAcc("ais-accounts"),Pis("pis");
 	}
+	enum class Privileges(val text : String){
+		AccountsDetails("ACC_DETAILS"), AccountsHistory("ACC_HISTORY"), SinglePayment("SINGLE_PAYMENT");
+	}
+	enum class ScopeUsageLimit(val text : String) {
+		Multiple("multiple"), Single("single");
+	}
+	enum class BankUrls(val text : String){
+		AuthUrl("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/authorize"),
+		GetTokenUrl ("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/token")
+		;
+	}
+	enum class ApiMethodes(val text : String){
+		AisGetTransactionsDone("ais:getTransactionsDone"),
+		AisGetAccount("ais:getAccount"),
+		;
+	}
+
 	companion object {
 		const val PREFERED_CHARSET = "utf-8"
 		const val PREFERED_ENCODING = "gzip"

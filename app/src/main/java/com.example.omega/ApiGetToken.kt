@@ -72,7 +72,6 @@ class ApiGetToken {
 			return true
 		}
 		private fun getTokenRequest() : Request {
-			val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/token"
 			val uuidStr = ApiFunctions.getUUID()
 			val currentTimeStr = OmegaTime.getCurrentTime()
 			val requestBodyJson = JSONObject()
@@ -89,7 +88,7 @@ class ApiGetToken {
 				.put("client_id", ApiConsts.userId_ALIOR)
 				.put("client_secret", ApiConsts.appSecret_ALIOR)
 
-			return ApiFunctions.bodyToRequest(url, requestBodyJson, uuidStr)
+			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl.text, requestBodyJson, uuidStr)
 		}
 	}
 }

@@ -59,7 +59,6 @@ class ApiAuthorize {
 	}
 	private fun getAuthRequest(stateStr : String) : Request {
 		val uuidStr = ApiFunctions.getUUID()
-		val url = "https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/authorize"
 		val currentTimeStr = OmegaTime.getCurrentTime()
 		val endValidityTimeStr = OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds)
 
@@ -74,53 +73,43 @@ class ApiAuthorize {
 			)
 			.put("response_type","code")
 			.put("client_id", ApiConsts.userId_ALIOR)
-			.put("scope","ais")
+			.put("scope",ApiConsts.ScopeValues.Ais.text)
 			.put("scope_details",getScopeDetailsObject(endValidityTimeStr))
 			.put("redirect_uri", ApiConsts.REDIRECT_URI)
 			.put("state",stateStr)
-		return ApiFunctions.bodyToRequest(url, requestBodyJson, uuidStr)
+		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.AuthUrl.text, requestBodyJson, uuidStr)
 	}
-	private fun getScopeDetailsObject(expTimeStr : String) : JSONObject {
-		val permissionListArray = JSONArray()
-		if(!permissionsList!!.permissionsArray.isNullOrEmpty()){
-			val toAddObject = JSONObject()
-
-			if(permissionsList!!.permissionsArray.contains(ApiConsts.Privileges.AccountsHistory)){
-				toAddObject.put("ais:getTransactionsDone", JSONObject()
-					.put("scopeUsageLimit","multiple")
-					.put("maxAllowedHistoryLong",11)
-				)
-			}
-			if(permissionsList!!.permissionsArray.contains(ApiConsts.Privileges.AccountsDetails)){
-				toAddObject.put("ais:getAccount", JSONObject()
-					.put("scopeUsageLimit","multiple")
-				)
-			}
-
-			permissionListArray.put(toAddObject)
+	private fun getScopeDetailsObject(expTimeStr : String) : JSONObject? {
+		if (permissionsList == null) {
+			Log.e(Utilities.TagProduction, "Error, passed null permissionListObject to ApiAuthorized")
+			return null
 		}
-		else{
-			//test
-			permissionListArray.put(
-				JSONObject()
-				/*
-				.put("ais:getAccount",JSONObject()
-					.put("scopeUsageLimit","multiple")
-				)
-				*/
-				.put("ais:getTransactionsDone", JSONObject()
-					.put("scopeUsageLimit","multiple")
-					.put("maxAllowedHistoryLong",11)
-				)
+		if(permissionsList!!.permissionsArray.isNullOrEmpty()){
+			Log.e(Utilities.TagProduction, "Error, passed permissionListObject with null permissionArray to ApiAuthorized")
+			return null
+		}
+
+		val privListCpy = permissionsList!!.permissionsArray
+		val privilegesListJsonObj = JSONObject()
+		if(privListCpy.contains(ApiConsts.Privileges.AccountsHistory)){
+			privilegesListJsonObj.put(ApiConsts.ApiMethodes.AisGetTransactionsDone.text, JSONObject()
+				.put("scopeUsageLimit",ApiConsts.ScopeUsageLimit.Multiple.text)
+				.put("maxAllowedHistoryLong",11)
+			)
+		}
+		if(privListCpy.contains(ApiConsts.Privileges.AccountsDetails)){
+			privilegesListJsonObj.put(ApiConsts.ApiMethodes.AisGetAccount.text, JSONObject()
+				.put("scopeUsageLimit",ApiConsts.ScopeUsageLimit.Multiple.text)
 			)
 		}
 
-		return JSONObject() // scopeDetailsObj
-			.put("privilegeList", permissionListArray)
-			.put("scopeGroupType", "ais")
+		val scopeDetailObject = JSONObject()
+			.put("privilegeList", JSONArray().put(privilegesListJsonObj))
+			.put("scopeGroupType", ApiConsts.ScopeValues.Ais.text)
 			.put("consentId", "123456789")
 			.put("scopeTimeLimit", expTimeStr)
 			.put("throttlingPolicy", "psd2Regulatory")
+		return scopeDetailObject
 	}
 
 	companion object{
