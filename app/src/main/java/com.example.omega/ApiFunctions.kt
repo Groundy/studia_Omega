@@ -110,5 +110,8 @@ class ApiFunctions {
 			}
 			return toRet
 		}
+		fun getLengthOfCountryBankNumberDigitsOnly(country : ApiConsts.Countries = ApiConsts.Countries.PL) : Int{
+			return country.codeLength
+		}
 	}
 }

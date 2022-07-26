@@ -86,11 +86,11 @@ class TransferData {
 		if(objectWrong)
 			return false
 
-		val senderAccCorrectLength = senderAccNumber?.length == 28
+		val senderAccCorrectLength = senderAccNumber?.length == ApiFunctions.getLengthOfCountryBankNumberDigitsOnly() - ApiConsts.countryCodeLength
 		if(!senderAccCorrectLength)
 			return false
 
-		val receiverAccCorrectLength = true //todo tutaj trzeba ogarnąć troche więcej gdyż przelewy międzynardowoew mogą mieć różną długość,  https://pl.wikipedia.org/wiki/Międzynarodowy_numer_rachunku_bankowego
+		val receiverAccCorrectLength = senderAccNumber?.length == ApiFunctions.getLengthOfCountryBankNumberDigitsOnly() - ApiConsts.countryCodeLength
 		if(!receiverAccCorrectLength)
 			return false
 
@@ -108,10 +108,6 @@ class TransferData {
 
 		val amountOk = amount!! > 0.0
 		if(!amountOk)
-			return false
-
-		val currencyOK = true //TODO dodać sprawdzanie czy waluta jest z zakresu dostępnych.
-		if(!currencyOK)
 			return false
 
 		return true

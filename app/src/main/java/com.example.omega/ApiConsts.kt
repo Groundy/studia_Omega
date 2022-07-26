@@ -58,6 +58,9 @@ class ApiConsts {
 		ThrottlingPolicy("throttlingPolicy")
 		;
 	}
+	enum class Countries(val codeLength : Int){
+		PL(28)
+	}
 
 	companion object {
 		const val PREFERED_CHARSET = "utf-8"
@@ -75,5 +78,8 @@ class ApiConsts {
 
 		const val AuthUrlValidityTimeSeconds = 24 * 60 * 60
 		const val requestTimeOut = 1000L * 60 * 8
+
+		const val countryCodeLength = 2
 	}
+
 }

@@ -11,10 +11,6 @@ import kotlin.math.floor
 import android.widget.*
 
 class BasicTransferActivity : AppCompatActivity() {
-	companion object{
-		private const val countryCodeLength = 2
-		private const val polishBankAccountNumberLength = 28 //26 + 2 for country code
-	}
 	private lateinit var receiverNumberEditText : EditText
 	private lateinit var amountEditText : EditText
 	private lateinit var receiverNameEditText : EditText
@@ -134,7 +130,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(amountInserted == null || amountInserted == 0.0)
 			return getString(R.string.UserMsg_basicTransfer_Amount_zero)
 
-		val receiverAccNumberCorrect = receiverNumberEditText.text.length == polishBankAccountNumberLength - countryCodeLength//countryCodeLength
+		val receiverAccNumberCorrect = receiverNumberEditText.text.length == ApiFunctions.getLengthOfCountryBankNumberDigitsOnly() - ApiConsts.countryCodeLength
 		if(!receiverAccNumberCorrect)
 			return resources.getString(R.string.UserMsg_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER)
 
@@ -244,13 +240,13 @@ class BasicTransferActivity : AppCompatActivity() {
 		}
 	}
 	private fun showDigitsLeftToHaveProperAmountOfDigits(){
-		val inputDigits = receiverNumberEditText.text.length
-		if(inputDigits == 0){
+		val inputDigitsNumber = receiverNumberEditText.text.length
+		if(inputDigitsNumber == 0){
 			receiverAccNbrDigitsHint.text = null
 			return
 		}
 
-		val amountOfDigitsThatHaveToBePut = polishBankAccountNumberLength - inputDigits - countryCodeLength//countryCode letters
+		val amountOfDigitsThatHaveToBePut = ApiFunctions.getLengthOfCountryBankNumberDigitsOnly() - inputDigitsNumber - ApiConsts.countryCodeLength//countryCode letters
 		if(amountOfDigitsThatHaveToBePut == 0)
 			receiverAccNbrDigitsHint.text = null
 		else{
