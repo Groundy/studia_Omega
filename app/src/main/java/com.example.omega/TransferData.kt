@@ -20,14 +20,18 @@ class TransferData {
 		this.currency = currency
 	}
 	constructor(jsonObj : JSONObject){
-		this.senderAccNumber = jsonObj.get("senderAccNumber") as String?
-		this.receiverAccNumber = jsonObj.get("receiverAccNumber") as String?
-		this.receiverName = jsonObj.get("receiverName") as String?
-		this.title = jsonObj.get("title") as String?
-		this.amount = jsonObj.get("amount") as Double?
-		this.currency = jsonObj.get("currency") as String?
+		try {
+			senderAccNumber = jsonObj.getString(Fields.SenderAccNumber.text)
+			receiverAccNumber = jsonObj.getString(Fields.ReceiverAccNumber.text)
+			receiverName = jsonObj.getString(Fields.ReceiverName.text)
+			title = jsonObj.getString(Fields.Title.text)
+			amount = jsonObj.getDouble(Fields.Amount.text)
+			currency = jsonObj.getString(Fields.Currency.text)
+		}catch (e : Exception){
+			Log.e(Utilities.TagProduction, "[constructor(json)/${this.javaClass.name}] error in constructing TransferDataObj from json")
+		}
 	}
-	override fun toString() : String{
+	fun toDisplayString() : String{
 		val line1 = "Nadawca:\n$senderAccNumber"
 		val line2 = "Nazwa odbiorcy:\n$receiverName"
 		val line3 = "Numer odbiorcy:\n$receiverAccNumber"
@@ -35,20 +39,8 @@ class TransferData {
 		val line5 = "kwota:\n${amount.toString()} ${currency.toString()}"
 		return "$line1\n $line2\n $line3\n $line4\n $line5"
 	}
-	fun serialize() : String?{
-		if(!validateTransferData()){
-			Log.e(Utilities.TagProduction, "Error in serilization transferDataObj")
-			return null
-		}
-
-		val separator =";;;"
-		return String()
-			.plus(senderAccNumber).plus(separator)
-			.plus(receiverAccNumber).plus(separator)
-			.plus(receiverName).plus(separator)
-			.plus(title).plus(separator)
-			.plus(amount.toString()).plus(separator)
-			.plus(currency).plus(separator)
+	override fun toString() : String{
+		return toJsonObject().toString()
 	}
 	constructor(serializedObject : String){
 		try{
@@ -65,14 +57,14 @@ class TransferData {
 			Log.e(Utilities.TagProduction, "Error in creating transferDataObject from serialized data! [$e]")
 		}
 	}
-	fun toJsonObject() : JSONObject{
+	private fun toJsonObject() : JSONObject{
 		return JSONObject()
-			.put("senderAccNumber",senderAccNumber)
-			.put("receiverAccNumber",receiverAccNumber)
-			.put("receiverName",receiverName)
-			.put("title",title)
-			.put("amount",amount)
-			.put("currency", currency)
+			.put(Fields.SenderAccNumber.text,senderAccNumber)
+			.put(Fields.ReceiverAccNumber.text,receiverAccNumber)
+			.put(Fields.ReceiverName.text,receiverName)
+			.put(Fields.Title.text,title)
+			.put(Fields.Amount.text,amount)
+			.put(Fields.Currency.text, currency)
 	}
 	private fun validateTransferData() : Boolean{
 		val objectWrong =
@@ -111,5 +103,15 @@ class TransferData {
 			return false
 
 		return true
+	}
+	companion object{
+		enum class Fields(val text : String){
+			SenderAccNumber("senderAccNumber"),
+			ReceiverAccNumber("receiverAccNumber"),
+			ReceiverName("receiverName"),
+			Title("title"),
+			Amount("amount"),
+			Currency("currency"),
+		}
 	}
 }
