@@ -14,119 +14,6 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.random.Random
 
-
-class PreferencesOperator{
-	companion object{
-		fun clearPreferences(activity: Activity, vararg fields : Int){
-			val preferencesFieldsStr = arrayOf(
-				R.string.PREF_authURL,
-				R.string.PREF_authCode,
-				R.string.PREF_lastRandomValue,
-				R.string.PREF_lastUsedPermissionsForAuth,
-				R.string.PREF_authUrlValidityTimeEnd,
-				R.string.PREF_listOfAccNumbersAccociatedWithToken)
-
-			val preferencesFieldsBool = arrayOf(
-				R.bool.PREF_authUrlAlreadyUSed)
-
-			fields.forEach {
-				if (preferencesFieldsStr.contains(it))
-					savePref(activity, it, String())
-			}
-			preferencesFieldsBool.forEach {
-				if (preferencesFieldsStr.contains(it))
-					savePref(activity, it, false)
-			}
-		}
-		fun clearAuthData(activity: Activity){
-			clearPreferences(activity,
-				R.string.PREF_authURL,
-				R.string.PREF_lastRandomValue,
-				R.string.PREF_authCode,
-				R.string.PREF_authUrlValidityTimeEnd,
-				R.string.PREF_listOfAccNumbersAccociatedWithToken,
-				R.string.PREF_lastUsedPermissionsForAuth,
-				R.bool.PREF_authUrlAlreadyUSed
-			)
-		}
-		fun DEVELOPER_showPref(activity: Activity){
-			val preferencesFields = arrayOf(
-				R.string.PREF_authURL,
-				R.string.PREF_authCode,
-				R.string.PREF_lastRandomValue,
-				R.string.PREF_lastUsedPermissionsForAuth,
-				R.string.PREF_authUrlValidityTimeEnd,
-				R.string.PREF_listOfAccNumbersAccociatedWithToken)
-
-			preferencesFields.forEach {
-				val str = readPrefStr(activity, it)
-				val t = activity.getString(it)
-				val hg = "$t ---> $str"
-				Log.i(Utilities.TagProduction, hg)
-			}
-		}
-		fun getToken(callActivity: Activity) : Token?{
-			val tokenCpy = try {
-				val tokenStr = PreferencesOperator.readPrefStr(callActivity, R.string.PREF_accessToken)
-				val tokenJsonObj = JSONObject(tokenStr)
-				Token(tokenJsonObj)
-			}catch (e : Exception){
-				null
-			}
-			return tokenCpy
-		}
-		private fun getSharedProperties(activity: Activity) : SharedPreferences{
-			val fileName = activity.getString(R.string.preference_file_key)
-			val sharedPrefObj = activity.getSharedPreferences(fileName, MODE_PRIVATE)
-			return sharedPrefObj
-		}
-
-		fun savePref(activity: Activity, strResourceId : Int, value : Int){
-			val fieldName = activity.getString(strResourceId)
-			val editor = getSharedProperties(activity).edit()
-			editor.putInt(fieldName,value)
-			editor.apply()
-		}
-		fun savePref(activity: Activity, strResourceId : Int, value : Boolean){
-			val fieldName = activity.getString(strResourceId)
-			val editor = getSharedProperties(activity).edit()
-			editor.putBoolean(fieldName,value)
-			editor.apply()
-		}
-		fun savePref(activity: Activity, strResourceId : Int, value : String){
-			val fieldName = activity.getString(strResourceId)
-			val editor = getSharedProperties(activity).edit()
-			editor.putString(fieldName,value)
-			editor.apply()
-		}
-
-		fun readPrefBool(activity: Activity, strResourceId : Int) : Boolean{
-			val fieldName = activity.getString(strResourceId)
-			val prefs = getSharedProperties(activity)
-			return prefs.getBoolean(fieldName,false)
-		}
-		fun readPrefInt(activity: Activity, strResourceId : Int) : Int{
-			val fieldName = activity.getString(strResourceId)
-			val prefs = getSharedProperties(activity)
-			return prefs.getInt(fieldName,0)
-		}
-		fun readPrefStr(activity: Activity, strResourceId : Int) : String {
-			val fieldName = activity.getString(strResourceId)
-			val prefs = getSharedProperties(activity)
-			return prefs.getString(fieldName, "")!!
-		}
-		fun encrypt(text : String, key : String) : String{
-			//TODO
-			return ""
-		}
-		fun decrypt(encryptedText : String, key : String) : String{
-			//TODO
-
-			return ""
-		}
-	}
-}
-
 class Utilities {
 	companion object{
 		const val TagProduction = "WookieTag"
@@ -178,11 +65,9 @@ class Utilities {
 				}
 			}
 		}
-
 		fun getRandomTestCode() : Int{
 			return Random.nextInt(999999)
 		}
-
 		fun hashMd5(inputStr : String) : String{
 			val md = MessageDigest.getInstance("MD5")
 			return BigInteger(1, md.digest(inputStr.toByteArray())).toString(16).padStart(32, '0')

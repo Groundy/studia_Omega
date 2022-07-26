@@ -6,13 +6,12 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
-class ApiGetToken {
-	private lateinit var callerActivity: Activity
+class ApiGetToken(activity: Activity) {
+	private var callerActivity = activity
 	private var errorToDisplay = String()
 
-	fun run(activity: Activity) : Boolean{
+	fun run() : Boolean{
 		Log.i(Utilities.TagProduction, "GetToken function started")
-		callerActivity = activity
 		var success = false
 		val thread = Thread{
 			try {

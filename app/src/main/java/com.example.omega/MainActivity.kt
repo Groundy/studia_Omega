@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 			R.id.TransferTab ->
 				openBasicTransferTabClicked()
 			R.id.AskForTokenTab ->
-				ActivityStarter.startUserPermissionListActivity(this)
+				ActivityStarter.startResetPermissionsActivity(this)
 			R.id.GenerateBlikCodeTab ->
 				ActivityStarter.startRBlikCodeCreatorActivity(this)
 		}
@@ -215,8 +215,12 @@ class MainActivity : AppCompatActivity() {
 		findViewById<Button>(R.id.testButton).setOnClickListener{
 			openBasicTransferTabClicked()
 		}
+
 		val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
+		PreferencesOperator.clearAuthData(this)
 		ApiAuthorize(this).run()
+		ActivityStarter.openBrowserForLogin(this)
+
 	}
 
 	//Intents
@@ -237,7 +241,7 @@ class MainActivity : AppCompatActivity() {
 		val obtainNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, permissionListObject)
 		if(obtainNewAuthUrl){
 			PreferencesOperator.clearAuthData(this)
-			ApiAuthorize().run(this, permissionListObject)
+			ApiAuthorize(this).run(permissionListObject)
 		}
 		else
 			Log.i(Utilities.TagProduction, "Skipped obtaining AuthUrl due to already existing authData, going to Bank login webpage")
@@ -266,17 +270,13 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 	private fun pinActivityResult(resultCode: Int){
-		if(resultCode == RESULT_OK){
-			//do nothing
-		}
-		else{
-			//TODO to tworzy infinity loop w ktorym urzytkownik do upadlego jest proszony o pin
-			Utilities.showToast(
-				this,
-				getString(R.string.PIN_UserMsg_failedToSetNewPin_differentPinsInserted)
-			)
-			ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
-		}
+		if(resultCode == RESULT_OK)
+			return
+
+		//TODO to tworzy infinity loop w ktorym urzytkownik do upadlego jest proszony o pin
+		val msgForUser = getString(R.string.PIN_UserMsg_failedToSetNewPin_differentPinsInserted)
+		Utilities.showToast(this, msgForUser)
+		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 	}
 	private fun fingerAuthActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode == RESULT_OK){
@@ -313,7 +313,7 @@ class MainActivity : AppCompatActivity() {
 	}
 	private fun qrScannerActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode != RESULT_OK || data == null)
-			return //todo maybe?
+			return
 
 		val returnFieldName = resources.getString(R.string.ACT_COM_QrScanner_FIELD_NAME)
 		val returnedCode = data.getIntExtra(returnFieldName, -1)
@@ -342,12 +342,8 @@ class MainActivity : AppCompatActivity() {
 	private fun dialogIfUserWantToResetBankAuthResult(resultCode: Int){
 		if(resultCode != RESULT_OK)
 			return
-
 		PreferencesOperator.clearAuthData(this)
-		val permissionList = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)//todo dodac tutaj customowanie tych uprawnien
-		ApiAuthorize().run(this, permissionList)
-		ActivityStarter.openBrowserForLogin(this)
-		ApiGetToken().run(this)
+		ActivityStarter.startResetPermissionsActivity(this)
 	}
 	private fun openBasicTransferTabClicked(){
 		val authCodeNotAvaible = PreferencesOperator.readPrefStr(this, R.string.PREF_authCode).isNullOrEmpty()
@@ -356,11 +352,12 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 
-		val gotAcessToAccounts = ApiGetToken().run(this)
+		val gotAcessToAccounts = ApiGetToken(this).run()
 		if(gotAcessToAccounts)
 			ActivityStarter.startTransferActivityFromMenu(this)
-		else
-			;//todo
-
+		else {
+			Log.e(Utilities.TagProduction,"[openBasicTransferTabClicked/${this.javaClass.name}] Error cant open Basic transfer act, cause getToken returned false")
+			return
+		}
 	}
 }

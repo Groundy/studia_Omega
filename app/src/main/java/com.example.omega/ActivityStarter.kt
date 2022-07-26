@@ -5,7 +5,7 @@ import android.content.Intent
 
 class ActivityStarter {
 	companion object{
-		fun startUserPermissionListActivity(activity: Activity){
+		fun startResetPermissionsActivity(activity: Activity){
 			val intent = Intent(activity, UserPermissionList::class.java)
 			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST)
 			activity.startActivityForResult(intent,retCode)

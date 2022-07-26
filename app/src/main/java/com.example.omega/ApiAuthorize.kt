@@ -105,9 +105,9 @@ class ApiAuthorize(activity: Activity) {
 		val scopeDetailObject = JSONObject()
 			.put(ApiConsts.ScopeFields.PrivilegeList.text, JSONArray().put(privilegesListJsonObj))
 			.put(ApiConsts.ScopeFields.ScopeGroupType.text, ApiConsts.ScopeValues.Ais.text)
-			.put(ApiConsts.ScopeFields.ConsentId.text,  ApiConsts.OtherHardCodedVals.ConsentId.text)
+			.put(ApiConsts.ScopeFields.ConsentId.text,  ApiConsts.ConsentId)
 			.put(ApiConsts.ScopeFields.ScopeTimeLimit.text, expTimeStr)
-			.put(ApiConsts.ScopeFields.ThrottlingPolicy.text, ApiConsts.OtherHardCodedVals.ThrottlingPolicyVal.text)
+			.put(ApiConsts.ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
 		return scopeDetailObject
 	}
 
@@ -120,12 +120,14 @@ class ApiAuthorize(activity: Activity) {
 			val lastPermissionListStr= PreferencesOperator.readPrefStr(activity, R.string.PREF_lastUsedPermissionsForAuth)
 			if(lastPermissionListStr.isNullOrEmpty())
 				return true
+
 			if(lastPermissionListStr != permisionListObject.toString())
 				return true
 
 			val lastAuthUrlValidityTime = PreferencesOperator.readPrefStr(activity, R.string.PREF_authUrlValidityTimeEnd)
 			if(lastAuthUrlValidityTime.isNullOrEmpty())
 				return true
+
 			val authTimeIsStillValid = OmegaTime.timestampIsValid(lastAuthUrlValidityTime)
 			if(!authTimeIsStillValid)
 				return true

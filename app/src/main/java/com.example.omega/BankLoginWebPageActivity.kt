@@ -36,49 +36,22 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 			override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
 				view?.isVisible = false
 				request?.let {
-					val isProperRedirectUri = it.url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
-					if(!isProperRedirectUri){
-						Log.e(Utilities.TagProduction, "Failed to obtain code[request not started with app callBack], request [${request.url}]")
-						setResult(RESULT_CANCELED)
-						finish()
-					}
-
-					val responseState = it.url.getQueryParameter("state")// To prevent CSRF attacks, check that we got the same state value we sent,
-					val responseStateCorrect = responseState == expectedState
-					if (!responseStateCorrect) {
-						Utilities.showToast(this@BankLoginWebPageActivity, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
-						Log.e(Utilities.TagProduction, "Failed to obtain code[wrong state], request [${request.url}]")
-						setResult(RESULT_CANCELED)
-						finish()
-					}
-
-					val code : String? = it.url.getQueryParameter("code")
-					if (code.isNullOrEmpty()) {
-						Log.e(Utilities.TagProduction, "Failed to obtain code[no code], request [${request.url}]")
-						Utilities.showToast(this@BankLoginWebPageActivity, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
-						setResult(RESULT_CANCELED)
-						finish()
-					}
-					else {
-						PreferencesOperator.savePref(this@BankLoginWebPageActivity, R.string.PREF_authCode, code)
-						setResult(RESULT_OK)
-						finish()
-					}
+					reciveInfoFromBank(view, request)
 				}
 				return super.shouldOverrideUrlLoading(view, request)
 			}
 		}
 	}
-
 	private fun readPrefValues() : Boolean{
 		expectedState = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
 		url = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
+		if(expectedState.isNullOrEmpty() || url.isNullOrEmpty())
+			return false
+
 		val urlValidityTime = PreferencesOperator.readPrefStr(this, R.string.PREF_authUrlValidityTimeEnd)
 		val urlVaild = OmegaTime.timestampIsValid(urlValidityTime)
-		val valuesAreOk = urlVaild && url.isNotEmpty() && expectedState.isNotEmpty()
-		return valuesAreOk
+		return urlVaild
 	}
-	/*
 	private fun reciveInfoFromBank(view: WebView?, request: WebResourceRequest){
 		val isProperRedirectUri = request.url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
 		if(!isProperRedirectUri){
@@ -109,5 +82,4 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 			finish()
 		}
 	}
-*/
 }

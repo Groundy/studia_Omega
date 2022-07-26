@@ -7,15 +7,9 @@ import org.json.JSONObject
 import java.lang.Exception
 
 
-class ApiGetPaymentAccDetails {
-	var token: Token
-
-	constructor(token: Token) {
-		this.token = token
-	}
+class ApiGetPaymentAccDetails(var token: Token) {
 
 	private var accountToSet: ArrayList<PaymentAccount> = ArrayList()
-
 	fun run(accNumbers: List<String>): Boolean {
 		if (accNumbers.isNullOrEmpty())
 			return false
@@ -54,7 +48,6 @@ class ApiGetPaymentAccDetails {
 			additionalHeaderList
 		)
 	}
-
 	private fun getAccInfo(accNumber: String): Boolean {
 		Log.i(
 			Utilities.TagProduction,
@@ -79,7 +72,6 @@ class ApiGetPaymentAccDetails {
 			false
 		}
 	}
-
 	private fun parseResponseJson(obj: JSONObject): Boolean {
 		val tmpPaymentAcc = PaymentAccount(obj)
 		return if (tmpPaymentAcc.isValid()) {
@@ -88,7 +80,6 @@ class ApiGetPaymentAccDetails {
 		} else
 			false
 	}
-
 	private fun getAccDetailsForAllAccounts(accNumbers: List<String>): Boolean {
 		//starts many threads, each of them ask Bank for details of specific accNumbe
 		return try {

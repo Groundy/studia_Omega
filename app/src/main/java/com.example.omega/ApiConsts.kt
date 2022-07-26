@@ -58,12 +58,6 @@ class ApiConsts {
 		ThrottlingPolicy("throttlingPolicy")
 		;
 	}
-	enum class OtherHardCodedVals(val text: String){
-		//almost not Checked values required by Bank
-		ThrottlingPolicyVal("psd2Regulatory"),
-		ConsentId("123456789")
-		;
-	}
 
 	companion object {
 		const val PREFERED_CHARSET = "utf-8"
@@ -74,6 +68,10 @@ class ApiConsts {
 		const val userId_ALIOR = "6af374ae-480e-4631-b70c-4d8b2862e311"
 		const val REDIRECT_URI = "https://Omega:8080/auth/oauth2/callback"
 		const val TTP_ID = "requiredValueThatIsNotValidated"
+
+		//almost not Checked values required by Bank
+		const val ThrottlingPolicyVal = "psd2Regulatory"
+		const val ConsentId = "123456789"
 
 		const val AuthUrlValidityTimeSeconds = 24 * 60 * 60
 		const val requestTimeOut = 1000L * 60 * 8
