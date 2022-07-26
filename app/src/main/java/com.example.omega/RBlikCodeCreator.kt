@@ -60,7 +60,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	private fun goNextButtonClicked(){
 		val dataOk = validateDataToGenRBlikCode()
 		if(!dataOk)
-			return//todo
+			return
 
 		val data = serializeDataForServer()
 		val codeAssociated = getCodeFromServer(data)

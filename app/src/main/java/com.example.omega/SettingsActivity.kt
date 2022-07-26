@@ -30,10 +30,10 @@ class SettingsActivity : AppCompatActivity() {
 		val selectAuthMethodeField = findViewById<TextView>(R.id.selectAuthMethodeTextView)
 		val methodeCode = PreferencesOperator.readPrefInt(this, R.integer.PREF_preferedAuthMethode)
 		val methodeName = when(methodeCode){
-			0->getString(R.string.GUI_selectAuthMethodeText_pin)
+			0->getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
 			1->getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
 			2->getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
-			else ->getString(R.string.GUI_selectAuthMethodeText_pin)
+			else ->getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
 		}
 
 		val textToSetOnSelectAuthMethode = getString(R.string.Settings_GUI_selectAuthMethodeTextBase) + methodeName
@@ -76,14 +76,14 @@ class SettingsActivity : AppCompatActivity() {
 		val dialogOnDismissListener = DialogInterface.OnDismissListener{
 			var methodCode = PreferencesOperator.readPrefInt(this, R.integer.PREF_preferedAuthMethode)
 			var methodeName = when(methodCode){
-				0->getString(R.string.GUI_selectAuthMethodeText_pin)
+				0->getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
 				1->getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
 				2->getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
-				else ->getString(R.string.GUI_selectAuthMethodeText_pin)
+				else ->getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
 			}
 			when(radioButtonGroup.checkedRadioButtonId){
 				dialog.selectAuthMethodeButton_PIN.id ->{
-					methodeName = getString(R.string.GUI_selectAuthMethodeText_pin)
+					methodeName = getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
 					methodCode = 0
 				}
 				dialog.selectAuthMethodeButton_patern.id ->{

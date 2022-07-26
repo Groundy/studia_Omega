@@ -20,7 +20,7 @@
 		android:id="@+id/selectAuthMethodeButtonGroup">
 
 		<RadioButton
-			android:text="@string/GUI_selectAuthMethodeText_pin"
+			android:text="@string/PIN_GUI_selectAuthMethodeText_pin"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/selectAuthMethodeButton_PIN"

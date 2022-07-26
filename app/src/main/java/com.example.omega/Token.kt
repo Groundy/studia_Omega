@@ -41,6 +41,7 @@ class Token {
 
 	fun getDetailsOfAccountsFromBank() : Boolean{
 		//fill accounts object in Token
+
 		if(tokenObj == null){
 			Log.e(Utilities.TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json is null")
 			false
@@ -102,7 +103,7 @@ class Token {
 			}
 			displayableStringsToRet.toList()
 		}catch (e : Exception){
-			Log.e(Utilities.TagProduction, "getListOfAccountsToDisplay/${this.javaClass.name}] functions started with null accountList, although it shouldnt")
+			Log.e(Utilities.TagProduction, "[getListOfAccountsToDisplay/${this.javaClass.name}] functions started with null accountList, although it shouldnt")
 			null
 		}
 	}

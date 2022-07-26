@@ -32,7 +32,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		getToken()
 		findGuiElements()
 		setListenersToGuiElements()
-		fillListOfAccounts()//todo
+		fillListOfAccounts()
 	}
 	private fun setListenersToGuiElements(){
 		val amountEditTextListener = object :TextWatcher{

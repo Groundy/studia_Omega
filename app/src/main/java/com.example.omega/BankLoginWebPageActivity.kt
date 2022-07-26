@@ -63,7 +63,8 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 		val responseState = request.url.getQueryParameter("state")// To prevent CSRF attacks, check that we got the same state value we sent,
 		val responseStateCorrect = responseState == expectedState
 		if (!responseStateCorrect) {
-			Utilities.showToast(this, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
+			val msg = getString(R.string.BankLogin_UserMsg_ErrorInBankTryAgian)
+			Utilities.showToast(this, msg)
 			Log.e(Utilities.TagProduction, "Failed to obtain code[wrong state], request [${request.url}]")
 			setResult(RESULT_CANCELED)
 			finish()
@@ -71,8 +72,9 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 
 		val code : String? = request.url.getQueryParameter("code")
 		if (code.isNullOrEmpty()) {
+			val msg = getString(R.string.BankLogin_UserMsg_ErrorInBankTryAgian)
 			Log.e(Utilities.TagProduction, "Failed to obtain code[no code], request [${request.url}]")
-			Utilities.showToast(this, "Błąd uwierzytelniania ze strony banku, spróbuj ponownie")//todo TOFILE
+			Utilities.showToast(this, msg)
 			setResult(RESULT_CANCELED)
 			finish()
 		}

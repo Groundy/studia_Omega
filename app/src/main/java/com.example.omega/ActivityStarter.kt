@@ -56,13 +56,13 @@ class ActivityStarter {
 				preferredMethodeCode = forcedMethodeCode
 			
 			val preferredMethodeName = when(preferredMethodeCode){
-				0->context.getString(R.string.GUI_selectAuthMethodeText_pin)
+				0->context.getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
 				1->context.getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
 				2->context.getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
-				else ->context.getString(R.string.GUI_selectAuthMethodeText_pin)
+				else ->context.getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
 			}
 			when(preferredMethodeName){
-				context.getString(R.string.GUI_selectAuthMethodeText_pin) -> authByPin(context,description)
+				context.getString(R.string.PIN_GUI_selectAuthMethodeText_pin) -> authByPin(context,description)
 				context.getString(R.string.Settings_GUI_selectAuthMethodeTextPattern) -> Utilities.authByPattern(
 					context,
 					description
