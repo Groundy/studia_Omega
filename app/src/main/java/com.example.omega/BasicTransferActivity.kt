@@ -183,25 +183,6 @@ class BasicTransferActivity : AppCompatActivity() {
 			Utilities.showToast(this, errorCode)
 		this.finish()
 	}
-	private fun getInfoAboutChosenPaymentAccount(paymentAccount: PaymentAccount) : Boolean{
-		val currentChosenItem = spinner.selectedItem.toString()
-		val separator = "]  "
-		val indexOfStartAccNumber = currentChosenItem.indexOf(separator)
-		if(indexOfStartAccNumber == -1)
-			return false//todo
-
-		val accountNumber = currentChosenItem.substring(indexOfStartAccNumber + separator.length)
-
-		val accountBalance = paymentAccount.getBalanceOfAccount()
-		val accountCurrency = paymentAccount.getCurrencyOfAccount()
-		if(accountBalance == null || accountCurrency.isNullOrEmpty())
-			return false //todo
-
-		this.availableBalance = accountBalance
-		this.accountCurrency = accountCurrency
-		this.senderAccNumber = accountNumber
-		return true
-	}
 	private fun goNextActivityButtonClicked(){
 		val inputErrorText : String? = getErrorInputText()
 		if(inputErrorText != null){
