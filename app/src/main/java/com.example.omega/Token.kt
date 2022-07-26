@@ -50,7 +50,7 @@ class Token() {
 		val secondsToExpire = getSecondsLeftToTokenExpiration()
 		if(secondsToExpire == null || secondsToExpire < 0)
 			return false
-		return true//todo
+		return true
 	}
 	fun getDetailsOfAccountsFromBank() : Boolean{
 		//fill accounts object in Token

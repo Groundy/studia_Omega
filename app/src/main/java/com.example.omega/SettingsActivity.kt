@@ -30,9 +30,7 @@ class SettingsActivity : AppCompatActivity() {
 		val selectAuthMethodeField = findViewById<TextView>(R.id.selectAuthMethodeTextView)
 		val methodeCode = PreferencesOperator.readPrefInt(this, R.integer.PREF_preferedAuthMethode)
 		val methodeName = when(methodeCode){
-			0->getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
-			1->getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
-			2->getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
+			1->getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
 			else ->getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
 		}
 
@@ -49,17 +47,17 @@ class SettingsActivity : AppCompatActivity() {
 	private fun showSelectAuthMethodeDialog(){
 		val dialog = Dialog(this)
 		dialog.setContentView(R.layout.dialog_select_auth_methode)
+
 		val phoneHasFingerSensor = phoneHasFingerSensor()
 		if(!phoneHasFingerSensor)
 			dialog.selectAuthMethodeButton_finger.isVisible = false
-		dialog.selectAuthMethodeButton_patern.isVisible = false //TODO to nie jest zaimplementowane
+
 		val radioButtonGroup = dialog.selectAuthMethodeButtonGroup
-		val userPreferredMethodeCode =
+		val preferedMethodeCode =
 			PreferencesOperator.readPrefInt(this, R.integer.PREF_preferedAuthMethode)
-		when(userPreferredMethodeCode){
-			0 -> {dialog.selectAuthMethodeButton_PIN.isChecked = true}
-			1 -> {dialog.selectAuthMethodeButton_patern.isChecked = true}
-			2 -> {
+		when(preferedMethodeCode){
+			0 -> dialog.selectAuthMethodeButton_PIN.isChecked = true
+			1 -> {
 				if(phoneHasFingerSensor)
 					dialog.selectAuthMethodeButton_finger.isChecked = true
 				else {
@@ -76,23 +74,17 @@ class SettingsActivity : AppCompatActivity() {
 		val dialogOnDismissListener = DialogInterface.OnDismissListener{
 			var methodCode = PreferencesOperator.readPrefInt(this, R.integer.PREF_preferedAuthMethode)
 			var methodeName = when(methodCode){
-				0->getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
-				1->getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
-				2->getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
-				else ->getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
+				1->getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
+				else->getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
 			}
 			when(radioButtonGroup.checkedRadioButtonId){
 				dialog.selectAuthMethodeButton_PIN.id ->{
 					methodeName = getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
 					methodCode = 0
 				}
-				dialog.selectAuthMethodeButton_patern.id ->{
-					methodeName = getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
-					methodCode = 1
-				}
 				dialog.selectAuthMethodeButton_finger.id ->{
 					methodeName = getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
-					methodCode = 2
+					methodCode = 1
 				}
 			}
 			PreferencesOperator.savePref(this, R.integer.PREF_preferedAuthMethode, methodCode)

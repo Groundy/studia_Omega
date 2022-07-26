@@ -2,7 +2,7 @@
 <resources>
 	<bool name="PREF_turnNfcOnAppStart">false</bool>
 	<string name="PREF_hashPin">HashPinField</string>
-	<integer name="PREF_preferedAuthMethode">0</integer> <!--0-PIN, 1-Symbol, 2-fingerPrint-->
+	<integer name="PREF_preferedAuthMethode">0</integer> <!--0-PIN, 1-finger-->
 
 	<string name="PREF_lastUsedPermissionsForAuth">lastUsedPermissionsForAuthField</string>
 	<string name="PREF_lastRandomValue">lastRandomValueField</string>

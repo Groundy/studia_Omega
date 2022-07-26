@@ -28,9 +28,6 @@ class Utilities {
 		fun showToast(activity: Activity, stringToDisplay:String){
 			Toast.makeText(activity,stringToDisplay, Toast.LENGTH_LONG).show()
 		}
-		fun authByPattern(activity: Activity, description : String?){
-			//TODO implement
-		}
 		fun authSuccessed(context: Context){
 			//TODO implement
 			showToast(context as Activity, "Auth success!")

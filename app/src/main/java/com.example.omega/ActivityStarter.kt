@@ -49,25 +49,17 @@ class ActivityStarter {
 			activity.startActivity(resultIntent)
 		}
 		fun startAuthActivity(context : Activity, description : String?, forcedMethodeCode : Int?){
+			val fingerCode = 1
+
 			var preferredMethodeCode =
 				PreferencesOperator.readPrefInt(context, R.integer.PREF_preferedAuthMethode)
 			
-			if(forcedMethodeCode != null && forcedMethodeCode in 0..2)
+			if(forcedMethodeCode != null && forcedMethodeCode in 0..1)
 				preferredMethodeCode = forcedMethodeCode
-			
-			val preferredMethodeName = when(preferredMethodeCode){
-				0->context.getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
-				1->context.getString(R.string.Settings_GUI_selectAuthMethodeTextPattern)
-				2->context.getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
-				else ->context.getString(R.string.PIN_GUI_selectAuthMethodeText_pin)
-			}
-			when(preferredMethodeName){
-				context.getString(R.string.PIN_GUI_selectAuthMethodeText_pin) -> authByPin(context,description)
-				context.getString(R.string.Settings_GUI_selectAuthMethodeTextPattern) -> Utilities.authByPattern(
-					context,
-					description
-				)
-				context.getString(R.string.Settings_GUI_selectAuthMethodeTextFinger) -> authByFingerPrint(context,description)
+
+			when(preferredMethodeCode){
+				fingerCode -> authByFingerPrint(context,description)
+				else -> authByPin(context,description)
 			}
 		}
 		private fun authByPin(activity: Activity, description : String?){

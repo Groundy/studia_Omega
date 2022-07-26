@@ -35,12 +35,5 @@
 			android:minHeight="48dp"
 			android:textSize="@dimen/DIM_font_size_settings" />
 
-		<RadioButton
-			android:text="@string/Settings_GUI_selectAuthMethodeTextPattern"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/selectAuthMethodeButton_patern"
-			android:minHeight="48dp"
-			android:textSize="@dimen/DIM_font_size_settings" />
 	</RadioGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

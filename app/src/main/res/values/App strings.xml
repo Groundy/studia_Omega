@@ -49,7 +49,6 @@
 
 	<!-- settings -->
 	<string name="Settings_GUI_selectAuthMethodeTextFinger">Odcisk palca</string>
-	<string name="Settings_GUI_selectAuthMethodeTextPattern">Wzór</string>
 	<string name="Settings_GUI_selectAuthMethodeTextBase">"Preferowana metoda autoryzacji: "</string>
 	<string name="Settings_GUI_preferredAuthMethode">Preferowana metoda autoryzacji: </string>
 	<string name="Settings_GUI_turnNfcOnAppStartText">Włącz NFC po starcie aplikacji</string>
