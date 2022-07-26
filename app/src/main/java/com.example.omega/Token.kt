@@ -2,10 +2,13 @@ package com.example.omega
 
 import android.util.Log
 import org.json.JSONObject
+
 class Token {
+
 	private var tokenObj : JSONObject? = null
 	private var accounts : List<PaymentAccount>? = null
 	companion object{
+		//tutaj oprocz accountNbr jest jeszcze lista zgód dla tego konta wraz z ich ograniczeniami, jezeli trzeba to dodac pozniej
 		enum class ResponseFieldsNames(val text : String){
 			TokenType("token_type"),
 			AccessToken("access_token"),
@@ -24,6 +27,13 @@ class Token {
 		enum class PrivilegeListObjFieldsNames(val text: String){
 			AccountNumber("accountNumber");//tutaj oprocz accountNbr jest jeszcze lista zgód dla tego konta wraz z ich ograniczeniami, jezeli trzeba to dodac pozniej
 		}
+		enum class HeadersNames(val text: String){
+			RequestId("requestId"),
+			SendDate("sendDate"),
+			IsCallback("isCallback")
+			;
+		}
+		const val minTimeTokenNotMustbeRefreshedSeconds = 150
 	}
 	constructor(jsonObject: JSONObject){
 		tokenObj = jsonObject
@@ -36,6 +46,11 @@ class Token {
 		return tokenObj.toString()
 	}
 	fun isOk() : Boolean{
+		if(tokenObj == null)
+			return false
+		val secondsToExpire = getSecondsLeftToTokenExpiration()
+		if(secondsToExpire == null || secondsToExpire < 0)
+			return false
 		return true//todo
 	}
 
@@ -117,6 +132,16 @@ class Token {
 		}catch (e : Exception){
 			Log.e(Utilities.TagProduction, "[getAccessToken()/${this.javaClass.name}] Error, cant get accessToken from Token Json, but json is not null")
 			String()
+		}
+	}
+	fun getSecondsLeftToTokenExpiration() : Long? {
+		return try {
+			val startTokenTime = tokenObj!!.getJSONObject(ResponseFieldsNames.ResponseHeader.text).getString(HeadersNames.SendDate.text)
+			val expireIn = tokenObj!!.getString(ResponseFieldsNames.ExpiresIn.text).toInt()
+			val timeToExpiration = OmegaTime.getSecondsToStampExpiration(startTokenTime, expireIn)
+			return timeToExpiration
+		}catch (e : Exception){
+			null
 		}
 	}
 }
