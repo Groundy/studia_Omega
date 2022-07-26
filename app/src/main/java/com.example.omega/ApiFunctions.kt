@@ -70,6 +70,7 @@ class ApiFunctions {
 		fun getPublicIPByInternetService() : String{
 			if(Utilities.developerMode)
 				return "213.134.179.174"		//tmp for speed
+			//TODO terrible solution but it works
 
 			var ip = ""
 			val request: Request = Request.Builder()
@@ -92,7 +93,7 @@ class ApiFunctions {
 			}
 			val client = OkHttpClient()
 			client.newCall(request).enqueue(callbackRequest)
-			//TODO terrible solution but it works
+
 			var tries = 20
 			val timeMili = 100L
 			while (tries > 0 && ip.isEmpty()){

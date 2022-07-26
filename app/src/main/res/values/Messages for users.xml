@@ -2,7 +2,6 @@
 <resources>
     <string name="UserMsg_UNKNOWN_ERROR">Wystąpił nieznany bład</string>
 
-
     <string name="PIN_UserMsg_triesLeft2">Pozostały 2 próby</string>
     <string name="PIN_UserMsg_triesLeft1">Pozostała ostatnia próba</string>
     <string name="PIN_UserMsg_haveToUseAllTheDigits">PIN musi zawierać wszystkie możliwe cyfry</string>
@@ -36,4 +35,5 @@
 
     <!--Bank Login Activity-->
     <string name="BankLogin_UserMsg_ErrorInBankTryAgian">Błąd uwierzytelniania ze strony banku, spróbuj ponownie"</string>
+
 </resources>

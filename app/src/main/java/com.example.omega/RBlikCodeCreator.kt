@@ -101,7 +101,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		accountListSpinner.adapter = adapter
 	}
 	private fun validateDataToGenRBlikCode() : Boolean{
-		val accountChosen = true//todo
+		val accountChosen = accountListSpinner.selectedItemPosition != Spinner.INVALID_POSITION
 		if(!accountChosen){
 			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_acc_not_chosen)
 			Utilities.showToast(this, textToShow)
@@ -136,7 +136,8 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		return true
 	}
 	private fun getCodeFromServer(transferData: TransferData) : Int?{
-		return Utilities.getRandomTestCode()      //todo
+		//todo implement
+		return Utilities.getRandomTestCode()
 	}
 	private fun serializeDataForServer() : TransferData? {
 		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser() ?: return null

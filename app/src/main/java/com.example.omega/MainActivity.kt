@@ -250,7 +250,8 @@ class MainActivity : AppCompatActivity() {
 		val fieldsAreFilled = authUrl.isNotEmpty() && state.isNotEmpty()
 		if(!fieldsAreFilled){
 			Log.e(Utilities.TagProduction, "Failed to obtain auth url, tried to pass no authUrl or stateValue")
-			Utilities.showToast(this, "Wystąpił bład w operacji uzyskiwania auth url!")//todo TOFILE
+			val userMsg = getString(R.string.BankLogin_UserMsg_ErrorInBankTryAgian)
+			Utilities.showToast(this, userMsg)
 			return
 		}
 

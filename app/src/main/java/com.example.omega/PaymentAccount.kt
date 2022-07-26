@@ -37,12 +37,10 @@ class PaymentAccount {
         }
     }
     fun isValid() : Boolean{
-        return true //todo
+        //todo implement
+        return true
     }
 
-    override fun toString(): String {
-        return contentJson.toString()//todo chyba ta funkcja jest zbyteczna
-    }
     fun toDisplayableString() : String{
         val availableBalance = getBalanceOfAccount()
         val currency = getCurrencyOfAccount()
