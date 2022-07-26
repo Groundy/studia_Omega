@@ -222,6 +222,8 @@ class MainActivity : AppCompatActivity() {
 			ApiAuthorize(this, obj).run()
 			ActivityStarter.openBrowserForLogin(this)
 		}
+		else
+			Log.i(Utilities.TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
 	}
 
 	//Intents
@@ -343,18 +345,12 @@ class MainActivity : AppCompatActivity() {
 	}
 	private fun openBasicTransferTabClicked(){
 		val tokenCpy = PreferencesOperator.getToken(this)
-		val authTokenNotAvaible = tokenCpy == null || tokenCpy.isOk()
-		if(authTokenNotAvaible){
-			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.LoginToBankAccount)
+		val authTokenAvaible = tokenCpy.isOk()
+		if(!authTokenAvaible){
+			Log.e(Utilities.TagProduction,"[openBasicTransferTabClicked/${this.javaClass.name}] token not available, asked user if he want to reset token")
+			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl)
 			return
 		}
-
-		val gotAcessToAccounts = ApiGetToken(this).run()
-		if(gotAcessToAccounts)
-			ActivityStarter.startTransferActivityFromMenu(this)
-		else {
-			Log.e(Utilities.TagProduction,"[openBasicTransferTabClicked/${this.javaClass.name}] Error cant open Basic transfer act, cause getToken returned false")
-			return
-		}
+		ActivityStarter.startTransferActivityFromMenu(this)
 	}
 }
