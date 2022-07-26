@@ -68,7 +68,9 @@ class ApiFunctions {
 			return result.toString()
 		}
 		fun getPublicIPByInternetService() : String{
-			return "213.134.179.174"		//tmp for speed
+			if(Utilities.developerMode)
+				return "213.134.179.174"		//tmp for speed
+
 			var ip = ""
 			val request: Request = Request.Builder()
 				.url("https://wtfismyip.com/text")

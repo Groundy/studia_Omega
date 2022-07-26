@@ -16,6 +16,7 @@ import kotlin.random.Random
 
 class Utilities {
 	companion object{
+		const val developerMode = true
 		const val TagProduction = "WookieTag"
 		fun showMsg(activity: Activity, stringToDisplay:String) {
 			val dialogBuilder = AlertDialog.Builder(activity)
