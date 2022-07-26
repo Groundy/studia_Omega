@@ -3,7 +3,7 @@ package com.example.omega
 import android.util.Log
 import org.json.JSONObject
 
-class Token {
+class Token() {
 	private var tokenObj : JSONObject? = null
 	private var accounts : List<PaymentAccount>? = null
 	companion object{
@@ -34,10 +34,10 @@ class Token {
 		}
 		const val minTimeTokenNotMustbeRefreshedSeconds = 150
 	}
-	constructor(jsonObject: JSONObject){
+	constructor(jsonObject: JSONObject) : this() {
 		tokenObj = jsonObject
 	}
-	constructor(jsonObjectStr: String){
+	constructor(jsonObjectStr: String) : this() {
 		tokenObj = JSONObject(jsonObjectStr)
 	}
 	override fun toString(): String {
@@ -133,7 +133,7 @@ class Token {
 			null
 		}
 	}
-	private fun getSecondsLeftToTokenExpiration() : Long? {
+	fun getSecondsLeftToTokenExpiration() : Long? {
 		return try {
 			val startTokenTime = tokenObj!!.getJSONObject(ResponseFieldsNames.ResponseHeader.text)
 				.getString(HeadersNames.SendDate.text)

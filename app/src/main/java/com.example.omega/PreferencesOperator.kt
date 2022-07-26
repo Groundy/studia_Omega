@@ -55,13 +55,13 @@ class PreferencesOperator{
 				Log.i(Utilities.TagProduction, hg)
 			}
 		}
-		fun getToken(callActivity: Activity) : Token?{
+		fun getToken(callActivity: Activity) : Token{
 			val tokenCpy = try {
 				val tokenStr = readPrefStr(callActivity, R.string.PREF_accessToken)
 				val tokenJsonObj = JSONObject(tokenStr)
 				Token(tokenJsonObj)
 			}catch (e : Exception){
-				null
+				Token()
 			}
 			return tokenCpy
 		}

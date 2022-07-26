@@ -215,7 +215,7 @@ class MainActivity : AppCompatActivity() {
 			ActivityStarter.startRBlikCodeCreatorActivity(this)
 		}
 		val token = PreferencesOperator.getToken(this)
-		val tokenOk = token!=null && token.isOk()
+		val tokenOk = token.isOk()
 		if(!tokenOk){
 			val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 			PreferencesOperator.clearAuthData(this)
