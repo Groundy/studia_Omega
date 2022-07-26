@@ -210,16 +210,15 @@ class MainActivity : AppCompatActivity() {
 			switchNfcSignalCatching()
 		}
 	}
-
 	private fun DEVELOPER_initaialFun(){
 		findViewById<Button>(R.id.testButton).setOnClickListener{
-			//openBasicTransferTabClicked()
+			ActivityStarter.startRBlikCodeCreatorActivity(this)
 		}
 
-		val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
-		PreferencesOperator.clearAuthData(this)
-		ApiAuthorize(this, obj).run()
-		ActivityStarter.openBrowserForLogin(this)
+			val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
+			PreferencesOperator.clearAuthData(this)
+			ApiAuthorize(this, obj).run()
+			ActivityStarter.openBrowserForLogin(this)
 	}
 
 	//Intents

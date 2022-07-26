@@ -17,17 +17,16 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	private lateinit var receiverNameField : EditText
 	private lateinit var accountListSpinner : Spinner
 	private lateinit var goNextActivityButton : Button
-	private var userAccountsAvailable = false
 	private lateinit var tokenCpy : Token
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_rblik_code_creator)
-
-		//userAccountsAvailable = ApiGetPaymentAccDetails.run()
+		getTokenCpy()
 		setUpGui()
 		fillListOfAccounts()
-		DEVELOPER_fillWidgets()
+		if(Utilities.developerMode)
+			DEVELOPER_fillWidgets()
 	}
 	private fun setUpGui(){
 		amountField = findViewById(R.id.RBlikCodeGenerator_amount_editText)
@@ -64,33 +63,36 @@ class RBLIKCodeCreator : AppCompatActivity() {
 
 		val data = serializeDataForServer()
 		val codeAssociated = getCodeFromServer(data)
-		if(codeAssociated == null)
-			return//todo
+		if(codeAssociated == null){
+			Log.e(Utilities.TagProduction,"[getCodeFromServer/${this.javaClass.name}] server returned null or wrong fromat code for QR generator")
+			return
+		}
 
 		openDisplayActivityWithCode(codeAssociated)
 	}
 	private fun fillListOfAccounts(){
-		if(!userAccountsAvailable){
+		if(!tokenCpy.getDetailsOfAccountsFromBank()){
+			Log.e(Utilities.TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			Utilities.showToast(this, errorCodeTextToDisplay)
 			finish()
 			return
 		}
-		/*//todo
-		val listOfAccountFromToken = token.getListOfAccounts()
-		if(listOfAccountFromToken == null){
-			Log.e(Utilities.TagProduction, "fillListOfAccounts/RBLIKCodeCreator token returned null accountList")
+
+		val listOfAccountFromToken = tokenCpy.getListOfAccountsToDisplay()
+		if(listOfAccountFromToken.isNullOrEmpty()){
+			Log.e(Utilities.TagProduction, "[fillListOfAccounts/${this.javaClass.name}] token returned nullOrEmpty accountList")
+			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
+			Utilities.showToast(this, errorCodeTextToDisplay)
+			finish()
 			return //maybe
 		}
 
 		val adapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item)
 		listOfAccountFromToken.forEach{
-			adapter.add(it.toString())
+			adapter.add(it)
 		}
-
-
 		accountListSpinner.adapter = adapter
-				 */
 	}
 	private fun validateDataToGenRBlikCode() : Boolean{
 		val accountChosen = true//todo
@@ -149,11 +151,11 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		titleField.text = Editable.Factory.getInstance().newEditable("aaa")
 		receiverNameField.text = Editable.Factory.getInstance().newEditable(12345.toString())
 	}
-	private fun getToken(){
+	private fun getTokenCpy(){
 		val tokenTmp = PreferencesOperator.getToken(this)
-		if(tokenTmp != null)
-			tokenCpy = tokenTmp
-		else
+		if(tokenTmp == null || !tokenTmp.isOk())
 			finish()
+		else
+			tokenCpy = tokenTmp
 	}
 }

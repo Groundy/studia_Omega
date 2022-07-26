@@ -213,7 +213,6 @@ class BasicTransferActivity : AppCompatActivity() {
 	}
 	private fun userChangeAnotherAccOnSpiner(){
 		val success = true
-		//val success = getInfoAboutChosenPaymentAccount(token)//todo
 		if(!success)
 			finishThisActivity(false,getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance))
 		amountEditText.text = null
