@@ -17,6 +17,7 @@
     <string name="UserMsg_RBlikCodeGenerator_error_reciving_acc_balance">Błąd pobierania informacji o środkach na rachunku, płatność niemożliwa.</string>
     <string name="UserMsg_RBlikCodeGenerator_unkownError">Nieznany błąd, płatność niemożliwa.</string>
 
+    <!-- Basic transfer -->
     <string name="UserMsg_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER">Numer odbiorcy musi mieć 26 cyfr.</string>
     <string name="UserMsg_basicTransfer_Amount_too_hight">Kwota przelewu jest większa niż dostępne na rachunku środki.</string>
     <string name="UserMsg_basicTransfer_Amount_zero">Kwota przelewu nie musi być większa niż zero.</string>

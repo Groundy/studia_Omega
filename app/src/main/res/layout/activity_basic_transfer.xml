@@ -111,7 +111,15 @@
 					android:maxLength="26"
 					android:textColor="@color/black"
 					android:textColorHint="@color/hintColor"
-					tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+					tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck"
+					android:importantForAutofill="no" />
+
+				<TextView
+					android:id="@+id/basicTransfer_receiverNumberDigitsLeft_TextView"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/basicTransfer_textFieldY"
+					android:textColor="@color/errorRed"
+					android:textSize="12sp" />
 
 				<Space
 					android:layout_width="match_parent"

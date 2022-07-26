@@ -10,21 +10,22 @@ import android.view.View
 import kotlin.math.floor
 import android.widget.*
 
-
 class BasicTransferActivity : AppCompatActivity() {
+	companion object{
+		private const val countryCodeLength = 2
+		private const val polishBankAccountNumberLength = 28 //26 + 2 for country code
+	}
 	private lateinit var receiverNumberEditText : EditText
 	private lateinit var amountEditText : EditText
 	private lateinit var receiverNameEditText : EditText
 	private lateinit var transferTitle : EditText
 	private lateinit var goNextButton : Button
-	private val polishBankAccountNumberLength = 28
 	private lateinit var amountAfterTransferTextView : TextView
 	private lateinit var spinner : Spinner
-	private lateinit var tokenCpy : Token
+	private lateinit var receiverAccNbrDigitsHint : TextView
 
-	private var availableBalance : Double? = null
-	private var accountCurrency : String? = null
-	private var senderAccNumber : String? = null
+	private lateinit var tokenCpy : Token
+	private lateinit var currentPaymentAccount: PaymentAccount
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -34,6 +35,8 @@ class BasicTransferActivity : AppCompatActivity() {
 		setListenersToGuiElements()
 		fillListOfAccounts()
 	}
+
+
 	private fun setListenersToGuiElements(){
 		val amountEditTextListener = object :TextWatcher{
 			var previousValue : String = ""
@@ -49,13 +52,15 @@ class BasicTransferActivity : AppCompatActivity() {
 						previousValue,
 						p0.toString()
 					)
-				printAmountAfterTransfer()
+				showAmountAfterTransfer()
 			}
 		}
 		val receiverNumberEditTextListener = object :TextWatcher{
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-			override fun afterTextChanged(p0: Editable?) {}
+			override fun afterTextChanged(p0: Editable?) {
+				showDigitsLeftToHaveProperAmountOfDigits()
+			}
 		}
 		val receiverNameEditTextListener = object :TextWatcher{
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -89,9 +94,9 @@ class BasicTransferActivity : AppCompatActivity() {
 		goNextButton = findViewById(R.id.RBlikCodeGenerator_goNext_button)
 		amountAfterTransferTextView = findViewById(R.id.basicTransfer_amountAfterTransfer_TextView)
 		spinner = findViewById(R.id.basicTransfer_accountList_Spinner)
-
+		receiverAccNbrDigitsHint = findViewById(R.id.basicTransfer_receiverNumberDigitsLeft_TextView)
 	}
-	private fun printAmountAfterTransfer(){
+	private fun showAmountAfterTransfer(){
 		val amountToTransfer = amountEditText.text.toString().toDoubleOrNull()
 		if(amountToTransfer == null ||amountToTransfer == 0.0){
 			amountAfterTransferTextView.text = null
@@ -100,13 +105,14 @@ class BasicTransferActivity : AppCompatActivity() {
 
 		val accBalanceAfterTransfer = getAccountBalanceAfterTransfer()
 		if(accBalanceAfterTransfer == null){
-			amountAfterTransferTextView.text = "Błąd"
+			amountAfterTransferTextView.text = getString(R.string.GUI_basicTransfer_amountAfterTransfer_less_than_zero)
 			amountAfterTransferTextView.setTextColor(Color.RED)
 			return
 		}
 
 		if(accBalanceAfterTransfer >= 0){
 			val textBase = resources.getString(R.string.GUI_basicTransfer_amountAfterTransfer)
+			val accountCurrency = currentPaymentAccount.getCurrencyOfAccount()
 			val textToSet = "$textBase $accBalanceAfterTransfer $accountCurrency"
 			amountAfterTransferTextView.text = textToSet
 			amountAfterTransferTextView.setTextColor(Color.BLACK)
@@ -117,11 +123,8 @@ class BasicTransferActivity : AppCompatActivity() {
 			amountAfterTransferTextView.setTextColor(Color.RED)
 		}
 	}
-
-	private fun getErrorInputText() : String?{
-		val amountAfterTransfer = getAccountBalanceAfterTransfer()
-		if(amountAfterTransfer == null)
-			return resources.getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
+	private fun checkInputData() : String?{
+		val amountAfterTransfer = getAccountBalanceAfterTransfer()?: return resources.getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 
 		val properAmount = amountAfterTransfer >= 0
 		if(!properAmount)
@@ -131,7 +134,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(amountInserted == null || amountInserted == 0.0)
 			return getString(R.string.UserMsg_basicTransfer_Amount_zero)
 
-		val receiverAccNumberCorrect = receiverNumberEditText.text.length == polishBankAccountNumberLength
+		val receiverAccNumberCorrect = receiverNumberEditText.text.length == polishBankAccountNumberLength - countryCodeLength//countryCodeLength
 		if(!receiverAccNumberCorrect)
 			return resources.getString(R.string.UserMsg_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER)
 
@@ -146,13 +149,14 @@ class BasicTransferActivity : AppCompatActivity() {
 		return null
 	}
 	private fun getAccountBalanceAfterTransfer() : Double?{
-		val balance = availableBalance
-		if(balance == null)
+		val balance = currentPaymentAccount.getBalanceOfAccount()
+		if (balance==null){
+			Log.e(Utilities.TagProduction, "[getAccountBalanceAfterTransfer/${this.javaClass.name}], error obtained null as balance of account")
+			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
 			return null
-		var transferAmount : Double? = amountEditText.text.toString().toDoubleOrNull()
-		if(transferAmount == null)
-			transferAmount = 0.0
+		}
 
+		val transferAmount = amountEditText.text.toString().toDoubleOrNull()?: 0.0
 		val balanceAfterTransfer = balance - transferAmount
 		return floor(balanceAfterTransfer * 100) / 100 //trim decimal after 2 digits
 	}
@@ -174,7 +178,7 @@ class BasicTransferActivity : AppCompatActivity() {
 
 		val adapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item)
 		listOfAccountsFromToken.forEach{
-			adapter.add(it.toString())
+			adapter.add(it)
 		}
 		spinner.adapter = adapter
 	}
@@ -184,7 +188,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		this.finish()
 	}
 	private fun goNextActivityButtonClicked(){
-		val inputErrorText : String? = getErrorInputText()
+		val inputErrorText = checkInputData()
 		if(inputErrorText != null){
 			Utilities.showToast(this, inputErrorText)
 			return
@@ -194,6 +198,8 @@ class BasicTransferActivity : AppCompatActivity() {
 		val receiverName = receiverNameEditText.text.toString()
 		val amount = amountEditText.text.toString().toDouble()
 		val title = transferTitle.text.toString()
+		val accountCurrency = currentPaymentAccount.getCurrencyOfAccount()
+		val senderAccNumber = currentPaymentAccount.getAccNumber()
 		val transferData = TransferData(senderAccNumber,receiverAccNumber,receiverName,title,amount,accountCurrency)
 
 		val transferDataSerialized = transferData.serialize()
@@ -206,15 +212,50 @@ class BasicTransferActivity : AppCompatActivity() {
 	}
 	private fun getToken(){
 		val tokenTmp = PreferencesOperator.getToken(this)
-		if(tokenTmp != null)
+		if(tokenTmp.isOk())
 			tokenCpy = tokenTmp
 		else
 			finish()
 	}
 	private fun userChangeAnotherAccOnSpiner(){
-		val success = true
-		if(!success)
-			finishThisActivity(false,getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance))
-		amountEditText.text = null
+		val selectedItemText = spinner.selectedItem.toString()
+		val pattern = "]  "
+
+		val success = selectedItemText.isNotEmpty() && selectedItemText.contains(pattern)
+		if(!success) {
+			Log.e(Utilities.TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] cant get proper info from selected item")
+			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
+		}
+
+		val parts = selectedItemText.split(pattern)
+		if(parts.size != 2){
+			Log.e(Utilities.TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] cant get proper info from selected item")
+			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
+		}
+		val accountNumber = parts[1]
+		val paymentAccountTmp = tokenCpy.getPaymentAccount(accountNumber)
+		if(paymentAccountTmp == null){
+			Log.e(Utilities.TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] Cant get payment info from token")
+			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
+		}
+		else{
+			amountEditText.text = null
+			currentPaymentAccount = paymentAccountTmp
+		}
+	}
+	private fun showDigitsLeftToHaveProperAmountOfDigits(){
+		val inputDigits = receiverNumberEditText.text.length
+		if(inputDigits == 0){
+			receiverAccNbrDigitsHint.text = null
+			return
+		}
+
+		val amountOfDigitsThatHaveToBePut = polishBankAccountNumberLength - inputDigits - countryCodeLength//countryCode letters
+		if(amountOfDigitsThatHaveToBePut == 0)
+			receiverAccNbrDigitsHint.text = null
+		else{
+			val textToSet = "W numerze brakuje $amountOfDigitsThatHaveToBePut cyfr"
+			receiverAccNbrDigitsHint.text = textToSet
+		}
 	}
 }
