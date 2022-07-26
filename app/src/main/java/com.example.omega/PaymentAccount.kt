@@ -63,17 +63,17 @@ class PaymentAccount {
             "Null"
         }
     }
-    fun getBalanceOfAccount() : Double{
+    fun getBalanceOfAccount() : Double?{
         if(this.contentJson == null){
             Log.e(Utilities.TagProduction, "[getBalanceOfAccount/${this.javaClass.name}] json in payment acc is null")
-            return 0.0
+            return null
         }
 
         return try {
             contentJson!!.getString(AccountObjectFields.AvailableBalance.text).toDouble()
         }catch (e :Exception){
             Log.e(Utilities.TagProduction, "[getBalanceOfAccount/${this.javaClass.name}] wrong Json Struct")
-            0.0
+            null
         }
     }
     fun getAccNumber() : String{
