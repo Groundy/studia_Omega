@@ -3,29 +3,24 @@ package com.example.omega
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.zxing.WriterException
-
 import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-
 import androidmads.library.qrgenearator.QRGContents
-
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.core.graphics.drawable.toBitmap
 
 
 class RBlikCodeDisplayActivity : AppCompatActivity() {
 	private lateinit var imgWidget : ImageView
+	private lateinit var codeDisplayField : TextView
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_blik_code_display)
-		imgWidget = findViewById(R.id.BLIKDISPLAY_QR_ImageView)
-		findViewById<Button>(R.id.BLIKDISPLAY_back_button).setOnClickListener{
-			this.finish()
-		}
+		setUpGui()
 
 		val code = getCodeFromIntent()
 		if(code == -1){
@@ -34,36 +29,29 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 			finish()
 		}
 		setProperWidgetText(code)
-
-		val qrCodeBitmap = generateQRCodeImg(code)
-		val qrBitmapOk = qrCodeBitmap != null
-
-		if(qrBitmapOk){
-			imgWidget.setImageBitmap(qrCodeBitmap)
-		}
-		else{
+		var qrCodeBitmap = generateQRCodeImg(code)
+		if(qrCodeBitmap == null){
 			Utilities.showToast(this, getString(R.string.RBLIKDISPLAY_UserMsg_qrGeneratorError))
 			Log.e(Utilities.TagProduction, "Error in RBlik display class, qr generator return null instead of bitmap.")
-			val errorImg = resources.getDrawable(R.drawable.wrong_img, null).toBitmap()
-			imgWidget.setImageBitmap(errorImg)
+			qrCodeBitmap = resources.getDrawable(R.drawable.wrong_img, null).toBitmap()
 		}
+		imgWidget.setImageBitmap(qrCodeBitmap)
 	}
 
 	private fun generateQRCodeImg(code: Int) : Bitmap?{
 		val qrgEncoder = QRGEncoder(code.toString(), null, QRGContents.Type.TEXT, 300)
-		val bitmap = try {
+		return try {
 			qrgEncoder.encodeAsBitmap()
 		} catch (e: WriterException) {
-			null//todo
+			Log.e(Utilities.TagProduction, "[generateQRCodeImg/${this.javaClass.name}] error txt = $e")
+			null
 		}
-		return bitmap
 	}
 	private fun getCodeFromIntent() : Int{
 		val fieldName = getString(R.string.ACT_COM_CODEGENERATOR_CODE_FOR_DISPLAY_FIELDNAME)
 		return intent.getIntExtra(fieldName, -1)
 	}
 	private fun setProperWidgetText(code : Int){
-		val textView = findViewById<TextView>(R.id.BLIKDISPLAY_QR_code_ImageView)
 		var codeStr = code.toString()
 		if(codeStr.length < 6){
 			val missingZerosOnFrontOfStr = 6 - codeStr.length
@@ -72,6 +60,13 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 			}
 		}
 		codeStr = StringBuilder(codeStr).insert(3," ").toString()
-		textView.text = codeStr
+		codeDisplayField.text = codeStr
+	}
+	private fun setUpGui(){
+		codeDisplayField = findViewById(R.id.BLIKDISPLAY_QR_code_ImageView)
+		imgWidget = findViewById(R.id.BLIKDISPLAY_QR_ImageView)
+		findViewById<Button>(R.id.BLIKDISPLAY_back_button).setOnClickListener{
+			finish()
+		}
 	}
 }
