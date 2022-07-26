@@ -9,17 +9,21 @@ import org.json.JSONObject
 import java.lang.Exception
 
 
-class ApiAuthorize(activity: Activity) {
-	private var permissionsList : PermissionList? = null
+class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
+	private var permissionsList : PermissionList = permisionListObject
 	private var callerActivity : Activity = activity
 	private var stateValue = String()
 
-	fun run(permisionListObject : PermissionList? = null) : Boolean{
-		Log.i(Utilities.TagProduction, "Authorize started")
-		var success = false
-		permissionsList = permisionListObject
-		stateValue = ApiFunctions.getRandomStateValue()
+	fun run() : Boolean{
+		if (permissionsList.permissionsArray.isNullOrEmpty()) {
+			Log.e(Utilities.TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
+			return false
+		}
+		else
+			Log.i(Utilities.TagProduction, "Authorize started")
 
+		var success = false
+		stateValue = ApiFunctions.getRandomStateValue()
 		val thread = Thread{
 			success = startAuthorize(stateValue)
 		}
@@ -79,15 +83,6 @@ class ApiAuthorize(activity: Activity) {
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.AuthUrl.text, requestBodyJson, uuidStr)
 	}
 	private fun getScopeDetailsObject(expTimeStr : String) : JSONObject? {
-		if (permissionsList == null) {
-			Log.e(Utilities.TagProduction, "Error, passed null permissionListObject to ApiAuthorized")
-			return null
-		}
-		if(permissionsList!!.permissionsArray.isNullOrEmpty()){
-			Log.e(Utilities.TagProduction, "Error, passed permissionListObject with null permissionArray to ApiAuthorized")
-			return null
-		}
-
 		val privListCpy = permissionsList!!.permissionsArray
 		val privilegesListJsonObj = JSONObject()
 		if(privListCpy.contains(ApiConsts.Privileges.AccountsHistory)){

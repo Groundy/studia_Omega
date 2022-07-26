@@ -58,7 +58,7 @@ class PreferencesOperator{
 		}
 		fun getToken(callActivity: Activity) : Token?{
 			val tokenCpy = try {
-				val tokenStr = PreferencesOperator.readPrefStr(callActivity, R.string.PREF_accessToken)
+				val tokenStr = readPrefStr(callActivity, R.string.PREF_accessToken)
 				val tokenJsonObj = JSONObject(tokenStr)
 				Token(tokenJsonObj)
 			}catch (e : Exception){

@@ -11,6 +11,7 @@ class ApiGetPaymentAccDetails(var token: Token) {
 
 	private var accountToSet: ArrayList<PaymentAccount> = ArrayList()
 	fun run(accNumbers: List<String>): Boolean {
+		Log.i(Utilities.TagProduction, "getPaymentAccountDetails started")
 		if (accNumbers.isNullOrEmpty())
 			return false
 
@@ -18,7 +19,8 @@ class ApiGetPaymentAccDetails(var token: Token) {
 		return if (success) {
 			token.updateListOfAccountWithDetails(accountToSet)
 			true
-		} else
+		}
+		else
 			false
 	}
 

@@ -213,14 +213,13 @@ class MainActivity : AppCompatActivity() {
 
 	private fun DEVELOPER_initaialFun(){
 		findViewById<Button>(R.id.testButton).setOnClickListener{
-			openBasicTransferTabClicked()
+			//openBasicTransferTabClicked()
 		}
 
 		val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 		PreferencesOperator.clearAuthData(this)
-		ApiAuthorize(this).run()
+		ApiAuthorize(this, obj).run()
 		ActivityStarter.openBrowserForLogin(this)
-
 	}
 
 	//Intents
@@ -241,7 +240,7 @@ class MainActivity : AppCompatActivity() {
 		val obtainNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, permissionListObject)
 		if(obtainNewAuthUrl){
 			PreferencesOperator.clearAuthData(this)
-			ApiAuthorize(this).run(permissionListObject)
+			ApiAuthorize(this, permissionListObject).run()
 		}
 		else
 			Log.i(Utilities.TagProduction, "Skipped obtaining AuthUrl due to already existing authData, going to Bank login webpage")
@@ -262,11 +261,11 @@ class MainActivity : AppCompatActivity() {
 			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl)
 	}
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
-		if(resultCode == RESULT_OK){
-			//todo
-		}
-		else{
-			//todo
+		//todo zastanowić się czy token pobierać tutaj
+		val success = ApiGetToken(this).run()
+		if (!success){
+			val userMsg = getString(R.string.UserMsg_Banking_errorObtaingToken)
+			Utilities.showToast(this, userMsg)
 		}
 	}
 	private fun pinActivityResult(resultCode: Int){
@@ -346,8 +345,9 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startResetPermissionsActivity(this)
 	}
 	private fun openBasicTransferTabClicked(){
-		val authCodeNotAvaible = PreferencesOperator.readPrefStr(this, R.string.PREF_authCode).isNullOrEmpty()
-		if(authCodeNotAvaible){
+		val tokenCpy = PreferencesOperator.getToken(this)
+		val authTokenNotAvaible = tokenCpy == null || tokenCpy.isOk()
+		if(authTokenNotAvaible){
 			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.LoginToBankAccount)
 			return
 		}
