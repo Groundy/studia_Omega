@@ -27,6 +27,9 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import java.util.*
+
+
 //  Minimize: CTRL + SHIFT + '-'
 //  Expand:   CTRL + SHIFT + '+'
 //  Ctrl + B go to definition
@@ -41,10 +44,9 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
-		//PreferencesOperator.clearAuthData(this)
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initGUI()
-		DEVELOPER_initaialFun()
+		developerInitaialFun()
 	}
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
@@ -210,7 +212,16 @@ class MainActivity : AppCompatActivity() {
 			switchNfcSignalCatching()
 		}
 	}
-	private fun DEVELOPER_initaialFun(){
+	private fun developerInitaialFun(){
+		if(!Utilities.developerMode)
+			return
+		ApiFunctions.getPublicIPByInternetService()
+		developerInitFun2()
+	}
+	private fun developerInitFun2(){
+		if(!Utilities.developerMode)
+			return
+
 		findViewById<Button>(R.id.testButton).setOnClickListener{
 			ActivityStarter.startRBlikCodeCreatorActivity(this)
 		}
@@ -225,7 +236,6 @@ class MainActivity : AppCompatActivity() {
 		else
 			Log.i(Utilities.TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
 	}
-
 	//Intents
 	private fun resetPermissionActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode != RESULT_OK){
@@ -242,7 +252,6 @@ class MainActivity : AppCompatActivity() {
 
 		val permissionListObject = PermissionList(serializedPermissionList)
 		PreferencesOperator.clearAuthData(this)
-		PreferencesOperator.DEVELOPER_showPref(this)
 		ApiAuthorize(this, permissionListObject).run()
 
 		val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
