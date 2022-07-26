@@ -11,7 +11,7 @@ class ApiGetToken(activity: Activity) {
 	private var errorToDisplay = String()
 
 	fun run() : Boolean{
-		Log.i(Utilities.TagProduction, "GetToken function started")
+		Log.i(Utilities.TagProduction, "GetToken started")
 		var success = false
 		val thread = Thread{
 			try {
@@ -27,6 +27,7 @@ class ApiGetToken(activity: Activity) {
 		thread.join(ApiConsts.requestTimeOut)
 		if(errorToDisplay.isNotEmpty())
 			Utilities.showToast(callerActivity, errorToDisplay)
+		Log.i(Utilities.TagProduction, "GetToken ended")
 		return success
 	}
 	private fun getTokenRequest() : Request {

@@ -16,9 +16,11 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_oauth)
+		Log.i(Utilities.TagProduction, "Login To Bank activity started")
 		val readValuesOk = readPrefValues()
 		if(!readValuesOk){
 			setResult(RESULT_CANCELED)
+			Log.i(Utilities.TagProduction, "Login To Bank activity ended, RESULT_CANCELD")
 			finish()
 		}
 		setWebView()
@@ -82,6 +84,7 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 			PreferencesOperator.savePref(this, R.string.PREF_authCode, code)
 			setResult(RESULT_OK)
 			finish()
+			Log.i(Utilities.TagProduction, "Login To Bank activity ended, RESULT_OK")
 		}
 	}
 }

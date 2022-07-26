@@ -29,6 +29,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		}
 		thread.start()
 		thread.join(ApiConsts.requestTimeOut)
+		Log.i(Utilities.TagProduction, "Authorize ended")
 		return success
 	}
 	private fun startAuthorize(stateValue : String) : Boolean{
