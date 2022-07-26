@@ -15,7 +15,7 @@ class PreferencesOperator{
 				R.string.PREF_lastRandomValue,
 				R.string.PREF_lastUsedPermissionsForAuth,
 				R.string.PREF_authUrlValidityTimeEnd,
-				R.string.PREF_listOfAccNumbersAccociatedWithToken)
+				)
 
 			val preferencesFieldsBool = arrayOf(
 				R.bool.PREF_authUrlAlreadyUSed)
@@ -35,7 +35,6 @@ class PreferencesOperator{
 				R.string.PREF_lastRandomValue,
 				R.string.PREF_authCode,
 				R.string.PREF_authUrlValidityTimeEnd,
-				R.string.PREF_listOfAccNumbersAccociatedWithToken,
 				R.string.PREF_lastUsedPermissionsForAuth,
 				R.bool.PREF_authUrlAlreadyUSed
 			)
@@ -46,8 +45,8 @@ class PreferencesOperator{
 				R.string.PREF_authCode,
 				R.string.PREF_lastRandomValue,
 				R.string.PREF_lastUsedPermissionsForAuth,
-				R.string.PREF_authUrlValidityTimeEnd,
-				R.string.PREF_listOfAccNumbersAccociatedWithToken)
+				R.string.PREF_authUrlValidityTimeEnd
+			)
 
 			preferencesFields.forEach {
 				val str = readPrefStr(activity, it)
