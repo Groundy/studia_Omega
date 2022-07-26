@@ -22,7 +22,7 @@ class ApiConsts {
 		AisGetAccount("ais:getAccount"),
 		;
 	}
-	enum class ApiRequestsBodyFields(val text : String){
+	enum class ApiReqFields(val text : String){
 		RequestHeader("requestHeader"),
 		RequestId("requestId"),
 		UserAgent("userAgent"),
@@ -34,7 +34,18 @@ class ApiConsts {
 		GrantType("grant_type"),
 		RedirectUri("redirect_uri"),
 		ClientId("client_id"),
-		ClientSecret("client_secret")
+		ClientSecret("client_secret"),
+
+		TokenField("token"),
+		IsDirectPsu("isDirectPsu"),
+		DirectPsu("directPsu"),
+		AccountNumberField("accountNumber"),
+
+		Authorization("AUTHORIZATION")
+		;
+	}
+	enum class GrantTypes(val text : String){
+		AuthorizationCode("authorization_code")
 		;
 	}
 

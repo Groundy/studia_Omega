@@ -34,18 +34,19 @@ class ApiGetPaymentAccDetails {
 
 		val authFieldValue = token.getAuthFieldValue()
 		val requestBodyJson = JSONObject()
-			.put("requestHeader", JSONObject()
-				.put("requestId", uuidStr)
-				.put("userAgent", ApiFunctions.getUserAgent())
-				.put("ipAddress", ApiFunctions.getPublicIPByInternetService())
-				.put("sendDate", currentTimeStr)
-				.put("tppId", ApiConsts.TTP_ID)
-				.put("token", authFieldValue)
-				.put("isDirectPsu", false)
-				.put("directPsu", false)
-			).put("accountNumber", accNumber)
+			.put(ApiConsts.ApiReqFields.RequestHeader.text, JSONObject()
+				.put(ApiConsts.ApiReqFields.RequestId.text, uuidStr)
+				.put(ApiConsts.ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
+				.put(ApiConsts.ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService())
+				.put(ApiConsts.ApiReqFields.SendDate.text, currentTimeStr)
+				.put(ApiConsts.ApiReqFields.TppId.text, ApiConsts.TTP_ID)
+				.put(ApiConsts.ApiReqFields.TokenField.text, authFieldValue)
+				.put(ApiConsts.ApiReqFields.IsDirectPsu.text, false)
+				.put(ApiConsts.ApiReqFields.DirectPsu.text, false)
+			).put(ApiConsts.ApiReqFields.AccountNumberField.text, accNumber)
 
-		val additionalHeaderList = arrayListOf(Pair("AUTHORIZATION", authFieldValue))
+		val additionalHeaderList = arrayListOf(
+			Pair(ApiConsts.ApiReqFields.Authorization.text, authFieldValue))
 		return ApiFunctions.bodyToRequest(
 			ApiConsts.BankUrls.GetPaymentAccount.text,
 			requestBodyJson,
@@ -100,17 +101,16 @@ class ApiGetPaymentAccDetails {
 				}
 				listOfThreadCheckingAccInfo.add(thread)
 			}
-			Log.i(Utilities.TagProduction, "started checking")//todo tmp
 			for (i in 0 until listOfThreadCheckingAccInfo.size)
 				listOfThreadCheckingAccInfo[i].start()
 			for (i in 0 until listOfThreadCheckingAccInfo.size)
 				listOfThreadCheckingAccInfo[i].join(ApiConsts.requestTimeOut)
-			Log.i(Utilities.TagProduction, "ended checking")//todo tmp
 			return !boolsOfThreadsSuccessfullness.contains(false)
 		} catch (e: Exception) {
 			Log.e(
 				Utilities.TagProduction,
 				"Failed to obtain information for at account with numbers[$accNumbers] [$e]"
+
 			)
 			false
 		}

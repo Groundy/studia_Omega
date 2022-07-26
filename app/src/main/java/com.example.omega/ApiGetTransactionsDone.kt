@@ -63,20 +63,19 @@ class ApiGetTransactionsDone {
 			val uuidStr = ApiFunctions.getUUID()
 			val currentTimeStr = OmegaTime.getCurrentTime()
 
-
 			val requestBodyJson = JSONObject()
-				.put("requestHeader", JSONObject()
-					.put("requestId", uuidStr)
-					.put("userAgent", ApiFunctions.getUserAgent())
-					.put("ipAddress", ApiFunctions.getPublicIPByInternetService())
-					.put("sendDate", currentTimeStr)
-					.put("tppId", ApiConsts.TTP_ID)
-					.put("token", token.getAccessToken())
-					.put("isDirectPsu",false)
+				.put(ApiConsts.ApiReqFields.RequestHeader.text, JSONObject()
+					.put(ApiConsts.ApiReqFields.RequestId.text, uuidStr)
+					.put(ApiConsts.ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
+					.put(ApiConsts.ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService())
+					.put(ApiConsts.ApiReqFields.SendDate.text, currentTimeStr)
+					.put(ApiConsts.ApiReqFields.TppId.text, ApiConsts.TTP_ID)
+					.put(ApiConsts.ApiReqFields.TokenField.text, token.getAccessToken())
+					.put(ApiConsts.ApiReqFields.IsDirectPsu.text,false)
 					//.put("callbackURL",ApiConsts.REDIRECT_URI)//??
 					//.put("apiKey", ApiConsts.appSecret_ALIOR)//??
 				)
-				.put("accountNumber", accNumber)
+				.put(ApiConsts.ApiReqFields.AccountNumberField.text, accNumber)
 				//.put("itemIdFrom","5989073072160768")//??
 				//.put("transactionDateFrom","Thu Apr 30")//??
 				//.put("transactionDateTo","Thu Feb 06")//??
@@ -88,8 +87,8 @@ class ApiGetTransactionsDone {
 				//.put("perPage",10)//??
 				.put("type","DEBIT")//??
 
-			val authFieldValue = token.getAuthFieldValue()
-			val additionalHeaderList = arrayListOf(Pair("authorization",authFieldValue))
+			val additionalHeaderList = arrayListOf(Pair(
+				ApiConsts.ApiReqFields.Authorization.text,token.getAuthFieldValue()))
 			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone.text, requestBodyJson, uuidStr, additionalHeaderList)
 		}
 	private fun getAccHistory(accNumber: String) : Boolean{
