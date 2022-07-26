@@ -8,7 +8,9 @@
 		android:icon="@mipmap/ic_launcher"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
+		android:usesCleartextTraffic="true"
 		android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+		<!--android:usesCleartextTraffic="true"  line used for obtainging public ip-->
 		<activity
 			android:name="com.example.omega.RBlikCodeDisplayActivity"
 			android:exported="false" />
@@ -87,7 +89,6 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.CAMERA" />
-
 	<uses-permission android:name="android.permission.NFC" />
 
 </manifest>

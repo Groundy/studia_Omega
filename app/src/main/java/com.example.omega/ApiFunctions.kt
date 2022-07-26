@@ -10,6 +10,7 @@ import com.fasterxml.uuid.Generators
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import java.util.concurrent.TimeUnit
 
 class ApiFunctions {
 	companion object{
@@ -67,39 +68,26 @@ class ApiFunctions {
 			result.append(")")
 			return result.toString()
 		}
+
 		fun getPublicIPByInternetService() : String{
-			if(Utilities.developerMode)
-				return "213.134.179.174"		//tmp for speed
-			//TODO terrible solution but it works
-
-			var ip = ""
-			val request: Request = Request.Builder()
-				.url("https://wtfismyip.com/text")
-				.build()
-			val callbackRequest = object : Callback {
-				override fun onFailure(call: Call, e: IOException) {
-					Log.e(Utilities.TagProduction, "bład pobierania publicznego ip z internetu")
-				}
-				override fun onResponse(call: Call, response: Response) {
-					val bytes : ByteArray? = response.body?.bytes()
-					if(bytes != null){
-						val str = String(bytes, StandardCharsets.ISO_8859_1)
-						if(str.length > 3){
-							ip = str.take(str.length - 1) // delete newLine char
-							Log.i(Utilities.TagProduction, "Publiczne ip użytkownika:${str}")
-						}
-					}
+			var ip = "0.0.0.0"
+			val thread =Thread{
+				try {
+					val url = "http://www.ip-api.com/json"
+					val request = Request.Builder().url(url).build()
+					val client = OkHttpClient.Builder().connectTimeout(2, TimeUnit.SECONDS).build()
+					val response = client.newCall(request).execute()
+					val responseBody = response.body?.string()
+					val responseJsonObject = JSONObject(responseBody!!)
+					ip = responseJsonObject.getString("query")
+					Log.e(Utilities.TagProduction, "Pobrano publiczne ip z internetu: $ip")
+					return@Thread
+				}catch (e : Exception){
+					Log.e(Utilities.TagProduction, "bład pobierania publicznego ip z internetu ---> $e")
 				}
 			}
-			val client = OkHttpClient()
-			client.newCall(request).enqueue(callbackRequest)
-
-			var tries = 20
-			val timeMili = 100L
-			while (tries > 0 && ip.isEmpty()){
-				Thread.sleep(timeMili)
-				tries--
-			}
+			thread.start()
+			thread.join(3 * ApiConsts.requestTimeOut)
 			return ip
 		}
 		fun getRandomStateValue(length: Int = 13) : String{
