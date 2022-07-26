@@ -214,11 +214,14 @@ class MainActivity : AppCompatActivity() {
 		findViewById<Button>(R.id.testButton).setOnClickListener{
 			ActivityStarter.startRBlikCodeCreatorActivity(this)
 		}
-
+		val token = PreferencesOperator.getToken(this)
+		val tokenOk = token!=null && token.isOk()
+		if(!tokenOk){
 			val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 			PreferencesOperator.clearAuthData(this)
 			ApiAuthorize(this, obj).run()
 			ActivityStarter.openBrowserForLogin(this)
+		}
 	}
 
 	//Intents
