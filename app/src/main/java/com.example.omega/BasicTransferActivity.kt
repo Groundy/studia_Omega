@@ -198,7 +198,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		val senderAccNumber = currentPaymentAccount.getAccNumber()
 		val transferData = TransferData(senderAccNumber,receiverAccNumber,receiverName,title,amount,accountCurrency)
 
-		val transferDataSerialized = transferData.serialize()
+		val transferDataSerialized = transferData.toString()
 		if(!transferDataSerialized.isNullOrEmpty()){
 			ActivityStarter.startTransferSummaryActivity(this, transferDataSerialized)
 			finishThisActivity(true)

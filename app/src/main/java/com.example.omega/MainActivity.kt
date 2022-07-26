@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 
-		ActivityStarter.startTransferSummaryActivity(this, transferData.serialize()!!)
+		ActivityStarter.startTransferSummaryActivity(this, transferData.toString())
 	}
 	private fun checkIfNfcIsTurnedOnPhone(): Boolean {
 		val deviceHasNfc = this.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
