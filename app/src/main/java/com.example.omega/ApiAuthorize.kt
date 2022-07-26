@@ -9,15 +9,15 @@ import org.json.JSONObject
 import java.lang.Exception
 
 
-class ApiAuthorize {
+class ApiAuthorize(activity: Activity) {
 	private var permissionsList : PermissionList? = null
-	private lateinit var callerActivity : Activity
+	private var callerActivity : Activity = activity
 	private var stateValue = String()
-	fun run(activity: Activity, permisionListObject : PermissionList? = null) : Boolean{
+
+	fun run(permisionListObject : PermissionList? = null) : Boolean{
 		Log.i(Utilities.TagProduction, "Authorize started")
 		var success = false
 		permissionsList = permisionListObject
-		callerActivity = activity
 		stateValue = ApiFunctions.getRandomStateValue()
 
 		val thread = Thread{
@@ -36,7 +36,7 @@ class ApiAuthorize {
 			return if(responseCodeOk){
 				val responseBody = response.body?.string()
 				val responseJsonObject = JSONObject(responseBody!!)
-				val authUrl = responseJsonObject.get("aspspRedirectUri").toString()
+				val authUrl = responseJsonObject.get(ApiConsts.ApiReqFields.AspspRedirectUri.text).toString()
 				if(!authUrl.isNullOrEmpty()){//save to prefs
 					PreferencesOperator.savePref(callerActivity, R.string.PREF_authURL, authUrl)
 					PreferencesOperator.savePref(callerActivity, R.string.PREF_lastRandomValue, stateValue)
@@ -103,11 +103,11 @@ class ApiAuthorize {
 		}
 
 		val scopeDetailObject = JSONObject()
-			.put("privilegeList", JSONArray().put(privilegesListJsonObj))
-			.put("scopeGroupType", ApiConsts.ScopeValues.Ais.text)
-			.put("consentId", "123456789")
-			.put("scopeTimeLimit", expTimeStr)
-			.put("throttlingPolicy", "psd2Regulatory")
+			.put(ApiConsts.ScopeFields.PrivilegeList.text, JSONArray().put(privilegesListJsonObj))
+			.put(ApiConsts.ScopeFields.ScopeGroupType.text, ApiConsts.ScopeValues.Ais.text)
+			.put(ApiConsts.ScopeFields.ConsentId.text,  ApiConsts.OtherHardCodedVals.ConsentId.text)
+			.put(ApiConsts.ScopeFields.ScopeTimeLimit.text, expTimeStr)
+			.put(ApiConsts.ScopeFields.ThrottlingPolicy.text, ApiConsts.OtherHardCodedVals.ThrottlingPolicyVal.text)
 		return scopeDetailObject
 	}
 

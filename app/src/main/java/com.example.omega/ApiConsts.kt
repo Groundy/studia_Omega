@@ -41,11 +41,27 @@ class ApiConsts {
 		DirectPsu("directPsu"),
 		AccountNumberField("accountNumber"),
 
-		Authorization("AUTHORIZATION")
+		Authorization("AUTHORIZATION"),
+
+		AspspRedirectUri("aspspRedirectUri")
 		;
 	}
 	enum class GrantTypes(val text : String){
 		AuthorizationCode("authorization_code")
+		;
+	}
+	enum class ScopeFields(val text: String){
+		PrivilegeList("privilegeList"),
+		ScopeGroupType("scopeGroupType"),
+		ConsentId("consentId"),
+		ScopeTimeLimit("scopeTimeLimit"),
+		ThrottlingPolicy("throttlingPolicy")
+		;
+	}
+	enum class OtherHardCodedVals(val text: String){
+		//almost not Checked values required by Bank
+		ThrottlingPolicyVal("psd2Regulatory"),
+		ConsentId("123456789")
 		;
 	}
 
