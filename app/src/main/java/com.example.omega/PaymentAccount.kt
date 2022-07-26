@@ -76,7 +76,7 @@ class PaymentAccount {
             0.0
         }
     }
-    private fun getAccNumber() : String{
+    fun getAccNumber() : String{
         if(this.contentJson == null){
             Log.e(Utilities.TagProduction, "[getAccNumber/${this.javaClass.name}] json in payment acc is null")
             return "Null"

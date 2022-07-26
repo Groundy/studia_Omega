@@ -239,13 +239,9 @@ class MainActivity : AppCompatActivity() {
 		}
 
 		val permissionListObject = PermissionList(serializedPermissionList)
-		val obtainNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, permissionListObject)
-		if(obtainNewAuthUrl){
-			PreferencesOperator.clearAuthData(this)
-			ApiAuthorize(this, permissionListObject).run()
-		}
-		else
-			Log.i(Utilities.TagProduction, "Skipped obtaining AuthUrl due to already existing authData, going to Bank login webpage")
+		PreferencesOperator.clearAuthData(this)
+		PreferencesOperator.DEVELOPER_showPref(this)
+		ApiAuthorize(this, permissionListObject).run()
 
 		val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
 		val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
@@ -343,7 +339,6 @@ class MainActivity : AppCompatActivity() {
 	private fun dialogIfUserWantToResetBankAuthResult(resultCode: Int){
 		if(resultCode != RESULT_OK)
 			return
-		PreferencesOperator.clearAuthData(this)
 		ActivityStarter.startResetPermissionsActivity(this)
 	}
 	private fun openBasicTransferTabClicked(){

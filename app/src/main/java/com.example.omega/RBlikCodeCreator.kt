@@ -62,6 +62,12 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			return
 
 		val data = serializeDataForServer()
+		if(data == null){
+			val userMsg = getString(R.string.UserMsg_UNKNOWN_ERROR)
+			Utilities.showToast(this, userMsg)
+			return
+		}
+
 		val codeAssociated = getCodeFromServer(data)
 		if(codeAssociated == null){
 			Log.e(Utilities.TagProduction,"[getCodeFromServer/${this.javaClass.name}] server returned null or wrong fromat code for QR generator")
@@ -132,11 +138,12 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	private fun getCodeFromServer(transferData: TransferData) : Int?{
 		return Utilities.getRandomTestCode()      //todo
 	}
-	private fun serializeDataForServer() : TransferData {
+	private fun serializeDataForServer() : TransferData? {
+		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser() ?: return null
 		val amount = amountField.text.toString().toDouble()
 		val title = titleField.text.toString()
-		val currency = "PLN"//todo
-		val receiverAccNumberAcc = "0123456789012345678901234567" //todo
+		val currency = paymentAccount.getCurrencyOfAccount()
+		val receiverAccNumberAcc = paymentAccount.getAccNumber()
 		val receiverName = receiverNameField.text.toString()
 		return TransferData(null, receiverAccNumberAcc, receiverName, title, amount, currency)
 	}
@@ -147,9 +154,9 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		this.startActivity(codeDisplayIntent)
 	}
 	private fun DEVELOPER_fillWidgets(){
-		amountField.text = Editable.Factory.getInstance().newEditable("aaa")
-		titleField.text = Editable.Factory.getInstance().newEditable("aaa")
-		receiverNameField.text = Editable.Factory.getInstance().newEditable(12345.toString())
+		amountField.text = Editable.Factory.getInstance().newEditable("10.0")
+		titleField.text = Editable.Factory.getInstance().newEditable("xyz")
+		receiverNameField.text = Editable.Factory.getInstance().newEditable("abc")
 	}
 	private fun getTokenCpy(){
 		val tokenTmp = PreferencesOperator.getToken(this)
@@ -157,5 +164,28 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			finish()
 		else
 			tokenCpy = tokenTmp
+	}
+	private fun getPaymentAccountInfoOfSelectedOneByUser() : PaymentAccount?{
+		val currentlySelectedSpinnerItem =  accountListSpinner.selectedItem.toString()
+		val pattern = "]  "
+		if(!currentlySelectedSpinnerItem.contains(pattern)){
+			Log.e(Utilities.TagProduction, "[getPaymentAccountInfoOfSelectedOneByUser/${this.javaClass.name}] Could not get acc number from spinnerr selected item text")
+			return null
+		}
+
+		val parts = currentlySelectedSpinnerItem.split(pattern)
+		if(parts.size != 2){
+			Log.e(Utilities.TagProduction, "[getPaymentAccountInfoOfSelectedOneByUser/${this.javaClass.name}] Text from selected item is in wrong format")
+			return null
+		}
+
+		val accountNumber = parts[1]
+		val paymentAccount = tokenCpy.getPaymentAccount(accountNumber)
+		return if(paymentAccount != null)
+			paymentAccount
+		else{
+			Log.e(Utilities.TagProduction, "[getPaymentAccountInfoOfSelectedOneByUser/${this.javaClass.name}] Recived payment account is null")
+			return null
+		}
 	}
 }

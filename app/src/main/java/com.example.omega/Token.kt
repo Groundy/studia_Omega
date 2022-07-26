@@ -4,7 +4,6 @@ import android.util.Log
 import org.json.JSONObject
 
 class Token {
-
 	private var tokenObj : JSONObject? = null
 	private var accounts : List<PaymentAccount>? = null
 	companion object{
@@ -41,10 +40,10 @@ class Token {
 	constructor(jsonObjectStr: String){
 		tokenObj = JSONObject(jsonObjectStr)
 	}
-
 	override fun toString(): String {
 		return tokenObj.toString()
 	}
+
 	fun isOk() : Boolean{
 		if(tokenObj == null)
 			return false
@@ -53,7 +52,6 @@ class Token {
 			return false
 		return true//todo
 	}
-
 	fun getDetailsOfAccountsFromBank() : Boolean{
 		//fill accounts object in Token
 
@@ -71,25 +69,6 @@ class Token {
 		}catch (e : Exception){
 			Log.e(Utilities.TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json wrong struct")
 			false
-		}
-	}
-	fun getListOfAccountsNumbers() : List<String>?{
-		if(tokenObj == null){
-			Log.e(Utilities.TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] Token json is null")
-			return null
-		}
-		return try {
-			val scopeDetailsObj = tokenObj!!.getJSONObject(ResponseFieldsNames.ScopeDetails.text)
-			val accountsArray = scopeDetailsObj.getJSONArray(ScopeDetailsObjFieldsNames.PrivilegeList.text)
-			val array : ArrayList<String> = ArrayList()
-			for (i in 0 until accountsArray.length()){
-				val accNumber = accountsArray.getJSONObject(i).getString(PrivilegeListObjFieldsNames.AccountNumber.text)
-				array.add(accNumber)
-			}
-			array.toList()
-		}catch (e : Exception){
-			Log.e(Utilities.TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] wrong struct of Token json struct")
-			null
 		}
 	}
 	fun updateListOfAccountWithDetails(accList : List<PaymentAccount>){
@@ -134,14 +113,54 @@ class Token {
 			String()
 		}
 	}
-	fun getSecondsLeftToTokenExpiration() : Long? {
+
+	private fun getListOfAccountsNumbers() : List<String>?{
+		if(tokenObj == null){
+			Log.e(Utilities.TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] Token json is null")
+			return null
+		}
 		return try {
-			val startTokenTime = tokenObj!!.getJSONObject(ResponseFieldsNames.ResponseHeader.text).getString(HeadersNames.SendDate.text)
-			val expireIn = tokenObj!!.getString(ResponseFieldsNames.ExpiresIn.text).toInt()
-			val timeToExpiration = OmegaTime.getSecondsToStampExpiration(startTokenTime, expireIn)
-			return timeToExpiration
+			val scopeDetailsObj = tokenObj!!.getJSONObject(ResponseFieldsNames.ScopeDetails.text)
+			val accountsArray = scopeDetailsObj.getJSONArray(ScopeDetailsObjFieldsNames.PrivilegeList.text)
+			val array : ArrayList<String> = ArrayList()
+			for (i in 0 until accountsArray.length()){
+				val accNumber = accountsArray.getJSONObject(i).getString(PrivilegeListObjFieldsNames.AccountNumber.text)
+				array.add(accNumber)
+			}
+			array.toList()
 		}catch (e : Exception){
+			Log.e(Utilities.TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] wrong struct of Token json struct")
 			null
 		}
+	}
+	private fun getSecondsLeftToTokenExpiration() : Long? {
+		return try {
+			val startTokenTime = tokenObj!!.getJSONObject(ResponseFieldsNames.ResponseHeader.text)
+				.getString(HeadersNames.SendDate.text)
+			val expireIn = tokenObj!!.getString(ResponseFieldsNames.ExpiresIn.text).toInt()
+			return OmegaTime.getSecondsToStampExpiration(startTokenTime, expireIn)
+		} catch (e: Exception) {
+			null
+		}
+	}
+	private fun refresh(){
+
+	}
+	fun getPaymentAccount(accountNumber: String) : PaymentAccount?{
+		if(tokenObj == null)
+			return null
+
+		if(accounts.isNullOrEmpty()){
+			Log.e(Utilities.TagProduction, "[getPaymentAccount/${this.javaClass.name}] empty or null account list, probably it isnt initilized yet")
+			return null
+		}
+		accounts!!.forEach{
+			val userLookForThatAcc = it.getAccNumber() == accountNumber
+			if(userLookForThatAcc){
+				return it
+			}
+		}
+		Log.e(Utilities.TagProduction, "[getPaymentAccount/${this.javaClass.name}] account number not found, size of accounts array: ${accounts!!.size}")
+		return null
 	}
 }
