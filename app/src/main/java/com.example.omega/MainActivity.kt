@@ -53,8 +53,8 @@ class MainActivity : AppCompatActivity() {
 			resources.getInteger(R.integer.ACT_RETCODE_FINGER) ->fingerAuthActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_PIN_SET) ->pinActivityResult(resultCode)
 			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW) ->webViewActivityResult(resultCode, data)
-			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> tokenActivityResult(resultCode, data)
-			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank) -> askIfUserWantToLoginToBankDialogActivityResult(resultCode)
+			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> resetPermissionActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank) -> dialogIfUserWantToResetBankAuthResult(resultCode)
 		}
 	}
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -215,12 +215,12 @@ class MainActivity : AppCompatActivity() {
 		findViewById<Button>(R.id.testButton).setOnClickListener{
 			openBasicTransferTabClicked()
 		}
-		ApiAuthorize().run(this, PermissionList(ApiConsts.Privileges.AccountsHistory, ApiConsts.Privileges.AccountsDetails))
-		ActivityStarter.openBrowserForLogin(this)
+		val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
+		ApiAuthorize(this).run()
 	}
 
 	//Intents
-	private fun tokenActivityResult(resultCode: Int, data: Intent?){
+	private fun resetPermissionActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode != RESULT_OK){
 			Log.i(Utilities.TagProduction, "Canceled getting authUrl")
 			return
@@ -228,14 +228,20 @@ class MainActivity : AppCompatActivity() {
 
 		val field = getString(R.string.ACT_COM_USERPERMISSIONLIST_FIELDNAME)
 		val serializedPermissionList = data?.getStringExtra(field)
-		val permissionListObject = PermissionList(serializedPermissionList!!)
+		if(serializedPermissionList.isNullOrEmpty()){
+			Log.i(Utilities.TagProduction, "Canceled getting authUrl")
+			return
+		}
+
+		val permissionListObject = PermissionList(serializedPermissionList)
 		val obtainNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, permissionListObject)
 		if(obtainNewAuthUrl){
 			PreferencesOperator.clearAuthData(this)
 			ApiAuthorize().run(this, permissionListObject)
 		}
 		else
-			Log.i(Utilities.TagProduction, "Skipped obtaining AuthUrl, going to Bank login webpage")
+			Log.i(Utilities.TagProduction, "Skipped obtaining AuthUrl due to already existing authData, going to Bank login webpage")
+
 		val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
 		val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
 		val fieldsAreFilled = authUrl.isNotEmpty() && state.isNotEmpty()
@@ -245,15 +251,15 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 
-		val authCodeAlreadyExist = PreferencesOperator.readPrefStr(this,R.string.PREF_authCode).isNotEmpty()
-		if(authCodeAlreadyExist)
-			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl)
-		else
+		val authUrlCanBeUsed = !PreferencesOperator.readPrefBool(this,R.bool.PREF_authUrlAlreadyUSed)
+		if(authUrlCanBeUsed)
 			ActivityStarter.openBrowserForLogin(this)
+		else
+			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl)
 	}
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode == RESULT_OK){
-
+			//todo
 		}
 		else{
 			//todo
@@ -333,15 +339,15 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 	}
-	private fun askIfUserWantToLoginToBankDialogActivityResult(resultCode: Int){
+	private fun dialogIfUserWantToResetBankAuthResult(resultCode: Int){
 		if(resultCode != RESULT_OK)
 			return
 
-		val permissionList = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
-		val needNewAuthUrl = ApiAuthorize.obtainingNewAuthUrlIsNecessary(this, permissionList)
-		if(needNewAuthUrl)
-			ApiAuthorize().run(this, permissionList)
+		PreferencesOperator.clearAuthData(this)
+		val permissionList = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)//todo dodac tutaj customowanie tych uprawnien
+		ApiAuthorize().run(this, permissionList)
 		ActivityStarter.openBrowserForLogin(this)
+		ApiGetToken().run(this)
 	}
 	private fun openBasicTransferTabClicked(){
 		val authCodeNotAvaible = PreferencesOperator.readPrefStr(this, R.string.PREF_authCode).isNullOrEmpty()

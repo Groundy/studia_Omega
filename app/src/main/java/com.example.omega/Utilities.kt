@@ -18,7 +18,7 @@ import kotlin.random.Random
 class PreferencesOperator{
 	companion object{
 		fun clearPreferences(activity: Activity, vararg fields : Int){
-			val preferencesFields = arrayOf(
+			val preferencesFieldsStr = arrayOf(
 				R.string.PREF_authURL,
 				R.string.PREF_authCode,
 				R.string.PREF_lastRandomValue,
@@ -26,10 +26,17 @@ class PreferencesOperator{
 				R.string.PREF_authUrlValidityTimeEnd,
 				R.string.PREF_listOfAccNumbersAccociatedWithToken)
 
-				fields.forEach {
-					if (preferencesFields.contains(it))
-						savePref(activity, it, String())
-				}
+			val preferencesFieldsBool = arrayOf(
+				R.bool.PREF_authUrlAlreadyUSed)
+
+			fields.forEach {
+				if (preferencesFieldsStr.contains(it))
+					savePref(activity, it, String())
+			}
+			preferencesFieldsBool.forEach {
+				if (preferencesFieldsStr.contains(it))
+					savePref(activity, it, false)
+			}
 		}
 		fun clearAuthData(activity: Activity){
 			clearPreferences(activity,
@@ -38,7 +45,8 @@ class PreferencesOperator{
 				R.string.PREF_authCode,
 				R.string.PREF_authUrlValidityTimeEnd,
 				R.string.PREF_listOfAccNumbersAccociatedWithToken,
-				R.string.PREF_lastUsedPermissionsForAuth
+				R.string.PREF_lastUsedPermissionsForAuth,
+				R.bool.PREF_authUrlAlreadyUSed
 			)
 		}
 		fun DEVELOPER_showPref(activity: Activity){

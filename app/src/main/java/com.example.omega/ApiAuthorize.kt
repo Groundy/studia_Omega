@@ -27,7 +27,6 @@ class ApiAuthorize {
 		thread.join(ApiConsts.requestTimeOut)
 		return success
 	}
-
 	private fun startAuthorize(stateValue : String) : Boolean{
 		return try{
 			val request = getAuthRequest(stateValue)
