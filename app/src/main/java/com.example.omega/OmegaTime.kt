@@ -2,6 +2,7 @@ package com.example.omega
 
 import java.time.Instant
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 class OmegaTime {
 	companion object{
@@ -13,6 +14,12 @@ class OmegaTime {
 			val timeToCheck = Instant.parse(timestamp)
 			val timeCurrent =  Instant.parse(getCurrentTime()).plusMillis(minTimeMarginMili)
 			return timeToCheck > timeCurrent
+		}
+		fun getSecondsToStampExpiration(timestampStartValidityPeriod: String, validityPeriod: Int) : Long{
+			val expirationInstant = Instant.parse(timestampStartValidityPeriod).plusSeconds(validityPeriod.toLong())
+			val currentTimeInstant = Instant.parse(getCurrentTime())
+			val secondsToExpiration = ChronoUnit.SECONDS.between(currentTimeInstant, expirationInstant)
+			return secondsToExpiration
 		}
 	}
 }
