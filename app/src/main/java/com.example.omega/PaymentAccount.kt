@@ -10,16 +10,16 @@ class PaymentAccount {
     }
     enum class AccountObjectFields(val text : String){
         AccountNumber("accountNumber"),
-        AccountTypeName("accountTypeName"),
+        //AccountTypeName("accountTypeName"),
         Currency("currency"),
         AvailableBalance("availableBalance"),
-        BookingBalance("bookingBalance"),
-        AccountHolderType("accountHolderType"),
+        //BookingBalance("bookingBalance"),
+        //AccountHolderType("accountHolderType"),
 
-        NameAdressObj("nameAddress"),
-        AccountTypeObj("accountType"),
-        PsuRelationsArr("psuRelations"),
-        BankObj("bank");
+        //NameAdressObj("nameAddress"),
+        //AccountTypeObj("accountType"),
+        //PsuRelationsArr("psuRelations"),
+        //BankObj("bank");
         //Dostępne są bardziej szczególowe info, np.Nazwa banku
     }
     private var contentJson : JSONObject? = null

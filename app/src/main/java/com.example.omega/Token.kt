@@ -11,25 +11,25 @@ class Token() {
 		enum class ResponseFieldsNames(val text : String){
 			TokenType("token_type"),
 			AccessToken("access_token"),
-			RefreshToken("refresh_token"),
+			//RefreshToken("refresh_token"),
 			ExpiresIn("expires_in"),//secondsToExpire
-			Scope("scope"),
+			//Scope("scope"),
 			ScopeDetails("scope_details"),
 			ResponseHeader("responseHeader");
 		}
 		enum class ScopeDetailsObjFieldsNames(val text: String){
-			ConsentId("consentId"),
-			ScopeTimeLimit("scopeTimeLimit"),
-			ThrottlingPolicy("throttlingPolicy"),
+			//ConsentId("consentId"),
+			//ScopeTimeLimit("scopeTimeLimit"),
+			//ThrottlingPolicy("throttlingPolicy"),
 			PrivilegeList("privilegeList");
 		}
 		enum class PrivilegeListObjFieldsNames(val text: String){
 			AccountNumber("accountNumber");//tutaj oprocz accountNbr jest jeszcze lista zgód dla tego konta wraz z ich ograniczeniami, jezeli trzeba to dodac pozniej
 		}
 		enum class HeadersNames(val text: String){
-			RequestId("requestId"),
+			//RequestId("requestId"),
 			SendDate("sendDate"),
-			IsCallback("isCallback")
+			//IsCallback("isCallback")
 			;
 		}
 		const val minTimeTokenNotMustbeRefreshedSeconds = 150

@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
+import android.view.View
+import android.widget.*
 
 class RBLIKCodeCreator : AppCompatActivity() {
 	private lateinit var amountField : EditText
@@ -26,7 +24,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		setUpGui()
 		fillListOfAccounts()
 		if(Utilities.developerMode)
-			DEVELOPER_fillWidgets()
+			developerFillWidgets()
 	}
 	private fun setUpGui(){
 		amountField = findViewById(R.id.RBlikCodeGenerator_amount_editText)
@@ -154,14 +152,14 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		codeDisplayIntent.putExtra(getString(R.string.ACT_COM_CODEGENERATOR_CODE_FOR_DISPLAY_FIELDNAME), codeFromServer)
 		this.startActivity(codeDisplayIntent)
 	}
-	private fun DEVELOPER_fillWidgets(){
+	private fun developerFillWidgets(){
 		amountField.text = Editable.Factory.getInstance().newEditable("10.0")
 		titleField.text = Editable.Factory.getInstance().newEditable("xyz")
 		receiverNameField.text = Editable.Factory.getInstance().newEditable("abc")
 	}
 	private fun getTokenCpy(){
 		val tokenTmp = PreferencesOperator.getToken(this)
-		if(tokenTmp == null || !tokenTmp.isOk())
+		if(!tokenTmp.isOk())
 			finish()
 		else
 			tokenCpy = tokenTmp

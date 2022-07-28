@@ -215,7 +215,6 @@ class MainActivity : AppCompatActivity() {
 	private fun developerInitaialFun(){
 		if(!Utilities.developerMode)
 			return
-		ApiFunctions.getPublicIPByInternetService()
 		developerInitFun2()
 	}
 	private fun developerInitFun2(){
@@ -230,6 +229,7 @@ class MainActivity : AppCompatActivity() {
 		if(!tokenOk){
 			val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 			PreferencesOperator.clearAuthData(this)
+			PreferencesOperator.DEVELOPER_showPref(this)
 			ApiAuthorize(this, obj).run()
 			ActivityStarter.openBrowserForLogin(this)
 		}

@@ -106,7 +106,7 @@
 					android:ems="10"
 					android:inputType="numberDecimal"
 					android:textColor="@color/black"
-					android:textColorHint="@color/black"
+					android:textColorHint="@color/hintColor"
 					tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
 				<Space

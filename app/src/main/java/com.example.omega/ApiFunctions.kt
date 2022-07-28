@@ -80,7 +80,7 @@ class ApiFunctions {
 					val responseBody = response.body?.string()
 					val responseJsonObject = JSONObject(responseBody!!)
 					ip = responseJsonObject.getString("query")
-					Log.e(Utilities.TagProduction, "Pobrano publiczne ip z internetu: $ip")
+					Log.i(Utilities.TagProduction, "Pobrano publiczne ip z internetu: $ip")
 					return@Thread
 				}catch (e : Exception){
 					Log.e(Utilities.TagProduction, "bład pobierania publicznego ip z internetu ---> $e")
