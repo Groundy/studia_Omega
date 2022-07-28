@@ -11,25 +11,20 @@ import com.example.omega.ApiConsts.ApiReqFields.*
 
 class ApiGetToken(activity: Activity) {
 	private var callerActivity = activity
-	private var errorToDisplay = String()
 
 	fun run() : Boolean{
 		Log.i(TagProduction, "GetToken started")
 		var success = false
 		val thread = Thread{
 			try {
-				val responseJson = getTokenJson()
-				if(responseJson != null)
-					success = parseJsonResponse(responseJson)
-				return@Thread
+				val responseJson = getTokenResponseJson()?: return@Thread
+				success = parseJsonResponse(responseJson)
 			} catch (e: Exception) {
 				Log.e(TagProduction,e.toString())
 			}
 		}
 		thread.start()
 		thread.join(ApiConsts.requestTimeOut)
-		if(errorToDisplay.isNotEmpty())
-			Utilities.showToast(callerActivity, errorToDisplay)
 		Log.i(TagProduction, "GetToken ended")
 		return success
 	}
@@ -61,31 +56,19 @@ class ApiGetToken(activity: Activity) {
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_accessToken, accessTokenSerialized)
 		return true
 	}
-	private fun getTokenJson() : JSONObject?{
-		val request = getTokenRequest()
-		val response = OkHttpClient().newCall(request).execute()
-
-		if(response.code == 401){
-			Log.e(TagProduction, "Request for token in getToken was unAuthorized!")
-			errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorUnauthorizedRequest)
-			return null
-		}
-
-		val responseCodeError = response.code != 200
-		if(responseCodeError){
-			Log.e(TagProduction, "Error, getToken response returned code [${response.code}]")
-			errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
-			return null
-		}
-
-		val bodyStr = response.body?.string()
-		if(bodyStr.isNullOrEmpty()){
-			Log.e(TagProduction, "Error, getToken response body is null or empty")
-			errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
-			return null
-		}
+	private fun getTokenResponseJson() : JSONObject?{
 		return try {
-			JSONObject(bodyStr)
+			val request = getTokenRequest()
+			val response = OkHttpClient().newCall(request).execute()
+			val responseCode = response.code
+			if(responseCode != ApiConsts.responseOkCode){
+				Log.e(TagProduction, "[getToken] ${ApiFunctions.getErrorTextOfRequestToLog(responseCode)}")
+				val errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
+				Utilities.showToast(callerActivity, errorToDisplay)
+				return null
+			}
+			val bodyStr = response.body?.string()
+			JSONObject(bodyStr!!)
 		}catch (e : Exception){
 			Log.e(TagProduction,e.toString())
 			null

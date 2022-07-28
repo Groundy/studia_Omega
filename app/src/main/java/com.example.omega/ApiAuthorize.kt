@@ -23,7 +23,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		}
 		else
 			Log.i(TagProduction, "Authorize started")
-		
+
 		var success = false
 		stateValue = ApiFunctions.getRandomStateValue()
 		val thread = Thread{
