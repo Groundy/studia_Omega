@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 	private fun checkIfNfcIsTurnedOnPhone(): Boolean {
 		val deviceHasNfc = this.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
 		if (!deviceHasNfc) {
-			Log.e(TagProduction, "There's no NFC hardware on user's phone")
+			Log.e(TagProduction, "[checkIfNfcIsTurnedOnPhone/${this.javaClass.name}]There's no NFC hardware on user's phone")
 			Utilities.showToast(this, resources.getString(R.string.NFC_UserMsg_NoHardwareSupport))
 			return false
 		}
@@ -230,7 +230,6 @@ class MainActivity : AppCompatActivity() {
 		if(!tokenOk){
 			val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 			PreferencesOperator.clearAuthData(this)
-			PreferencesOperator.DEVELOPER_showPref(this)
 			ApiAuthorize(this, obj).run()
 			ActivityStarter.openBrowserForLogin(this)
 		}
@@ -259,7 +258,7 @@ class MainActivity : AppCompatActivity() {
 		val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
 		val fieldsAreFilled = authUrl.isNotEmpty() && state.isNotEmpty()
 		if(!fieldsAreFilled){
-			Log.e(TagProduction, "Failed to obtain auth url, tried to pass no authUrl or stateValue")
+			Log.e(TagProduction, "[resetPermissionActivityResult/${this.javaClass.name}]Failed to obtain auth url, tried to pass no authUrl or stateValue")
 			val userMsg = getString(R.string.BankLogin_UserMsg_ErrorInBankTryAgian)
 			Utilities.showToast(this, userMsg)
 			return
