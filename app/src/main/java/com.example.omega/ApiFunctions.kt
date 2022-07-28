@@ -115,5 +115,19 @@ class ApiFunctions {
 		fun getLengthOfCountryBankNumberDigitsOnly(country : ApiConsts.Countries = ApiConsts.Countries.PL) : Int{
 			return country.codeLength
 		}
+		fun getErrorTextOfRequestToLog (reqErrorCode : Int) : String{
+			return when(reqErrorCode){
+				200 -> ""
+				400 -> "Bad Request"
+				401 -> "Unauthorized"
+				405 -> "Method Not Allowed"
+				406 -> "Not Acceptable"
+				415 -> "Unsupported Media Type"
+				422 -> "Unprocessable entity"
+				500 -> "Internal Server Error"
+				503 -> "Service Unavailable"
+				else -> "Unkown reason, error code $reqErrorCode"
+			}
+		}
 	}
 }

@@ -62,8 +62,15 @@ class ApiConsts {
 		ThrottlingPolicy("throttlingPolicy")
 		;
 	}
+	enum class ScopeDetailsFields(val text: String){
+		ScopeUsageLimit("scopeUsageLimit"),
+		MaxAllowedHistoryLong("maxAllowedHistoryLong"),
+	}
 	enum class Countries(val codeLength : Int){
-		PL(28)
+		PL(28);
+	}
+	enum class ResponseTypes(val text: String){
+		Code("code")
 	}
 
 	companion object {
@@ -86,6 +93,7 @@ class ApiConsts {
 		const val ipTimeCheckPeriodSeconds = 120
 
 		const val countryCodeLength = 2
+		const val responseOkCode = 200
 	}
 
 }
