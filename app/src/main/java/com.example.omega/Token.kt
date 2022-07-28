@@ -46,6 +46,31 @@ class Token() {
 		return tokenObj.toString()
 	}
 
+	private fun refreshIFneeded(){
+		tokenObj ?: return
+		val secondsToExp = getSecondsLeftToTokenExpiration() ?: return
+		//todo implementation
+	}
+	private fun getListOfAccountsNumbers() : List<String>?{
+		if(tokenObj == null){
+			Log.e(TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] Token json is null")
+			return null
+		}
+		return try {
+			val scopeDetailsObj = tokenObj!!.getJSONObject(ResponseFieldsNames.ScopeDetails.text)
+			val accountsArray = scopeDetailsObj.getJSONArray(ScopeDetailsObjFieldsNames.PrivilegeList.text)
+			val array : ArrayList<String> = ArrayList()
+			for (i in 0 until accountsArray.length()){
+				val accNumber = accountsArray.getJSONObject(i).getString(PrivilegeListObjFieldsNames.AccountNumber.text)
+				array.add(accNumber)
+			}
+			array.toList()
+		}catch (e : Exception){
+			Log.e(TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] wrong struct of Token json struct")
+			null
+		}
+	}
+
 	fun isOk() : Boolean{
 		if(tokenObj == null)
 			return false
@@ -60,6 +85,9 @@ class Token() {
 			Log.e(TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json is null")
 			false
 		}
+
+
+		refreshIFneeded()
 		return try {
 			val accountNumbers = getListOfAccountsNumbers()
 			if(accountNumbers.isNullOrEmpty())
@@ -80,6 +108,7 @@ class Token() {
 			Log.e(TagProduction, "[getAuthFieldValue/${this.javaClass.name}] null Token")
 			return String()
 		}
+		refreshIFneeded()
 
 		return try {
 			val tokenType = tokenObj!!.getString(ResponseFieldsNames.TokenType.text).toString()
@@ -91,6 +120,9 @@ class Token() {
 		}
 	}
 	fun getListOfAccountsToDisplay() : List<String>?{
+		if(tokenObj == null)
+			return null
+		refreshIFneeded()
 		val displayableStringsToRet = arrayListOf<String>()
 		return try {
 			this.accounts!!.forEach {
@@ -107,6 +139,7 @@ class Token() {
 			Log.e(TagProduction, "[getAccessToken()/${this.javaClass.name}] Error, cant get accessToken from Token Json, json is null")
 			String()
 		}
+		refreshIFneeded()
 		return try {
 			tokenObj!!.get(ResponseFieldsNames.AccessToken.text).toString()
 		}catch (e : Exception){
@@ -114,27 +147,11 @@ class Token() {
 			String()
 		}
 	}
-
-	private fun getListOfAccountsNumbers() : List<String>?{
-		if(tokenObj == null){
-			Log.e(TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] Token json is null")
-			return null
-		}
-		return try {
-			val scopeDetailsObj = tokenObj!!.getJSONObject(ResponseFieldsNames.ScopeDetails.text)
-			val accountsArray = scopeDetailsObj.getJSONArray(ScopeDetailsObjFieldsNames.PrivilegeList.text)
-			val array : ArrayList<String> = ArrayList()
-			for (i in 0 until accountsArray.length()){
-				val accNumber = accountsArray.getJSONObject(i).getString(PrivilegeListObjFieldsNames.AccountNumber.text)
-				array.add(accNumber)
-			}
-			array.toList()
-		}catch (e : Exception){
-			Log.e(TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] wrong struct of Token json struct")
-			null
-		}
-	}
 	fun getSecondsLeftToTokenExpiration() : Long? {
+		if(tokenObj == null)
+			return null
+		refreshIFneeded()
+
 		return try {
 			val startTokenTime = tokenObj!!.getJSONObject(ResponseFieldsNames.ResponseHeader.text)
 				.getString(HeadersNames.SendDate.text)
@@ -144,13 +161,11 @@ class Token() {
 			null
 		}
 	}
-	private fun refresh(){
-
-	}
 	fun getPaymentAccount(accountNumber: String) : PaymentAccount?{
 		if(tokenObj == null)
 			return null
 
+		refreshIFneeded()
 		if(accounts.isNullOrEmpty()){
 			Log.e(TagProduction, "[getPaymentAccount/${this.javaClass.name}] empty or null account list, probably it isnt initilized yet")
 			return null
