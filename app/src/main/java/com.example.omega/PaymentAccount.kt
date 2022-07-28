@@ -4,32 +4,34 @@ import android.util.Log
 import org.json.JSONObject
 import com.example.omega.Utilities.Companion.TagProduction
 
-class PaymentAccount {
-    enum class BankResponseJsonFields(val text: String){
-        AccountObj("account"),
-        ResponseHeaderObj("responseHeader");
-    }
-    enum class AccountObjectFields(val text : String){
-        AccountNumber("accountNumber"),
-        //AccountTypeName("accountTypeName"),
-        Currency("currency"),
-        AvailableBalance("availableBalance"),
-        //BookingBalance("bookingBalance"),
-        //AccountHolderType("accountHolderType"),
+class PaymentAccount() {
+    companion object{
+        enum class BankResponseJsonFields(val text: String){
+            AccountObj("account"),
+            ResponseHeaderObj("responseHeader");
+        }
+        enum class AccountObjectFields(val text : String){
+            AccountNumber("accountNumber"),
+            //AccountTypeName("accountTypeName"),
+            Currency("currency"),
+            AvailableBalance("availableBalance"),
+            //BookingBalance("bookingBalance"),
+            //AccountHolderType("accountHolderType"),
 
-        //NameAdressObj("nameAddress"),
-        //AccountTypeObj("accountType"),
-        //PsuRelationsArr("psuRelations"),
-        //BankObj("bank");
-        //Dostępne są bardziej szczególowe info, np.Nazwa banku
+            NameAdressObj("nameAddress"),
+            //AccountTypeObj("accountType"),
+            //PsuRelationsArr("psuRelations"),
+            //BankObj("bank");
+            //Dostępne są bardziej szczególowe info, np.Nazwa banku
+        }
+        enum class NameClassObjFields(val text : String){
+            Value("value")
+        }
     }
+
     private var contentJson : JSONObject? = null
 
-
-    constructor(){
-        contentJson = null
-    }
-    constructor(jsonObject: JSONObject){
+    constructor(jsonObject: JSONObject) : this() {
         contentJson = try {
             jsonObject.getJSONObject(BankResponseJsonFields.AccountObj.text)
         }catch(e : Exception){
@@ -41,14 +43,12 @@ class PaymentAccount {
         //todo implement
         return true
     }
-
     fun toDisplayableString() : String{
         val availableBalance = getBalanceOfAccount()
         val currency = getCurrencyOfAccount()
         val accNumber = getAccNumber()
         return "[$availableBalance $currency]  $accNumber"
     }
-
     fun getCurrencyOfAccount() : String{
         if(this.contentJson == null){
             Log.e(TagProduction, "[getCurrencyOfAccount/${this.javaClass.name}] json in payment acc is null")
@@ -88,4 +88,21 @@ class PaymentAccount {
             "Null"
         }
     }
+	fun getOwnerName(): String{
+        if(this.contentJson == null){
+            Log.e(TagProduction, "[getOwnerName/${this.javaClass.name}] json in payment acc is null")
+            return "Null"
+        }
+        return try {
+            val nameObj = contentJson!!.getJSONObject(AccountObjectFields.NameAdressObj.text)
+            val nameArray = nameObj.getJSONArray(NameClassObjFields.Value.text)
+            var name = String()
+            for (i in 0 until nameArray.length())
+                name = name.plus(nameArray[i])
+            name
+        }catch (e :Exception){
+            Log.e(TagProduction, "[getOwnerName/${this.javaClass.name}] wrong Json Struct")
+            "Null"
+        }
+	}
 }

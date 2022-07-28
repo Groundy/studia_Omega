@@ -47,7 +47,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 			return if(responseCodeOk){
 				val responseBody = response.body?.string()
 				val responseJsonObject = JSONObject(responseBody!!)
-				val authUrl = responseJsonObject.get(ApiConsts.ApiReqFields.AspspRedirectUri.text).toString()
+				val authUrl = responseJsonObject.get(AspspRedirectUri.text).toString()
 				if(!authUrl.isNullOrEmpty()){
 					saveDataToPrefs(authUrl)
 					true

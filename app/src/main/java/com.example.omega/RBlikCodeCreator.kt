@@ -23,6 +23,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		getTokenCpy()
 		setUpGui()
 		fillListOfAccounts()
+		fillReceiverName()
 		if(Utilities.developerMode)
 			developerFillWidgets()
 	}
@@ -155,7 +156,6 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	private fun developerFillWidgets(){
 		amountField.text = Editable.Factory.getInstance().newEditable("10.0")
 		titleField.text = Editable.Factory.getInstance().newEditable("xyz")
-		receiverNameField.text = Editable.Factory.getInstance().newEditable("abc")
 	}
 	private fun getTokenCpy(){
 		val tokenTmp = PreferencesOperator.getToken(this)
@@ -187,8 +187,14 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			return null
 		}
 	}
-	private fun getReciverName() : String{
-		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser() ?: return String()
-		return paymentAccount.getOwnerName()
+	private fun fillReceiverName(){
+		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser() ?: return
+		if(paymentAccount == null){
+			Log.e(TagProduction, "[fillReceiverName/${this.receiverNameField.javaClass.name}] Failed to obtain reciever name, paymentAcc is null")
+			return
+		}
+		val ownerName = paymentAccount.getOwnerName()
+		val ownerNameAsEditable =  Editable.Factory.getInstance().newEditable(ownerName)
+		receiverNameField.text = ownerNameAsEditable
 	}
 }
