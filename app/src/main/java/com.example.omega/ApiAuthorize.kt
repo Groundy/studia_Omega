@@ -60,15 +60,16 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		val currentTimeStr = OmegaTime.getCurrentTime()
 		val endValidityTimeStr = OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds)
 
+		val requestHeaderJsonObj = JSONObject()
+			.put(ApiReqFields.RequestId.text, uuidStr)
+			.put(ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
+			.put(ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			.put(ApiReqFields.SendDate.text, currentTimeStr)
+			.put(ApiReqFields.TppId.text, ApiConsts.TTP_ID)
+			.put(ApiReqFields.IsCompanyContext.text, false)
+
 		val requestBodyJson = JSONObject()
-			.put(ApiReqFields.RequestHeader.text, JSONObject()
-				.put(ApiReqFields.RequestId.text, uuidStr)
-				.put(ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
-				.put(ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-				.put(ApiReqFields.SendDate.text, currentTimeStr)
-				.put(ApiReqFields.TppId.text, ApiConsts.TTP_ID)
-				.put(ApiReqFields.IsCompanyContext.text, false)
-			)
+			.put(ApiReqFields.RequestHeader.text, requestHeaderJsonObj)
 			.put(ApiReqFields.ResponseType.text,ResponseTypes.Code.text)
 			.put(ApiReqFields.ClientId.text, ApiConsts.userId_ALIOR)
 			.put(ApiReqFields.Scope.text, ScopeValues.Ais.text)
@@ -80,19 +81,22 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 	private fun getScopeDetailsObject(expTimeStr : String) : JSONObject? {
 		val privListCpy = permissionsList.permissionsArray
 		val privilegesListJsonObj = JSONObject()
+
 		if(privListCpy.contains(Privileges.AccountsHistory)){
-			privilegesListJsonObj.put(ApiMethodes.AisGetTransactionsDone.text, JSONObject()
+			val privilegeScopeDetailsObj = JSONObject()
 				.put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Multiple.text)
 				.put(ScopeDetailsFields.MaxAllowedHistoryLong.text,11)
-			)
+
+			privilegesListJsonObj.put(ApiMethodes.AisGetTransactionsDone.text, privilegeScopeDetailsObj)
 		}
 		if(privListCpy.contains(Privileges.AccountsDetails)){
-			privilegesListJsonObj.put(ApiMethodes.AisGetAccount.text, JSONObject()
+			val privilegeScopeDetailsObj = JSONObject()
 				.put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Multiple.text)
-			)
+
+			privilegesListJsonObj.put(ApiMethodes.AisGetAccount.text, privilegeScopeDetailsObj)
 		}
 
-		return JSONObject() //scopeDetailObject
+		return JSONObject()
 			.put(ScopeFields.PrivilegeList.text, JSONArray().put(privilegesListJsonObj))
 			.put(ScopeFields.ScopeGroupType.text, ScopeValues.Ais.text)
 			.put(ScopeFields.ConsentId.text,  ApiConsts.ConsentId)

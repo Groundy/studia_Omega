@@ -40,7 +40,7 @@ class PreferencesOperator{
 				R.bool.PREF_authUrlAlreadyUSed
 			)
 		}
-		fun DEVELOPER_showPref(activity: Activity){
+		fun developerShowPref(activity: Activity){
 			val preferencesFields = arrayOf(
 				R.string.PREF_authURL,
 				R.string.PREF_authCode,
@@ -58,7 +58,7 @@ class PreferencesOperator{
 		}
 		fun getToken(callActivity: Activity) : Token{
 			val tokenCpy = try {
-				val tokenStr = readPrefStr(callActivity, R.string.PREF_accessToken)
+				val tokenStr = readPrefStr(callActivity, R.string.PREF_Token)
 				val tokenJsonObj = JSONObject(tokenStr)
 				Token(tokenJsonObj)
 			}catch (e : Exception){

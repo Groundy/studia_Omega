@@ -30,7 +30,6 @@ import com.karumi.dexter.listener.single.PermissionListener
 import java.util.*
 import com.example.omega.Utilities.Companion.TagProduction
 
-
 //  Minimize: CTRL + SHIFT + '-'
 //  Expand:   CTRL + SHIFT + '+'
 //  Ctrl + B go to definition
@@ -47,6 +46,7 @@ class MainActivity : AppCompatActivity() {
 		FirebaseApp.initializeApp(this)
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initGUI()
+		getTokenOnAppStart()
 		developerInitaialFun()
 	}
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -213,29 +213,7 @@ class MainActivity : AppCompatActivity() {
 			switchNfcSignalCatching()
 		}
 	}
-	private fun developerInitaialFun(){
-		if(!Utilities.developerMode)
-			return
-		developerInitFun2()
-	}
-	private fun developerInitFun2(){
-		if(!Utilities.developerMode)
-			return
 
-		findViewById<Button>(R.id.testButton).setOnClickListener{
-			ActivityStarter.startRBlikCodeCreatorActivity(this)
-		}
-		val token = PreferencesOperator.getToken(this)
-		val tokenOk = token.isOk()
-		if(!tokenOk){
-			val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
-			PreferencesOperator.clearAuthData(this)
-			ApiAuthorize(this, obj).run()
-			ActivityStarter.openBrowserForLogin(this)
-		}
-		else
-			Log.i(TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
-	}
 	//Intents
 	private fun resetPermissionActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode != RESULT_OK){
@@ -362,5 +340,27 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 		ActivityStarter.startTransferActivityFromMenu(this)
+	}
+
+
+
+	private fun developerInitaialFun(){
+		findViewById<Button>(R.id.testButton).setOnClickListener{
+			ActivityStarter.startRBlikCodeCreatorActivity(this)
+		}
+	}
+
+	private fun getTokenOnAppStart(){
+		val token = PreferencesOperator.getToken(this)
+		val tokenOk = token.isOk()
+		if(!tokenOk){
+			val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
+			PreferencesOperator.clearAuthData(this)
+			ApiAuthorize(this, obj).run()
+			ActivityStarter.openBrowserForLogin(this)
+			return
+		}
+		else
+			Log.i(TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
 	}
 }

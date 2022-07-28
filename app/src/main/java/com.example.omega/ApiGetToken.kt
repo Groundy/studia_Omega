@@ -31,14 +31,17 @@ class ApiGetToken(activity: Activity) {
 	private fun getTokenRequest() : Request {
 		val uuidStr = ApiFunctions.getUUID()
 		val currentTimeStr = OmegaTime.getCurrentTime()
+
+		val headerJson = JSONObject()
+			.put(RequestId.text, uuidStr)
+			.put(UserAgent.text, ApiFunctions.getUserAgent())
+			.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			.put(SendDate.text, currentTimeStr)
+			.put(TppId.text, ApiConsts.TTP_ID)
+			.put(IsCompanyContext.text, false)
+
 		val requestBodyJson = JSONObject()
-			.put(RequestHeader.text, JSONObject()
-				.put(RequestId.text, uuidStr)
-				.put(UserAgent.text, ApiFunctions.getUserAgent())
-				.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-				.put(SendDate.text, currentTimeStr)
-				.put(TppId.text, ApiConsts.TTP_ID)
-				.put(IsCompanyContext.text, false))
+			.put(RequestHeader.text, headerJson)
 			.put(Code.text, PreferencesOperator.readPrefStr(callerActivity, R.string.PREF_authCode))
 			.put(GrantType.text,ApiConsts.GrantTypes.AuthorizationCode.text)
 			.put(RedirectUri.text, ApiConsts.REDIRECT_URI)
@@ -53,7 +56,7 @@ class ApiGetToken(activity: Activity) {
 			return false
 
 		val accessTokenSerialized = accessToken.toString()
-		PreferencesOperator.savePref(callerActivity, R.string.PREF_accessToken, accessTokenSerialized)
+		PreferencesOperator.savePref(callerActivity, R.string.PREF_Token, accessTokenSerialized)
 		return true
 	}
 	private fun getTokenResponseJson() : JSONObject?{
@@ -62,7 +65,7 @@ class ApiGetToken(activity: Activity) {
 			val response = OkHttpClient().newCall(request).execute()
 			val responseCode = response.code
 			if(responseCode != ApiConsts.responseOkCode){
-				Log.e(TagProduction, "[getToken] ${ApiFunctions.getErrorTextOfRequestToLog(responseCode)}")
+				Log.e(TagProduction, "[getTokenResponseJson/ ${this.javaClass.name}] ${ApiFunctions.getErrorTextOfRequestToLog(responseCode)}")
 				val errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
 				Utilities.showToast(callerActivity, errorToDisplay)
 				return null

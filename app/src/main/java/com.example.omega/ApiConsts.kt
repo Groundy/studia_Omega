@@ -2,24 +2,28 @@ package com.example.omega
 
 class ApiConsts {
 	enum class ScopeValues(val text : String) {
-		Ais("ais"),AisAcc("ais-accounts"),Pis("pis");
+		Ais("ais"),
+		AisAcc("ais-accounts"),
+		Pis("pis")
 	}
 	enum class Privileges(val text : String){
-		AccountsDetails("ACC_DETAILS"), AccountsHistory("ACC_HISTORY"), SinglePayment("SINGLE_PAYMENT");
+		AccountsDetails("ACC_DETAILS"),
+		AccountsHistory("ACC_HISTORY"),
+		SinglePayment("SINGLE_PAYMENT")
 	}
 	enum class ScopeUsageLimit(val text : String) {
-		Multiple("multiple"), Single("single");
+		Multiple("multiple"),
+		Single("single")
 	}
 	enum class BankUrls(val text : String){
 		AuthUrl("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/authorize"),
 		GetTokenUrl ("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/token"),
 		GetPaymentAccount("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccount"),
-		GetTransactionsDone("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getTransactionsDone");
+		GetTransactionsDone("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getTransactionsDone")
 	}
 	enum class ApiMethodes(val text : String){
 		AisGetTransactionsDone("ais:getTransactionsDone"),
 		AisGetAccount("ais:getAccount"),
-		;
 	}
 	enum class ApiReqFields(val text : String){
 		RequestHeader("requestHeader"),
@@ -47,12 +51,12 @@ class ApiConsts {
 		ResponseType("response_type"),
 		Scope("scope"),
 		ScopeDetails("scope_details"),
-		State("state")
-		;
+		State("state"),
+		RefreshToken("refresh_token")
 	}
 	enum class GrantTypes(val text : String){
-		AuthorizationCode("authorization_code")
-		;
+		AuthorizationCode("authorization_code"),
+		RefreshToken("refresh_token")
 	}
 	enum class ScopeFields(val text: String){
 		PrivilegeList("privilegeList"),
@@ -60,14 +64,13 @@ class ApiConsts {
 		ConsentId("consentId"),
 		ScopeTimeLimit("scopeTimeLimit"),
 		ThrottlingPolicy("throttlingPolicy")
-		;
 	}
 	enum class ScopeDetailsFields(val text: String){
 		ScopeUsageLimit("scopeUsageLimit"),
-		MaxAllowedHistoryLong("maxAllowedHistoryLong"),
+		MaxAllowedHistoryLong("maxAllowedHistoryLong")
 	}
 	enum class Countries(val codeLength : Int){
-		PL(28);
+		PL(28)
 	}
 	enum class ResponseTypes(val text: String){
 		Code("code")

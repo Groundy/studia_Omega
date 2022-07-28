@@ -13,7 +13,7 @@ class Token() {
 		enum class ResponseFieldsNames(val text : String){
 			TokenType("token_type"),
 			AccessToken("access_token"),
-			//RefreshToken("refresh_token"),
+			RefreshToken("refresh_token"),
 			ExpiresIn("expires_in"),//secondsToExpire
 			//Scope("scope"),
 			ScopeDetails("scope_details"),
@@ -51,7 +51,7 @@ class Token() {
 		val secondsToExp = getSecondsLeftToTokenExpiration() ?: return
 		//todo implementation
 	}
-	private fun getListOfAccountsNumbers() : List<String>?{
+	fun getListOfAccountsNumbers() : List<String>?{
 		if(tokenObj == null){
 			Log.e(TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] Token json is null")
 			return null
@@ -177,5 +177,21 @@ class Token() {
 		}
 		Log.e(TagProduction, "[getPaymentAccount/${this.javaClass.name}] account number not found, size of accounts array: ${accounts!!.size}")
 		return null
+	}
+
+	fun getRefreshTokenValue(): String? {
+		if(tokenObj == null){
+			Log.e(TagProduction, "[getRefreshToken/${this.javaClass.name}] Error, json is null")
+			String()
+		}
+		return try {
+			tokenObj!!.get(ResponseFieldsNames.RefreshToken.text).toString()
+		}catch (e : Exception){
+			Log.e(TagProduction, "[getRefreshToken/${this.javaClass.name}] Error,Json is not null but still cant get token")
+			null
+		}
+	}
+	fun replaceTokenWithFreshOne(tokenJson: JSONObject){
+		this.tokenObj = tokenJson
 	}
 }

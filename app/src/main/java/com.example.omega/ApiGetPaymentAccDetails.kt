@@ -15,13 +15,36 @@ class ApiGetPaymentAccDetails(var token: Token, activity: Activity) {
 
 	fun run(accNumbers: List<String>): Boolean {
 		Log.i(TagProduction, "getPaymentAccountDetails started")
-		if (accNumbers.isNullOrEmpty())
+		if (accNumbers.isEmpty()){
+			Log.i(TagProduction, "getPaymentAccountDetails failed")
 			return false
+		}
 
 		val success = getAccDetailsForAllAccounts(accNumbers)
-		if(!success)
+		if(!success) {
+			Log.i(TagProduction, "getPaymentAccountDetails failed")
 			return false
+		}
 
+		token.updateListOfAccountWithDetails(accountToSet)
+		Log.i(TagProduction, "getPaymentAccountDetails sucessfully")
+		return true
+	}
+	fun runForAllAccounts(): Boolean {
+		Log.i(TagProduction, "getPaymentAccountDetails started")
+		val accNumbers = token.getListOfAccountsNumbers()
+		if (accNumbers.isNullOrEmpty()){
+			Log.i(TagProduction, "getPaymentAccountDetails failed")
+			return false
+		}
+
+		val success = getAccDetailsForAllAccounts(accNumbers)
+		if(!success){
+			Log.i(TagProduction, "getPaymentAccountDetails failed")
+			return false
+		}
+
+		Log.i(TagProduction, "getPaymentAccountDetails sucessfully")
 		token.updateListOfAccountWithDetails(accountToSet)
 		return true
 	}
@@ -31,17 +54,20 @@ class ApiGetPaymentAccDetails(var token: Token, activity: Activity) {
 		val currentTimeStr = OmegaTime.getCurrentTime()
 
 		val authFieldValue = token.getAuthFieldValue()
+
+		val requestJson = JSONObject()
+			.put(RequestId.text, uuidStr)
+			.put(UserAgent.text, ApiFunctions.getUserAgent())
+			.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			.put(SendDate.text, currentTimeStr)
+			.put(TppId.text, ApiConsts.TTP_ID)
+			.put(TokenField.text, authFieldValue)
+			.put(IsDirectPsu.text, false)
+			.put(DirectPsu.text, false)
+
 		val requestBodyJson = JSONObject()
-			.put(RequestHeader.text, JSONObject()
-				.put(RequestId.text, uuidStr)
-				.put(UserAgent.text, ApiFunctions.getUserAgent())
-				.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-				.put(SendDate.text, currentTimeStr)
-				.put(TppId.text, ApiConsts.TTP_ID)
-				.put(TokenField.text, authFieldValue)
-				.put(IsDirectPsu.text, false)
-				.put(DirectPsu.text, false)
-			).put(AccountNumberField.text, accNumber)
+			.put(RequestHeader.text, requestJson)
+			.put(AccountNumberField.text, accNumber)
 
 		val additionalHeaderList = arrayListOf(
 			Pair(Authorization.text, authFieldValue))
@@ -53,16 +79,10 @@ class ApiGetPaymentAccDetails(var token: Token, activity: Activity) {
 		)
 	}
 	private fun getAccInfo(accNumber: String): Boolean {
-		Log.i(
-			TagProduction,
-			"Started checking bank proccedure for details for acc $accNumber"
-		)
-
 		val request = getPaymentAccDetailsRequest(accNumber)
 		val response = OkHttpClient().newCall(request).execute()
-		val responseCodeOk = response.code == 200
-		if (!responseCodeOk) {
-			val logTxt = "[getAccInfo/${this.javaClass.name}] returned code ${response.code} for accInfo $accNumber"
+		if (response.code != ApiConsts.responseOkCode) {
+			val logTxt = "[getAccInfo/${this.javaClass.name}] returned code ${response.code} --> ${ApiFunctions.getErrorTextOfRequestToLog(response.code)}"
 			Log.e(TagProduction,logTxt)
 			return false
 		}

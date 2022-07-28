@@ -18,7 +18,7 @@ class ApiGetTransactionsDone(activity: Activity, token: Token) {
 		var isSuccess = false
 		val thread = Thread{
 			try {
-				isSuccess = getAccHistory(accNumber!!)
+				isSuccess = sendRequest(accNumber!!)
 			}catch (e: Exception) {
 				Log.e(TagProduction,"Failed to obtain information for account with number[${accNumber}] [$e]")
 			}
@@ -29,21 +29,22 @@ class ApiGetTransactionsDone(activity: Activity, token: Token) {
 	}
 
 	private fun getPaymentAccHistoryRequest(accNumber: String) : Request {
-			val uuidStr = ApiFunctions.getUUID()
-			val currentTimeStr = OmegaTime.getCurrentTime()
+		val uuidStr = ApiFunctions.getUUID()
+		val currentTimeStr = OmegaTime.getCurrentTime()
 
-			val requestBodyJson = JSONObject()
-				.put(RequestHeader.text, JSONObject()
-					.put(RequestId.text, uuidStr)
-					.put(UserAgent.text, ApiFunctions.getUserAgent())
-					.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-					.put(SendDate.text, currentTimeStr)
-					.put(TppId.text, ApiConsts.TTP_ID)
-					.put(TokenField.text, token.getAccessToken())
-					.put(IsDirectPsu.text,false)
-					//.put("callbackURL",ApiConsts.REDIRECT_URI)//??
-					//.put("apiKey", ApiConsts.appSecret_ALIOR)//??
-				)
+		val headersJson = JSONObject()
+			.put(RequestId.text, uuidStr)
+			.put(UserAgent.text, ApiFunctions.getUserAgent())
+			.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			.put(SendDate.text, currentTimeStr)
+			.put(TppId.text, ApiConsts.TTP_ID)
+			.put(TokenField.text, token.getAccessToken())
+			.put(IsDirectPsu.text,false)
+			//.put("callbackURL",ApiConsts.REDIRECT_URI)//??
+			//.put("apiKey", ApiConsts.appSecret_ALIOR)//??
+
+		val requestBodyJson = JSONObject()
+				.put(RequestHeader.text, headersJson)
 				.put(AccountNumberField.text, accNumber)
 				//.put("itemIdFrom","5989073072160768")//??
 				//.put("transactionDateFrom","Thu Apr 30")//??
@@ -59,7 +60,7 @@ class ApiGetTransactionsDone(activity: Activity, token: Token) {
 			val additionalHeaderList = arrayListOf(Pair(Authorization.text,token.getAuthFieldValue()))
 			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone.text, requestBodyJson, uuidStr, additionalHeaderList)
 		}
-	private fun getAccHistory(accNumber: String) : Boolean{
+	private fun sendRequest(accNumber: String) : Boolean{
 		return try {
 			val request = getPaymentAccHistoryRequest(accNumber)
 			val response = OkHttpClient().newCall(request).execute()
@@ -80,7 +81,7 @@ class ApiGetTransactionsDone(activity: Activity, token: Token) {
 		}
 	}
 	private fun parseResponseJson(obj : JSONObject) : Boolean{
-			//todo implement
-			return false
+		//todo implement
+		return false
 	}
 }
