@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
+import com.example.omega.Utilities.Companion.TagProduction
 
 class PermissionList(){
 	var permissionsArray = arrayListOf<ApiConsts.Privileges>()

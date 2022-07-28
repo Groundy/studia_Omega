@@ -6,6 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
+import com.example.omega.Utilities.Companion.TagProduction
 
 
 class ApiGetTransactionsDone {
@@ -23,7 +24,7 @@ class ApiGetTransactionsDone {
 					try {
 						isSuccess = getAccHistory(accNumber!!)
 					}catch (e: Exception) {
-						Log.e(Utilities.TagProduction,"Failed to obtain information for account with number[${accNumber}] [${e.toString()}]")
+						Log.e(TagProduction,"Failed to obtain information for account with number[${accNumber}] [${e.toString()}]")
 					}
 				}
 				thread.start()
@@ -52,7 +53,7 @@ class ApiGetTransactionsDone {
 					return true
 
 				}catch (e: Exception) {
-					Log.e(Utilities.TagProduction,"Failed to obtain information for at account with nummber[${accNumber}] [${e.toString()}]")
+					Log.e(TagProduction,"Failed to obtain information for at account with nummber[${accNumber}] [${e.toString()}]")
 					return false
 				}
 			*/
@@ -103,7 +104,7 @@ class ApiGetTransactionsDone {
 				return parseResponseJson(responseBodyJson)
 			}
 			catch (e : Exception){
-				Log.e(Utilities.TagProduction, e.toString())
+				Log.e(TagProduction, e.toString())
 				return false
 			}
 		}

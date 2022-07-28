@@ -2,6 +2,7 @@ package com.example.omega
 
 import android.util.Log
 import org.json.JSONObject
+import com.example.omega.Utilities.Companion.TagProduction
 
 class TransferData {
 	var senderAccNumber : String? = null
@@ -28,7 +29,7 @@ class TransferData {
 			amount = jsonObj.getDouble(Fields.Amount.text)
 			currency = jsonObj.getString(Fields.Currency.text)
 		}catch (e : Exception){
-			Log.e(Utilities.TagProduction, "[constructor(json)/${this.javaClass.name}] error in constructing TransferDataObj from json")
+			Log.e(TagProduction, "[constructor(json)/${this.javaClass.name}] error in constructing TransferDataObj from json")
 		}
 	}
 	fun toDisplayString() : String{
@@ -54,7 +55,7 @@ class TransferData {
 			currency = parts[5]
 		}
 		catch (e : Exception){
-			Log.e(Utilities.TagProduction, "Error in creating transferDataObject from serialized data! [$e]")
+			Log.e(TagProduction, "Error in creating transferDataObject from serialized data! [$e]")
 		}
 	}
 	private fun toJsonObject() : JSONObject{

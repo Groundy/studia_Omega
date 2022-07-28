@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.core.graphics.drawable.toBitmap
-
+import com.example.omega.Utilities.Companion.TagProduction
 
 class RBlikCodeDisplayActivity : AppCompatActivity() {
 	private lateinit var imgWidget : ImageView
@@ -25,14 +25,14 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 		val code = getCodeFromIntent()
 		if(code == -1){
 			Utilities.showToast(this, getString(R.string.RBLIKDISPLAY_UserMsg_incorrectCodePassed))
-			Log.e(Utilities.TagProduction, "Error, passed code to display RBlik class was incorrect")
+			Log.e(TagProduction, "Error, passed code to display RBlik class was incorrect")
 			finish()
 		}
 		setProperWidgetText(code)
 		var qrCodeBitmap = generateQRCodeImg(code)
 		if(qrCodeBitmap == null){
 			Utilities.showToast(this, getString(R.string.RBLIKDISPLAY_UserMsg_qrGeneratorError))
-			Log.e(Utilities.TagProduction, "Error in RBlik display class, qr generator return null instead of bitmap.")
+			Log.e(TagProduction, "Error in RBlik display class, qr generator return null instead of bitmap.")
 			qrCodeBitmap = resources.getDrawable(R.drawable.wrong_img, null).toBitmap()
 		}
 		imgWidget.setImageBitmap(qrCodeBitmap)
@@ -43,7 +43,7 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 		return try {
 			qrgEncoder.encodeAsBitmap()
 		} catch (e: WriterException) {
-			Log.e(Utilities.TagProduction, "[generateQRCodeImg/${this.javaClass.name}] error txt = $e")
+			Log.e(TagProduction, "[generateQRCodeImg/${this.javaClass.name}] error txt = $e")
 			null
 		}
 	}

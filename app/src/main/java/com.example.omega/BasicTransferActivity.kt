@@ -9,6 +9,8 @@ import android.util.Log
 import android.view.View
 import kotlin.math.floor
 import android.widget.*
+import com.example.omega.Utilities.Companion.TagProduction
+
 
 class BasicTransferActivity : AppCompatActivity() {
 	private lateinit var receiverNumberEditText : EditText
@@ -147,7 +149,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	private fun getAccountBalanceAfterTransfer() : Double?{
 		val balance = currentPaymentAccount.getBalanceOfAccount()
 		if (balance==null){
-			Log.e(Utilities.TagProduction, "[getAccountBalanceAfterTransfer/${this.javaClass.name}], error obtained null as balance of account")
+			Log.e(TagProduction, "[getAccountBalanceAfterTransfer/${this.javaClass.name}], error obtained null as balance of account")
 			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
 			return null
 		}
@@ -158,7 +160,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	}
 	private fun fillListOfAccounts(){
 		if(!tokenCpy.getDetailsOfAccountsFromBank()){
-			Log.e(Utilities.TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
+			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivity(false,errorCodeTextToDisplay)
 			return
@@ -166,7 +168,7 @@ class BasicTransferActivity : AppCompatActivity() {
 
 		val listOfAccountsFromToken = tokenCpy.getListOfAccountsToDisplay()
 		if(listOfAccountsFromToken.isNullOrEmpty()){
-			Log.e(Utilities.TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token return null or empty account list")
+			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token return null or empty account list")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivity(false,errorCodeTextToDisplay)
 			return
@@ -219,19 +221,19 @@ class BasicTransferActivity : AppCompatActivity() {
 
 		val success = selectedItemText.isNotEmpty() && selectedItemText.contains(pattern)
 		if(!success) {
-			Log.e(Utilities.TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] cant get proper info from selected item")
+			Log.e(TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] cant get proper info from selected item")
 			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
 		}
 
 		val parts = selectedItemText.split(pattern)
 		if(parts.size != 2){
-			Log.e(Utilities.TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] cant get proper info from selected item")
+			Log.e(TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] cant get proper info from selected item")
 			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
 		}
 		val accountNumber = parts[1]
 		val paymentAccountTmp = tokenCpy.getPaymentAccount(accountNumber)
 		if(paymentAccountTmp == null){
-			Log.e(Utilities.TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] Cant get payment info from token")
+			Log.e(TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] Cant get payment info from token")
 			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
 		}
 		else{

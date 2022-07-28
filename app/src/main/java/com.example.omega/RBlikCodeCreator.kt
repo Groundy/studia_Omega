@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import android.widget.*
+import com.example.omega.Utilities.Companion.TagProduction
 
 class RBLIKCodeCreator : AppCompatActivity() {
 	private lateinit var amountField : EditText
@@ -68,7 +68,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 
 		val codeAssociated = getCodeFromServer(data)
 		if(codeAssociated == null){
-			Log.e(Utilities.TagProduction,"[getCodeFromServer/${this.javaClass.name}] server returned null or wrong fromat code for QR generator")
+			Log.e(TagProduction,"[getCodeFromServer/${this.javaClass.name}] server returned null or wrong fromat code for QR generator")
 			return
 		}
 
@@ -76,7 +76,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	}
 	private fun fillListOfAccounts(){
 		if(!tokenCpy.getDetailsOfAccountsFromBank()){
-			Log.e(Utilities.TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
+			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			Utilities.showToast(this, errorCodeTextToDisplay)
 			finish()
@@ -85,7 +85,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 
 		val listOfAccountFromToken = tokenCpy.getListOfAccountsToDisplay()
 		if(listOfAccountFromToken.isNullOrEmpty()){
-			Log.e(Utilities.TagProduction, "[fillListOfAccounts/${this.javaClass.name}] token returned nullOrEmpty accountList")
+			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}] token returned nullOrEmpty accountList")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			Utilities.showToast(this, errorCodeTextToDisplay)
 			finish()
@@ -168,13 +168,13 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		val currentlySelectedSpinnerItem =  accountListSpinner.selectedItem.toString()
 		val pattern = "]  "
 		if(!currentlySelectedSpinnerItem.contains(pattern)){
-			Log.e(Utilities.TagProduction, "[getPaymentAccountInfoOfSelectedOneByUser/${this.javaClass.name}] Could not get acc number from spinnerr selected item text")
+			Log.e(TagProduction, "[getPaymentAccountInfoOfSelectedOneByUser/${this.javaClass.name}] Could not get acc number from spinnerr selected item text")
 			return null
 		}
 
 		val parts = currentlySelectedSpinnerItem.split(pattern)
 		if(parts.size != 2){
-			Log.e(Utilities.TagProduction, "[getPaymentAccountInfoOfSelectedOneByUser/${this.javaClass.name}] Text from selected item is in wrong format")
+			Log.e(TagProduction, "[getPaymentAccountInfoOfSelectedOneByUser/${this.javaClass.name}] Text from selected item is in wrong format")
 			return null
 		}
 
@@ -183,8 +183,12 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		return if(paymentAccount != null)
 			paymentAccount
 		else{
-			Log.e(Utilities.TagProduction, "[getPaymentAccountInfoOfSelectedOneByUser/${this.javaClass.name}] Recived payment account is null")
+			Log.e(TagProduction, "[getPaymentAccountInfoOfSelectedOneByUser/${this.javaClass.name}] Recived payment account is null")
 			return null
 		}
+	}
+	private fun getReciverName() : String{
+		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser() ?: return String()
+		return paymentAccount.getOwnerName()
 	}
 }

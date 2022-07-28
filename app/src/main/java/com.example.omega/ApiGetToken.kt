@@ -6,12 +6,15 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
+import com.example.omega.Utilities.Companion.TagProduction
+
+
 class ApiGetToken(activity: Activity) {
 	private var callerActivity = activity
 	private var errorToDisplay = String()
 
 	fun run() : Boolean{
-		Log.i(Utilities.TagProduction, "GetToken started")
+		Log.i(TagProduction, "GetToken started")
 		var success = false
 		val thread = Thread{
 			try {
@@ -20,14 +23,14 @@ class ApiGetToken(activity: Activity) {
 					success = parseJsonResponse(responseJson)
 				return@Thread
 			} catch (e: Exception) {
-				Log.e(Utilities.TagProduction,e.toString())
+				Log.e(TagProduction,e.toString())
 			}
 		}
 		thread.start()
 		thread.join(ApiConsts.requestTimeOut)
 		if(errorToDisplay.isNotEmpty())
 			Utilities.showToast(callerActivity, errorToDisplay)
-		Log.i(Utilities.TagProduction, "GetToken ended")
+		Log.i(TagProduction, "GetToken ended")
 		return success
 	}
 	private fun getTokenRequest() : Request {
@@ -63,28 +66,28 @@ class ApiGetToken(activity: Activity) {
 		val response = OkHttpClient().newCall(request).execute()
 
 		if(response.code == 401){
-			Log.e(Utilities.TagProduction, "Request for token in getToken was unAuthorized!")
+			Log.e(TagProduction, "Request for token in getToken was unAuthorized!")
 			errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorUnauthorizedRequest)
 			return null
 		}
 
 		val responseCodeError = response.code != 200
 		if(responseCodeError){
-			Log.e(Utilities.TagProduction, "Error, getToken response returned code [${response.code}]")
+			Log.e(TagProduction, "Error, getToken response returned code [${response.code}]")
 			errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
 			return null
 		}
 
 		val bodyStr = response.body?.string()
 		if(bodyStr.isNullOrEmpty()){
-			Log.e(Utilities.TagProduction, "Error, getToken response body is null or empty")
+			Log.e(TagProduction, "Error, getToken response body is null or empty")
 			errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
 			return null
 		}
 		return try {
 			JSONObject(bodyStr)
 		}catch (e : Exception){
-			Log.e(Utilities.TagProduction,e.toString())
+			Log.e(TagProduction,e.toString())
 			null
 		}
 	}

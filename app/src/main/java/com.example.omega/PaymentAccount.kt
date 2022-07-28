@@ -2,6 +2,7 @@ package com.example.omega
 
 import android.util.Log
 import org.json.JSONObject
+import com.example.omega.Utilities.Companion.TagProduction
 
 class PaymentAccount {
     enum class BankResponseJsonFields(val text: String){
@@ -32,7 +33,7 @@ class PaymentAccount {
         contentJson = try {
             jsonObject.getJSONObject(BankResponseJsonFields.AccountObj.text)
         }catch(e : Exception){
-            Log.e(Utilities.TagProduction,"[constructor(json)/${this.javaClass.name}], Error Wrong json struct!")
+            Log.e(TagProduction,"[constructor(json)/${this.javaClass.name}], Error Wrong json struct!")
             null
         }
     }
@@ -50,40 +51,40 @@ class PaymentAccount {
 
     fun getCurrencyOfAccount() : String{
         if(this.contentJson == null){
-            Log.e(Utilities.TagProduction, "[getCurrencyOfAccount/${this.javaClass.name}] json in payment acc is null")
+            Log.e(TagProduction, "[getCurrencyOfAccount/${this.javaClass.name}] json in payment acc is null")
             return "Null"
         }
 
         return try {
             contentJson!!.getString(AccountObjectFields.Currency.text).toString()
         }catch (e :Exception){
-            Log.e(Utilities.TagProduction, "[getCurrencyOfAccount/${this.javaClass.name}] wrong Json Struct")
+            Log.e(TagProduction, "[getCurrencyOfAccount/${this.javaClass.name}] wrong Json Struct")
             "Null"
         }
     }
     fun getBalanceOfAccount() : Double?{
         if(this.contentJson == null){
-            Log.e(Utilities.TagProduction, "[getBalanceOfAccount/${this.javaClass.name}] json in payment acc is null")
+            Log.e(TagProduction, "[getBalanceOfAccount/${this.javaClass.name}] json in payment acc is null")
             return null
         }
 
         return try {
             contentJson!!.getString(AccountObjectFields.AvailableBalance.text).toDouble()
         }catch (e :Exception){
-            Log.e(Utilities.TagProduction, "[getBalanceOfAccount/${this.javaClass.name}] wrong Json Struct")
+            Log.e(TagProduction, "[getBalanceOfAccount/${this.javaClass.name}] wrong Json Struct")
             null
         }
     }
     fun getAccNumber() : String{
         if(this.contentJson == null){
-            Log.e(Utilities.TagProduction, "[getAccNumber/${this.javaClass.name}] json in payment acc is null")
+            Log.e(TagProduction, "[getAccNumber/${this.javaClass.name}] json in payment acc is null")
             return "Null"
         }
 
         return try {
             contentJson!!.getString(AccountObjectFields.AccountNumber.text).toString()
         }catch (e :Exception){
-            Log.e(Utilities.TagProduction, "[getAccNumber/${this.javaClass.name}] wrong Json Struct")
+            Log.e(TagProduction, "[getAccNumber/${this.javaClass.name}] wrong Json Struct")
             "Null"
         }
     }

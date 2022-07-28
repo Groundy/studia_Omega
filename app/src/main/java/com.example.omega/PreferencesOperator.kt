@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import org.json.JSONObject
+import com.example.omega.Utilities.Companion.TagProduction
 
 class PreferencesOperator{
 	companion object{
@@ -52,7 +53,7 @@ class PreferencesOperator{
 				val str = readPrefStr(activity, it)
 				val t = activity.getString(it)
 				val hg = "$t ---> $str"
-				Log.i(Utilities.TagProduction, hg)
+				Log.i(TagProduction, hg)
 			}
 		}
 		fun getToken(callActivity: Activity) : Token{

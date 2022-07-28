@@ -2,6 +2,7 @@ package com.example.omega
 
 import android.util.Log
 import org.json.JSONObject
+import com.example.omega.Utilities.Companion.TagProduction
 
 class Token() {
 	private var tokenObj : JSONObject? = null
@@ -56,7 +57,7 @@ class Token() {
 		//fill accounts object in Token
 
 		if(tokenObj == null){
-			Log.e(Utilities.TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json is null")
+			Log.e(TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json is null")
 			false
 		}
 		return try {
@@ -67,7 +68,7 @@ class Token() {
 			val successfulyObtainedAccountDetails = ApiGetPaymentAccDetails(this).run(accountNumbers!!)
 			successfulyObtainedAccountDetails
 		}catch (e : Exception){
-			Log.e(Utilities.TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json wrong struct")
+			Log.e(TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json wrong struct")
 			false
 		}
 	}
@@ -76,7 +77,7 @@ class Token() {
 	}
 	fun getAuthFieldValue() : String{
 		if(tokenObj == null) {
-			Log.e(Utilities.TagProduction, "[getAuthFieldValue/${this.javaClass.name}] null Token")
+			Log.e(TagProduction, "[getAuthFieldValue/${this.javaClass.name}] null Token")
 			return String()
 		}
 
@@ -85,7 +86,7 @@ class Token() {
 			val accessToken = tokenObj!!.getString(ResponseFieldsNames.AccessToken.text).toString()
 			"$tokenType $accessToken"
 		}catch (e : Exception){
-			Log.e(Utilities.TagProduction, "[getAuthFieldValue/${this.javaClass.name}] null values of accessToken or tokenType")
+			Log.e(TagProduction, "[getAuthFieldValue/${this.javaClass.name}] null values of accessToken or tokenType")
 			""
 		}
 	}
@@ -97,26 +98,26 @@ class Token() {
 			}
 			displayableStringsToRet.toList()
 		}catch (e : Exception){
-			Log.e(Utilities.TagProduction, "[getListOfAccountsToDisplay/${this.javaClass.name}] functions started with null accountList, although it shouldnt")
+			Log.e(TagProduction, "[getListOfAccountsToDisplay/${this.javaClass.name}] functions started with null accountList, although it shouldnt")
 			null
 		}
 	}
 	fun getAccessToken() : String{
 		if(tokenObj == null){
-			Log.e(Utilities.TagProduction, "[getAccessToken()/${this.javaClass.name}] Error, cant get accessToken from Token Json, json is null")
+			Log.e(TagProduction, "[getAccessToken()/${this.javaClass.name}] Error, cant get accessToken from Token Json, json is null")
 			String()
 		}
 		return try {
 			tokenObj!!.get(ResponseFieldsNames.AccessToken.text).toString()
 		}catch (e : Exception){
-			Log.e(Utilities.TagProduction, "[getAccessToken()/${this.javaClass.name}] Error, cant get accessToken from Token Json, but json is not null")
+			Log.e(TagProduction, "[getAccessToken()/${this.javaClass.name}] Error, cant get accessToken from Token Json, but json is not null")
 			String()
 		}
 	}
 
 	private fun getListOfAccountsNumbers() : List<String>?{
 		if(tokenObj == null){
-			Log.e(Utilities.TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] Token json is null")
+			Log.e(TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] Token json is null")
 			return null
 		}
 		return try {
@@ -129,7 +130,7 @@ class Token() {
 			}
 			array.toList()
 		}catch (e : Exception){
-			Log.e(Utilities.TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] wrong struct of Token json struct")
+			Log.e(TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] wrong struct of Token json struct")
 			null
 		}
 	}
@@ -151,7 +152,7 @@ class Token() {
 			return null
 
 		if(accounts.isNullOrEmpty()){
-			Log.e(Utilities.TagProduction, "[getPaymentAccount/${this.javaClass.name}] empty or null account list, probably it isnt initilized yet")
+			Log.e(TagProduction, "[getPaymentAccount/${this.javaClass.name}] empty or null account list, probably it isnt initilized yet")
 			return null
 		}
 		accounts!!.forEach{
@@ -160,7 +161,7 @@ class Token() {
 				return it
 			}
 		}
-		Log.e(Utilities.TagProduction, "[getPaymentAccount/${this.javaClass.name}] account number not found, size of accounts array: ${accounts!!.size}")
+		Log.e(TagProduction, "[getPaymentAccount/${this.javaClass.name}] account number not found, size of accounts array: ${accounts!!.size}")
 		return null
 	}
 }

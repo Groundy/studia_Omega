@@ -5,13 +5,15 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
+import com.example.omega.Utilities.Companion.TagProduction
+
 
 
 class ApiGetPaymentAccDetails(var token: Token) {
 
 	private var accountToSet: ArrayList<PaymentAccount> = ArrayList()
 	fun run(accNumbers: List<String>): Boolean {
-		Log.i(Utilities.TagProduction, "getPaymentAccountDetails started")
+		Log.i(TagProduction, "getPaymentAccountDetails started")
 		if (accNumbers.isNullOrEmpty())
 			return false
 
@@ -52,7 +54,7 @@ class ApiGetPaymentAccDetails(var token: Token) {
 	}
 	private fun getAccInfo(accNumber: String): Boolean {
 		Log.i(
-			Utilities.TagProduction,
+			TagProduction,
 			"Started checking bank proccedure for details for acc $accNumber"
 		)
 
@@ -61,7 +63,7 @@ class ApiGetPaymentAccDetails(var token: Token) {
 		val responseCodeOk = response.code == 200
 		if (!responseCodeOk) {
 			Log.e(
-				Utilities.TagProduction,
+				TagProduction,
 				"[getAccInfo/${this.javaClass.name}] returned code ${response.code} for accInfo $accNumber"
 			)
 			return false
@@ -70,7 +72,7 @@ class ApiGetPaymentAccDetails(var token: Token) {
 			val responseBodyJson = JSONObject(response.body?.string()!!)
 			parseResponseJson(responseBodyJson)
 		} catch (e: Exception) {
-			Log.e(Utilities.TagProduction, e.toString())
+			Log.e(TagProduction, e.toString())
 			false
 		}
 	}
@@ -101,7 +103,7 @@ class ApiGetPaymentAccDetails(var token: Token) {
 			return !boolsOfThreadsSuccessfullness.contains(false)
 		} catch (e: Exception) {
 			Log.e(
-				Utilities.TagProduction,
+				TagProduction,
 				"Failed to obtain information for at account with numbers[$accNumbers] [$e]"
 
 			)

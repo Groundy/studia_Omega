@@ -19,9 +19,9 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.android.synthetic.main.activity_qrscanner.*
+import com.example.omega.Utilities.Companion.TagProduction
 
 class QrScannerActivity : AppCompatActivity() {
-
 	private class YourImageAnalyzerClass(val context : QrScannerActivity) : ImageAnalysis.Analyzer {
 		val options =  BarcodeScannerOptions.Builder()
 			.setBarcodeFormats(Barcode.FORMAT_QR_CODE)

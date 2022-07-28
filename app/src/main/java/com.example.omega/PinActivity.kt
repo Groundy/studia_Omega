@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import com.example.omega.Utilities.Companion.TagProduction
 
 class PinActivity : AppCompatActivity() {
 	private enum class PURPOSE{SET, CHANGE, AUTH}
@@ -43,17 +44,17 @@ class PinActivity : AppCompatActivity() {
 				if (pressedKeyIsEnter) {
 					val everyDigitIsOk = checkIfAllFieldsHaveEnteredDigits()
 					return if(everyDigitIsOk){
-						Log.i(Utilities.TagProduction,"Pressed enter in PIN activity, pin is in CORRECT format")
+						Log.i(TagProduction,"Pressed enter in PIN activity, pin is in CORRECT format")
 						processPIN()
 						false
 					}
 					else{
-						Log.e(Utilities.TagProduction,"Pressed enter in PIN activity, pin is in WRONG format")
+						Log.e(TagProduction,"Pressed enter in PIN activity, pin is in WRONG format")
 						true
 					}
 				}
 				else
-					Log.i(Utilities.TagProduction,"Pressed not enter key in PIN activity")
+					Log.i(TagProduction,"Pressed not enter key in PIN activity")
 				return true
 			}
 		}

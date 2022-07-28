@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.dialog_select_auth_methode.*
+import com.example.omega.Utilities.Companion.TagProduction
 
 
 class SettingsActivity : AppCompatActivity() {

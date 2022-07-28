@@ -11,6 +11,8 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
+import com.example.omega.Utilities.Companion.TagProduction
+
 
 class ApiFunctions {
 	companion object{
@@ -80,10 +82,10 @@ class ApiFunctions {
 					val responseBody = response.body?.string()
 					val responseJsonObject = JSONObject(responseBody!!)
 					ip = responseJsonObject.getString("query")
-					Log.i(Utilities.TagProduction, "Pobrano publiczne ip z internetu: $ip")
+					Log.i(TagProduction, "Pobrano publiczne ip z internetu: $ip")
 					return@Thread
 				}catch (e : Exception){
-					Log.e(Utilities.TagProduction, "bład pobierania publicznego ip z internetu ---> $e")
+					Log.e(TagProduction, "bład pobierania publicznego ip z internetu ---> $e")
 				}
 			}
 			thread.start()

@@ -9,6 +9,7 @@ import org.json.JSONObject
 import java.lang.Exception
 import com.example.omega.ApiConsts.ApiReqFields.*
 import com.example.omega.ApiConsts.ScopeFields.*
+import com.example.omega.Utilities.Companion.TagProduction
 
 
 class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
@@ -18,11 +19,11 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 
 	fun run() : Boolean{
 		if (permissionsList.permissionsArray.isNullOrEmpty()) {
-			Log.e(Utilities.TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
+			Log.e(TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
 			return false
 		}
 		else
-			Log.i(Utilities.TagProduction, "Authorize started")
+			Log.i(TagProduction, "Authorize started")
 
 		var success = false
 		stateValue = ApiFunctions.getRandomStateValue()
@@ -32,9 +33,9 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		thread.start()
 		thread.join(ApiConsts.requestTimeOut)
 		if(success)
-			Log.i(Utilities.TagProduction, "Authorize ended with sucess")
+			Log.i(TagProduction, "Authorize ended with sucess")
 		else
-			Log.i(Utilities.TagProduction, "Authorize ended with error")
+			Log.i(TagProduction, "Authorize ended with error")
 		return success
 	}
 	private fun startAuthorize(stateValue : String) : Boolean{
@@ -54,11 +55,11 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 				else
 					false
 			} else{
-				Log.e(Utilities.TagProduction, "Got auth response, Code=${response.code}, body=${response.body?.byteString()}")
+				Log.e(TagProduction, "Got auth response, Code=${response.code}, body=${response.body?.byteString()}")
 				false
 			}
 		}catch (e : Exception){
-			Log.e(Utilities.TagProduction,e.toString())
+			Log.e(TagProduction,e.toString())
 			false
 		}
 	}

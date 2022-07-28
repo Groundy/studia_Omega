@@ -7,6 +7,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.view.isVisible
+import com.example.omega.Utilities.Companion.TagProduction
 
 class BankLoginWebPageActivity : AppCompatActivity() {
 	private lateinit var webView: WebView
@@ -16,11 +17,11 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_oauth)
-		Log.i(Utilities.TagProduction, "Login To Bank activity started")
+		Log.i(TagProduction, "Login To Bank activity started")
 		val readValuesOk = readPrefValues()
 		if(!readValuesOk){
 			setResult(RESULT_CANCELED)
-			Log.i(Utilities.TagProduction, "Login To Bank activity ended, RESULT_CANCELD")
+			Log.i(TagProduction, "Login To Bank activity ended, RESULT_CANCELD")
 			finish()
 		}
 		setWebView()
@@ -57,7 +58,7 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 	private fun reciveInfoFromBank(view: WebView?, request: WebResourceRequest){
 		val isProperRedirectUri = request.url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
 		if(!isProperRedirectUri){
-			Log.e(Utilities.TagProduction, "Failed to obtain code[request not started with app callBack], request [${request.url}]")
+			Log.e(TagProduction, "Failed to obtain code[request not started with app callBack], request [${request.url}]")
 			setResult(RESULT_CANCELED)
 			finish()
 		}
@@ -67,7 +68,7 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 		if (!responseStateCorrect) {
 			val msg = getString(R.string.BankLogin_UserMsg_ErrorInBankTryAgian)
 			Utilities.showToast(this, msg)
-			Log.e(Utilities.TagProduction, "Failed to obtain code[wrong state], request [${request.url}]")
+			Log.e(TagProduction, "Failed to obtain code[wrong state], request [${request.url}]")
 			setResult(RESULT_CANCELED)
 			finish()
 		}
@@ -75,7 +76,7 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 		val code : String? = request.url.getQueryParameter("code")
 		if (code.isNullOrEmpty()) {
 			val msg = getString(R.string.BankLogin_UserMsg_ErrorInBankTryAgian)
-			Log.e(Utilities.TagProduction, "Failed to obtain code[no code], request [${request.url}]")
+			Log.e(TagProduction, "Failed to obtain code[no code], request [${request.url}]")
 			Utilities.showToast(this, msg)
 			setResult(RESULT_CANCELED)
 			finish()
@@ -84,7 +85,7 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 			PreferencesOperator.savePref(this, R.string.PREF_authCode, code)
 			setResult(RESULT_OK)
 			finish()
-			Log.i(Utilities.TagProduction, "Login To Bank activity ended, RESULT_OK")
+			Log.i(TagProduction, "Login To Bank activity ended, RESULT_OK")
 		}
 	}
 }

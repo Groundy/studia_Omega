@@ -28,6 +28,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import java.util.*
+import com.example.omega.Utilities.Companion.TagProduction
 
 
 //  Minimize: CTRL + SHIFT + '-'
@@ -94,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 	private fun checkIfNfcIsTurnedOnPhone(): Boolean {
 		val deviceHasNfc = this.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
 		if (!deviceHasNfc) {
-			Log.e(Utilities.TagProduction, "There's no NFC hardware on user's phone")
+			Log.e(TagProduction, "There's no NFC hardware on user's phone")
 			Utilities.showToast(this, resources.getString(R.string.NFC_UserMsg_NoHardwareSupport))
 			return false
 		}
@@ -106,7 +107,7 @@ class MainActivity : AppCompatActivity() {
 					this@MainActivity,
 					resources.getString(R.string.NFC_UserMsg_NeedPermission)
 				)
-				Log.e(Utilities.TagProduction, "User denied permission to use NFC")
+				Log.e(TagProduction, "User denied permission to use NFC")
 			}
 
 			override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
@@ -117,7 +118,7 @@ class MainActivity : AppCompatActivity() {
 			.withListener(permissionListener).check()
 		val permissionNfcDenied = checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_DENIED
 		if (permissionNfcDenied) {
-			Log.e(Utilities.TagProduction, "There's no permission to use")
+			Log.e(TagProduction, "There's no permission to use")
 			val displayMsg = resources.getString(R.string.NFC_UserMsg_NeedPermission)
 			Utilities.showToast(this, displayMsg)
 			return false
@@ -127,7 +128,7 @@ class MainActivity : AppCompatActivity() {
 		if (!nfcIsOn) {
 			val displayMsg = resources.getString(R.string.NFC_UserMsg_TurnOff)
 			Utilities.showToast(this, displayMsg)
-			Log.e(Utilities.TagProduction, "User denied permission to use NFC")
+			Log.e(TagProduction, "User denied permission to use NFC")
 			return false
 		}
 		return true
@@ -234,19 +235,19 @@ class MainActivity : AppCompatActivity() {
 			ActivityStarter.openBrowserForLogin(this)
 		}
 		else
-			Log.i(Utilities.TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
+			Log.i(TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
 	}
 	//Intents
 	private fun resetPermissionActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode != RESULT_OK){
-			Log.i(Utilities.TagProduction, "Canceled getting authUrl")
+			Log.i(TagProduction, "Canceled getting authUrl")
 			return
 		}
 
 		val field = getString(R.string.ACT_COM_USERPERMISSIONLIST_FIELDNAME)
 		val serializedPermissionList = data?.getStringExtra(field)
 		if(serializedPermissionList.isNullOrEmpty()){
-			Log.i(Utilities.TagProduction, "Canceled getting authUrl")
+			Log.i(TagProduction, "Canceled getting authUrl")
 			return
 		}
 
@@ -258,7 +259,7 @@ class MainActivity : AppCompatActivity() {
 		val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
 		val fieldsAreFilled = authUrl.isNotEmpty() && state.isNotEmpty()
 		if(!fieldsAreFilled){
-			Log.e(Utilities.TagProduction, "Failed to obtain auth url, tried to pass no authUrl or stateValue")
+			Log.e(TagProduction, "Failed to obtain auth url, tried to pass no authUrl or stateValue")
 			val userMsg = getString(R.string.BankLogin_UserMsg_ErrorInBankTryAgian)
 			Utilities.showToast(this, userMsg)
 			return
@@ -342,7 +343,7 @@ class MainActivity : AppCompatActivity() {
 				val codeCandidate = tagData.takeLast(6).toIntOrNull()
 				if (codeCandidate != null && codeCandidate in 0..999999) {
 					val code = codeCandidate.toInt()
-					Log.i(Utilities.TagProduction, "NFC TAG data found:$tagData")
+					Log.i(TagProduction, "NFC TAG data found:$tagData")
 					codeField.setText(code.toString())
 				}
 			}
@@ -357,7 +358,7 @@ class MainActivity : AppCompatActivity() {
 		val tokenCpy = PreferencesOperator.getToken(this)
 		val authTokenAvaible = tokenCpy.isOk()
 		if(!authTokenAvaible){
-			Log.e(Utilities.TagProduction,"[openBasicTransferTabClicked/${this.javaClass.name}] token not available, asked user if he want to reset token")
+			Log.e(TagProduction,"[openBasicTransferTabClicked/${this.javaClass.name}] token not available, asked user if he want to reset token")
 			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl)
 			return
 		}
