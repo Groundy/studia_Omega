@@ -7,8 +7,8 @@ import okhttp3.Request
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.Exception
-import com.example.omega.ApiConsts.ApiReqFields.*
 import com.example.omega.ApiConsts.ScopeFields.*
+import com.example.omega.ApiConsts.ApiReqFields.*
 import com.example.omega.Utilities.Companion.TagProduction
 
 
@@ -72,14 +72,14 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 			.put(RequestHeader.text, JSONObject()
 				.put(RequestId.text, uuidStr)
 				.put(UserAgent.text, ApiFunctions.getUserAgent())
-				.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService())
+				.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
 				.put(SendDate.text, currentTimeStr)
 				.put(TppId.text, ApiConsts.TTP_ID)
 				.put(IsCompanyContext.text, false)
 			)
 			.put(ResponseType.text,"code")
 			.put(ClientId.text, ApiConsts.userId_ALIOR)
-			.put(Scope.text,ApiConsts.ScopeValues.Ais.text)
+			.put(Scope.text, ApiConsts.ScopeValues.Ais.text)
 			.put(ScopeDetails.text,getScopeDetailsObject(endValidityTimeStr))
 			.put(RedirectUri.text, ApiConsts.REDIRECT_URI)
 			.put(State.text,stateStr)

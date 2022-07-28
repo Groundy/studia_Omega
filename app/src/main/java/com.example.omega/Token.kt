@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.app.Activity
 import android.util.Log
 import org.json.JSONObject
 import com.example.omega.Utilities.Companion.TagProduction
@@ -53,9 +54,8 @@ class Token() {
 			return false
 		return true
 	}
-	fun getDetailsOfAccountsFromBank() : Boolean{
+	fun getDetailsOfAccountsFromBank(activity: Activity) : Boolean{
 		//fill accounts object in Token
-
 		if(tokenObj == null){
 			Log.e(TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json is null")
 			false
@@ -65,7 +65,7 @@ class Token() {
 			if(accountNumbers.isNullOrEmpty())
 				false
 
-			val successfulyObtainedAccountDetails = ApiGetPaymentAccDetails(this).run(accountNumbers!!)
+			val successfulyObtainedAccountDetails = ApiGetPaymentAccDetails(this, activity).run(accountNumbers!!)
 			successfulyObtainedAccountDetails
 		}catch (e : Exception){
 			Log.e(TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json wrong struct")

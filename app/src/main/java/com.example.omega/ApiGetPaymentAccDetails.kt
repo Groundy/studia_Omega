@@ -1,17 +1,17 @@
 package com.example.omega
 
+import android.app.Activity
 import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
 import com.example.omega.Utilities.Companion.TagProduction
+import com.example.omega.ApiConsts.ApiReqFields.*
 
-
-
-class ApiGetPaymentAccDetails(var token: Token) {
-
+class ApiGetPaymentAccDetails(var token: Token, activity: Activity) {
 	private var accountToSet: ArrayList<PaymentAccount> = ArrayList()
+	private var callerActivity = activity
 	fun run(accNumbers: List<String>): Boolean {
 		Log.i(TagProduction, "getPaymentAccountDetails started")
 		if (accNumbers.isNullOrEmpty())
@@ -32,19 +32,19 @@ class ApiGetPaymentAccDetails(var token: Token) {
 
 		val authFieldValue = token.getAuthFieldValue()
 		val requestBodyJson = JSONObject()
-			.put(ApiConsts.ApiReqFields.RequestHeader.text, JSONObject()
-				.put(ApiConsts.ApiReqFields.RequestId.text, uuidStr)
-				.put(ApiConsts.ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
-				.put(ApiConsts.ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService())
-				.put(ApiConsts.ApiReqFields.SendDate.text, currentTimeStr)
-				.put(ApiConsts.ApiReqFields.TppId.text, ApiConsts.TTP_ID)
-				.put(ApiConsts.ApiReqFields.TokenField.text, authFieldValue)
-				.put(ApiConsts.ApiReqFields.IsDirectPsu.text, false)
-				.put(ApiConsts.ApiReqFields.DirectPsu.text, false)
-			).put(ApiConsts.ApiReqFields.AccountNumberField.text, accNumber)
+			.put(RequestHeader.text, JSONObject()
+				.put(RequestId.text, uuidStr)
+				.put(UserAgent.text, ApiFunctions.getUserAgent())
+				.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+				.put(SendDate.text, currentTimeStr)
+				.put(TppId.text, ApiConsts.TTP_ID)
+				.put(TokenField.text, authFieldValue)
+				.put(IsDirectPsu.text, false)
+				.put(DirectPsu.text, false)
+			).put(AccountNumberField.text, accNumber)
 
 		val additionalHeaderList = arrayListOf(
-			Pair(ApiConsts.ApiReqFields.Authorization.text, authFieldValue))
+			Pair(Authorization.text, authFieldValue))
 		return ApiFunctions.bodyToRequest(
 			ApiConsts.BankUrls.GetPaymentAccount.text,
 			requestBodyJson,
@@ -62,10 +62,8 @@ class ApiGetPaymentAccDetails(var token: Token) {
 		val response = OkHttpClient().newCall(request).execute()
 		val responseCodeOk = response.code == 200
 		if (!responseCodeOk) {
-			Log.e(
-				TagProduction,
-				"[getAccInfo/${this.javaClass.name}] returned code ${response.code} for accInfo $accNumber"
-			)
+			val logTxt = "[getAccInfo/${this.javaClass.name}] returned code ${response.code} for accInfo $accNumber"
+			Log.e(TagProduction,logTxt)
 			return false
 		}
 		return try {

@@ -1,10 +1,9 @@
 package com.example.omega
 
+import android.app.Activity
 import android.os.Build
 import android.util.Log
 import okhttp3.*
-import java.io.IOException
-import java.nio.charset.StandardCharsets
 import java.util.*
 import com.fasterxml.uuid.Generators
 import okhttp3.MediaType.Companion.toMediaType
@@ -12,7 +11,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 import com.example.omega.Utilities.Companion.TagProduction
-
 
 class ApiFunctions {
 	companion object{
@@ -71,7 +69,18 @@ class ApiFunctions {
 			return result.toString()
 		}
 
-		fun getPublicIPByInternetService() : String{
+		fun getPublicIPByInternetService(activity : Activity) : String{
+			val lastTimeIpRead = PreferencesOperator.readPrefStr(activity, R.string.PREF_userIPLastCheckTime)
+			val secondsToNextIpCheck = OmegaTime.getSecondsToStampExpiration(lastTimeIpRead, ApiConsts.ipTimeCheckPeriodSeconds)
+			if(secondsToNextIpCheck > 0){
+				val lastUsedIp = PreferencesOperator.readPrefStr(activity, R.string.PREF_userLastIp)
+				val ipOk = !lastUsedIp.isNullOrEmpty()
+				if(ipOk){
+					Log.i(TagProduction, "Użyto ostatnio używanego IP: $lastUsedIp")
+					return lastUsedIp
+				}
+			}
+
 			var ip = "0.0.0.0"
 			val thread =Thread{
 				try {
@@ -83,18 +92,20 @@ class ApiFunctions {
 					val responseJsonObject = JSONObject(responseBody!!)
 					ip = responseJsonObject.getString("query")
 					Log.i(TagProduction, "Pobrano publiczne ip z internetu: $ip")
+					PreferencesOperator.savePref(activity, R.string.PREF_userLastIp, ip)
+					PreferencesOperator.savePref(activity, R.string.PREF_userIPLastCheckTime, OmegaTime.getCurrentTime())
 					return@Thread
 				}catch (e : Exception){
 					Log.e(TagProduction, "bład pobierania publicznego ip z internetu ---> $e")
 				}
 			}
 			thread.start()
-			thread.join(3 * ApiConsts.requestTimeOut)
+			thread.join(2 * ApiConsts.requestTimeOut)
 			return ip
 		}
 		fun getRandomStateValue(length: Int = 13) : String{
 			val availableChars="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-			var toRet = ""
+			var toRet = String()
 			repeat(length){
 				val randomIndex = Random().nextInt(length)
 				toRet += availableChars[randomIndex]

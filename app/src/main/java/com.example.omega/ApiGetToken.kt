@@ -7,7 +7,7 @@ import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
 import com.example.omega.Utilities.Companion.TagProduction
-
+import com.example.omega.ApiConsts.ApiReqFields.*
 
 class ApiGetToken(activity: Activity) {
 	private var callerActivity = activity
@@ -37,18 +37,18 @@ class ApiGetToken(activity: Activity) {
 		val uuidStr = ApiFunctions.getUUID()
 		val currentTimeStr = OmegaTime.getCurrentTime()
 		val requestBodyJson = JSONObject()
-			.put(ApiConsts.ApiReqFields.RequestHeader.text, JSONObject()
-				.put(ApiConsts.ApiReqFields.RequestId.text, uuidStr)
-				.put(ApiConsts.ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
-				.put(ApiConsts.ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService())
-				.put(ApiConsts.ApiReqFields.SendDate.text, currentTimeStr)
-				.put(ApiConsts.ApiReqFields.TppId.text, ApiConsts.TTP_ID)
-				.put(ApiConsts.ApiReqFields.IsCompanyContext.text, false))
-			.put(ApiConsts.ApiReqFields.Code.text, PreferencesOperator.readPrefStr(callerActivity, R.string.PREF_authCode))
-			.put(ApiConsts.ApiReqFields.GrantType.text,ApiConsts.GrantTypes.AuthorizationCode.text)
-			.put(ApiConsts.ApiReqFields.RedirectUri.text, ApiConsts.REDIRECT_URI)
-			.put(ApiConsts.ApiReqFields.ClientId.text, ApiConsts.userId_ALIOR)
-			.put(ApiConsts.ApiReqFields.ClientSecret.text, ApiConsts.appSecret_ALIOR)
+			.put(RequestHeader.text, JSONObject()
+				.put(RequestId.text, uuidStr)
+				.put(UserAgent.text, ApiFunctions.getUserAgent())
+				.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+				.put(SendDate.text, currentTimeStr)
+				.put(TppId.text, ApiConsts.TTP_ID)
+				.put(IsCompanyContext.text, false))
+			.put(Code.text, PreferencesOperator.readPrefStr(callerActivity, R.string.PREF_authCode))
+			.put(GrantType.text,ApiConsts.GrantTypes.AuthorizationCode.text)
+			.put(RedirectUri.text, ApiConsts.REDIRECT_URI)
+			.put(ClientId.text, ApiConsts.userId_ALIOR)
+			.put(ClientSecret.text, ApiConsts.appSecret_ALIOR)
 
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl.text, requestBodyJson, uuidStr)
 	}

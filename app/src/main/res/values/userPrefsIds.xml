@@ -13,4 +13,7 @@
 	<string name="PREF_authCode">authCode</string>
 
 	<string name="PREF_accessToken">accessToken</string>
+
+	<string name="PREF_userLastIp">userLastIp</string>
+	<string name="PREF_userIPLastCheckTime">userIPLastCheckTime</string>
 </resources>

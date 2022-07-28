@@ -52,8 +52,7 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 			return false
 
 		val urlValidityTime = PreferencesOperator.readPrefStr(this, R.string.PREF_authUrlValidityTimeEnd)
-		val urlVaild = OmegaTime.timestampIsValid(urlValidityTime)
-		return urlVaild
+		return OmegaTime.timestampIsValid(urlValidityTime)
 	}
 	private fun reciveInfoFromBank(view: WebView?, request: WebResourceRequest){
 		val isProperRedirectUri = request.url.toString().startsWith(ApiConsts.REDIRECT_URI, true)

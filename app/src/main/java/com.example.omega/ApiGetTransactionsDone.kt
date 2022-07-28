@@ -7,7 +7,8 @@ import okhttp3.Request
 import org.json.JSONObject
 import java.lang.Exception
 import com.example.omega.Utilities.Companion.TagProduction
-
+import com.example.omega.ApiConsts.ScopeFields.*
+import com.example.omega.ApiConsts.ApiReqFields.*
 
 class ApiGetTransactionsDone {
 	var token: Token
@@ -65,18 +66,18 @@ class ApiGetTransactionsDone {
 			val currentTimeStr = OmegaTime.getCurrentTime()
 
 			val requestBodyJson = JSONObject()
-				.put(ApiConsts.ApiReqFields.RequestHeader.text, JSONObject()
-					.put(ApiConsts.ApiReqFields.RequestId.text, uuidStr)
-					.put(ApiConsts.ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
-					.put(ApiConsts.ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService())
-					.put(ApiConsts.ApiReqFields.SendDate.text, currentTimeStr)
-					.put(ApiConsts.ApiReqFields.TppId.text, ApiConsts.TTP_ID)
-					.put(ApiConsts.ApiReqFields.TokenField.text, token.getAccessToken())
-					.put(ApiConsts.ApiReqFields.IsDirectPsu.text,false)
+				.put(RequestHeader.text, JSONObject()
+					.put(RequestId.text, uuidStr)
+					.put(UserAgent.text, ApiFunctions.getUserAgent())
+					.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+					.put(SendDate.text, currentTimeStr)
+					.put(TppId.text, ApiConsts.TTP_ID)
+					.put(TokenField.text, token.getAccessToken())
+					.put(IsDirectPsu.text,false)
 					//.put("callbackURL",ApiConsts.REDIRECT_URI)//??
 					//.put("apiKey", ApiConsts.appSecret_ALIOR)//??
 				)
-				.put(ApiConsts.ApiReqFields.AccountNumberField.text, accNumber)
+				.put(AccountNumberField.text, accNumber)
 				//.put("itemIdFrom","5989073072160768")//??
 				//.put("transactionDateFrom","Thu Apr 30")//??
 				//.put("transactionDateTo","Thu Feb 06")//??
@@ -88,8 +89,7 @@ class ApiGetTransactionsDone {
 				//.put("perPage",10)//??
 				.put("type","DEBIT")//??
 
-			val additionalHeaderList = arrayListOf(Pair(
-				ApiConsts.ApiReqFields.Authorization.text,token.getAuthFieldValue()))
+			val additionalHeaderList = arrayListOf(Pair(Authorization.text,token.getAuthFieldValue()))
 			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone.text, requestBodyJson, uuidStr, additionalHeaderList)
 		}
 	private fun getAccHistory(accNumber: String) : Boolean{

@@ -76,7 +76,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		openDisplayActivityWithCode(codeAssociated)
 	}
 	private fun fillListOfAccounts(){
-		if(!tokenCpy.getDetailsOfAccountsFromBank()){
+		if(!tokenCpy.getDetailsOfAccountsFromBank(this)){
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			Utilities.showToast(this, errorCodeTextToDisplay)

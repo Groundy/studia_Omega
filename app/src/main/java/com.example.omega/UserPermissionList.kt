@@ -8,8 +8,10 @@ import android.widget.CheckBox
 import com.example.omega.Utilities.Companion.TagProduction
 
 class PermissionList(){
+	companion object{
+		private const val separator = ";;;"
+	}
 	var permissionsArray = arrayListOf<ApiConsts.Privileges>()
-	private val separator = ";;;"
 
 	override fun toString() : String{
 		var toRet = String()

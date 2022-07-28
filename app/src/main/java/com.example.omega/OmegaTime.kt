@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.util.Log
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -12,15 +13,25 @@ class OmegaTime {
 			return DateTimeFormatter.ISO_INSTANT.format(time)
 		}
 		fun timestampIsValid(timestamp : String, minTimeMarginMili : Long = 100) : Boolean{
-			val timeToCheck = Instant.parse(timestamp)
+			val timeToCheck = try{
+				Instant.parse(timestamp)
+			}catch (e : Exception){
+				Log.w(TagProduction, "[timestampIsValid/${this::class.java.name}] passed time stamp in wrong format, probably its first time pref pass")
+				return false
+			}
 			val timeCurrent =  Instant.parse(getCurrentTime()).plusMillis(minTimeMarginMili)
 			return timeToCheck > timeCurrent
 		}
 		fun getSecondsToStampExpiration(timestampStartValidityPeriod: String, validityPeriod: Int) : Long{
-			val expirationInstant = Instant.parse(timestampStartValidityPeriod).plusSeconds(validityPeriod.toLong())
+			val expirationInstant = try{
+				Instant.parse(timestampStartValidityPeriod).plusSeconds(validityPeriod.toLong())
+			}catch (e : Exception){
+				Log.e(TagProduction, "[getSecondsToStampExpiration/${this::class.java.name}] passed time stamp in wrong format")
+				return -1
+			}
+
 			val currentTimeInstant = Instant.parse(getCurrentTime())
-			val secondsToExpiration = ChronoUnit.SECONDS.between(currentTimeInstant, expirationInstant)
-			return secondsToExpiration
+			return ChronoUnit.SECONDS.between(currentTimeInstant, expirationInstant) //secondsToExpiration
 		}
 	}
 }
