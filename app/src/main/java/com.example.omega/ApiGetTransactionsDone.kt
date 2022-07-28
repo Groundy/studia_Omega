@@ -10,57 +10,24 @@ import com.example.omega.Utilities.Companion.TagProduction
 import com.example.omega.ApiConsts.ScopeFields.*
 import com.example.omega.ApiConsts.ApiReqFields.*
 
-class ApiGetTransactionsDone {
-	var token: Token
-	var callerActivity: Activity
-	constructor(token: Token, activity: Activity){
-		this.token = token
-		this.callerActivity = activity
-	}
-	fun run(activity: Activity, accNumber: String? = null): Boolean {
-			val getDetailsOfOnlyOneAcc = accNumber != null
-			if(getDetailsOfOnlyOneAcc){
-				var isSuccess = false
-				val thread = Thread{
-					try {
-						isSuccess = getAccHistory(accNumber!!)
-					}catch (e: Exception) {
-						Log.e(TagProduction,"Failed to obtain information for account with number[${accNumber}] [${e.toString()}]")
-					}
-				}
-				thread.start()
-				thread.join(ApiConsts.requestTimeOut)
-				return isSuccess
-			}
-			else{//todo
-			/*
-								try {
-					var listOfThreadCheckingAccInfo = arrayListOf<Thread>()
-					val listOfAccounts = token.getListOfAccounts()
-					if(listOfAccounts == null)
-					;//todo
-					val amountOfAccToCheck = listOfAccounts.size
-					for (i in 0 until amountOfAccToCheck){
-						val accNumber = listOfAccounts[i].getAccountNumber()
-						val thread = Thread {
-							val success = getAccHistory(accNumber)
-						}
-						listOfThreadCheckingAccInfo.add(thread)
-					}
-					for (i in 0 until  listOfThreadCheckingAccInfo.size)
-						listOfThreadCheckingAccInfo[i].start()
-					for(i in 0 until  listOfThreadCheckingAccInfo.size)
-						listOfThreadCheckingAccInfo[i].join(ApiConsts.requestTimeOut)
-					return true
+class ApiGetTransactionsDone(activity: Activity, token: Token) {
+	private val token = token
+	private val callerActivity = activity
 
-				}catch (e: Exception) {
-					Log.e(TagProduction,"Failed to obtain information for at account with nummber[${accNumber}] [${e.toString()}]")
-					return false
-				}
-			*/
-				return false
+	fun run(accNumber: String? = null): Boolean {
+		var isSuccess = false
+		val thread = Thread{
+			try {
+				isSuccess = getAccHistory(accNumber!!)
+			}catch (e: Exception) {
+				Log.e(TagProduction,"Failed to obtain information for account with number[${accNumber}] [$e]")
 			}
 		}
+		thread.start()
+		thread.join(ApiConsts.requestTimeOut)
+		return isSuccess
+	}
+
 	private fun getPaymentAccHistoryRequest(accNumber: String) : Request {
 			val uuidStr = ApiFunctions.getUUID()
 			val currentTimeStr = OmegaTime.getCurrentTime()
@@ -93,23 +60,27 @@ class ApiGetTransactionsDone {
 			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone.text, requestBodyJson, uuidStr, additionalHeaderList)
 		}
 	private fun getAccHistory(accNumber: String) : Boolean{
+		return try {
 			val request = getPaymentAccHistoryRequest(accNumber)
 			val response = OkHttpClient().newCall(request).execute()
-			val responseCodeOk = response.code == 200
-			if(!responseCodeOk){
-				return false//todo
-			}
-			try {
-				var responseBodyJson = JSONObject(response.body?.string())
-				return parseResponseJson(responseBodyJson)
-			}
-			catch (e : Exception){
-				Log.e(TagProduction, e.toString())
+			val responseCode = response.code
+			if(responseCode != ApiConsts.responseOkCode){
+				val logMsg = "[getAccHistory/${this.javaClass.name}] getHistory return code error $${ApiFunctions.getErrorTextOfRequestToLog(responseCode)}"
+				Log.e(TagProduction, logMsg)
 				return false
 			}
+
+			val responseBodyJson = JSONObject(response.body?.string()!!)
+			parseResponseJson(responseBodyJson)
 		}
+		catch (e : Exception){
+			val logMsg = "[getAccHistory/${this.javaClass.name}] wrong json struct \ne=$e"
+			Log.e(TagProduction, logMsg)
+			false
+		}
+	}
 	private fun parseResponseJson(obj : JSONObject) : Boolean{
-			//todo
+			//todo implement
 			return false
-		}
+	}
 }
