@@ -21,12 +21,10 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 			Log.e(TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
 			return false
 		}
-		else
-			Log.i(TagProduction, "Authorize started")
-
+		Log.i(TagProduction, "Authorize started")
 		var success = false
-		stateValue = ApiFunctions.getRandomStateValue()
 		val thread = Thread{
+			stateValue = ApiFunctions.getRandomStateValue()
 			success = startAuthorize(stateValue)
 		}
 		thread.start()
@@ -41,9 +39,8 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		return try{
 			val request = getAuthRequest(stateValue)
 			val response = OkHttpClient().newCall(request).execute()
-			val responseCode = response.code
-			if(responseCode!= ApiConsts.responseOkCode){
-				Log.e(TagProduction, "[startAuthorize/${this.javaClass.name}] Error ${ApiFunctions.getErrorTextOfRequestToLog(responseCode)}")
+			if(response.code!= ApiConsts.responseOkCode){
+				Log.e(TagProduction, "[startAuthorize/${this.javaClass.name}] Error ${ApiFunctions.getErrorTextOfRequestToLog(response.code)}")
 				return false
 			}
 			val responseBody = response.body?.string()
@@ -91,7 +88,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		}
 		if(privListCpy.contains(Privileges.AccountsDetails)){
 			privilegesListJsonObj.put(ApiMethodes.AisGetAccount.text, JSONObject()
-				.put(ScopeDetailsFields.MaxAllowedHistoryLong.text,ScopeUsageLimit.Multiple.text)
+				.put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Multiple.text)
 			)
 		}
 

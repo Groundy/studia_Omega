@@ -150,7 +150,6 @@ class Token() {
 	fun getSecondsLeftToTokenExpiration() : Long? {
 		if(tokenObj == null)
 			return null
-		refreshIFneeded()
 
 		return try {
 			val startTokenTime = tokenObj!!.getJSONObject(ResponseFieldsNames.ResponseHeader.text)

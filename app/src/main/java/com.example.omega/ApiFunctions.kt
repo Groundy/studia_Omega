@@ -97,6 +97,7 @@ class ApiFunctions {
 					return@Thread
 				}catch (e : Exception){
 					Log.e(TagProduction, "bład pobierania publicznego ip z internetu ---> $e")
+					Log.e(TagProduction, "Zostanie uzyty domyslny ip: $ip")
 				}
 			}
 			thread.start()
