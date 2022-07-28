@@ -13,7 +13,6 @@ class ApiConsts {
 	enum class BankUrls(val text : String){
 		AuthUrl("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/authorize"),
 		GetTokenUrl ("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/token"),
-		GetAccounts("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccounts"),
 		GetPaymentAccount("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccount"),
 		GetTransactionsDone("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getTransactionsDone");
 	}
@@ -43,7 +42,12 @@ class ApiConsts {
 
 		Authorization("AUTHORIZATION"),
 
-		AspspRedirectUri("aspspRedirectUri")
+		AspspRedirectUri("aspspRedirectUri"),
+
+		ResponseType("response_type"),
+		Scope("scope"),
+		ScopeDetails("scope_details"),
+		State("state")
 		;
 	}
 	enum class GrantTypes(val text : String){
@@ -72,9 +76,10 @@ class ApiConsts {
 		const val REDIRECT_URI = "https://Omega:8080/auth/oauth2/callback"
 		const val TTP_ID = "requiredValueThatIsNotValidated"
 
-		//almost not Checked values required by Bank
+		//not Checked values required by Bank
 		const val ThrottlingPolicyVal = "psd2Regulatory"
 		const val ConsentId = "123456789"
+
 
 		const val AuthUrlValidityTimeSeconds = 24 * 60 * 60
 		const val requestTimeOut = 1000L * 60 * 8
