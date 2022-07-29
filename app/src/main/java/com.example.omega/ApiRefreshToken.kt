@@ -9,31 +9,24 @@ import java.lang.Exception
 import com.example.omega.ApiConsts.ApiReqFields
 import com.example.omega.ApiConsts.ScopeValues
 
-class ApiRefreshToken(activity: Activity, token: Token) {
-	private var token = token
-	private var callerActivity = activity
-
-	fun run() : Boolean{
+class ApiRefreshToken(private val refreshToken : String) {
+	fun run() : JSONObject?{
 		Log.i(Utilities.TagProduction, "refresh token started")
-		var success = false
+		var toRet : JSONObject? = null
 		val thread = Thread{
 			try {
-				success = sendRequest()
+				toRet = sendRequest()
 			} catch (e: Exception) {
 				Log.e(Utilities.TagProduction,"[ApiRefreshToken/${this.javaClass.name}] $e")
 			}
 		}
 		thread.start()
 		thread.join(ApiConsts.requestTimeOut)
-		Log.i(Utilities.TagProduction, "refresh token ended with sucess? $success")
-		return success
+		Log.i(Utilities.TagProduction, "refresh token ended with sucess? ${toRet != null}")
+		return toRet
 	}
 	private fun getRequest() : Request{
 		val uuid = ApiFunctions.getUUID()
-		val refreshToken = token.getRefreshTokenValue()
-		if(refreshToken == null){
-			//todo
-		}
 		val requestHeaders = JSONObject()
 			.put(ApiReqFields.RequestId.text, uuid)
 			.put(ApiReqFields.SendDate.text, OmegaTime.getCurrentTime())
@@ -49,22 +42,20 @@ class ApiRefreshToken(activity: Activity, token: Token) {
 
 		return 	ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl.text, jsonBodyRequest, uuid)
 	}
-	private fun sendRequest() : Boolean{
+	private fun sendRequest() : JSONObject?{
 		return try{
 			val request = getRequest()
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ApiConsts.responseOkCode){
 				Log.e(Utilities.TagProduction, "[sendRequest/${this.javaClass.name}] Error ${ApiFunctions.getErrorTextOfRequestToLog(response.code)}")
-				return false
+				null
 			}
-			val responseBody = response.body?.string()
-			val responseJsonObject = JSONObject(responseBody!!)
-			token.replaceTokenWithFreshOne(responseJsonObject)
-
-			true
+			val responseBodyStr = response.body?.string()
+			val responseJsonObject = JSONObject(responseBodyStr!!)
+			responseJsonObject
 		}catch (e : Exception){
 			Log.e(Utilities.TagProduction,"[sendRequest/${this.javaClass.name}] Error catched $e")
-			false
+			null
 		}
 	}
 

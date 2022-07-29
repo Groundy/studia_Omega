@@ -159,7 +159,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	}
 	private fun getTokenCpy(){
 		val tokenTmp = PreferencesOperator.getToken(this)
-		if(!tokenTmp.isOk())
+		if(!tokenTmp.isOk(this))
 			finish()
 		else
 			tokenCpy = tokenTmp

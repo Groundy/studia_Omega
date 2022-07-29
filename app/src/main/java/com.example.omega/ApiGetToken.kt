@@ -52,7 +52,7 @@ class ApiGetToken(activity: Activity) {
 	}
 	private fun parseJsonResponse(responseJson : JSONObject) : Boolean{
 		val accessToken = Token(responseJson)
-		if(!accessToken.isOk())
+		if(!accessToken.isOk(callerActivity))
 			return false
 
 		val accessTokenSerialized = accessToken.toString()

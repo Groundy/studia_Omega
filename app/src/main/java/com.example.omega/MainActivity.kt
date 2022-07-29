@@ -333,7 +333,7 @@ class MainActivity : AppCompatActivity() {
 	}
 	private fun openBasicTransferTabClicked(){
 		val tokenCpy = PreferencesOperator.getToken(this)
-		val authTokenAvaible = tokenCpy.isOk()
+		val authTokenAvaible = tokenCpy.isOk(this)
 		if(!authTokenAvaible){
 			Log.e(TagProduction,"[openBasicTransferTabClicked/${this.javaClass.name}] token not available, asked user if he want to reset token")
 			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl)
@@ -352,7 +352,7 @@ class MainActivity : AppCompatActivity() {
 
 	private fun getTokenOnAppStart(){
 		val token = PreferencesOperator.getToken(this)
-		val tokenOk = token.isOk()
+		val tokenOk = token.isOk(this)
 		if(!tokenOk){
 			val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 			PreferencesOperator.clearAuthData(this)

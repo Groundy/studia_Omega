@@ -8,6 +8,7 @@ import com.example.omega.Utilities.Companion.TagProduction
 class Token() {
 	private var tokenObj : JSONObject? = null
 	private var accounts : List<PaymentAccount>? = null
+
 	companion object{
 		//tutaj oprocz accountNbr jest jeszcze lista zgód dla tego konta wraz z ich ograniczeniami, jezeli trzeba to dodac pozniej
 		enum class ResponseFieldsNames(val text : String){
@@ -34,23 +35,55 @@ class Token() {
 			//IsCallback("isCallback")
 			;
 		}
-		const val minTimeTokenNotMustbeRefreshedSeconds = 150
+		const val minTimeTokenNotMustbeRefreshedSeconds = 180
 	}
+	
 	constructor(jsonObject: JSONObject) : this() {
 		tokenObj = jsonObject
 	}
-	constructor(jsonObjectStr: String) : this() {
-		tokenObj = JSONObject(jsonObjectStr)
-	}
+
 	override fun toString(): String {
 		return tokenObj.toString()
 	}
 
-	private fun refreshIFneeded(){
-		tokenObj ?: return
-		val secondsToExp = getSecondsLeftToTokenExpiration() ?: return
-		//todo implementation
+	private fun refreshIFneeded(activity : Activity) : Boolean{
+		if(tokenObj == null){
+			val logMsg = "[refreshIFneeded/${this.javaClass.name}] null Token struct"
+			Log.e(TagProduction, logMsg)
+			return false
+		}
+
+		val secondsToExp = getSecondsLeftToTokenExpiration()
+		if(secondsToExp == null){
+			val logMsg = "[refreshIFneeded/${this.javaClass.name}] wrong Token struct"
+			Log.e(TagProduction, logMsg)
+			return false
+		}
+
+		val needToRefresh = secondsToExp < minTimeTokenNotMustbeRefreshedSeconds
+		if(!needToRefresh)
+			return true
+
+		val refreshToken = getRefreshTokenValue() ?: return false
+		val newTokenObj = ApiRefreshToken(refreshToken).run() ?: return false
+
+		tokenObj = newTokenObj
+		PreferencesOperator.savePref(activity, R.string.PREF_Token , tokenObj.toString())
+		return true		//todo implementation
 	}
+	private fun getRefreshTokenValue(): String? {
+		if(tokenObj == null){
+			Log.e(TagProduction, "[getRefreshToken/${this.javaClass.name}] Error, json is null")
+			String()
+		}
+		return try {
+			tokenObj!!.get(ResponseFieldsNames.RefreshToken.text).toString()
+		}catch (e : Exception){
+			Log.e(TagProduction, "[getRefreshToken/${this.javaClass.name}] Error,Json is not null but still cant get token")
+			null
+		}
+	}
+
 	fun getListOfAccountsNumbers() : List<String>?{
 		if(tokenObj == null){
 			Log.e(TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] Token json is null")
@@ -70,30 +103,24 @@ class Token() {
 			null
 		}
 	}
-
-	fun isOk() : Boolean{
-		if(tokenObj == null)
+	fun isOk(activity: Activity): Boolean {
+		if (tokenObj == null)
 			return false
-		val secondsToExpire = getSecondsLeftToTokenExpiration()
-		if(secondsToExpire == null || secondsToExpire < 0)
-			return false
-		return true
+		return refreshIFneeded(activity)
 	}
 	fun getDetailsOfAccountsFromBank(activity: Activity) : Boolean{
 		//fill accounts object in Token
 		if(tokenObj == null){
 			Log.e(TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json is null")
-			false
+			return false
 		}
 
-
-		refreshIFneeded()
 		return try {
 			val accountNumbers = getListOfAccountsNumbers()
 			if(accountNumbers.isNullOrEmpty())
-				false
+				return false
 
-			val successfulyObtainedAccountDetails = ApiGetPaymentAccDetails(this, activity).run(accountNumbers!!)
+			val successfulyObtainedAccountDetails = ApiGetPaymentAccDetails(this, activity).run(accountNumbers)
 			successfulyObtainedAccountDetails
 		}catch (e : Exception){
 			Log.e(TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json wrong struct")
@@ -108,7 +135,6 @@ class Token() {
 			Log.e(TagProduction, "[getAuthFieldValue/${this.javaClass.name}] null Token")
 			return String()
 		}
-		refreshIFneeded()
 
 		return try {
 			val tokenType = tokenObj!!.getString(ResponseFieldsNames.TokenType.text).toString()
@@ -116,13 +142,13 @@ class Token() {
 			"$tokenType $accessToken"
 		}catch (e : Exception){
 			Log.e(TagProduction, "[getAuthFieldValue/${this.javaClass.name}] null values of accessToken or tokenType")
-			""
+			String()
 		}
 	}
 	fun getListOfAccountsToDisplay() : List<String>?{
 		if(tokenObj == null)
 			return null
-		refreshIFneeded()
+
 		val displayableStringsToRet = arrayListOf<String>()
 		return try {
 			this.accounts!!.forEach {
@@ -139,7 +165,7 @@ class Token() {
 			Log.e(TagProduction, "[getAccessToken()/${this.javaClass.name}] Error, cant get accessToken from Token Json, json is null")
 			String()
 		}
-		refreshIFneeded()
+
 		return try {
 			tokenObj!!.get(ResponseFieldsNames.AccessToken.text).toString()
 		}catch (e : Exception){
@@ -164,7 +190,6 @@ class Token() {
 		if(tokenObj == null)
 			return null
 
-		refreshIFneeded()
 		if(accounts.isNullOrEmpty()){
 			Log.e(TagProduction, "[getPaymentAccount/${this.javaClass.name}] empty or null account list, probably it isnt initilized yet")
 			return null
@@ -179,19 +204,4 @@ class Token() {
 		return null
 	}
 
-	fun getRefreshTokenValue(): String? {
-		if(tokenObj == null){
-			Log.e(TagProduction, "[getRefreshToken/${this.javaClass.name}] Error, json is null")
-			String()
-		}
-		return try {
-			tokenObj!!.get(ResponseFieldsNames.RefreshToken.text).toString()
-		}catch (e : Exception){
-			Log.e(TagProduction, "[getRefreshToken/${this.javaClass.name}] Error,Json is not null but still cant get token")
-			null
-		}
-	}
-	fun replaceTokenWithFreshOne(tokenJson: JSONObject){
-		this.tokenObj = tokenJson
-	}
 }

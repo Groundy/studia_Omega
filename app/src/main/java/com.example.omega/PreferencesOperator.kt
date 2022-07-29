@@ -1,21 +1,23 @@
 package com.example.omega
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import org.json.JSONObject
 import com.example.omega.Utilities.Companion.TagProduction
 
-class PreferencesOperator{
+class PreferencesOperator : Application() {
 	companion object{
-		fun clearPreferences(activity: Activity, vararg fields : Int){
+		private fun clearPreferences(activity: Activity, vararg fields : Int){
 			val preferencesFieldsStr = arrayOf(
 				R.string.PREF_authURL,
 				R.string.PREF_authCode,
 				R.string.PREF_lastRandomValue,
 				R.string.PREF_lastUsedPermissionsForAuth,
 				R.string.PREF_authUrlValidityTimeEnd,
+				R.string.PREF_Token
 				)
 
 			val preferencesFieldsBool = arrayOf(
@@ -37,7 +39,8 @@ class PreferencesOperator{
 				R.string.PREF_authCode,
 				R.string.PREF_authUrlValidityTimeEnd,
 				R.string.PREF_lastUsedPermissionsForAuth,
-				R.bool.PREF_authUrlAlreadyUSed
+				R.bool.PREF_authUrlAlreadyUSed,
+				R.string.PREF_Token
 			)
 		}
 		fun developerShowPref(activity: Activity){
@@ -106,6 +109,5 @@ class PreferencesOperator{
 			val prefs = getSharedProperties(activity)
 			return prefs.getString(fieldName, "")!!
 		}
-
 	}
 }

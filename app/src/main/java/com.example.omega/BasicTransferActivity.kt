@@ -210,7 +210,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	}
 	private fun getToken(){
 		val tokenTmp = PreferencesOperator.getToken(this)
-		if(tokenTmp.isOk())
+		if(tokenTmp.isOk(this))
 			tokenCpy = tokenTmp
 		else
 			finish()
