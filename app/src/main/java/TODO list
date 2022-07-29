@@ -1,10 +1,10 @@
 //TODO
-25. Dodać zapisywanie publicznego IP tak aby nie robić tego zbyt często
-24. Przy restarcie auth Data coś jest nie tak
 22  Dodać długości numerow kont w roznych krajach https://pl.wikipedia.org/wiki/Międzynarodowy_numer_rachunku_bankowego
 8.  W errorAuth dodać rozóznienie między tym gdy użytkownik chce autoryzacji za pomocą innej metody a innym błędem.
 
 //DONE
+25. Dodać zapisywanie publicznego IP tak aby nie robić tego zbyt często
+24. Przy restarcie auth Data coś jest nie tak
 23. Dodac zarzadzanie czasem Tokenu!(jego serylizacja zapis odczyt
 21. usunąc action bar z permission dialog.
 20. strona loginu do banku nie dziala

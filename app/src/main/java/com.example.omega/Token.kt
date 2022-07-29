@@ -37,7 +37,7 @@ class Token() {
 		}
 		const val minTimeTokenNotMustbeRefreshedSeconds = 180
 	}
-	
+
 	constructor(jsonObject: JSONObject) : this() {
 		tokenObj = jsonObject
 	}

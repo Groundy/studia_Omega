@@ -20,16 +20,9 @@ class PreferencesOperator : Application() {
 				R.string.PREF_Token
 				)
 
-			val preferencesFieldsBool = arrayOf(
-				R.bool.PREF_authUrlAlreadyUSed)
-
 			fields.forEach {
 				if (preferencesFieldsStr.contains(it))
 					savePref(activity, it, String())
-			}
-			preferencesFieldsBool.forEach {
-				if (preferencesFieldsStr.contains(it))
-					savePref(activity, it, false)
 			}
 		}
 		fun clearAuthData(activity: Activity){
@@ -39,8 +32,7 @@ class PreferencesOperator : Application() {
 				R.string.PREF_authCode,
 				R.string.PREF_authUrlValidityTimeEnd,
 				R.string.PREF_lastUsedPermissionsForAuth,
-				R.bool.PREF_authUrlAlreadyUSed,
-				R.string.PREF_Token
+				R.string.PREF_Token,
 			)
 		}
 		fun developerShowPref(activity: Activity){
@@ -71,8 +63,7 @@ class PreferencesOperator : Application() {
 		}
 		private fun getSharedProperties(activity: Activity) : SharedPreferences {
 			val fileName = activity.getString(R.string.preference_file_key)
-			val sharedPrefObj = activity.getSharedPreferences(fileName, Context.MODE_PRIVATE)
-			return sharedPrefObj
+			return  activity.getSharedPreferences(fileName, Context.MODE_PRIVATE)
 		}
 
 		fun savePref(activity: Activity, strResourceId : Int, value : Int){

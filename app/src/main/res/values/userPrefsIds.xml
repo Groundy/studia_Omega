@@ -9,7 +9,6 @@
 	<string name="PREF_authUrlValidityTimeEnd">authUrlValidityTimeEndField</string>
 	<string name="PREF_authURL">authUrlField</string>
 
-	<bool name="PREF_authUrlAlreadyUSed">false</bool>
 	<string name="PREF_authCode">authCode</string>
 
 	<string name="PREF_Token">token</string>

@@ -73,6 +73,7 @@ dependencies {
 
 	implementation 'com.fasterxml.uuid:java-uuid-generator:4.0.1'//UUID
 	implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.3'//tworzenie QR
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")//serylizacja obiektow
 
 }
 apply plugin: 'com.google.gms.google-services'

@@ -242,11 +242,7 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 
-		val authUrlCanBeUsed = !PreferencesOperator.readPrefBool(this,R.bool.PREF_authUrlAlreadyUSed)
-		if(authUrlCanBeUsed)
-			ActivityStarter.openBrowserForLogin(this)
-		else
-			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl)
+		ActivityStarter.openBrowserForLogin(this)
 	}
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
 		//todo zastanowić się czy token pobierać tutaj

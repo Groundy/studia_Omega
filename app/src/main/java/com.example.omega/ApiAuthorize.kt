@@ -110,34 +110,4 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		val validityTime = OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds)
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_authUrlValidityTimeEnd, validityTime)
 	}
-
-	companion object{
-		fun obtainingNewAuthUrlIsNecessary(activity: Activity, permisionListObject: PermissionList?) : Boolean{
-			val authUrl = PreferencesOperator.readPrefStr(activity, R.string.PREF_authURL)
-			if(authUrl.isEmpty())
-				return true
-
-			val lastPermissionListStr= PreferencesOperator.readPrefStr(activity, R.string.PREF_lastUsedPermissionsForAuth)
-			if(lastPermissionListStr.isEmpty())
-				return true
-
-			if(lastPermissionListStr != permisionListObject.toString())
-				return true
-
-			val lastAuthUrlValidityTime = PreferencesOperator.readPrefStr(activity, R.string.PREF_authUrlValidityTimeEnd)
-			if(lastAuthUrlValidityTime.isEmpty())
-				return true
-
-			val authTimeIsStillValid = OmegaTime.timestampIsValid(lastAuthUrlValidityTime)
-			if(!authTimeIsStillValid)
-				return true
-
-			val lastTimeUsedRandomStateValue = PreferencesOperator.readPrefStr(activity, R.string.PREF_lastRandomValue)
-			if(lastTimeUsedRandomStateValue.isEmpty())
-				return true
-
-			return false
-		}
-	}
-
 }
