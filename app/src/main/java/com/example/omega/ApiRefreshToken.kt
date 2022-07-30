@@ -15,10 +15,13 @@ class ApiRefreshToken(private val refreshToken : String) {
 		Log.i(Utilities.TagProduction, "refresh token started")
 		var toRet : JSONObject? = null
 		val thread = Thread{
-			try {
-				toRet = sendRequest()
+			toRet = try {
+				val request = getRequest()
+				val response = sendRequest(request)
+				response
 			} catch (e: Exception) {
 				Log.e(Utilities.TagProduction,"[ApiRefreshToken/${this.javaClass.name}] $e")
+				null
 			}
 		}
 		thread.start()
@@ -43,9 +46,8 @@ class ApiRefreshToken(private val refreshToken : String) {
 
 		return 	ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl, jsonBodyRequest, uuid)
 	}
-	private fun sendRequest() : JSONObject?{
+	private fun sendRequest(request: Request) : JSONObject?{
 		return try{
-			val request = getRequest()
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ApiConsts.responseOkCode){
 				Log.e(Utilities.TagProduction, "[sendRequest/${this.javaClass.name}] Error ${ApiFunctions.getErrorTextOfRequestToLog(response.code)}")
@@ -59,5 +61,4 @@ class ApiRefreshToken(private val refreshToken : String) {
 			null
 		}
 	}
-
 }
