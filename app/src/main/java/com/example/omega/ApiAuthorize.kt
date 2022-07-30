@@ -15,7 +15,29 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 	private var permissionsList : PermissionList = permisionListObject
 	private var callerActivity : Activity = activity
 	private var stateValue = ApiFunctions.getRandomStateValue()
-
+	private companion object{
+		enum class ScopeFields(val text: String){
+			PrivilegeList("privilegeList"),
+			ScopeGroupType("scopeGroupType"),
+			ConsentId("consentId"),
+			ScopeTimeLimit("scopeTimeLimit"),
+			ThrottlingPolicy("throttlingPolicy")
+		}
+		enum class ScopeDetailsFields(val text: String){
+			ScopeUsageLimit("scopeUsageLimit"),
+			MaxAllowedHistoryLong("maxAllowedHistoryLong")
+		}
+		enum class ApiMethodes(val text : String){
+			AisGetTransactionsDone("ais:getTransactionsDone"),
+			AisGetAccount("ais:getAccount"),
+		}
+		enum class ScopeUsageLimit(val text : String) {
+			Multiple("multiple"),
+			Single("single")
+		}
+		const val redirectUriField = "aspspRedirectUri"
+	}
+	
 	fun run() : Boolean{
 		if (permissionsList.permissionsArray.isEmpty()) {
 			Log.e(TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
@@ -103,7 +125,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 	private fun saveDataToPrefs(jsonObject: JSONObject) : Boolean{
 		 var authUrl = String()
 		 try {
-		 	authUrl = jsonObject.get(ApiReqFields.AspspRedirectUri.text).toString()
+		 	authUrl = jsonObject.get(redirectUriField).toString()
 		 }
 		 catch (e : Exception){
 			return false

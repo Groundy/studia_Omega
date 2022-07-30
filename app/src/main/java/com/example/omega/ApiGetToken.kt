@@ -17,18 +17,19 @@ class ApiGetToken(activity: Activity) {
 		var success = false
 		val thread = Thread{
 			try {
-				val responseJson = getTokenResponseJson()?: return@Thread
-				success = parseJsonResponse(responseJson)
+				val request = getRequest()
+				val responseJson = sendRequest(request)?: return@Thread
+				success = handleResponse(responseJson)
 			} catch (e: Exception) {
-				Log.e(TagProduction,e.toString())
+				Log.e(TagProduction,"[run/${this.javaClass.name}] $e")
 			}
 		}
 		thread.start()
 		thread.join(ApiConsts.requestTimeOut)
-		Log.i(TagProduction, "GetToken ended")
+		Log.i(TagProduction, "GetToken ended sucessfuly? $success")
 		return success
 	}
-	private fun getTokenRequest() : Request {
+	private fun getRequest() : Request {
 		val uuidStr = ApiFunctions.getUUID()
 		val currentTimeStr = OmegaTime.getCurrentTime()
 
@@ -50,7 +51,7 @@ class ApiGetToken(activity: Activity) {
 
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl, requestBodyJson, uuidStr)
 	}
-	private fun parseJsonResponse(responseJson : JSONObject) : Boolean{
+	private fun handleResponse(responseJson : JSONObject) : Boolean{
 		val accessToken = Token(responseJson)
 		if(!accessToken.isOk(callerActivity))
 			return false
@@ -59,9 +60,8 @@ class ApiGetToken(activity: Activity) {
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_Token, accessTokenSerialized)
 		return true
 	}
-	private fun getTokenResponseJson() : JSONObject?{
+	private fun sendRequest(request: Request) : JSONObject?{
 		return try {
-			val request = getTokenRequest()
 			val response = OkHttpClient().newCall(request).execute()
 			val responseCode = response.code
 			if(responseCode != ApiConsts.responseOkCode){

@@ -1,6 +1,6 @@
 package com.example.omega
 
-import android.app.Activity
+
 import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -10,6 +10,7 @@ import com.example.omega.ApiConsts.ApiReqFields
 import com.example.omega.ApiConsts.ScopeValues
 
 class ApiRefreshToken(private val refreshToken : String) {
+
 	fun run() : JSONObject?{
 		Log.i(Utilities.TagProduction, "refresh token started")
 		var toRet : JSONObject? = null
@@ -48,7 +49,7 @@ class ApiRefreshToken(private val refreshToken : String) {
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ApiConsts.responseOkCode){
 				Log.e(Utilities.TagProduction, "[sendRequest/${this.javaClass.name}] Error ${ApiFunctions.getErrorTextOfRequestToLog(response.code)}")
-				null
+				return null
 			}
 			val responseBodyStr = response.body?.string()
 			val responseJsonObject = JSONObject(responseBodyStr!!)

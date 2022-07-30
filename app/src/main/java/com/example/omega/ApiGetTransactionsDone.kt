@@ -13,7 +13,6 @@ import com.example.omega.ApiGetTransactionsDone.Companion.GetTransactionsDoneReq
 import com.example.omega.ApiGetTransactionsDone.Companion.GetTransactionsResponseFields.*
 import kotlin.collections.ArrayList
 
-
 class ApiGetTransactionsDone(activity: Activity, token: Token){
 	private val token = token
 	private val callerActivity = activity
@@ -52,7 +51,7 @@ class ApiGetTransactionsDone(activity: Activity, token: Token){
 			try {
 				val request = getRequest(accNumber, infos)
 				val response = sendRequest(request) ?: return@Thread
-				var sucess = parseResponseJson(response)
+				var sucess = handleResponse(response)
 				if(sucess)
 					Log.i(TagProduction, "GetTransactionsDone ends with success")
 				else
@@ -118,12 +117,11 @@ class ApiGetTransactionsDone(activity: Activity, token: Token){
 		return try {
 			val response = OkHttpClient().newCall(request).execute()
 			val responseCode = response.code
-			if(responseCode == 429){
-				val msgForUser = callerActivity.getString(R.string.AccHistoryAct_UserMsg_TooManyResuest)
-				Utilities.showToast(callerActivity, msgForUser)
-			}
-
 			if(responseCode != ApiConsts.responseOkCode){
+				if(responseCode == 429){
+					val msgForUser = callerActivity.getString(R.string.AccHistoryAct_UserMsg_TooManyResuest)
+					Utilities.showToast(callerActivity, msgForUser)
+				}
 				val additionalErrorMsg : String = try {
 					JSONObject(response.body?.string()!!).getString("message")
 				}catch (e : Exception){
@@ -141,7 +139,7 @@ class ApiGetTransactionsDone(activity: Activity, token: Token){
 			null
 		}
 	}
-	private fun parseResponseJson(response : JSONObject) : Boolean{
+	private fun handleResponse(response : JSONObject) : Boolean{
 		return try {
 			val transactionsObj = response.getJSONArray(TransactionsObj.text)
 			for (i in 0 until transactionsObj.length()){
@@ -155,7 +153,6 @@ class ApiGetTransactionsDone(activity: Activity, token: Token){
 		}
 	}
 }
-
 class TransactionsDoneAdditionalInfos(daysBack : Int = 5){
 	companion object{
 		enum class Type(val text: String){
@@ -194,15 +191,15 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 5){
 	}
 }
 class AccountHistoryRecord{
-	var itemId : String? = null
-	var transactionCategory : String? = null
-	var amount : Double? = null
-	var currency : String? = null
-	var description : String? = null
-	var tradeDate : String? = null
-	var sender : String? = null
-	var recipient : String? = null
-	var bookingDate : String? = null
+	private var itemId : String? = null
+	private var transactionCategory : String? = null
+	private var amount : Double? = null
+	private var currency : String? = null
+	private var description : String? = null
+	private var tradeDate : String? = null
+	private var sender : String? = null
+	private var recipient : String? = null
+	private var bookingDate : String? = null
 
 	constructor(jsonObj: JSONObject){
 		try {

@@ -11,19 +11,11 @@ class ApiConsts {
 		AccountsHistory("ACC_HISTORY"),
 		SinglePayment("SINGLE_PAYMENT")
 	}
-	enum class ScopeUsageLimit(val text : String) {
-		Multiple("multiple"),
-		Single("single")
-	}
 	enum class BankUrls(val text : String){
 		AuthUrl("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/authorize"),
 		GetTokenUrl ("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/token"),
 		GetPaymentAccount("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccount"),
 		GetTransactionsDone("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getTransactionsDone")
-	}
-	enum class ApiMethodes(val text : String){
-		AisGetTransactionsDone("ais:getTransactionsDone"),
-		AisGetAccount("ais:getAccount"),
 	}
 	enum class ApiReqFields(val text : String){
 		RequestHeader("requestHeader"),
@@ -46,8 +38,6 @@ class ApiConsts {
 
 		Authorization("authorization"),//todo temp I changed that from all uppercase to all lowewercase
 
-		AspspRedirectUri("aspspRedirectUri"),
-
 		ResponseType("response_type"),
 		Scope("scope"),
 		ScopeDetails("scope_details"),
@@ -58,17 +48,7 @@ class ApiConsts {
 		AuthorizationCode("authorization_code"),
 		RefreshToken("refresh_token")
 	}
-	enum class ScopeFields(val text: String){
-		PrivilegeList("privilegeList"),
-		ScopeGroupType("scopeGroupType"),
-		ConsentId("consentId"),
-		ScopeTimeLimit("scopeTimeLimit"),
-		ThrottlingPolicy("throttlingPolicy")
-	}
-	enum class ScopeDetailsFields(val text: String){
-		ScopeUsageLimit("scopeUsageLimit"),
-		MaxAllowedHistoryLong("maxAllowedHistoryLong")
-	}
+
 	enum class Countries(val codeLength : Int){
 		PL(28)
 	}
@@ -92,7 +72,7 @@ class ApiConsts {
 
 
 		const val AuthUrlValidityTimeSeconds = 24 * 60 * 60
-		const val requestTimeOut = 1000L * 60 * 8
+		const val requestTimeOut = 1000L * 8
 		const val ipTimeCheckPeriodSeconds = 120
 
 		const val countryCodeLength = 2
