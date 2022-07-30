@@ -48,7 +48,7 @@ class ApiGetToken(activity: Activity) {
 			.put(ClientId.text, ApiConsts.userId_ALIOR)
 			.put(ClientSecret.text, ApiConsts.appSecret_ALIOR)
 
-		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl.text, requestBodyJson, uuidStr)
+		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl, requestBodyJson, uuidStr)
 	}
 	private fun parseJsonResponse(responseJson : JSONObject) : Boolean{
 		val accessToken = Token(responseJson)

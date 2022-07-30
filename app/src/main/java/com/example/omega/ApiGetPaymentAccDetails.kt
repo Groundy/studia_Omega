@@ -72,7 +72,7 @@ class ApiGetPaymentAccDetails(var token: Token, activity: Activity) {
 		val additionalHeaderList = arrayListOf(
 			Pair(Authorization.text, authFieldValue))
 		return ApiFunctions.bodyToRequest(
-			ApiConsts.BankUrls.GetPaymentAccount.text,
+			ApiConsts.BankUrls.GetPaymentAccount,
 			requestBodyJson,
 			uuidStr,
 			additionalHeaderList

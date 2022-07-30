@@ -44,7 +44,7 @@ class ApiConsts {
 		DirectPsu("directPsu"),
 		AccountNumberField("accountNumber"),
 
-		Authorization("AUTHORIZATION"),
+		Authorization("authorization"),//todo temp I changed that from all uppercase to all lowewercase
 
 		AspspRedirectUri("aspspRedirectUri"),
 

@@ -76,7 +76,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 			.put(ApiReqFields.ScopeDetails.text,getScopeDetailsObject(endValidityTimeStr))
 			.put(ApiReqFields.RedirectUri.text, ApiConsts.REDIRECT_URI)
 			.put(ApiReqFields.State.text,stateStr)
-		return ApiFunctions.bodyToRequest(BankUrls.AuthUrl.text, requestBodyJson, uuidStr)
+		return ApiFunctions.bodyToRequest(BankUrls.AuthUrl, requestBodyJson, uuidStr)
 	}
 	private fun getScopeDetailsObject(expTimeStr : String) : JSONObject? {
 		val privListCpy = permissionsList.permissionsArray

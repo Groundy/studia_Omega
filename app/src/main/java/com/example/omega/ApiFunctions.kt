@@ -14,12 +14,12 @@ import com.example.omega.Utilities.Companion.TagProduction
 
 class ApiFunctions {
 	companion object{
-		fun bodyToRequest(url : String, requestBodyJson: JSONObject, uuidStr : String, additionalHeaders: List<Pair<String,String>>? = null): Request {
+		fun bodyToRequest(url : ApiConsts.BankUrls, requestBodyJson: JSONObject, uuidStr : String, additionalHeaders: List<Pair<String,String>>? = null): Request {
 			val mediaType : MediaType = ApiConsts.CONTENT_TYPE.toMediaType()
 			val requestBodyStr = requestBodyJson.toString().toByteArray().toRequestBody(mediaType)
 
 			val request = Request.Builder()
-				.url(url)
+				.url(url.text)
 				.post(requestBodyStr)
 				.addHeader("x-ibm-client-id", ApiConsts.userId_ALIOR)
 				.addHeader("x-ibm-client-secret", ApiConsts.appSecret_ALIOR)
@@ -119,14 +119,16 @@ class ApiFunctions {
 		fun getErrorTextOfRequestToLog (reqErrorCode : Int) : String{
 			return when(reqErrorCode){
 				200 -> ""
-				400 -> "Bad Request"
-				401 -> "Unauthorized"
-				405 -> "Method Not Allowed"
-				406 -> "Not Acceptable"
-				415 -> "Unsupported Media Type"
-				422 -> "Unprocessable entity"
-				500 -> "Internal Server Error"
-				503 -> "Service Unavailable"
+				400 -> "Bad Request 400"
+				401 -> "Unauthorized 401"
+				403 -> "Forbidden 403"
+				405 -> "Method Not Allowed 405"
+				406 -> "Not Acceptable 406"
+				415 -> "Unsupported Media Type 415"
+				422 -> "Unprocessable entity 422"
+				429 -> "Request limit for the requested service exceeded 429"
+				500 -> "Internal Server Error 500"
+				503 -> "Service Unavailable 503"
 				else -> "Unkown reason, error code $reqErrorCode"
 			}
 		}

@@ -40,7 +40,7 @@ class ApiRefreshToken(private val refreshToken : String) {
 			.put(ApiReqFields.RefreshToken.text, refreshToken)
 			.put(ApiReqFields.Scope.text, ScopeValues.AisAcc.text)
 
-		return 	ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl.text, jsonBodyRequest, uuid)
+		return 	ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl, jsonBodyRequest, uuid)
 	}
 	private fun sendRequest() : JSONObject?{
 		return try{
