@@ -6,15 +6,15 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
 import org.json.JSONObject
-import java.lang.Exception
 import com.example.omega.ApiConsts.*
 import com.example.omega.Utilities.Companion.TagProduction
+import kotlin.Exception
 
 
 class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 	private var permissionsList : PermissionList = permisionListObject
 	private var callerActivity : Activity = activity
-	private var stateValue = String()
+	private var stateValue = ApiFunctions.getRandomStateValue()
 
 	fun run() : Boolean{
 		if (permissionsList.permissionsArray.isEmpty()) {
@@ -25,8 +25,9 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		Log.i(TagProduction, "Authorize started")
 		var success = false
 		val thread = Thread{
-			stateValue = ApiFunctions.getRandomStateValue()
-			success = startAuthorize(stateValue)
+			val request = getRequest(stateValue)
+			val okResponse = sendRequest(request) ?: return@Thread
+			success = saveDataToPrefs(okResponse)
 		}
 		thread.start()
 		thread.join(ApiConsts.requestTimeOut)
@@ -36,24 +37,19 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 			Log.e(TagProduction, "Authorize ended with error")
 		return success
 	}
-	private fun startAuthorize(stateValue : String) : Boolean{
+	private fun sendRequest (request: Request) : JSONObject?{
 		return try{
-			val request = getRequest(stateValue)
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ApiConsts.responseOkCode){
-				Log.e(TagProduction, "[startAuthorize/${this.javaClass.name}] Error ${ApiFunctions.getErrorTextOfRequestToLog(response.code)}")
-				return false
+				Log.e(TagProduction, "[sendRequest/${this.javaClass.name}] Error ${ApiFunctions.getErrorTextOfRequestToLog(response.code)}")
+				null
 			}
 			val responseBody = response.body?.string()
 			val responseJsonObject = JSONObject(responseBody!!)
-			val authUrl = responseJsonObject.get(ApiReqFields.AspspRedirectUri.text).toString()
-			if(authUrl.isEmpty())
-				return false
-			saveDataToPrefs(authUrl)
-			true
+			responseJsonObject
 		}catch (e : Exception){
-			Log.e(TagProduction,"[startAuthorize/${this.javaClass.name}] Error catch $e")
-			false
+			Log.e(TagProduction,"[sendRequest/${this.javaClass.name}] Error catch $e")
+			null
 		}
 	}
 	private fun getRequest(stateStr : String) : Request {
@@ -104,11 +100,20 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 			.put(ScopeFields.ScopeTimeLimit.text, expTimeStr)
 			.put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
 	}
-	 private fun saveDataToPrefs(authUrl :String){
+	private fun saveDataToPrefs(jsonObject: JSONObject) : Boolean{
+		 var authUrl = String()
+		 try {
+		 	authUrl = jsonObject.get(ApiReqFields.AspspRedirectUri.text).toString()
+		 }
+		 catch (e : Exception){
+			return false
+		 }
+
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_authURL, authUrl)
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_lastRandomValue, stateValue)
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_lastUsedPermissionsForAuth, permissionsList.toString())
 		val validityTime = OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds)
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_authUrlValidityTimeEnd, validityTime)
+		return true
 	}
 }
