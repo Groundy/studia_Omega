@@ -136,24 +136,24 @@ class MainActivity : AppCompatActivity() {
 		if(nfcSignalCatchingIsOn){
 			nfcAdapter?.disableForegroundDispatch(this)
 			nfcSignalCatchingIsOn = false
+			return
 		}
-		else{
-			val intent = Intent(applicationContext, this.javaClass).addFlags(
-				Intent.FLAG_ACTIVITY_SINGLE_TOP
-			)
-			val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, 0)
-			val filters = arrayOfNulls<IntentFilter>(1)
-			val techList = arrayOf<Array<String>>()
 
-			filters[0] = IntentFilter()
-			with(filters[0]) {
-				this?.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED)
-				this?.addCategory(Intent.CATEGORY_DEFAULT)
-				this?.addDataType("text/plain")
-			}
-			nfcAdapter?.enableForegroundDispatch(this, pendingIntent, filters, techList)
-			nfcSignalCatchingIsOn = true
+		val intent = Intent(applicationContext, this.javaClass)
+		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+
+		val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, 0)
+		val filters = arrayOfNulls<IntentFilter>(1)
+		val techList = arrayOf<Array<String>>()
+
+		filters[0] = IntentFilter()
+		with(filters[0]) {
+			this?.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED)
+			this?.addCategory(Intent.CATEGORY_DEFAULT)
+			this?.addDataType("text/plain")
 		}
+		nfcAdapter?.enableForegroundDispatch(this, pendingIntent, filters, techList)
+		nfcSignalCatchingIsOn = true
 	}
 	private fun initGUI() {
 		initQR()
@@ -164,21 +164,22 @@ class MainActivity : AppCompatActivity() {
 		nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 		val deviceHasNfc = nfcAdapter != null
 		val nfcOnOffButton = findViewById<Button>(R.id.MainAct_nfcButton)
-		if (deviceHasNfc) {
-			val nfcIsTurnedOnOnPhone = checkIfNfcIsTurnedOnPhone()
-			nfcOnOffButton.setOnClickListener{
-				if (!nfcSignalCatchingIsOn && nfcIsTurnedOnOnPhone) {//Turn on
-					nfcOnOffButton.setBackgroundResource(R.drawable.nfc_on_icon)
-					switchNfcSignalCatching()
-				}
-				else if (nfcSignalCatchingIsOn) {//Turn off
-					nfcOnOffButton.setBackgroundResource(R.drawable.nfc_off_icon)
-					switchNfcSignalCatching()
-				}
+		if(!deviceHasNfc){
+			nfcOnOffButton.isVisible = false
+			return
+		}
+
+		val nfcIsTurnedOnOnPhone = checkIfNfcIsTurnedOnPhone()
+		nfcOnOffButton.setOnClickListener{
+			if (!nfcSignalCatchingIsOn && nfcIsTurnedOnOnPhone) {//Turn on
+				nfcOnOffButton.setBackgroundResource(R.drawable.nfc_on_icon)
+				switchNfcSignalCatching()
+			}
+			else if (nfcSignalCatchingIsOn) {//Turn off
+				nfcOnOffButton.setBackgroundResource(R.drawable.nfc_off_icon)
+				switchNfcSignalCatching()
 			}
 		}
-		else
-			nfcOnOffButton.isVisible = false
 	}
 	private fun initCodeField(){
 		val codeFieldTextListener = object : TextWatcher {

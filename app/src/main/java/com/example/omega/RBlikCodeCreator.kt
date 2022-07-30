@@ -166,19 +166,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	}
 	private fun getPaymentAccountInfoOfSelectedOneByUser() : PaymentAccount?{
 		val currentlySelectedSpinnerItem =  accountListSpinner.selectedItem.toString()
-		val pattern = "]  "
-		if(!currentlySelectedSpinnerItem.contains(pattern)){
-			Log.e(TagProduction, "[getPaymentAccountInfoOfSelectedOneByUser/${this.javaClass.name}] Could not get acc number from spinnerr selected item text")
-			return null
-		}
-
-		val parts = currentlySelectedSpinnerItem.split(pattern)
-		if(parts.size != 2){
-			Log.e(TagProduction, "[getPaymentAccountInfoOfSelectedOneByUser/${this.javaClass.name}] Text from selected item is in wrong format")
-			return null
-		}
-
-		val accountNumber = parts[1]
+		val accountNumber = tokenCpy.getAccountNbrByDisplayStr(currentlySelectedSpinnerItem)?: return null//todo give msg
 		val paymentAccount = tokenCpy.getPaymentAccount(accountNumber)
 		return if(paymentAccount != null)
 			paymentAccount

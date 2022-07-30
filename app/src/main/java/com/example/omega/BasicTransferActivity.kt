@@ -217,20 +217,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	}
 	private fun userChangeAnotherAccOnSpiner(){
 		val selectedItemText = spinner.selectedItem.toString()
-		val pattern = "]  "
-
-		val success = selectedItemText.isNotEmpty() && selectedItemText.contains(pattern)
-		if(!success) {
-			Log.e(TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] cant get proper info from selected item")
-			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
-		}
-
-		val parts = selectedItemText.split(pattern)
-		if(parts.size != 2){
-			Log.e(TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] cant get proper info from selected item")
-			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
-		}
-		val accountNumber = parts[1]
+		val accountNumber = tokenCpy.getAccountNbrByDisplayStr(selectedItemText) ?: return//todo give some msg
 		val paymentAccountTmp = tokenCpy.getPaymentAccount(accountNumber)
 		if(paymentAccountTmp == null){
 			Log.e(TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] Cant get payment info from token")

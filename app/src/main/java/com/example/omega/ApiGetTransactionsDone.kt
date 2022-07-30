@@ -118,21 +118,25 @@ class ApiGetTransactionsDone(activity: Activity, token: Token){
 		return try {
 			val response = OkHttpClient().newCall(request).execute()
 			val responseCode = response.code
+			if(responseCode == 429){
+				val msgForUser = callerActivity.getString(R.string.AccHistoryAct_UserMsg_TooManyResuest)
+				Utilities.showToast(callerActivity, msgForUser)
+			}
+
 			if(responseCode != ApiConsts.responseOkCode){
 				val additionalErrorMsg : String = try {
 					JSONObject(response.body?.string()!!).getString("message")
 				}catch (e : Exception){
 					String()
 				}
-				val logMsg = "[getAccHistory/${this.javaClass.name}] getHistory return code error ${ApiFunctions.getErrorTextOfRequestToLog(responseCode)}, additional MSG: $additionalErrorMsg"
+				val logMsg = "[sendRequest/${this.javaClass.name}] return code error --> ${ApiFunctions.getErrorTextOfRequestToLog(responseCode)}\n additional MSG: $additionalErrorMsg"
 				Log.e(TagProduction, logMsg)
 				null
 			}
-
 			JSONObject(response.body?.string()!!)
 		}
 		catch (e : Exception){
-			val logMsg = "[getAccHistory/${this.javaClass.name}] wrong json struct \ne=$e"
+			val logMsg = "[sendRequest/${this.javaClass.name}] could not get proper response from server \ne=$e"
 			Log.e(TagProduction, logMsg)
 			null
 		}
@@ -215,5 +219,9 @@ class AccountHistoryRecord{
 		catch (e : Exception){
 			Log.e(TagProduction, "[constructor/${this.javaClass.name}] Cant parse from Json")
 		}
+	}
+
+	override fun toString(): String {
+		return "${bookingDate?.subSequence(0,11)}--$amount--$description"//todo implement
 	}
 }

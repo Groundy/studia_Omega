@@ -203,5 +203,15 @@ class Token() {
 		Log.e(TagProduction, "[getPaymentAccount/${this.javaClass.name}] account number not found, size of accounts array: ${accounts!!.size}")
 		return null
 	}
-
+	fun getAccountNbrByDisplayStr(string: String) : String?{
+		val pattern = "]  "
+		return try {
+			val parts = string.split(pattern)
+			parts[1]
+		}
+		catch (e : Exception){
+			Log.e(TagProduction, "[getAccountNbrByDisplayStr/${this.javaClass.name}] error in obtainging acc number from display str")
+			null
+		}
+	}
 }

@@ -36,4 +36,8 @@
     <!--Bank Login Activity-->
     <string name="BankLogin_UserMsg_ErrorInBankTryAgian">Błąd uwierzytelniania ze strony banku, spróbuj ponownie"</string>
 
+    <!--AccountHistory-->
+    <string name="AccHistoryAct_UserMsg_ErrorInObtainingToken">Nie można uzyskać tokenu dostępowego, zalecany jest rest tokenu."</string>
+    <string name="AccHistoryAct_UserMsg_TooManyResuest">Przekroczono maskymalna ilość zapytań do banku o historię transakcji, zalecamy spróbować później."</string>
+
 </resources>
