@@ -3,20 +3,24 @@
       xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/AccHistoryTab"
+        android:title="@string/MainMenu_GUI_AccHistoryTabName"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/ConfigurationsTab"
-        android:title="Konfiguracja"
+        android:title="@string/MainMenu_GUI_ConfigurationTabName"
         app:showAsAction="never" />
     <item
         android:id="@+id/TransferTab"
-        android:title="Przelew krajowy"
+        android:title="@string/MainMenu_GUI_TransferTabName"
         app:showAsAction="never" />
     <item
         android:id="@+id/GenerateBlikCodeTab"
-        android:title="Generuj kod Blik"
+        android:title="@string/MainMenu_GUI_GenerateRblikCodeTabName"
         app:showAsAction="never" />
     <item
         android:id="@+id/AskForTokenTab"
-        android:title="Token"
+        android:title="@string/MainMenu_GUI_TokenTabName"
         app:showAsAction="never" />
 
 

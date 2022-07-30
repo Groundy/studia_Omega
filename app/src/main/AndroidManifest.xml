@@ -1,94 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	package="com.example.omega">
-	<application
-		android:allowBackup="true"
-		android:icon="@mipmap/ic_launcher"
-		android:roundIcon="@mipmap/ic_launcher_round"
-		android:supportsRtl="true"
-		android:usesCleartextTraffic="true"
-		android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-		<!--android:usesCleartextTraffic="true"  line used for obtainging public ip-->
-		<activity
-			android:name="com.example.omega.RBlikCodeDisplayActivity"
-			android:exported="false" />
-		<activity
-			android:name="com.example.omega.RBLIKCodeCreator"
-			android:exported="false"
-			android:windowSoftInputMode="adjustPan" />
-		<activity
-			android:name="com.example.omega.UserPermissionList"
-			android:exported="false"
-			android:theme="@style/Theme.AppCompat.DayNight.Dialog"/>
-		<activity
-			android:name="com.example.omega.BankLoginWebPageActivity"
-			android:exported="false"
-			android:windowSoftInputMode="adjustPan" />
-		<activity
-			android:name="com.example.omega.TransferSummary"
-			android:exported="false"
-			android:windowSoftInputMode="adjustPan" />
-		<activity
-			android:name="com.example.omega.ResultActivity"
-			android:exported="false"
-			android:windowSoftInputMode="adjustPan" />
-		<activity
-			android:name="com.example.omega.BasicTransferActivity"
-			android:exported="false"
-			android:windowSoftInputMode="adjustPan" />
-		<activity
-			android:name="com.example.omega.PinActivity"
-			android:exported="false"
-			android:windowSoftInputMode="adjustPan" />
-		<activity
-			android:name="com.example.omega.YesNoDialogActivity"
-			android:exported="false"
-			android:theme="@style/Theme.AppCompat.Light.Dialog.Alert"
-			android:windowSoftInputMode="adjustPan" />
-		<activity
-			android:name="com.example.omega.ScanFingerActivity"
-			android:exported="false"
-			android:windowSoftInputMode="adjustPan" />
-		<activity
-			android:name="com.example.omega.SettingsActivity"
-			android:exported="false" />
-		<activity
-			android:name="com.example.omega.QrScannerActivity"
-			android:exported="false"/>
-		<activity
-			android:name="com.example.omega.MainActivity"
-			android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
-			android:label="@string/app_name"
-			android:windowSoftInputMode="stateAlwaysVisible">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-			<intent-filter>
-				<action android:name="android.nfc.action.NDEF_DISCOVERED" />
-				<action android:name="android.nfc.action.TAG_DISCOVERED" />
-				<data android:mimeType="text/plain" />
-			</intent-filter>
-			<intent-filter tools:ignore="AppLinkUrlError"> <!-- TESTTESTESTTESTTESTETSTEST$ETSEST -->
-				<action android:name="android.intent.action.VIEW" />
-				<data
-					android:host="oauthdemo.developer.aliorbank.pl"
-					android:scheme="https" />
-			</intent-filter> <!-- TESTTESTESTTESTTESTETSTEST$ETSEST -->
-			<meta-data
-				android:name="android.nfc.action.TECH_DISCOVERED"
-				android:resource="@xml/techlist" />
-		</activity>
-	</application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.omega">
 
-	<uses-feature android:name="android.hardware.nfc" />
-	<uses-permission android:name="android.permission.USE_BIOMETRIC" />
-	<uses-permission android:name="aandroid.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.CAMERA" />
-	<uses-permission android:name="android.permission.NFC" />
+    <uses-feature android:name="android.hardware.nfc" />
+
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="aandroid.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.NFC" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".AccountHistroyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".accountHistoryActivity"
+            android:exported="false" /> <!-- android:usesCleartextTraffic="true"  line used for obtainging public ip -->
+        <activity
+            android:name=".RBlikCodeDisplayActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RBLIKCodeCreator"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".UserPermissionList"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog" />
+        <activity
+            android:name=".BankLoginWebPageActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".TransferSummary"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ResultActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".BasicTransferActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".PinActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".YesNoDialogActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.Dialog.Alert"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ScanFingerActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".QrScannerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+            android:windowSoftInputMode="stateAlwaysVisible">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError"> <!-- TESTTESTESTTESTTESTETSTEST$ETSEST -->
+                <action android:name="android.intent.action.VIEW" />
+
+                <data
+                    android:host="oauthdemo.developer.aliorbank.pl"
+                    android:scheme="https" />
+            </intent-filter> <!-- TESTTESTESTTESTTESTETSTEST$ETSEST -->
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/techlist" />
+        </activity>
+    </application>
 
 </manifest>

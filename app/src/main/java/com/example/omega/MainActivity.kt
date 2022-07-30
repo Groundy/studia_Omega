@@ -74,6 +74,8 @@ class MainActivity : AppCompatActivity() {
 				ActivityStarter.startResetPermissionsActivity(this)
 			R.id.GenerateBlikCodeTab ->
 				ActivityStarter.startRBlikCodeCreatorActivity(this)
+			R.id.AccHistoryTab ->
+				ActivityStarter.openAccountTransfersHistoryActivity(this)
 		}
 		return true
 	}
@@ -205,6 +207,8 @@ class MainActivity : AppCompatActivity() {
 		goQRActivityButton = findViewById(R.id.goToQrScannerButton)
 		goQRActivityButton.setOnClickListener(goQrScannerButtonListener)
 	}
+
+
 	private fun startNfcOnStartIfUserWishTo(){
 		//TODO ten kod mimo iż jest kopią kodu z przycisku włączającego wyłączającego, ale nie chce się uruchomić automatycznie
 		val turnNfcOnAppStart = PreferencesOperator.readPrefBool(this, R.bool.PREF_turnNfcOnAppStart)
@@ -338,14 +342,11 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startTransferActivityFromMenu(this)
 	}
 
-
-
 	private fun developerInitaialFun(){
 		findViewById<Button>(R.id.testButton).setOnClickListener{
 			ActivityStarter.startRBlikCodeCreatorActivity(this)
 		}
 	}
-
 	private fun getTokenOnAppStart(){
 		val token = PreferencesOperator.getToken(this)
 		val tokenOk = token.isOk(this)

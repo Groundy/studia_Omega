@@ -107,5 +107,10 @@ class ActivityStarter {
 			yesNoDialog.putExtra(field,msgToDisplay)
 			activity.startActivityForResult(yesNoDialog, retCode)
 		}
+
+		fun openAccountTransfersHistoryActivity(callerActivity: Activity) {
+			val intent = Intent(callerActivity, AccountHistroyActivity::class.java)
+			callerActivity.startActivity(intent)
+		}
 	}
 }

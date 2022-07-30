@@ -80,4 +80,11 @@
 	<!-- other -->
 	<string name="GUI_authTransactionTitle">Potwierdź transakcje</string>
 
+	<!-- main menu -->
+	<string name="MainMenu_GUI_TokenTabName">Token</string>
+	<string name="MainMenu_GUI_ConfigurationTabName">Konfiguracja</string>
+	<string name="MainMenu_GUI_TransferTabName">Przelew jednorazowy</string>
+	<string name="MainMenu_GUI_GenerateRblikCodeTabName">Generuj kod RBlik</string>
+	<string name="MainMenu_GUI_AccHistoryTabName">Historia rachunków</string>
+
 </resources>
