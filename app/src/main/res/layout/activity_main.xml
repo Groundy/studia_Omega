@@ -28,28 +28,28 @@
 			android:orientation="vertical">
 
 			<Button
-				android:id="@+id/goToQrScannerButton"
+				android:id="@+id/MainAct_goToQrScannerButton"
 				android:layout_width="match_parent"
 				android:layout_height="71dp"
 				android:text="@string/QrScanner_GUI_buttonText"
 				android:textSize="24sp" />
 
 			<Button
-				android:id="@+id/nfcButton"
+				android:id="@+id/MainAct_nfcButton"
 				android:layout_width="154dp"
 				android:layout_height="132dp"
 				android:background="@drawable/nfc_off_icon"
 				tools:ignore="SpeakableTextPresentCheck" />
 
 			<Button
-				android:id="@+id/testButton"
+				android:id="@+id/MainAct_testButton"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:rotationX="1"
 				android:text="TEST_TEST_TEST_TEST" />
 
 			<EditText
-				android:id="@+id/enterCodeField"
+				android:id="@+id/MainAct_enterCodeField"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:background="@null"

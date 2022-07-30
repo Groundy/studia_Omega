@@ -27,7 +27,6 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
-import java.util.*
 import com.example.omega.Utilities.Companion.TagProduction
 
 //  Minimize: CTRL + SHIFT + '-'
@@ -37,8 +36,6 @@ import com.example.omega.Utilities.Companion.TagProduction
 class MainActivity : AppCompatActivity() {
 	private var nfcSignalCatchingIsOn: Boolean = false
 	private var nfcAdapter: NfcAdapter? = null
-	private lateinit var goQRActivityButton: Button
-	private lateinit var codeField: EditText
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -85,13 +82,13 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun processCode(code: Int) {
+		val codeField = findViewById<EditText>(R.id.MainAct_enterCodeField)
 		codeField.text.clear()
 		val transferData = Utilities.checkBlikCode(code)
 		if(transferData == null){
 			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_WRONG_CODE)
 			return
 		}
-
 		ActivityStarter.startTransferSummaryActivity(this, transferData.toString())
 	}
 	private fun checkIfNfcIsTurnedOnPhone(): Boolean {
@@ -166,7 +163,7 @@ class MainActivity : AppCompatActivity() {
 	private fun initNFC(){
 		nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 		val deviceHasNfc = nfcAdapter != null
-		val nfcOnOffButton = findViewById<Button>(R.id.nfcButton)
+		val nfcOnOffButton = findViewById<Button>(R.id.MainAct_nfcButton)
 		if (deviceHasNfc) {
 			val nfcIsTurnedOnOnPhone = checkIfNfcIsTurnedOnPhone()
 			nfcOnOffButton.setOnClickListener{
@@ -195,7 +192,7 @@ class MainActivity : AppCompatActivity() {
 			override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 			override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 		}
-		codeField = findViewById(R.id.enterCodeField)
+		val codeField = findViewById<EditText>(R.id.MainAct_enterCodeField)
 		codeField.addTextChangedListener(codeFieldTextListener)
 		codeField.requestFocus()
 	}
@@ -204,16 +201,15 @@ class MainActivity : AppCompatActivity() {
 			val qrScannerActivityIntent = Intent(this, QrScannerActivity::class.java)
 			startActivityForResult(qrScannerActivityIntent, resources.getInteger(R.integer.ACT_RETCODE_QrScanner))
 		}
-		goQRActivityButton = findViewById(R.id.goToQrScannerButton)
+		val goQRActivityButton = findViewById<Button>(R.id.MainAct_goToQrScannerButton)
 		goQRActivityButton.setOnClickListener(goQrScannerButtonListener)
 	}
-
 
 	private fun startNfcOnStartIfUserWishTo(){
 		//TODO ten kod mimo iż jest kopią kodu z przycisku włączającego wyłączającego, ale nie chce się uruchomić automatycznie
 		val turnNfcOnAppStart = PreferencesOperator.readPrefBool(this, R.bool.PREF_turnNfcOnAppStart)
 		if(turnNfcOnAppStart && !nfcSignalCatchingIsOn){
-			findViewById<Button>(R.id.nfcButton).setBackgroundResource(R.drawable.nfc_on_icon)
+			findViewById<Button>(R.id.MainAct_nfcButton).setBackgroundResource(R.drawable.nfc_on_icon)
 			switchNfcSignalCatching()
 		}
 	}
@@ -306,25 +302,23 @@ class MainActivity : AppCompatActivity() {
 		val returnedCode = data.getIntExtra(returnFieldName, -1)
 		val vailCode = returnedCode in 0..999999
 		if (vailCode)
-			codeField.setText(returnedCode.toString())
+			processCode(returnedCode)
 
 	}
 	private fun nfcIntentGet(intent: Intent){
-		val tagFromIntent: Tag? = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
-		if (tagFromIntent != null) {
-			val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
-			val relayRecord = (rawMsgs!![0] as NdefMessage).records[0]
-			val tagData = String(relayRecord.payload)
-			//format UNKOWN_BYTE,LAUNGAGE BYTES(probably 2 bytes), CODE
-			if (tagData.count() >= 6) {
-				val codeCandidate = tagData.takeLast(6).toIntOrNull()
-				if (codeCandidate != null && codeCandidate in 0..999999) {
-					val code = codeCandidate.toInt()
-					Log.i(TagProduction, "NFC TAG data found:$tagData")
-					codeField.setText(code.toString())
-				}
-			}
-		}
+		val tagFromIntent: Tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG) ?: return
+		val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+		val relayRecord = (rawMsgs!![0] as NdefMessage).records[0]
+		val tagData = String(relayRecord.payload)
+		val tagDataExpectedLength = 6			//format UNKOWN_BYTE,LAUNGAGE BYTES(probably 2 bytes), CODE
+		if(tagData.count() < tagDataExpectedLength)
+			return
+		val code = tagData.takeLast(6).toIntOrNull()
+		val codeOk = code != null && code in 0..999999
+		if(!codeOk)
+			return
+		Log.i(TagProduction, "NFC TAG data found:$tagData")
+		processCode(code!!.toInt())
 	}
 	private fun dialogIfUserWantToResetBankAuthResult(resultCode: Int){
 		if(resultCode != RESULT_OK)
@@ -343,7 +337,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun developerInitaialFun(){
-		findViewById<Button>(R.id.testButton).setOnClickListener{
+		findViewById<Button>(R.id.MainAct_testButton).setOnClickListener{
 			ActivityStarter.startRBlikCodeCreatorActivity(this)
 		}
 	}
