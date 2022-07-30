@@ -21,6 +21,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 			Log.e(TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
 			return false
 		}
+
 		Log.i(TagProduction, "Authorize started")
 		var success = false
 		val thread = Thread{
@@ -37,7 +38,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 	}
 	private fun startAuthorize(stateValue : String) : Boolean{
 		return try{
-			val request = getAuthRequest(stateValue)
+			val request = getRequest(stateValue)
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ApiConsts.responseOkCode){
 				Log.e(TagProduction, "[startAuthorize/${this.javaClass.name}] Error ${ApiFunctions.getErrorTextOfRequestToLog(response.code)}")
@@ -55,7 +56,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 			false
 		}
 	}
-	private fun getAuthRequest(stateStr : String) : Request {
+	private fun getRequest(stateStr : String) : Request {
 		val uuidStr = ApiFunctions.getUUID()
 		val currentTimeStr = OmegaTime.getCurrentTime()
 		val endValidityTimeStr = OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds)
@@ -85,7 +86,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		if(privListCpy.contains(Privileges.AccountsHistory)){
 			val privilegeScopeDetailsObj = JSONObject()
 				.put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Multiple.text)
-				.put(ScopeDetailsFields.MaxAllowedHistoryLong.text,11)
+				.put(ScopeDetailsFields.MaxAllowedHistoryLong.text,800)
 
 			privilegesListJsonObj.put(ApiMethodes.AisGetTransactionsDone.text, privilegeScopeDetailsObj)
 		}

@@ -6,4 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".AccountHistroyActivity">
 
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/marginSizeX"
+        android:layout_marginTop="@dimen/marginSizeY"
+        android:layout_marginEnd="@dimen/marginSizeX"
+        android:layout_marginBottom="@dimen/marginSizeY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Spinner
+                android:id="@+id/AccHistoryActivity_Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
