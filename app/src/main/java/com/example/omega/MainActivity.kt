@@ -169,26 +169,27 @@ class MainActivity : AppCompatActivity() {
 		codeField.addTextChangedListener(codeFieldTextListener)
 		codeField.requestFocus()
 
-
-		val firstBar = findViewById<BottomNavigationView>(R.id.MainAct_firstBar)
-		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
-
 		val listner = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 			when(item.itemId){
-				R.id.AccHistoryTab-> ActivityStarter.openAccountTransfersHistoryActivity(this)
-				R.id.TransferTab ->	openBasicTransferTabClicked()
-				R.id.GenerateBlikCodeTab -> ActivityStarter.startRBlikCodeCreatorActivity(this)
+				R.id.AccHistoryTab-> accHistoryTabClicked()
+				R.id.TransferTab ->	basicTransferTabCliked()
+				R.id.GenerateBlikCodeTab -> generateRBlickCodeClicked()
 				R.id.NfcTab -> nfcButtonClicked()
-				R.id.QrScannerTab->ActivityStarter.startQrScannerActivity(this)
+				R.id.QrScannerTab->qrScannerTabClicked()
 			}
 			true
 		}
+		val firstBar = findViewById<BottomNavigationView>(R.id.MainAct_firstBar)
+		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
 		firstBar.setOnNavigationItemSelectedListener(listner)
-		//firstBar.itemIconTintList = null
 		secondBar.setOnNavigationItemSelectedListener(listner)
-		secondBar.itemIconTintList = null
 
 		//te funkcje są po to aby ikoni pojawiały się czarne a nie białe
+		firstBar.itemIconTintList = null
+		secondBar.itemIconTintList = null
+		firstBar.menu.findItem(R.id.AccHistoryTab).icon = getDrawable(R.drawable.ico_history)
+		firstBar.menu.findItem(R.id.GenerateBlikCodeTab).icon = getDrawable(R.drawable.ico_qr)
+		firstBar.menu.findItem(R.id.TransferTab).icon = getDrawable(R.drawable.ico_payment)
 		secondBar.menu.findItem(R.id.NfcTab).icon = getDrawable(R.drawable.ico_nfc_off)
 		secondBar.menu.findItem(R.id.ToImplementTab).icon = getDrawable(R.drawable.ico_cancel)
 		secondBar.menu.findItem(R.id.QrScannerTab).icon = getDrawable(R.drawable.ico_qr_scanner)
