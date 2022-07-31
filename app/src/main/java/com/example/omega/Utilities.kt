@@ -45,12 +45,10 @@ class Utilities {
 			//TODO implement
 			val properCode = 111111
 			val isProperCode = code == properCode
-			return if(isProperCode){
-				val transferData = TransferData("0123456789012345678901234567","0001112223334445556667778889","Jan Kowalski","zwrot pożyczki" ,13.57 ,  "PLN")
-				transferData
-			}
-			else
-				null
+			if(!isProperCode)
+				return null
+
+			return TransferData.developerGetTestObjWithFilledData()
 		}
 
 		fun stopUserFromPuttingMoreThan2DigitsAfterComma(editText : EditText, oldVal : String, newVal : String){

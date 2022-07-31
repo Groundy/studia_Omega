@@ -140,12 +140,17 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	}
 	private fun serializeDataForServer() : TransferData? {
 		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser() ?: return null
-		val amount = amountField.text.toString().toDouble()
-		val title = titleField.text.toString()
-		val currency = paymentAccount.getCurrencyOfAccount()
-		val receiverAccNumberAcc = paymentAccount.getAccNumber()
-		val receiverName = receiverNameField.text.toString()
-		return TransferData(null, receiverAccNumberAcc, receiverName, title, amount, currency)
+
+		val testTransferData = TransferData()
+		testTransferData.amount = amountField.text.toString().toDouble()
+		testTransferData.description = titleField.text.toString()
+		testTransferData.currency = paymentAccount.getCurrencyOfAccount()
+		testTransferData.receiverAccNumber = paymentAccount.getAccNumber()
+		testTransferData.receiverName = receiverNameField.text.toString()
+		testTransferData.senderAccName = null
+		testTransferData.senderAccNumber = null
+
+		return testTransferData
 	}
 
 	private fun openDisplayActivityWithCode(codeFromServer : Int){

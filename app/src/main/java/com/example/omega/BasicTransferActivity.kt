@@ -192,21 +192,23 @@ class BasicTransferActivity : AppCompatActivity() {
 			return
 		}
 
-		val receiverAccNumber = receiverNumberEditText.text.toString()
-		val receiverName = receiverNameEditText.text.toString()
-		val amount = amountEditText.text.toString().toDouble()
-		val title = transferTitle.text.toString()
-		val accountCurrency = currentPaymentAccount.getCurrencyOfAccount()
-		val senderAccNumber = currentPaymentAccount.getAccNumber()
-		val transferData = TransferData(senderAccNumber,receiverAccNumber,receiverName,title,amount,accountCurrency)
+		val testTransferData = TransferData()
+		testTransferData.receiverAccNumber = receiverNumberEditText.text.toString()
+		testTransferData.receiverName = receiverNameEditText.text.toString()
+		testTransferData.senderAccName = currentPaymentAccount.getAccNumber()
+		testTransferData.senderAccName = currentPaymentAccount.getOwnerName()
+		testTransferData.amount = amountEditText.text.toString().toDouble()
+		testTransferData.description = transferTitle.text.toString()
+		testTransferData.currency = currentPaymentAccount.getCurrencyOfAccount()
 
-		val transferDataSerialized = transferData.toString()
-		if(!transferDataSerialized.isNullOrEmpty()){
-			ActivityStarter.startTransferSummaryActivity(this, transferDataSerialized)
-			finishThisActivity(true)
-		}
-		else
+		val transferDataSerialized = testTransferData.toString()
+		if(transferDataSerialized.isNullOrEmpty()){
 			finishThisActivity(false, getString(R.string.UserMsg_basicTransfer_unkownError))
+			return
+		}
+
+		ActivityStarter.startTransferSummaryActivity(this, transferDataSerialized)
+		finishThisActivity(true)
 	}
 	private fun getToken(){
 		val tokenTmp = PreferencesOperator.getToken(this)

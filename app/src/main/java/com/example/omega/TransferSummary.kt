@@ -23,7 +23,7 @@ class TransferSummary : AppCompatActivity() {
 		findViewById<TextView>(R.id.transferSummary_receAcc).text = "${transferData.receiverAccNumber}"
 		findViewById<TextView>(R.id.transferSummary_receName).text = "${transferData.receiverName}"
 		findViewById<TextView>(R.id.transferSummary_senderAcc).text = "${transferData.senderAccNumber}"
-		findViewById<TextView>(R.id.transferSummary_title).text = "${transferData.title}"
+		findViewById<TextView>(R.id.transferSummary_title).text = "${transferData.description}"
 
 		findViewById<Button>(R.id.TransferSummary_cancel_Button).setOnClickListener{
 			finish()
