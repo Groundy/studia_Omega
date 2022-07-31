@@ -69,14 +69,8 @@ class ApiGetPaymentAccDetails(var token: Token, activity: Activity) {
 			.put(RequestHeader.text, requestJson)
 			.put(AccountNumberField.text, accNumber)
 
-		val additionalHeaderList = arrayListOf(
-			Pair(Authorization.text, authFieldValue))
-		return ApiFunctions.bodyToRequest(
-			ApiConsts.BankUrls.GetPaymentAccount,
-			requestBodyJson,
-			uuidStr,
-			additionalHeaderList
-		)
+		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
+		return ApiFunctions.bodyToRequest( ApiConsts.BankUrls.GetPaymentAccount, requestBodyJson, uuidStr, additionalHeaderList)
 	}
 	private fun getAccInfo(accNumber: String): Boolean {
 		val request = getPaymentAccDetailsRequest(accNumber)

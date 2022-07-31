@@ -7,6 +7,7 @@ import okhttp3.Request
 import org.json.JSONArray
 import org.json.JSONObject
 import com.example.omega.ApiConsts.*
+import com.example.omega.ApiFunctions.Companion.LogResponseError
 import com.example.omega.Utilities.Companion.TagProduction
 import kotlin.Exception
 
@@ -118,7 +119,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		return JSONObject()
 			.put(ScopeFields.PrivilegeList.text, JSONArray().put(privilegesListJsonObj))
 			.put(ScopeFields.ScopeGroupType.text, ScopeValues.Ais.text)
-			.put(ScopeFields.ConsentId.text,  ApiConsts.ConsentId)
+			.put(ScopeFields.ConsentId.text, ApiConsts.ConsentId)
 			.put(ScopeFields.ScopeTimeLimit.text, expTimeStr)
 			.put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
 	}

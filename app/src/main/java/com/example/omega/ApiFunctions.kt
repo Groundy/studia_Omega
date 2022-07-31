@@ -81,7 +81,7 @@ class ApiFunctions {
 				}
 			}
 
-			var ip = "0.0.0.0"
+			var ip = "213.134.160.2"
 			val thread =Thread{
 				try {
 					val url = "http://www.ip-api.com/json"

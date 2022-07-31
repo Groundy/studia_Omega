@@ -67,24 +67,21 @@ class ApiGetTransactionsDone(activity: Activity, token: Token){
 
 	private fun getRequest(accNumber: String, infos : TransactionsDoneAdditionalInfos) : Request {
 		val uuidStr = ApiFunctions.getUUID()
-		val currentTimeStr = OmegaTime.getCurrentTime()
 
 		val headersJson = JSONObject()
 			.put(RequestId.text, uuidStr)
 			.put(UserAgent.text, ApiFunctions.getUserAgent())
 			.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-			.put(SendDate.text, currentTimeStr)
+			.put(SendDate.text, OmegaTime.getCurrentTime())
 			.put(TppId.text, ApiConsts.TTP_ID)
 			.put(TokenField.text, token.getAuthFieldValue())
 			.put(IsDirectPsu.text,false)
-			//.put("callbackURL",ApiConsts.REDIRECT_URI)//??
-			//.put("apiKey", ApiConsts.appSecret_ALIOR)//??
 
 		val requestBodyJson = JSONObject()
-				.put(RequestHeader.text, headersJson)
-				.put(AccountNumberField.text, accNumber)
-				.put(TransactionDateFrom.text,infos.fromDate)
-				.put(TransactionDateTo.text,infos.endDate)
+			.put(RequestHeader.text, headersJson)
+			.put(AccountNumberField.text, accNumber)
+			.put(TransactionDateFrom.text,infos.fromDate)
+			.put(TransactionDateTo.text,infos.endDate)
 
 		if(infos.itemIdFrom != null)
 			requestBodyJson.put(ItemIdFrom.text, infos.itemIdFrom.toString())
@@ -112,7 +109,7 @@ class ApiGetTransactionsDone(activity: Activity, token: Token){
 
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text,token.getAuthFieldValue()))
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone, requestBodyJson, uuidStr, additionalHeaderList)
-		}
+	}
 	private fun sendRequest(request: Request) : JSONObject?{
 		return try {
 			val response = OkHttpClient().newCall(request).execute()

@@ -43,7 +43,8 @@ class MainActivity : AppCompatActivity() {
 		FirebaseApp.initializeApp(this)
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initGUI()
-		getTokenOnAppStart()
+		if(!getTokenOnAppStart())
+			return
 		developerInitaialFun()
 	}
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -341,6 +342,14 @@ class MainActivity : AppCompatActivity() {
 		findViewById<Button>(R.id.MainAct_testButton).setOnClickListener{
 			ActivityStarter.startRBlikCodeCreatorActivity(this)
 		}
+
+		val tmpTest = 3
+		val token = PreferencesOperator.getToken(this)
+		val tokenOk = token.isOk(this)
+		if(!tokenOk)
+			return
+		val transferData = TransferData.developerGetTestObjWithFilledData()
+		ApiDomesticPayment(this, token, transferData).run()
 	}
 	private fun getTokenOnAppStart() : Boolean{
 		val token = PreferencesOperator.getToken(this)
