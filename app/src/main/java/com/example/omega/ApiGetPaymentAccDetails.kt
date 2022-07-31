@@ -82,8 +82,7 @@ class ApiGetPaymentAccDetails(var token: Token, activity: Activity) {
 		val request = getPaymentAccDetailsRequest(accNumber)
 		val response = OkHttpClient().newCall(request).execute()
 		if (response.code != ApiConsts.responseOkCode) {
-			val logTxt = "[getAccInfo/${this.javaClass.name}] returned code ${response.code} --> ${ApiFunctions.getErrorTextOfRequestToLog(response.code)}"
-			Log.e(TagProduction,logTxt)
+			ApiFunctions.LogResponseError(response, this.javaClass.name)
 			return false
 		}
 		return try {

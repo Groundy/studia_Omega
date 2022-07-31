@@ -122,13 +122,7 @@ class ApiGetTransactionsDone(activity: Activity, token: Token){
 					val msgForUser = callerActivity.getString(R.string.AccHistoryAct_UserMsg_TooManyResuest)
 					Utilities.showToast(callerActivity, msgForUser)
 				}
-				val additionalErrorMsg : String = try {
-					JSONObject(response.body?.string()!!).getString("message")
-				}catch (e : Exception){
-					String()
-				}
-				val logMsg = "[sendRequest/${this.javaClass.name}] return code error --> ${ApiFunctions.getErrorTextOfRequestToLog(responseCode)}\n additional MSG: $additionalErrorMsg"
-				Log.e(TagProduction, logMsg)
+				ApiFunctions.LogResponseError(response, this.javaClass.name)
 				null
 			}
 			JSONObject(response.body?.string()!!)

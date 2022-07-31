@@ -63,7 +63,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		return try{
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ApiConsts.responseOkCode){
-				Log.e(TagProduction, "[sendRequest/${this.javaClass.name}] Error ${ApiFunctions.getErrorTextOfRequestToLog(response.code)}")
+				LogResponseError(response, this.javaClass.name)
 				null
 			}
 			val responseBody = response.body?.string()

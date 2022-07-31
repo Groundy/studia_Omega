@@ -132,5 +132,21 @@ class ApiFunctions {
 				else -> "Unkown reason, error code $reqErrorCode"
 			}
 		}
+		fun LogResponseError(response: Response, className : String){
+			val position = "[sendRequest/$className]"
+			val error = "[${response.code}/${getErrorTextOfRequestToLog(response.code)}]"
+			val additionalErrorMsg : String = try {
+				val additionalErrorMsg = JSONObject(response.body?.string()!!).getString("message")
+				if(additionalErrorMsg.isNotEmpty())
+					"  Additional info -->$additionalErrorMsg"
+				else
+					String()
+			}catch (e : Exception){
+				String()
+			}
+
+			val finalMsg = "$position $error $additionalErrorMsg"
+			Log.e(TagProduction, finalMsg)
+		}
 	}
 }

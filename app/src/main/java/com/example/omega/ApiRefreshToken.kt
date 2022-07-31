@@ -20,7 +20,7 @@ class ApiRefreshToken(private val refreshToken : String) {
 				val response = sendRequest(request)
 				response
 			} catch (e: Exception) {
-				Log.e(Utilities.TagProduction,"[ApiRefreshToken/${this.javaClass.name}] $e")
+				Log.e(Utilities.TagProduction,"[ApiRefreshToken/${this.javaClass.name}] $e  ")
 				null
 			}
 		}
@@ -50,7 +50,7 @@ class ApiRefreshToken(private val refreshToken : String) {
 		return try{
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ApiConsts.responseOkCode){
-				Log.e(Utilities.TagProduction, "[sendRequest/${this.javaClass.name}] Error ${ApiFunctions.getErrorTextOfRequestToLog(response.code)}")
+				ApiFunctions.LogResponseError(response, this.javaClass.name)
 				return null
 			}
 			val responseBodyStr = response.body?.string()

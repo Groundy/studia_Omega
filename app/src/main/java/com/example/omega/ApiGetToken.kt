@@ -65,7 +65,7 @@ class ApiGetToken(activity: Activity) {
 			val response = OkHttpClient().newCall(request).execute()
 			val responseCode = response.code
 			if(responseCode != ApiConsts.responseOkCode){
-				Log.e(TagProduction, "[getTokenResponseJson/ ${this.javaClass.name}] ${ApiFunctions.getErrorTextOfRequestToLog(responseCode)}")
+				ApiFunctions.LogResponseError(response, this.javaClass.name)
 				val errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
 				Utilities.showToast(callerActivity, errorToDisplay)
 				return null
