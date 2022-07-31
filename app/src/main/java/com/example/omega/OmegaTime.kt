@@ -5,6 +5,7 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import com.example.omega.Utilities.Companion.TagProduction
+import java.util.*
 
 class OmegaTime {
 	companion object{
@@ -32,6 +33,21 @@ class OmegaTime {
 
 			val currentTimeInstant = Instant.parse(getCurrentTime())
 			return ChronoUnit.SECONDS.between(currentTimeInstant, expirationInstant) //secondsToExpiration
+		}
+		fun getDate(daysBack : Int = 0) : String{
+			val c: Calendar = Calendar.getInstance()
+			c.timeInMillis -= daysBack * 24 * 60 * 60 * 1000
+
+			var y = (c.get(Calendar.YEAR)).toString()
+			var m = (c.get(Calendar.MONTH) + 1).toString()//0-11 -> 1-12
+			var d = (c.get(Calendar.DAY_OF_MONTH)).toString()
+
+			if(m.length == 1)
+				m = "0${m}"
+			if(d.length == 1)
+				d = "0${d}"
+
+			return "$y-$m-$d"
 		}
 	}
 }

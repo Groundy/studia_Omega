@@ -155,8 +155,8 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 5){
 	}
 
 	//mandatory
-	val fromDate : String = getDate(daysBack)
-	val endDate : String = getDate()
+	val fromDate : String = OmegaTime.getDate(daysBack)
+	val endDate : String = OmegaTime.getDate()
 
 	//additional
 	val itemIdFrom : Int? = null//Int or String
@@ -167,22 +167,6 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 5){
 	val pageId : Int? = null
 	val perPage : Int? = null
 	val type : Type? = null
-
-	private fun getDate(daysBack : Int = 0) : String{
-		val c: Calendar = Calendar.getInstance()
-		c.timeInMillis -= daysBack * 24 * 60 * 60 * 1000
-
-		var y = (c.get(Calendar.YEAR)).toString()
-		var m = (c.get(Calendar.MONTH) + 1).toString()//0-11 -> 1-12
-		var d = (c.get(Calendar.DAY_OF_MONTH)).toString()
-
-		if(m.length == 1)
-			m = "0${m}"
-		if(d.length == 1)
-			d = "0${d}"
-
-		return "$y-$m-$d"
-	}
 }
 class AccountHistoryRecord{
 	private var itemId : String? = null
