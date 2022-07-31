@@ -15,7 +15,9 @@ class ApiConsts {
 		AuthUrl("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/authorize"),
 		GetTokenUrl ("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/token"),
 		GetPaymentAccount("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccount"),
-		GetTransactionsDone("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getTransactionsDone")
+		GetTransactionsDone("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getTransactionsDone"),
+		SinglePayment("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/payments/v3_0.1/domestic")
+
 	}
 	enum class ApiReqFields(val text : String){
 		RequestHeader("requestHeader"),
