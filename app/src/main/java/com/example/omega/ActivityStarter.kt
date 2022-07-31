@@ -85,10 +85,12 @@ class ActivityStarter {
 			val retCodeForActivity  = activity.resources.getInteger(R.integer.ACT_RETCODE_FINGER)
 			activity.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
 		}
-		fun openBrowserForLogin(activity: Activity){
-			 val intent = Intent(activity, BankLoginWebPageActivity::class.java)
-			 val returnCode = activity.resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)
-			 activity.startActivityForResult(intent,returnCode)
+		fun openBrowserForLogin(activity: Activity, redirect : BankLoginWebPageActivity.Companion.WebActivtyRedirect){
+			val intent = Intent(activity, BankLoginWebPageActivity::class.java)
+			val redirectField = activity.resources.getString(R.string.ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME)
+			intent.putExtra(redirectField, redirect.text)
+			val returnCode = activity.resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)
+			activity.startActivityForResult(intent,returnCode)
 		}
 		fun openDialogWithDefinedPurpose(activity: Activity, purpose : YesNoDialogActivity.Companion.DialogPurpose){
 			val yesNoDialog = Intent(activity, YesNoDialogActivity::class.java)

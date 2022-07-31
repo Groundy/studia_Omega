@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -13,11 +14,32 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 	private lateinit var webView: WebView
 	private var expectedState = String()
 	private var url = String()
+	private lateinit var redirect : WebActivtyRedirect
+	companion object{
+		enum class WebActivtyRedirect(val text : String){
+			AccountHistory("AccountHistory"),
+			Payment("Payment"),
+			GenerateRBlikCode("GenerateRBlikCode"),
+			None("None");
 
+			companion object{
+				fun fromStr(text : String) : WebActivtyRedirect{
+					val webActivtyRedirect = when(text){
+						"AccountHistory" -> AccountHistory
+						"Payment" -> Payment
+						"GenerateRBlikCode" -> GenerateRBlikCode
+						else -> None
+					}
+					return webActivtyRedirect
+				}
+			}
+		}
+	}
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_oauth)
 		Log.i(TagProduction, "Login To Bank activity started")
+		getInfoFromIntent()
 		val readValuesOk = readPrefValues()
 		if(!readValuesOk){
 			setResult(RESULT_CANCELED)
@@ -58,8 +80,8 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 		val isProperRedirectUri = request.url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
 		if(!isProperRedirectUri){
 			Log.e(TagProduction, "Failed to obtain code[request not started with app callBack], request [${request.url}]")
-			setResult(RESULT_CANCELED)
-			finish()
+			finishActivity(false)
+			return
 		}
 
 		val responseState = request.url.getQueryParameter("state")// To prevent CSRF attacks, check that we got the same state value we sent,
@@ -68,8 +90,8 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 			val msg = getString(R.string.BankLogin_UserMsg_ErrorInBankTryAgian)
 			Utilities.showToast(this, msg)
 			Log.e(TagProduction, "Failed to obtain code[wrong state], request [${request.url}]")
-			setResult(RESULT_CANCELED)
-			finish()
+			finishActivity(false)
+			return
 		}
 
 		val code : String? = request.url.getQueryParameter("code")
@@ -77,14 +99,32 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 			val msg = getString(R.string.BankLogin_UserMsg_ErrorInBankTryAgian)
 			Log.e(TagProduction, "Failed to obtain code[no code], request [${request.url}]")
 			Utilities.showToast(this, msg)
-			setResult(RESULT_CANCELED)
-			finish()
+			finishActivity(false)
+			return
 		}
 		else {
 			PreferencesOperator.savePref(this, R.string.PREF_authCode, code)
-			setResult(RESULT_OK)
-			finish()
+			finishActivity(true)
 			Log.i(TagProduction, "Login To Bank activity ended, RESULT_OK")
+			return
 		}
+	}
+	private fun getInfoFromIntent(){
+		val fieldName = getString(R.string.ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME)
+		val redirectStr = intent.extras!!.getString(fieldName)
+		val webActivtyRedirect = WebActivtyRedirect.fromStr(redirectStr!!)
+		redirect = webActivtyRedirect
+	}
+	private fun finishActivity(success: Boolean){
+		if(!success){
+			setResult(RESULT_CANCELED)
+			finish()
+		}
+
+		val output = Intent()
+		val fieldName = this.resources.getString(R.string.ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME)
+		output.putExtra(fieldName, redirect.text)
+		setResult(RESULT_OK, output)
+		finish()
 	}
 }

@@ -229,14 +229,32 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 
-		ActivityStarter.openBrowserForLogin(this)
+		ActivityStarter.openBrowserForLogin(this, WebActivtyRedirect.None)
 	}
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
-		//todo zastanowić się czy token pobierać tutaj
+		if(resultCode != RESULT_OK)
+			return
+
 		val success = ApiGetToken(this).run()
 		if (!success){
 			val userMsg = getString(R.string.UserMsg_Banking_errorObtaingToken)
 			Utilities.showToast(this, userMsg)
+			return
+		}
+
+		val redirectField = getString(R.string.ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME)
+		val redirectPlace : WebActivtyRedirect = try{
+			val redirectStr = data?.extras!!.getString(redirectField)
+			WebActivtyRedirect.fromStr(redirectStr!!)
+		}catch (e : Exception){
+			BankLoginWebPageActivity.Companion.WebActivtyRedirect.None
+		}
+
+		when(redirectPlace){
+			WebActivtyRedirect.AccountHistory -> {accHistoryTabClicked()}
+			WebActivtyRedirect.Payment ->{basicTransferTabCliked()}
+			WebActivtyRedirect.GenerateRBlikCode ->{generateRBlickCodeClicked()}
+			else->{return}
 		}
 	}
 	private fun pinActivityResult(resultCode: Int){
@@ -312,16 +330,8 @@ class MainActivity : AppCompatActivity() {
 			return
 		ActivityStarter.startResetPermissionsActivity(this)
 	}
-	private fun openBasicTransferTabClicked(){
-		val tokenCpy = PreferencesOperator.getToken(this)
-		val authTokenAvaible = tokenCpy.isOk(this)
-		if(!authTokenAvaible){
-			Log.e(TagProduction,"[openBasicTransferTabClicked/${this.javaClass.name}] token not available, asked user if he want to reset token")
-			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl)
-			return
-		}
-		ActivityStarter.startTransferActivityFromMenu(this)
-	}
+
+
 	private fun nfcButtonClicked(){
 		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
 		secondBar.backgroundTintList = null
@@ -342,30 +352,45 @@ class MainActivity : AppCompatActivity() {
 			switchNfcSignalCatching()
 		}
 	}
+	private fun basicTransferTabCliked(){
+		getToken(WebActivtyRedirect.Payment)
+		ActivityStarter.startTransferActivityFromMenu(this)
+	}
+	private fun accHistoryTabClicked(){
+		getToken(WebActivtyRedirect.AccountHistory)
+		ActivityStarter.openAccountTransfersHistoryActivity(this)
+	}
+	private fun generateRBlickCodeClicked(){
+		getToken(WebActivtyRedirect.GenerateRBlikCode)
+		ActivityStarter.startRBlikCodeCreatorActivity(this)
+	}
+	private fun qrScannerTabClicked(){
+		ActivityStarter.startQrScannerActivity(this)
+	}
 
-private fun developerInitaialFun(){
-val tmpTest = 3
-val token = PreferencesOperator.getToken(this)
-val tokenOk = token.isOk(this)
-if(!tokenOk)
-	return
-val transferData = TransferData.developerGetTestObjWithFilledData()
-ApiDomesticPayment(this, token, transferData).run()
-}
-private fun getTokenOnAppStart() : Boolean{
-val token = PreferencesOperator.getToken(this)
-val tokenOk = token.isOk(this)
-if(!tokenOk){
-	val obj = PermissionList(ApiConsts.Privileges.SinglePayment)
-	PreferencesOperator.clearAuthData(this)
-	val authOk = ApiAuthorize(this, obj).run(ApiConsts.ScopeValues.Pis)
-	if(!authOk)
+	private fun developerInitaialFun(){
+		val tmpTest = 3
+		val token = PreferencesOperator.getToken(this)
+		val tokenOk = token.isOk(this)
+		if(!tokenOk)
+			return
+		val transferData = TransferData.developerGetTestObjWithFilledData()
+		ApiDomesticPayment(this, token, transferData).run()
+	}
+	private fun getToken(redirectPlace : WebActivtyRedirect) : Boolean{
+		val token = PreferencesOperator.getToken(this)
+		val tokenOk = token.isOk(this)
+		if(!tokenOk){
+			val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
+			PreferencesOperator.clearAuthData(this)
+			val authOk = ApiAuthorize(this, obj).run(ApiConsts.ScopeValues.Ais)
+			if(!authOk)
+				return true
+			ActivityStarter.openBrowserForLogin(this, redirectPlace)
+			return false
+		}
+		else
+			Log.i(TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
 		return true
-	ActivityStarter.openBrowserForLogin(this)
-	return false
-}
-else
-	Log.i(TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
-return true
-}
+	}
 }
