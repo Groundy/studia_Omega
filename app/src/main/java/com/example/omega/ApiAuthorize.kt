@@ -31,6 +31,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		enum class ApiMethodes(val text : String){
 			AisGetTransactionsDone("ais:getTransactionsDone"),
 			AisGetAccount("ais:getAccount"),
+			PisDomestic("pis:domestic"),
 		}
 		enum class ScopeUsageLimit(val text : String) {
 			Multiple("multiple"),
@@ -39,7 +40,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		const val redirectUriField = "aspspRedirectUri"
 	}
 
-	fun run(scope : ScopeValues) : Boolean{
+	fun runForAis(scope : ScopeValues) : Boolean{
 		if (permissionsList.permissionsArray.isEmpty()) {
 			Log.e(TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
 			return false
@@ -48,7 +49,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		Log.i(TagProduction, "Authorize started")
 		var success = false
 		val thread = Thread{
-			val request = getRequest(stateValue, scope)
+			val request = getRequest(stateValue, ScopeValues.Ais)
 			val okResponse = sendRequest(request) ?: return@Thread
 			success = saveDataToPrefs(okResponse)
 		}
@@ -99,26 +100,14 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		return ApiFunctions.bodyToRequest(BankUrls.AuthUrl, requestBodyJson, uuidStr)
 	}
 	private fun getScopeDetailsObject(expTimeStr : String, scope: ScopeValues) : JSONObject? {
-		val privListCpy = permissionsList.permissionsArray
-		val privilegesListJsonObj = JSONObject()
-
-		if(privListCpy.contains(Privileges.AccountsHistory)){
-			val privilegeScopeDetailsObj = JSONObject()
-				.put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Multiple.text)
-				.put(ScopeDetailsFields.MaxAllowedHistoryLong.text,800)
-
-			privilegesListJsonObj.put(ApiMethodes.AisGetTransactionsDone.text, privilegeScopeDetailsObj)
+		val privilegesListJsonObj = when(scope){
+			ScopeValues.Ais->{getPrivilegeScopeDetailsObjAIS()}
+			ScopeValues.AisAcc->{getPrivilegeScopeDetailsObjAisAccount()}
+			ScopeValues.Pis->{getPrivilegeScopeDetailsObjPIS()}
 		}
-		if(privListCpy.contains(Privileges.AccountsDetails)){
-			val privilegeScopeDetailsObj = JSONObject()
-				.put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Multiple.text)
-
-			privilegesListJsonObj.put(ApiMethodes.AisGetAccount.text, privilegeScopeDetailsObj)
-		}
-
 		return JSONObject()
 			.put(ScopeFields.PrivilegeList.text, JSONArray().put(privilegesListJsonObj))
-			.put(ScopeFields.ScopeGroupType.text, ScopeValues.Ais.text)
+			.put(ScopeFields.ScopeGroupType.text, scope.text)
 			.put(ScopeFields.ConsentId.text, ApiConsts.ConsentId)
 			.put(ScopeFields.ScopeTimeLimit.text, expTimeStr)
 			.put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
@@ -138,5 +127,42 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		val validityTime = OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds)
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_authUrlValidityTimeEnd, validityTime)
 		return true
+	}
+	private fun getPrivilegeScopeDetailsObjAIS() : JSONObject{
+		val privilegesListJsonObj = JSONObject()
+		val privListCpy = permissionsList.permissionsArray
+
+		if(privListCpy.contains(Privileges.AccountsDetails)){
+			val privilegeScopeDetailsObj = JSONObject()
+				.put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Multiple.text)
+
+			privilegesListJsonObj.put(ApiMethodes.AisGetAccount.text, privilegeScopeDetailsObj)
+		}
+
+		if(privListCpy.contains(Privileges.AccountsHistory)){
+			val privilegeScopeDetailsObj = JSONObject()
+				.put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Multiple.text)
+				.put(ScopeDetailsFields.MaxAllowedHistoryLong.text,800)
+
+			privilegesListJsonObj.put(ApiMethodes.AisGetTransactionsDone.text, privilegeScopeDetailsObj)
+		}
+		return privilegesListJsonObj
+	}
+	private fun getPrivilegeScopeDetailsObjPIS() : JSONObject{
+		val privilegesListJsonObj = JSONObject()
+		val privListCpy = permissionsList.permissionsArray
+
+		if(privListCpy.contains(Privileges.SinglePayment)){
+			val privilegeScopeDetailsObj = JSONObject()
+				.put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Single.text)
+
+			privilegesListJsonObj.put(ApiMethodes.PisDomestic.text, privilegeScopeDetailsObj)
+		}
+
+		return privilegesListJsonObj
+	}
+	private fun getPrivilegeScopeDetailsObjAisAccount() : JSONObject{
+		//todo implement
+		return JSONObject()
 	}
 }

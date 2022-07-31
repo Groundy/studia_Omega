@@ -339,10 +339,6 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun developerInitaialFun(){
-		findViewById<Button>(R.id.MainAct_testButton).setOnClickListener{
-			ActivityStarter.startRBlikCodeCreatorActivity(this)
-		}
-
 		val tmpTest = 3
 		val token = PreferencesOperator.getToken(this)
 		val tokenOk = token.isOk(this)
@@ -355,9 +351,11 @@ class MainActivity : AppCompatActivity() {
 		val token = PreferencesOperator.getToken(this)
 		val tokenOk = token.isOk(this)
 		if(!tokenOk){
-			val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
+			val obj = PermissionList(ApiConsts.Privileges.SinglePayment)
 			PreferencesOperator.clearAuthData(this)
-			ApiAuthorize(this, obj).run(ApiConsts.ScopeValues.Ais)
+			val authOk = ApiAuthorize(this, obj).run(ApiConsts.ScopeValues.Pis)
+			if(!authOk)
+				return true
 			ActivityStarter.openBrowserForLogin(this)
 			return false
 		}
