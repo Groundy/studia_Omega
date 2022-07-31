@@ -40,7 +40,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		const val redirectUriField = "aspspRedirectUri"
 	}
 
-	fun runForAis(scope : ScopeValues) : Boolean{
+	fun run(scope : ScopeValues) : Boolean{
 		if (permissionsList.permissionsArray.isEmpty()) {
 			Log.e(TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
 			return false

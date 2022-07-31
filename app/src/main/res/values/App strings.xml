@@ -82,9 +82,18 @@
 
 	<!-- main menu -->
 	<string name="MainMenu_GUI_TokenTabName">Token</string>
-	<string name="MainMenu_GUI_ConfigurationTabName">Konfiguracja</string>
-	<string name="MainMenu_GUI_TransferTabName">Przelew jednorazowy</string>
-	<string name="MainMenu_GUI_GenerateRblikCodeTabName">Generuj kod RBlik</string>
+	<string name="MainMenu_GUI_ConfigurationTabName">Opcje</string>
+
+	<!-- top bar menu -->
 	<string name="MainMenu_GUI_AccHistoryTabName">Historia rachunków</string>
+	<string name="MainMenu_GUI_GenerateRblikCodeTabName">Generuj kod RBlik</string>
+	<string name="MainMenu_GUI_TransferTabName">Przelew jednorazowy</string>
+
+	<!-- second bar menu -->
+	<string name="MainMenu_GUI_NFC">NFC</string>
+	<string name="MainMenu_GUI_ScannerQR">Scanner QR</string>
+	<string name="MainMenu_GUI_Tmp">to add</string>
+
+
 
 </resources>

@@ -2,9 +2,15 @@ package com.example.omega
 
 import android.app.Activity
 import android.content.Intent
+import androidx.core.app.ActivityCompat.startActivityForResult
 
 class ActivityStarter {
 	companion object{
+		fun startQrScannerActivity(activity: Activity){
+			val qrScannerActivityIntent = Intent(activity, QrScannerActivity::class.java)
+			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_QrScanner)
+			activity.startActivityForResult(qrScannerActivityIntent, retCode)
+		}
 		fun startResetPermissionsActivity(activity: Activity){
 			val intent = Intent(activity, UserPermissionList::class.java)
 			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST)
@@ -107,7 +113,6 @@ class ActivityStarter {
 			yesNoDialog.putExtra(field,msgToDisplay)
 			activity.startActivityForResult(yesNoDialog, retCode)
 		}
-
 		fun openAccountTransfersHistoryActivity(callerActivity: Activity) {
 			val intent = Intent(callerActivity, AccountHistroyActivity::class.java)
 			callerActivity.startActivity(intent)

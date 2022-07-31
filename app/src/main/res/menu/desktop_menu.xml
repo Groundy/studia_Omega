@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/AccHistoryTab"
+        android:title="@string/MainMenu_GUI_AccHistoryTabName"
+        android:icon="@drawable/ico_history"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/TransferTab"
+        android:icon="@drawable/ico_payment"
+        android:title="@string/MainMenu_GUI_TransferTabName"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/GenerateBlikCodeTab"
+        android:icon="@drawable/ico_qr"
+        android:title="@string/MainMenu_GUI_GenerateRblikCodeTabName"
+        app:showAsAction="never" />
+</menu>

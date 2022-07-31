@@ -20,14 +20,14 @@
 
     <!-- te wartości zostały wygenerowanie automatycznie, zmieniłem je na czarny ale ich orygnialne
      wartosci są w komentarzu-->
-    <color name="colorPrimary">#000000</color>
-    <color name="mainColor">#000000</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#000000</color>
-    <color name="purple_200">#000000</color>
-    <color name="purple_500">#000000</color>
-    <color name="purple_700">#000000</color>
-    <color name="teal_200">#000000</color>
-    <color name="teal_700">#000000</color>
+    <color name="colorPrimary">#8EC5F0</color>
+    <color name="mainColor">#2196F3</color>
+    <color name="colorPrimaryDark">#3F51B5</color>
+    <color name="colorAccent">#9C27B0</color>
+    <color name="purple_200">#E91E63</color>
+    <color name="purple_500">#9C27B0</color>
+    <color name="purple_700">#9C27B0</color>
+    <color name="teal_200">#9C27B0</color>
+    <color name="teal_700">#9C27B0</color>
 
 </resources>

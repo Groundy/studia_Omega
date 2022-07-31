@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/NfcTab"
+        android:title="@string/MainMenu_GUI_NFC"
+        android:icon="@drawable/ico_nfc_off"
+        app:showAsAction="never"    />
+    <item
+        android:id="@+id/QrScannerTab"
+        android:icon="@drawable/ico_qr_scanner"
+        android:title="@string/MainMenu_GUI_ScannerQR"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/ToImplementTab"
+        android:icon="@drawable/ico_cancel"
+        android:title="@string/MainMenu_GUI_Tmp"
+        app:showAsAction="never" />
+</menu>

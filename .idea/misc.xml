@@ -3,10 +3,20 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/border_for_digit_field_pin_activity.xml" value="0.2585" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/history_icon.xml" value="0.2585" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ic_baseline_cancel_24.xml" value="0.196" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2585" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ico_nfc_on.xml" value="0.196" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ico_payment.xml" value="0.196" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ico_qr_scanner.xml" value="0.196" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/qr_scanner_ico.xml" value="0.2685" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/refresh_token_ico.xml" value="0.17" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/selector_nfc_button.xml" value="0.245" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_account_histroy.xml" value="0.21" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_basic_transfer.xml" value="0.33" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_blik_code_display.xml" value="0.21197916666666666" />
-        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_main.xml" value="0.315625" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_main_menu.xml" value="0.21197916666666666" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_oauth.xml" value="0.36666666666666664" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_pin.xml" value="0.36666666666666664" />
@@ -20,7 +30,10 @@
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_yes_no_dialog.xml" value="0.2421875" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activityasdialog_cancel_bio_auth.xml" value="0.21197916666666666" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/dialog_select_auth_methode.xml" value="0.21197916666666666" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/menu/desktop_menu.xml" value="0.2520833333333333" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/menu/desktop_menu_secondary.xml" value="0.15989583333333332" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/menu/main_app_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2685" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/xml/root_preferences.xml" value="0.21197916666666666" />
         <entry key="..\:/Users/ADMIN/Desktop/repos/Omega/app/src/main/res/drawable/border_for_digit_field_pin_activity.xml" value="0.21510416666666668" />
         <entry key="..\:/Users/ADMIN/Desktop/repos/Omega/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.21510416666666668" />

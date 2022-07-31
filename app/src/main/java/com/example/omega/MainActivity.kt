@@ -19,6 +19,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import com.google.firebase.FirebaseApp
 import com.karumi.dexter.Dexter
@@ -28,6 +29,8 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import com.example.omega.Utilities.Companion.TagProduction
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 
 //  Minimize: CTRL + SHIFT + '-'
 //  Expand:   CTRL + SHIFT + '+'
@@ -35,7 +38,6 @@ import com.example.omega.Utilities.Companion.TagProduction
 
 class MainActivity : AppCompatActivity() {
 	private var nfcSignalCatchingIsOn: Boolean = false
-	private var nfcAdapter: NfcAdapter? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -43,9 +45,9 @@ class MainActivity : AppCompatActivity() {
 		FirebaseApp.initializeApp(this)
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initGUI()
-		if(!getTokenOnAppStart())
-			return
-		developerInitaialFun()
+	//	if(!getTokenOnAppStart())
+	//		return
+	//	developerInitaialFun()
 	}
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
@@ -66,14 +68,8 @@ class MainActivity : AppCompatActivity() {
 		when(item.itemId){
 			R.id.ConfigurationsTab ->
 				ActivityStarter.startConfigurationActivity(this)
-			R.id.TransferTab ->
-				openBasicTransferTabClicked()
 			R.id.AskForTokenTab ->
 				ActivityStarter.startResetPermissionsActivity(this)
-			R.id.GenerateBlikCodeTab ->
-				ActivityStarter.startRBlikCodeCreatorActivity(this)
-			R.id.AccHistoryTab ->
-				ActivityStarter.openAccountTransfersHistoryActivity(this)
 		}
 		return true
 	}
@@ -134,6 +130,7 @@ class MainActivity : AppCompatActivity() {
 		return true
 	}
 	private fun switchNfcSignalCatching() {
+		val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 		if(nfcSignalCatchingIsOn){
 			nfcAdapter?.disableForegroundDispatch(this)
 			nfcSignalCatchingIsOn = false
@@ -157,32 +154,6 @@ class MainActivity : AppCompatActivity() {
 		nfcSignalCatchingIsOn = true
 	}
 	private fun initGUI() {
-		initQR()
-		initCodeField()
-		initNFC()
-	}
-	private fun initNFC(){
-		nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-		val deviceHasNfc = nfcAdapter != null
-		val nfcOnOffButton = findViewById<Button>(R.id.MainAct_nfcButton)
-		if(!deviceHasNfc){
-			nfcOnOffButton.isVisible = false
-			return
-		}
-
-		val nfcIsTurnedOnOnPhone = checkIfNfcIsTurnedOnPhone()
-		nfcOnOffButton.setOnClickListener{
-			if (!nfcSignalCatchingIsOn && nfcIsTurnedOnOnPhone) {//Turn on
-				nfcOnOffButton.setBackgroundResource(R.drawable.nfc_on_icon)
-				switchNfcSignalCatching()
-			}
-			else if (nfcSignalCatchingIsOn) {//Turn off
-				nfcOnOffButton.setBackgroundResource(R.drawable.nfc_off_icon)
-				switchNfcSignalCatching()
-			}
-		}
-	}
-	private fun initCodeField(){
 		val codeFieldTextListener = object : TextWatcher {
 			override fun afterTextChanged(s: Editable) {
 				if (s.length == 6) {
@@ -197,25 +168,39 @@ class MainActivity : AppCompatActivity() {
 		val codeField = findViewById<EditText>(R.id.MainAct_enterCodeField)
 		codeField.addTextChangedListener(codeFieldTextListener)
 		codeField.requestFocus()
-	}
-	private fun initQR(){
-		val goQrScannerButtonListener = View.OnClickListener {
-			val qrScannerActivityIntent = Intent(this, QrScannerActivity::class.java)
-			startActivityForResult(qrScannerActivityIntent, resources.getInteger(R.integer.ACT_RETCODE_QrScanner))
-		}
-		val goQRActivityButton = findViewById<Button>(R.id.MainAct_goToQrScannerButton)
-		goQRActivityButton.setOnClickListener(goQrScannerButtonListener)
-	}
 
+
+		val firstBar = findViewById<BottomNavigationView>(R.id.MainAct_firstBar)
+		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
+
+		val listner = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+			when(item.itemId){
+				R.id.AccHistoryTab-> ActivityStarter.openAccountTransfersHistoryActivity(this)
+				R.id.TransferTab ->	openBasicTransferTabClicked()
+				R.id.GenerateBlikCodeTab -> ActivityStarter.startRBlikCodeCreatorActivity(this)
+				R.id.NfcTab -> nfcButtonClicked()
+				R.id.QrScannerTab->ActivityStarter.startQrScannerActivity(this)
+			}
+			true
+		}
+		firstBar.setOnNavigationItemSelectedListener(listner)
+		//firstBar.itemIconTintList = null
+		secondBar.setOnNavigationItemSelectedListener(listner)
+		secondBar.itemIconTintList = null
+
+		//te funkcje są po to aby ikoni pojawiały się czarne a nie białe
+		secondBar.menu.findItem(R.id.NfcTab).icon = getDrawable(R.drawable.ico_nfc_off)
+		secondBar.menu.findItem(R.id.ToImplementTab).icon = getDrawable(R.drawable.ico_cancel)
+		secondBar.menu.findItem(R.id.QrScannerTab).icon = getDrawable(R.drawable.ico_qr_scanner)
+	}
 	private fun startNfcOnStartIfUserWishTo(){
 		//TODO ten kod mimo iż jest kopią kodu z przycisku włączającego wyłączającego, ale nie chce się uruchomić automatycznie
 		val turnNfcOnAppStart = PreferencesOperator.readPrefBool(this, R.bool.PREF_turnNfcOnAppStart)
 		if(turnNfcOnAppStart && !nfcSignalCatchingIsOn){
-			findViewById<Button>(R.id.MainAct_nfcButton).setBackgroundResource(R.drawable.nfc_on_icon)
+			//findViewById<Button>(R.id.MainAct_nfcButton).setBackgroundResource(R.drawable.nfc_on_icon) //todo
 			switchNfcSignalCatching()
 		}
 	}
-
 	//Intents
 	private fun resetPermissionActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode != RESULT_OK){
@@ -337,30 +322,50 @@ class MainActivity : AppCompatActivity() {
 		}
 		ActivityStarter.startTransferActivityFromMenu(this)
 	}
+	private fun nfcButtonClicked(){
+		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
+		secondBar.backgroundTintList = null
+		val button = secondBar.menu.findItem(R.id.NfcTab)
 
-	private fun developerInitaialFun(){
-		val tmpTest = 3
-		val token = PreferencesOperator.getToken(this)
-		val tokenOk = token.isOk(this)
-		if(!tokenOk)
-			return
-		val transferData = TransferData.developerGetTestObjWithFilledData()
-		ApiDomesticPayment(this, token, transferData).run()
-	}
-	private fun getTokenOnAppStart() : Boolean{
-		val token = PreferencesOperator.getToken(this)
-		val tokenOk = token.isOk(this)
-		if(!tokenOk){
-			val obj = PermissionList(ApiConsts.Privileges.SinglePayment)
-			PreferencesOperator.clearAuthData(this)
-			val authOk = ApiAuthorize(this, obj).run(ApiConsts.ScopeValues.Pis)
-			if(!authOk)
-				return true
-			ActivityStarter.openBrowserForLogin(this)
-			return false
+		val nfcIsTurnedOnOnPhone = checkIfNfcIsTurnedOnPhone()
+		if (!nfcSignalCatchingIsOn && nfcIsTurnedOnOnPhone) {//Turn on
+			val deviceHasNfcService = NfcAdapter.getDefaultAdapter(this) != null
+			if(!deviceHasNfcService)
+				return
+			val onIco = getDrawable(R.drawable.ico_nfc_on)
+			button.icon = onIco
+			switchNfcSignalCatching()
 		}
-		else
-			Log.i(TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
-		return true
+		else if (nfcSignalCatchingIsOn) {//Turn off
+			val offIco = getDrawable(R.drawable.ico_nfc_off)
+			button.icon = offIco
+			switchNfcSignalCatching()
+		}
 	}
+
+private fun developerInitaialFun(){
+val tmpTest = 3
+val token = PreferencesOperator.getToken(this)
+val tokenOk = token.isOk(this)
+if(!tokenOk)
+	return
+val transferData = TransferData.developerGetTestObjWithFilledData()
+ApiDomesticPayment(this, token, transferData).run()
+}
+private fun getTokenOnAppStart() : Boolean{
+val token = PreferencesOperator.getToken(this)
+val tokenOk = token.isOk(this)
+if(!tokenOk){
+	val obj = PermissionList(ApiConsts.Privileges.SinglePayment)
+	PreferencesOperator.clearAuthData(this)
+	val authOk = ApiAuthorize(this, obj).run(ApiConsts.ScopeValues.Pis)
+	if(!authOk)
+		return true
+	ActivityStarter.openBrowserForLogin(this)
+	return false
+}
+else
+	Log.i(TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
+return true
+}
 }

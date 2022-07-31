@@ -3,40 +3,13 @@
       xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/AccHistoryTab"
-        android:title="@string/MainMenu_GUI_AccHistoryTabName"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/ConfigurationsTab"
         android:title="@string/MainMenu_GUI_ConfigurationTabName"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/TransferTab"
-        android:title="@string/MainMenu_GUI_TransferTabName"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/GenerateBlikCodeTab"
-        android:title="@string/MainMenu_GUI_GenerateRblikCodeTabName"
-        app:showAsAction="never" />
+
     <item
         android:id="@+id/AskForTokenTab"
         android:title="@string/MainMenu_GUI_TokenTabName"
         app:showAsAction="never" />
 
-
-    <!--
-    <item
-          android:title="Historia Płatności"
-          android:id="@+id/History_of_Payment"
-          app:showAsAction="never"/>
-    <item
-            android:title="Rachunki"
-            android:id="@+id/Accounts"
-            app:showAsAction="never"/>
-    <item
-            android:title="Kontakty"
-            android:id="@+id/Contact"
-            app:showAsAction="never"/>
-    />
-    -->
 </menu>
