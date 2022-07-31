@@ -47,7 +47,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 		Log.i(TagProduction, "Authorize started")
 		var success = false
 		val thread = Thread{
-			val request = getRequest(stateValue)
+			val request = getRequest(stateValue, scope)
 			val okResponse = sendRequest(request) ?: return@Thread
 			success = saveDataToPrefs(okResponse)
 		}
@@ -74,7 +74,7 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 			null
 		}
 	}
-	private fun getRequest(stateStr : String) : Request {
+	private fun getRequest(stateStr : String, scope : ScopeValues) : Request {
 		val uuidStr = ApiFunctions.getUUID()
 		val currentTimeStr = OmegaTime.getCurrentTime()
 		val endValidityTimeStr = OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds)
@@ -91,13 +91,13 @@ class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 			.put(ApiReqFields.RequestHeader.text, requestHeaderJsonObj)
 			.put(ApiReqFields.ResponseType.text,ResponseTypes.Code.text)
 			.put(ApiReqFields.ClientId.text, ApiConsts.userId_ALIOR)
-			.put(ApiReqFields.Scope.text, ScopeValues.Ais.text)
-			.put(ApiReqFields.ScopeDetails.text,getScopeDetailsObject(endValidityTimeStr))
+			.put(ApiReqFields.Scope.text, scope.text)
+			.put(ApiReqFields.ScopeDetails.text,getScopeDetailsObject(endValidityTimeStr, scope))
 			.put(ApiReqFields.RedirectUri.text, ApiConsts.REDIRECT_URI)
 			.put(ApiReqFields.State.text,stateStr)
 		return ApiFunctions.bodyToRequest(BankUrls.AuthUrl, requestBodyJson, uuidStr)
 	}
-	private fun getScopeDetailsObject(expTimeStr : String) : JSONObject? {
+	private fun getScopeDetailsObject(expTimeStr : String, scope: ScopeValues) : JSONObject? {
 		val privListCpy = permissionsList.permissionsArray
 		val privilegesListJsonObj = JSONObject()
 

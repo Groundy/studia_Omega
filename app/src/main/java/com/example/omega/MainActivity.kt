@@ -231,7 +231,7 @@ class MainActivity : AppCompatActivity() {
 
 		val permissionListObject = PermissionList(serializedPermissionList)
 		PreferencesOperator.clearAuthData(this)
-		ApiAuthorize(this, permissionListObject).run()
+		ApiAuthorize(this, permissionListObject).run(ApiConsts.ScopeValues.Ais)
 
 		val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
 		val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
@@ -342,17 +342,18 @@ class MainActivity : AppCompatActivity() {
 			ActivityStarter.startRBlikCodeCreatorActivity(this)
 		}
 	}
-	private fun getTokenOnAppStart(){
+	private fun getTokenOnAppStart() : Boolean{
 		val token = PreferencesOperator.getToken(this)
 		val tokenOk = token.isOk(this)
 		if(!tokenOk){
 			val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 			PreferencesOperator.clearAuthData(this)
-			ApiAuthorize(this, obj).run()
+			ApiAuthorize(this, obj).run(ApiConsts.ScopeValues.Ais)
 			ActivityStarter.openBrowserForLogin(this)
-			return
+			return false
 		}
 		else
 			Log.i(TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
+		return true
 	}
 }
