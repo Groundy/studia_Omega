@@ -31,6 +31,8 @@ import com.karumi.dexter.listener.single.PermissionListener
 import com.example.omega.Utilities.Companion.TagProduction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.example.omega.BankLoginWebPageActivity.Companion.WebActivtyRedirect
+import org.junit.Test
 
 //  Minimize: CTRL + SHIFT + '-'
 //  Expand:   CTRL + SHIFT + '+'
