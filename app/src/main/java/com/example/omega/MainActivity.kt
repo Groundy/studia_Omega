@@ -46,10 +46,9 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
 		startNfcOnStartIfUserWishTo()
-	//	developerTesst()
-	//	if(!getTokenOnAppStart())
-	//		return
-	//	developerInitaialFun()
+		getToken(WebActivtyRedirect.None)
+		//developerTesst()
+		//developerInitaialFun()
 	}
 
 	//Menus
@@ -215,11 +214,12 @@ class MainActivity : AppCompatActivity() {
 	private fun developerInitaialFun(){
 		val tmpTest = 3
 		val token = PreferencesOperator.getToken(this)
+		val g = token.toString()
 		val tokenOk = token.isOk(this)
 		if(!tokenOk)
 			return
-		val transferData = TransferData.developerGetTestObjWithFilledData()
-		ApiDomesticPayment(this, token, transferData).run()
+		//val transferData = TransferData.developerGetTestObjWithFilledData()
+		//ApiDomesticPayment(this, token, transferData).run()
 	}
 	private fun getToken(redirectPlace : WebActivtyRedirect) : Boolean{
 		val token = PreferencesOperator.getToken(this)
@@ -233,8 +233,6 @@ class MainActivity : AppCompatActivity() {
 			ActivityStarter.openBrowserForLogin(this, redirectPlace)
 			return false
 		}
-		else
-			Log.i(TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
 		return true
 	}
 	private fun developerTesst(){
