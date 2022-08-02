@@ -36,8 +36,7 @@ class PinActivity : AppCompatActivity() {
 		private enum class ChangePinProcessPhases{OLD_PIN, NEW_PIN, NEW_PIN_AGAIN}
 	}
 
-
-	private var puprose : Purpose = Purpose.Auth//tmp
+	private lateinit var puprose : Purpose
 	private var digits : MutableList<EditText> = arrayListOf()
 	private var pinTriesLeft = 3
 	private var tmpPIN : Int = 0
@@ -50,29 +49,29 @@ class PinActivity : AppCompatActivity() {
 		setContentView(R.layout.activity_pin)
 		findElements()
 		checkStartPurpose()
-		getProperTextsForGUIElements()
-		setUIElementsListeners()
+		getProperTextsForGuiElements()
+		setGuiElementsListeners()
 		requestFocusOnActivityStart()
 	}
-	private fun setUIElementsListeners(){
+	private fun setGuiElementsListeners(){
 		val onEnterKeyPressedListener = object : TextView.OnEditorActionListener {
 			//zwracana wartosc oznacza czy zamknac klawiature
 			override fun onEditorAction(field: TextView?, actionId: Int, keyEvent: KeyEvent?): Boolean {
 				val pressedKeyIsEnter = actionId == EditorInfo.IME_ACTION_DONE
 				if(!pressedKeyIsEnter){
 					Log.i(TagProduction,"Pressed not enter key in PIN activity")
-					return true
+					return false
 				}
 
 				val everyDigitIsOk = checkIfAllFieldsHaveEnteredDigits()
 				return if(everyDigitIsOk){
 					Log.i(TagProduction,"Pressed enter in PIN activity, pin is in CORRECT format")
 					processPIN()
-					false
+					true
 				}
 				else{
 					Log.e(TagProduction,"Pressed enter in PIN activity, pin is in WRONG format")
-					true
+					false
 				}
 			}
 		}
@@ -178,7 +177,7 @@ class PinActivity : AppCompatActivity() {
 		val ok5 = value5 != null && value5 in 0..9
 		return ok1 && ok2 && ok3 && ok4 && ok5
 	}
-	private fun getProperTextsForGUIElements(){
+	private fun getProperTextsForGuiElements(){
 		when(puprose){
 			Purpose.Auth -> {
 				titleField.text = resources.getString(R.string.GUI_authTransactionTitle)

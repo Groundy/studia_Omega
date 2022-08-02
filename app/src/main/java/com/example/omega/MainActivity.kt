@@ -15,12 +15,8 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
-import androidx.core.view.isVisible
 import com.google.firebase.FirebaseApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -30,13 +26,9 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import com.example.omega.Utilities.Companion.TagProduction
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 import com.example.omega.BankLoginWebPageActivity.Companion.WebActivtyRedirect
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 import okhttp3.OkHttpClient
 import org.json.JSONObject
-import org.junit.Test
 
 //  Minimize: CTRL + SHIFT + '-'
 //  Expand:   CTRL + SHIFT + '+'
@@ -51,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 		FirebaseApp.initializeApp(this)
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initGUI()
-		developerTesst()
+	//	developerTesst()
 	//	if(!getTokenOnAppStart())
 	//		return
 	//	developerInitaialFun()
@@ -319,17 +311,24 @@ class MainActivity : AppCompatActivity() {
 
 	}
 	private fun nfcIntentGet(intent: Intent){
-		val tagFromIntent: Tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG) ?: return
+		val tagFromIntent: Tag? = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
+		if(tagFromIntent == null){
+			Utilities.showToast(this, "Wykryto pusty tag NFCC")
+		}
 		val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
 		val relayRecord = (rawMsgs!![0] as NdefMessage).records[0]
 		val tagData = String(relayRecord.payload)
-		val tagDataExpectedLength = 6			//format UNKOWN_BYTE,LAUNGAGE BYTES(probably 2 bytes), CODE
+
+		val tagDataExpectedLength = 6//format UNKOWN_BYTE,LAUNGAGE BYTES(probably 2 bytes), CODE
 		if(tagData.count() < tagDataExpectedLength)
 			return
 		val code = tagData.takeLast(6).toIntOrNull()
 		val codeOk = code != null && code in 0..999999
-		if(!codeOk)
+		if(!codeOk){
+			Utilities.showToast(this, "Wykryto pusty tag NFCC")
 			return
+		}
+
 		Log.i(TagProduction, "NFC TAG data found:$tagData")
 		processCode(code!!.toInt())
 	}

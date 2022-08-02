@@ -21,9 +21,6 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".AccountHistroyActivity"
-            android:exported="false" />
-        <activity
-            android:name=".accountHistoryActivity"
             android:exported="false" /> <!-- android:usesCleartextTraffic="true"  line used for obtainging public ip -->
         <activity
             android:name=".RBlikCodeDisplayActivity"
