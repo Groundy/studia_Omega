@@ -245,4 +245,12 @@ class BasicTransferActivity : AppCompatActivity() {
 			receiverAccNbrDigitsHint.text = textToSet
 		}
 	}
+	private fun wookieTestFillTmpWidgets(){
+		currentPaymentAccount = PaymentAccount.wookieTestGetTestPaymentAccountForPaymentAct()
+		receiverNumberEditText.text = Utilities.strToEditable("11223344556677889911223003")
+		amountEditText.text =  Utilities.strToEditable("1.23")
+		receiverNameEditText.text = Utilities.strToEditable("Ciocia Zosia")
+		transferTitle.text = Utilities.strToEditable("Zwrot za paczkę")
+
+	}
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
 import android.content.SharedPreferences
+import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.util.Log
 import android.widget.EditText
@@ -67,6 +68,9 @@ class Utilities {
 		fun hashMd5(inputStr : String) : String{
 			val md = MessageDigest.getInstance("MD5")
 			return BigInteger(1, md.digest(inputStr.toByteArray())).toString(16).padStart(32, '0')
+		}
+		fun strToEditable(text: String): Editable {
+			return Editable.Factory.getInstance().newEditable(text)
 		}
 	}
 }

@@ -187,7 +187,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			return
 		}
 		val ownerName = paymentAccount.getOwnerName()
-		val ownerNameAsEditable =  Editable.Factory.getInstance().newEditable(ownerName)
+		val ownerNameAsEditable = Utilities.strToEditable(ownerName)
 		receiverNameField.text = ownerNameAsEditable
 	}
 }
