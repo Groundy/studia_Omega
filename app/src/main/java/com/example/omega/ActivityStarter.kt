@@ -7,27 +7,30 @@ import androidx.core.app.ActivityCompat.startActivityForResult
 class ActivityStarter {
 	companion object{
 		fun startQrScannerActivity(activity: Activity){
-			val qrScannerActivityIntent = Intent(activity, QrScannerActivity::class.java)
 			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_QrScanner)
+
+			val qrScannerActivityIntent = Intent(activity, QrScannerActivity::class.java)
 			activity.startActivityForResult(qrScannerActivityIntent, retCode)
 		}
 		fun startResetPermissionsActivity(activity: Activity){
-			val intent = Intent(activity, UserPermissionList::class.java)
 			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST)
+
+			val intent = Intent(activity, UserPermissionList::class.java)
 			activity.startActivityForResult(intent,retCode)
 		}
 		fun startActToSetPinIfTheresNoSavedPin(activity: Activity){
 			val pinAlreadySet = Utilities.checkIfAppHasAlreadySetPin(activity)
-			if(!pinAlreadySet){
-				val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
+			if(pinAlreadySet)
+				return
 
-				val pinActPurpose = activity.resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[0]
-				val pinActPurposeFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
-				pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
+			val pinActPurpose = PinActivity.Companion.Purpose.Set.text
+			val pinActPurposeFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
+			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_SET)
 
-				val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_SET)
-				activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
-			}
+			val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
+			pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
+			activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
+
 		}
 		fun startConfigurationActivity(activity: Activity){
 			val settingsActivityIntent = Intent(activity, SettingsActivity::class.java)
@@ -42,15 +45,17 @@ class ActivityStarter {
 			activity.startActivity(rblikCodeCreatorIntent)
 		}
 		fun startOperationResultActivity(activity: Activity, textIdToDisplay: Int){
-			val resultIntent = Intent(activity, ResultActivity::class.java)
 			val textToDisplay = activity.resources.getString(textIdToDisplay)
 			val textFieldName = activity.resources.getString(R.string.ACT_COM_RESULT_TEXT_FIELD_NAME)
+
+			val resultIntent = Intent(activity, ResultActivity::class.java)
 			resultIntent.putExtra(textFieldName,textToDisplay)
 			activity.startActivity(resultIntent)
 		}
 		fun startTransferSummaryActivity(activity: Activity, serializedTransferDataObj: String){
-			val resultIntent = Intent(activity, TransferSummary::class.java)
 			val serializedObjField = activity.getString(R.string.TransferSummary_COM_serializedData)
+
+			val resultIntent = Intent(activity, TransferSummary::class.java)
 			resultIntent.putExtra(serializedObjField,serializedTransferDataObj)
 			activity.startActivity(resultIntent)
 		}
@@ -69,27 +74,30 @@ class ActivityStarter {
 			}
 		}
 		private fun authByPin(activity: Activity, description : String?){
-			val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
 			val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
-			val pinActPurpose = activity.resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[1]
+			val pinActPurpose = PinActivity.Companion.Purpose.Auth.text
 			val pinActPurposeFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
+			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_AUTH)
+
+			val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
 			pinActivityActivityIntent.putExtra(descriptionFieldName,description)
 			pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
-			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_AUTH)
 			activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
 		}
 		private fun authByFingerPrint(activity: Activity, description : String?){
-			val scanFingerActivityIntent = Intent(activity, ScanFingerActivity::class.java)
 			val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
-			scanFingerActivityIntent.putExtra(descriptionFieldName,description)
 			val retCodeForActivity  = activity.resources.getInteger(R.integer.ACT_RETCODE_FINGER)
+
+			val scanFingerActivityIntent = Intent(activity, ScanFingerActivity::class.java)
+			scanFingerActivityIntent.putExtra(descriptionFieldName,description)
 			activity.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
 		}
 		fun openBrowserForLogin(activity: Activity, redirect : BankLoginWebPageActivity.Companion.WebActivtyRedirect){
-			val intent = Intent(activity, BankLoginWebPageActivity::class.java)
 			val redirectField = activity.resources.getString(R.string.ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME)
-			intent.putExtra(redirectField, redirect.text)
 			val returnCode = activity.resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)
+
+			val intent = Intent(activity, BankLoginWebPageActivity::class.java)
+			intent.putExtra(redirectField, redirect.text)
 			activity.startActivityForResult(intent,returnCode)
 		}
 		fun openDialogWithDefinedPurpose(activity: Activity, purpose : YesNoDialogActivity.Companion.DialogPurpose){

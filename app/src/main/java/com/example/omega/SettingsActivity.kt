@@ -96,11 +96,12 @@ class SettingsActivity : AppCompatActivity() {
 		dialog.show()
 	}
 	private fun startPinChangeActivity(){
-		val changePinActivityIntent = Intent(this, PinActivity::class.java)
-		val activityReason = resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[2]
+		val activityReason = PinActivity.Companion.Purpose.Change.text
 		val activityReasonFieldName = resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
-		changePinActivityIntent.putExtra(activityReasonFieldName,activityReason)
 		val retCodeForActivity  = resources.getInteger(R.integer.ACT_RETCODE_PIN_CHANGE)
+
+		val changePinActivityIntent = Intent(this, PinActivity::class.java)
+		changePinActivityIntent.putExtra(activityReasonFieldName,activityReason)
 		startActivityForResult(changePinActivityIntent, retCodeForActivity)
 	}
 	override fun onBackPressed() {

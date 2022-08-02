@@ -14,10 +14,28 @@ import android.view.inputmethod.InputMethodManager
 import com.example.omega.Utilities.Companion.TagProduction
 
 class PinActivity : AppCompatActivity() {
-	private enum class PURPOSE{SET, CHANGE, AUTH}
-	private enum class ChangePinProcessPhases{OLD_PIN, NEW_PIN, NEW_PIN_AGAIN}
+	companion object{
+		enum class Purpose(val text : String){
+			Set("Set"), Change("Change"), Auth("Auth");
+			companion object {
+				fun fromString(text : String) : Purpose{
+					return when(text){
+						Set.text -> Set
+						Change.text -> Change
+						Auth.text -> Auth
+						else -> {
+							Log.e(TagProduction, "[fromString/Purpose/PinActivity]  failed to convert Purpose str to purose enum str=$text")
+							Auth
+						}
+					}
+				}
+			}
+		}
+		private enum class ChangePinProcessPhases{OLD_PIN, NEW_PIN, NEW_PIN_AGAIN}
+	}
 
-	private var puprose : PURPOSE = PURPOSE.AUTH//tmp
+
+	private var puprose : Purpose = Purpose.Auth//tmp
 	private var digits : MutableList<EditText> = arrayListOf()
 	private var pinTriesLeft = 3
 	private var tmpPIN : Int = 0
@@ -34,69 +52,64 @@ class PinActivity : AppCompatActivity() {
 		setUIElementsListeners()
 		requestFocusOnActivityStart()
 	}
-
 	private fun setUIElementsListeners(){
 		val onEnterKeyPressedListener = object : TextView.OnEditorActionListener {
 			//zwracana wartosc oznacza czy zamknac klawiature
 			override fun onEditorAction(field: TextView?, actionId: Int, keyEvent: KeyEvent?): Boolean {
-				//val keyPressed = keyEvent?.action == KeyEvent.ACTION_DOWN
 				val pressedKeyIsEnter = actionId == EditorInfo.IME_ACTION_DONE
-				if (pressedKeyIsEnter) {
-					val everyDigitIsOk = checkIfAllFieldsHaveEnteredDigits()
-					return if(everyDigitIsOk){
-						Log.i(TagProduction,"Pressed enter in PIN activity, pin is in CORRECT format")
-						processPIN()
-						false
-					}
-					else{
-						Log.e(TagProduction,"Pressed enter in PIN activity, pin is in WRONG format")
-						true
-					}
-				}
-				else
+				if(!pressedKeyIsEnter){
 					Log.i(TagProduction,"Pressed not enter key in PIN activity")
-				return true
+					return true
+				}
+
+				val everyDigitIsOk = checkIfAllFieldsHaveEnteredDigits()
+				return if(everyDigitIsOk){
+					Log.i(TagProduction,"Pressed enter in PIN activity, pin is in CORRECT format")
+					processPIN()
+					false
+				}
+				else{
+					Log.e(TagProduction,"Pressed enter in PIN activity, pin is in WRONG format")
+					true
+				}
 			}
 		}
 		val deleteButtonPressedListener = object : View.OnKeyListener{
 			override fun onKey(source: View?, keyCode: Int, event: KeyEvent): Boolean {
-				if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
-					when(source?.id){
-						R.id.PIN_digit1_TextView ->{
-							digits[0].text.clear()
-						}
-						R.id.PIN_digit2_TextView ->{
-							digits[0].requestFocus()
-							digits[0].text.clear()
-							digits[1].text.clear()
-						}
-						R.id.PIN_digit3_TextView ->{
-							digits[1].requestFocus()
-							digits[1].text.clear()
-							digits[2].text.clear()
-						}
-						R.id.PIN_digit4_TextView ->{
-							digits[2].requestFocus()
-							digits[2].text.clear()
-							digits[3].text.clear()
-						}
-						R.id.PIN_digit5_TextView ->{
-							val userAlreadyInsertedLastDigit = digits[4].text.length == 1
-							if(!userAlreadyInsertedLastDigit){
-								digits[3].requestFocus()
-								digits[3].text.clear()
-								digits[4].text.clear()
-							}
-							else
-								digits[4].text.clear()
-						}
-						else ->{
-
-						}
-					}
-					return true
-				}
+				if(keyCode != KeyEvent.KEYCODE_DEL || event.action != KeyEvent.ACTION_DOWN)
 				return false
+
+				when(source?.id){
+					R.id.PIN_digit1_TextView ->{
+						digits[0].text.clear()
+					}
+					R.id.PIN_digit2_TextView ->{
+						digits[0].requestFocus()
+						digits[0].text.clear()
+						digits[1].text.clear()
+					}
+					R.id.PIN_digit3_TextView ->{
+						digits[1].requestFocus()
+						digits[1].text.clear()
+						digits[2].text.clear()
+					}
+					R.id.PIN_digit4_TextView ->{
+						digits[2].requestFocus()
+						digits[2].text.clear()
+						digits[3].text.clear()
+					}
+					R.id.PIN_digit5_TextView ->{
+						val userAlreadyInsertedLastDigit = digits[4].text.length == 1
+						if(!userAlreadyInsertedLastDigit){
+							digits[3].requestFocus()
+							digits[3].text.clear()
+							digits[4].text.clear()
+						}
+						else
+							digits[4].text.clear()
+					}
+				}
+				return true
 			}
 		}
 		val listener1 = object : TextWatcher {
@@ -165,15 +178,15 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun getProperTextsForGUIElements(){
 		when(puprose){
-			PURPOSE.AUTH -> {
+			Purpose.Auth -> {
 				titleField.text = resources.getString(R.string.GUI_authTransactionTitle)
 				descriptionField.text = intent.getStringExtra(getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME))
 			}
-			PURPOSE.SET -> {
+			Purpose.Set -> {
 				descriptionField.text = null
 				titleField.text = resources.getString(R.string.PIN_GUI_setPinTitle)
 			}
-			PURPOSE.CHANGE -> {
+			Purpose.Change -> {
 				descriptionField.text = resources.getString(R.string.PIN_GUI_changeDescription_old)
 				titleField.text = resources.getString(R.string.PIN_GUI_changeTitle)
 			}
@@ -184,6 +197,7 @@ class PinActivity : AppCompatActivity() {
 		val allFieldsAreFilled = checkIfAllFieldsHaveEnteredDigits()
 		if (!allFieldsAreFilled)
 			return null
+
 		val value1 = digits[0].text.toString().toInt() * 10000
 		val value2 = digits[1].text.toString().toInt() * 1000
 		val value3 = digits[2].text.toString().toInt() * 100
@@ -193,18 +207,17 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun processPIN(){
 		val pin = getPinFromFields()
-		if(pin != null){
-			when(puprose){
-				PURPOSE.AUTH -> processAuth(pin)
-				PURPOSE.SET -> processSet(pin)
-				PURPOSE.CHANGE -> processChange(pin)
-			}
+		if(pin == null){
+			val msg = resources.getString(R.string.PIN_UserMsg_haveToUseAllTheDigits)
+			Utilities.showToast(this,msg)
+			return
 		}
-		else
-			Utilities.showToast(
-				this,
-				resources.getString(R.string.PIN_UserMsg_haveToUseAllTheDigits)
-			)
+
+		when(puprose){
+			Purpose.Auth -> processAuth(pin)
+			Purpose.Set -> processSet(pin)
+			Purpose.Change -> processChange(pin)
+		}
 	}
 	private fun requestFocusOnActivityStart(){
 		digits[0].requestFocus()
@@ -230,23 +243,25 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun processAuth(pin : Int){
 		val authCorrect = checkIfPinIsCorrect(pin)
-		if(authCorrect)
+		if(authCorrect){
 			finishActivity(true)
-		else{
-			pinTriesLeft--
-			val allowUserToTryOtherPin = pinTriesLeft > 0
-			if(allowUserToTryOtherPin){
-				val textToShow = when(pinTriesLeft){
-					2 -> resources.getString(R.string.PIN_UserMsg_triesLeft2)
-					1 -> resources.getString(R.string.PIN_UserMsg_triesLeft1)
-					else -> resources.getString(R.string.UserMsg_UNKNOWN_ERROR)
-				}
-				Utilities.showToast(this, textToShow)
-				clearDigitsFields()
-			}
-			else
-				finishActivity(false)
+			return
 		}
+
+		pinTriesLeft--
+		val allowUserToTryOtherPin = pinTriesLeft > 0
+		if(!allowUserToTryOtherPin){
+			finishActivity(false)
+			return
+		}
+
+		val textToShow = when(pinTriesLeft){
+			2 -> resources.getString(R.string.PIN_UserMsg_triesLeft2)
+			1 -> resources.getString(R.string.PIN_UserMsg_triesLeft1)
+			else -> resources.getString(R.string.UserMsg_UNKNOWN_ERROR)
+		}
+		Utilities.showToast(this, textToShow)
+		clearDigitsFields()
 	}
 	private fun processChange(pin : Int){
 		when(phaseOfChangePinProcess){
@@ -262,24 +277,18 @@ class PinActivity : AppCompatActivity() {
 					pinTriesLeft--
 					when(pinTriesLeft){
 						2 -> {
-							Utilities.showToast(
-								this,
-								resources.getString(R.string.PIN_UserMsg_triesLeft2)
-							)
+							val msg = resources.getString(R.string.PIN_UserMsg_triesLeft2)
+							Utilities.showToast(this,msg)
 							return
 						}
 						1 -> {
-							Utilities.showToast(
-								this,
-								resources.getString(R.string.PIN_UserMsg_triesLeft1)
-							)
+							val msg = resources.getString(R.string.PIN_UserMsg_triesLeft1)
+							Utilities.showToast(this,msg)
 							return
 						}
 						else -> {
-							Utilities.showToast(
-								this,
-								resources.getString(R.string.PIN_UserMsg_failedToSetNewPin)
-							)
+							val msg = resources.getString(R.string.PIN_UserMsg_failedToSetNewPin)
+							Utilities.showToast(this,msg)
 							finishActivity(false)
 						}
 					}
@@ -299,10 +308,8 @@ class PinActivity : AppCompatActivity() {
 					finishActivity(true)
 				}
 				else{
-					Utilities.showToast(
-						this,
-						resources.getString(R.string.PIN_UserMsg_failedToSetNewPin)
-					)
+					val msg = resources.getString(R.string.PIN_UserMsg_failedToSetNewPin)
+					Utilities.showToast(this,msg)
 					finishActivity(false)
 				}
 			}
@@ -329,15 +336,11 @@ class PinActivity : AppCompatActivity() {
 	private fun checkStartPurpose(){
 		val purposeFieldName = resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
 		val activityStartReasonStr = intent.getStringExtra(purposeFieldName)
-		when(activityStartReasonStr){
-			resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[0] -> this.puprose =
-				PURPOSE.SET
-			resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[1] -> this.puprose =
-				PURPOSE.AUTH
-			resources.getStringArray(R.array.ACT_COM_PIN_ACT_PURPOSE)[2] -> this.puprose =
-				PURPOSE.CHANGE
-			else -> this.puprose = PURPOSE.AUTH
+		if(activityStartReasonStr == null){
+			Log.e(TagProduction, "[checkStartPurpose/${this.javaClass.name}] Error in obtaining purpose STR")
+			return
 		}
+		this.puprose = Purpose.fromString(activityStartReasonStr)
 	}
 	private fun clearDigitsFields(){
 		digits.forEach { it.text.clear() }

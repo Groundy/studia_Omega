@@ -4,11 +4,6 @@
 	<string name="ACT_COM_TRANSACTION_DETAILS_FIELD_NAME">Transaction details</string>
 	<string name="ACT_COM_QrScanner_FIELD_NAME">QR scanner return field</string>
 	<string name="ACT_COM_FINGER_FIELD_NAME">finger_activity_ret_field_name</string>
-	<string-array name="ACT_COM_PIN_ACT_PURPOSE">
-		<item>setNewPin</item>
-		<item>authTrans</item>
-		<item>changePin</item>
-	</string-array>
 	<string name="ACT_COM_PIN_ACT_PURPOSE_FIELDNAME">PIN_PURPOSE_FIELDNAME</string>
 	<string name="ACT_COM_RESULT_TEXT_FIELD_NAME">ACT_COM_RESULT_TEXT_FIELD_NAME</string>
 	<string name="ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME">ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME</string>
