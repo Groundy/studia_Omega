@@ -10,14 +10,15 @@ import com.example.omega.Utilities.Companion.TagProduction
 
 class PreferencesOperator : Application() {
 	companion object{
-		private fun clearPreferences(activity: Activity, vararg fields : Int){
+		fun clearPreferences(activity: Activity, vararg fields : Int){
 			val preferencesFieldsStr = arrayOf(
 				R.string.PREF_authURL,
 				R.string.PREF_authCode,
 				R.string.PREF_lastRandomValue,
 				R.string.PREF_lastUsedPermissionsForAuth,
 				R.string.PREF_authUrlValidityTimeEnd,
-				R.string.PREF_Token
+				R.string.PREF_Token,
+				R.string.PREF_hashPin
 				)
 
 			fields.forEach {

@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		FirebaseApp.initializeApp(this)
-		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
+		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
 	//	developerTesst()
 	//	if(!getTokenOnAppStart())
@@ -261,10 +261,10 @@ class MainActivity : AppCompatActivity() {
 		if(resultCode == RESULT_OK)
 			return
 
-		//TODO to tworzy infinity loop w ktorym urzytkownik do upadlego jest proszony o pin
+		//TODO to tworzy infinity loop w ktorym urzytkownik do upadlego o utworzenie Pinu
 		val msgForUser = getString(R.string.PIN_UserMsg_failedToSetNewPin_differentPinsInserted)
 		Utilities.showToast(this, msgForUser)
-		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
+		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 	}
 	private fun fingerAuthActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode == RESULT_OK){

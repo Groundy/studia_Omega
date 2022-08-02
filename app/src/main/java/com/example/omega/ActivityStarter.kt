@@ -6,6 +6,43 @@ import androidx.core.app.ActivityCompat.startActivityForResult
 
 class ActivityStarter {
 	companion object{
+		fun startPinActivity(activity: Activity, purpose : PinActivity.Companion.Purpose, descriptionForAuth: String = String()){
+			when(purpose){
+				PinActivity.Companion.Purpose.Set->{
+					val pinAlreadySet = Utilities.checkIfAppHasAlreadySetPin(activity)
+					if(pinAlreadySet)
+						return
+
+					val pinActPurpose = PinActivity.Companion.Purpose.Set.text
+					val pinActPurposeFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
+					val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_SET)
+
+					val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
+					pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
+					activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
+				}
+				PinActivity.Companion.Purpose.Auth->{
+					val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
+					val pinActPurpose = PinActivity.Companion.Purpose.Auth.text
+					val pinActPurposeFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
+					val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_AUTH)
+
+					val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
+					pinActivityActivityIntent.putExtra(descriptionFieldName,descriptionForAuth)
+					pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
+					activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
+				}
+				PinActivity.Companion.Purpose.Change->{
+					val activityReason = PinActivity.Companion.Purpose.Change.text
+					val activityReasonFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
+					val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_CHANGE)
+
+					val changePinActivityIntent = Intent(activity, PinActivity::class.java)
+					changePinActivityIntent.putExtra(activityReasonFieldName,activityReason)
+					activity.startActivityForResult(changePinActivityIntent, retCodeForActivity)
+				}
+			}
+		}
 		fun startQrScannerActivity(activity: Activity){
 			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_QrScanner)
 
@@ -17,20 +54,6 @@ class ActivityStarter {
 
 			val intent = Intent(activity, UserPermissionList::class.java)
 			activity.startActivityForResult(intent,retCode)
-		}
-		fun startActToSetPinIfTheresNoSavedPin(activity: Activity){
-			val pinAlreadySet = Utilities.checkIfAppHasAlreadySetPin(activity)
-			if(pinAlreadySet)
-				return
-
-			val pinActPurpose = PinActivity.Companion.Purpose.Set.text
-			val pinActPurposeFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
-			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_SET)
-
-			val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
-			pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
-			activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
-
 		}
 		fun startConfigurationActivity(activity: Activity){
 			val settingsActivityIntent = Intent(activity, SettingsActivity::class.java)
@@ -70,19 +93,8 @@ class ActivityStarter {
 
 			when(preferredMethodeCode){
 				fingerCode -> authByFingerPrint(context,description)
-				else -> authByPin(context,description)
+				else -> startPinActivity(context, PinActivity.Companion.Purpose.Auth ,description!!)
 			}
-		}
-		private fun authByPin(activity: Activity, description : String?){
-			val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
-			val pinActPurpose = PinActivity.Companion.Purpose.Auth.text
-			val pinActPurposeFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
-			val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_AUTH)
-
-			val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
-			pinActivityActivityIntent.putExtra(descriptionFieldName,description)
-			pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
-			activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
 		}
 		private fun authByFingerPrint(activity: Activity, description : String?){
 			val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)

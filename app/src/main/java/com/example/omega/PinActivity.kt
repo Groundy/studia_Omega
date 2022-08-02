@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.content.Intent
 import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -190,6 +191,7 @@ class PinActivity : AppCompatActivity() {
 			Purpose.Change -> {
 				descriptionField.text = resources.getString(R.string.PIN_GUI_changeDescription_old)
 				titleField.text = resources.getString(R.string.PIN_GUI_changeTitle)
+				setUpForgotPinNameTextView()
 			}
 		}
 		descriptionField.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
@@ -347,9 +349,39 @@ class PinActivity : AppCompatActivity() {
 		digits.forEach { it.text.clear() }
 		digits[0].requestFocus()
 	}
-	private fun finishActivity(success: Boolean){
-		val retCode = if(success) RESULT_OK else RESULT_CANCELED
-		setResult(retCode)
+	private fun finishActivity(success: Boolean, resetPin: Boolean = false){
+		val intentRet = Intent()
+		var result = if(success) RESULT_OK else RESULT_CANCELED
+
+		if(resetPin){
+			result = RESULT_CANCELED
+			val field = resources.getString(R.string.ACT_COM_DIALOG_ResetPin_FIELDNAME)
+			intentRet.putExtra(field, resetPin)
+		}
+
+		setResult(result,intentRet)
 		finish()
+		return
+	}
+	private fun setUpForgotPinNameTextView(){
+		val forogtPinField = findViewById<TextView>(R.id.PIN_forgetPin_TextView)
+		forogtPinField.isVisible = true
+		forogtPinField.setOnClickListener{
+			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.ResetPin)
+		}
+	}
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		val properCode = resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ResetPin)
+		if(requestCode != properCode)
+			return
+
+		val resetPin = resultCode == RESULT_OK
+		if(!resetPin)
+			return
+
+		PreferencesOperator.clearAuthData(this)
+		finishActivity(success = false, resetPin = true)
 	}
 }

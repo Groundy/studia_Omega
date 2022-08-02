@@ -19,6 +19,32 @@ class SettingsActivity : AppCompatActivity() {
 		fillGuiSettingsWithSavedState()
 		addListenersToGuiElements()
 	}
+	override fun onBackPressed() {
+		super.onBackPressed()
+		saveResults()
+	}
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		when(requestCode){
+			resources.getInteger(R.integer.ACT_RETCODE_PIN_CHANGE) ->{
+				if(resultCode == RESULT_OK || data == null)
+					return
+
+				val resetPinFieldName = resources.getString(R.string.ACT_COM_DIALOG_ResetPin_FIELDNAME)
+				val resetPin = try {
+					data.extras!!.getBoolean(resetPinFieldName)
+				}catch (e : Exception){
+					false
+				}
+				if(!resetPin)
+					return
+
+				PreferencesOperator.clearPreferences(this, R.string.PREF_hashPin)
+				PreferencesOperator.clearAuthData(this)
+				ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
+			}
+		}
+	}
 
 	private fun fillGuiSettingsWithSavedState() {
 		val phoneHasNfc = NfcAdapter.getDefaultAdapter(this) != null
@@ -95,19 +121,6 @@ class SettingsActivity : AppCompatActivity() {
 		dialog.setOnDismissListener(dialogOnDismissListener)
 		dialog.show()
 	}
-	private fun startPinChangeActivity(){
-		val activityReason = PinActivity.Companion.Purpose.Change.text
-		val activityReasonFieldName = resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
-		val retCodeForActivity  = resources.getInteger(R.integer.ACT_RETCODE_PIN_CHANGE)
-
-		val changePinActivityIntent = Intent(this, PinActivity::class.java)
-		changePinActivityIntent.putExtra(activityReasonFieldName,activityReason)
-		startActivityForResult(changePinActivityIntent, retCodeForActivity)
-	}
-	override fun onBackPressed() {
-		super.onBackPressed()
-		saveResults()
-	}
 	private fun addListenersToGuiElements(){
 		val selectAuthMethodeField = findViewById<TextView>(R.id.selectAuthMethodeTextView)
 		selectAuthMethodeField.setOnClickListener {
@@ -115,7 +128,7 @@ class SettingsActivity : AppCompatActivity() {
 		}
 		val changePinField = findViewById<TextView>(R.id.changePinSettingsTextView)
 		changePinField.setOnClickListener{
-			startPinChangeActivity()
+			ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Change)
 		}
 	}
 	private fun phoneHasFingerSensor() : Boolean{
