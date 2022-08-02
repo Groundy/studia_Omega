@@ -32,6 +32,10 @@ import com.example.omega.Utilities.Companion.TagProduction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.example.omega.BankLoginWebPageActivity.Companion.WebActivtyRedirect
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import okhttp3.OkHttpClient
+import org.json.JSONObject
 import org.junit.Test
 
 //  Minimize: CTRL + SHIFT + '-'
@@ -47,6 +51,7 @@ class MainActivity : AppCompatActivity() {
 		FirebaseApp.initializeApp(this)
 		ActivityStarter.startActToSetPinIfTheresNoSavedPin(this)
 		initGUI()
+		developerTesst()
 	//	if(!getTokenOnAppStart())
 	//		return
 	//	developerInitaialFun()
@@ -396,4 +401,23 @@ class MainActivity : AppCompatActivity() {
 			Log.i(TagProduction, "seconds left to token exp:  ${token.getSecondsLeftToTokenExpiration().toString()}")
 		return true
 	}
+	private fun developerTesst(){
+		val body = JSONObject()
+		val request = ApiFunctions.bodyToRequest(ApiConsts.BankUrls.Test, body, ApiFunctions.getUUID())
+		val thread = Thread{
+			try{
+				val response = OkHttpClient().newCall(request).execute()
+				val responseBody = response.body?.string()
+				val responseJsonObject = JSONObject(responseBody!!)
+				responseJsonObject
+			}catch (e : Exception){
+				Log.e(TagProduction,"[sendRequest/${this.javaClass.name}] Error catch $e")
+			}
+		}
+		thread.start()
+		thread.join(3000L)
+		val ttt = 3
+
+	}
+
 }
