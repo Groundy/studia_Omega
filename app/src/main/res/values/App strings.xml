@@ -38,6 +38,7 @@
 	<string name="PIN_GUI_changeDescription_new">Wprowadź nowy pin</string>
 	<string name="PIN_GUI_changeDescription_newAgain">Wprowadź ponownie nowy pin</string>
 	<string name="PIN_GUI_changeTitle">Zmiana Pinu</string>
+	<string name="PIN_GUI_forgotPin">Nie pamiętam pinu</string>
 
 	<!-- QR scanner activity -->
 	<string name="QrScanner_GUI_buttonText">skaner QR</string>

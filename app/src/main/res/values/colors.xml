@@ -5,7 +5,7 @@
     <color name="black">#000000</color>
     <color name="background">#E7DEBE</color>
     <color name="errorRed">#FF0000</color>
-
+    <color name="linkColor">#0044CC</color>
     <!--
     <color name="colorPrimary">#008577</color>
     <color name="mainColor">#1030D8</color>

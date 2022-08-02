@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -11,6 +12,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.isVisible
 import com.example.omega.Utilities.Companion.TagProduction
 
 class PinActivity : AppCompatActivity() {
