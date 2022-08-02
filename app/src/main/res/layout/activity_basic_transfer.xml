@@ -22,197 +22,204 @@
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintVertical_bias="0.5">
 
-		<ScrollView
+		<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="350dp"
-			android:layout_gravity="fill_horizontal"
-			tools:ignore="SpeakableTextPresentCheck">
+			android:layout_height="match_parent"
+			android:orientation="vertical">
 
-			<LinearLayout
+			<ScrollView
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="vertical">
+				android:layout_height="310dp"
+				android:layout_gravity="fill_horizontal"
+				tools:ignore="SpeakableTextPresentCheck">
 
 				<LinearLayout
-					android:id="@+id/layout_bankList"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="vertical">
 
-					<TextView
-						android:id="@+id/basicTransfer_accountList_textView"
+					<LinearLayout
+						android:id="@+id/layout_bankList"
 						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_textFieldY"
-						android:layout_gravity="fill_vertical|end"
-						android:gravity="center_horizontal"
-						android:text="@string/GUI_basicTransfer_chooseAccountTextView" />
+						android:layout_height="wrap_content"
+						android:orientation="vertical">
 
-					<Spinner
-						android:id="@+id/basicTransfer_accountList_Spinner"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_inputFieldY"
-						android:dropDownWidth="300dp"
-						android:scrollbarSize="40dp"
-						android:spinnerMode="dropdown"
-						android:background="@color/white"
-						tools:ignore="SpeakableTextPresentCheck" />
+						<TextView
+							android:id="@+id/basicTransfer_accountList_textView"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_textFieldY"
+							android:layout_gravity="fill_vertical|end"
+							android:gravity="center_horizontal"
+							android:text="@string/GUI_basicTransfer_chooseAccountTextView" />
 
-					<Space
+						<Spinner
+							android:id="@+id/basicTransfer_accountList_Spinner"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_inputFieldY"
+							android:background="@color/white"
+							android:dropDownWidth="300dp"
+							android:scrollbarSize="40dp"
+							android:spinnerMode="dropdown"
+							tools:ignore="SpeakableTextPresentCheck" />
+
+						<Space
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_spacer_Y" />
+
+					</LinearLayout>
+
+					<LinearLayout
+						android:id="@+id/layout_Amount"
 						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_spacer_Y" />
+						android:layout_height="match_parent"
+						android:orientation="vertical">
+
+						<TextView
+							android:id="@+id/basicTransfer_Amount_TextView"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_textFieldY"
+							android:gravity="center"
+							android:text="@string/GUI_basicTransfer_AmountOfTransferTextView" />
+
+						<EditText
+							android:id="@+id/basicTransfer_amount_editText"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_inputFieldY"
+							android:background="@color/white"
+							android:ems="10"
+							android:hint="0,00"
+							android:inputType="numberDecimal"
+							android:textColor="@color/black"
+							android:textColorHint="@color/hintColor"
+							tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+						<TextView
+							android:id="@+id/basicTransfer_amountAfterTransfer_TextView"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_textFieldY"
+							android:textColor="@color/black" />
+
+						<Space
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_spacer_Y" />
+
+					</LinearLayout>
+
+					<LinearLayout
+						android:id="@+id/layout_ReciverNumber"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:orientation="vertical">
+
+						<TextView
+							android:id="@+id/basicTransfer_reciverNumber_textView"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_textFieldY"
+							android:gravity="center"
+							android:text="@string/GUI_basicTransfer_ReceiverNumberTextView" />
+
+						<EditText
+							android:id="@+id/basicTransfer_receiverNumber_EditText"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_inputFieldY"
+							android:background="@color/white"
+							android:ems="10"
+							android:hint="0123456..."
+							android:importantForAutofill="no"
+							android:inputType="number"
+							android:maxLength="26"
+							android:textColor="@color/black"
+							android:textColorHint="@color/hintColor"
+							tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+						<TextView
+							android:id="@+id/basicTransfer_receiverNumberDigitsLeft_TextView"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_textFieldY"
+							android:textColor="@color/errorRed"
+							android:textSize="12sp" />
+
+						<Space
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_spacer_Y" />
+
+					</LinearLayout>
+
+					<LinearLayout
+						android:id="@+id/layout_Title"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:orientation="vertical">
+
+						<TextView
+							android:id="@+id/basicTransfer_transfTitle_textView"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_textFieldY"
+							android:gravity="center"
+							android:text="@string/GUI_basicTransfer_TitleOfTransferTextView" />
+
+						<EditText
+							android:id="@+id/basicTransfer_transferTitle_EditText"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_inputFieldY"
+							android:background="@color/white"
+							android:ems="10"
+							android:hint="np. Opłata czynszu"
+							android:inputType="textPersonName"
+							android:maxLength="50"
+							android:textColor="@color/black"
+							android:textColorHint="@color/hintColor"
+							tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+						<Space
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_spacer_Y" />
+
+					</LinearLayout>
+
+					<LinearLayout
+						android:id="@+id/layout_reciverName"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:orientation="vertical">
+
+						<TextView
+							android:id="@+id/basicTransfer_recvierName_textView"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_textFieldY"
+							android:gravity="center"
+							android:text="@string/GUI_basicTransfer_ReceiverNameTextView" />
+
+						<EditText
+							android:id="@+id/basicTransfer_reciverName_EditText"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_inputFieldY"
+							android:background="@color/white"
+							android:ems="10"
+							android:inputType="textPersonName"
+							android:maxLength="50"
+							android:textColor="@color/black"
+							android:textColorHint="@color/hintColor"
+							tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+						<Space
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/basicTransfer_spacer_Y" />
+
+					</LinearLayout>
 
 				</LinearLayout>
+			</ScrollView>
 
-				<LinearLayout
-					android:id="@+id/layout_Amount"
-					android:layout_width="match_parent"
-					android:layout_height="match_parent"
-					android:orientation="vertical">
-
-					<TextView
-						android:id="@+id/basicTransfer_Amount_TextView"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_textFieldY"
-						android:gravity="center"
-						android:text="@string/GUI_basicTransfer_AmountOfTransferTextView" />
-
-					<EditText
-						android:id="@+id/basicTransfer_amount_editText"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_inputFieldY"
-						android:ems="10"
-						android:hint="0,00"
-						android:background="@color/white"
-						android:inputType="numberDecimal"
-						android:textColor="@color/black"
-						android:textColorHint="@color/hintColor"
-						tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-
-					<TextView
-						android:id="@+id/basicTransfer_amountAfterTransfer_TextView"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_textFieldY"
-						android:textColor="@color/black" />
-
-					<Space
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_spacer_Y" />
-
-				</LinearLayout>
-
-				<LinearLayout
-					android:id="@+id/layout_ReciverNumber"
-					android:layout_width="match_parent"
-					android:layout_height="match_parent"
-					android:orientation="vertical">
-
-					<TextView
-						android:id="@+id/basicTransfer_reciverNumber_textView"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_textFieldY"
-						android:gravity="center"
-						android:text="@string/GUI_basicTransfer_ReceiverNumberTextView" />
-
-					<EditText
-						android:id="@+id/basicTransfer_receiverNumber_EditText"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_inputFieldY"
-						android:ems="10"
-						android:hint="0123456..."
-						android:importantForAutofill="no"
-						android:inputType="number"
-						android:maxLength="26"
-						android:background="@color/white"
-						android:textColor="@color/black"
-						android:textColorHint="@color/hintColor"
-						tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
-
-					<TextView
-						android:id="@+id/basicTransfer_receiverNumberDigitsLeft_TextView"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_textFieldY"
-						android:textColor="@color/errorRed"
-						android:textSize="12sp" />
-
-					<Space
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_spacer_Y" />
-
-				</LinearLayout>
-
-				<LinearLayout
-					android:id="@+id/layout_Title"
-					android:layout_width="match_parent"
-					android:layout_height="match_parent"
-					android:orientation="vertical">
-
-					<TextView
-						android:id="@+id/basicTransfer_transfTitle_textView"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_textFieldY"
-						android:gravity="center"
-						android:text="@string/GUI_basicTransfer_TitleOfTransferTextView" />
-
-					<EditText
-						android:id="@+id/basicTransfer_transferTitle_EditText"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_inputFieldY"
-						android:background="@color/white"
-						android:ems="10"
-						android:hint="np. Opłata czynszu"
-						android:inputType="textPersonName"
-						android:maxLength="50"
-						android:textColor="@color/black"
-						android:textColorHint="@color/hintColor"
-						tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-
-					<Space
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_spacer_Y" />
-
-				</LinearLayout>
-
-				<LinearLayout
-					android:id="@+id/layout_reciverName"
-					android:layout_width="match_parent"
-					android:layout_height="match_parent"
-					android:orientation="vertical">
-
-					<TextView
-						android:id="@+id/basicTransfer_recvierName_textView"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_textFieldY"
-						android:gravity="center"
-						android:text="@string/GUI_basicTransfer_ReceiverNameTextView" />
-
-					<EditText
-						android:id="@+id/basicTransfer_reciverName_EditText"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_inputFieldY"
-						android:ems="10"
-						android:inputType="textPersonName"
-						android:maxLength="50"
-						android:background="@color/white"
-						android:textColor="@color/black"
-						android:textColorHint="@color/hintColor"
-						tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
-
-					<Space
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/basicTransfer_spacer_Y" />
-
-				</LinearLayout>
-
-				<Button
-					android:id="@+id/RBlikCodeGenerator_goNext_button"
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/basicTransfer_buttonSize"
-					android:text="@string/GUI_basicTransfer_goNextButtonText"
-					android:textSize="24sp"
-					tools:layout_editor_absoluteX="-193dp"
-					tools:layout_editor_absoluteY="399dp" />
-			</LinearLayout>
-		</ScrollView>
+			<Button
+				android:id="@+id/RBlikCodeGenerator_goNext_button"
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/basicTransfer_buttonSize"
+				android:text="@string/GUI_basicTransfer_goNextButtonText"
+				android:textSize="24sp"
+				tools:layout_editor_absoluteX="-193dp"
+				tools:layout_editor_absoluteY="399dp" />
+		</LinearLayout>
 
 	</FrameLayout>
 

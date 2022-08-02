@@ -28,134 +28,148 @@
 			android:layout_marginTop="0dp"
 			android:orientation="vertical">
 
-			<LinearLayout
-				android:id="@+id/layout_bankList"
+			<ScrollView
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="vertical">
+				android:layout_height="match_parent">
 
-				<TextView
-					android:id="@+id/RBlikCodeGenerator_accountList_textView"
+				<LinearLayout
 					android:layout_width="match_parent"
-					android:layout_height="@dimen/RBlikCodeGenerator_textFieldY"
-					android:layout_gravity="fill_vertical|end"
-					android:gravity="center_horizontal"
-					android:text="@string/GUI_RBlikCodeGenerator_chooseAccountTextView" />
+					android:layout_height="wrap_content"
+					android:orientation="vertical" >
 
-				<Spinner
-					android:id="@+id/RBlikCodeGenerator_accountList_Spinner"
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
-					android:dropDownWidth="300dp"
-					android:scrollbarSize="40dp"
-					android:spinnerMode="dropdown"
-					tools:ignore="SpeakableTextPresentCheck" />
+					<LinearLayout
+						android:id="@+id/layout_reciverName"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:orientation="vertical">
 
-				<Space
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/RBlikCodeGenerator_spacer_Y" />
+						<TextView
+							android:id="@+id/RBlikCodeGenerator_recvierName_textView"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/RBlikCodeGenerator_textFieldY"
+							android:gravity="center"
+							android:text="@string/GUI_RBlikCodeGenerator_ReceiverNameTextView" />
 
-			</LinearLayout>
+						<EditText
+							android:id="@+id/RBlikCodeGenerator_reciverName_EditText"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
+							android:background="@color/white"
+							android:ems="10"
+							android:inputType="textPersonName"
+							android:maxLength="50"
+							android:textColor="@color/black"
+							android:textColorHint="@color/hintColor"
+							tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
-			<LinearLayout
-				android:id="@+id/layout_reciverName"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:orientation="vertical">
+						<Space
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/RBlikCodeGenerator_spacer_Y" />
 
-				<TextView
-					android:id="@+id/RBlikCodeGenerator_recvierName_textView"
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/RBlikCodeGenerator_textFieldY"
-					android:gravity="center"
-					android:text="@string/GUI_RBlikCodeGenerator_ReceiverNameTextView" />
+					</LinearLayout>
 
-				<EditText
-					android:id="@+id/RBlikCodeGenerator_reciverName_EditText"
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
-					android:ems="10"
-					android:inputType="textPersonName"
-					android:maxLength="50"
-					android:textColor="@color/black"
-					android:textColorHint="@color/hintColor"
-					tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+					<LinearLayout
+						android:id="@+id/layout_Amount"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:orientation="vertical">
 
-				<Space
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/RBlikCodeGenerator_spacer_Y" />
+						<TextView
+							android:id="@+id/RBlikCodeGenerator_Amount_TextView"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/RBlikCodeGenerator_textFieldY"
+							android:gravity="center"
+							android:text="@string/GUI_RBlikCodeGenerator_AmountOfTransferTextView" />
 
-			</LinearLayout>
+						<EditText
+							android:id="@+id/RBlikCodeGenerator_amount_editText"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
+							android:background="@color/white"
+							android:ems="10"
+							android:inputType="numberDecimal"
+							android:textColor="@color/black"
+							android:textColorHint="@color/hintColor"
+							tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
-			<LinearLayout
-				android:id="@+id/layout_Amount"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:orientation="vertical">
+						<Space
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/RBlikCodeGenerator_spacer_Y" />
 
-				<TextView
-					android:id="@+id/RBlikCodeGenerator_Amount_TextView"
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/RBlikCodeGenerator_textFieldY"
-					android:gravity="center"
-					android:text="@string/GUI_RBlikCodeGenerator_AmountOfTransferTextView" />
+					</LinearLayout>
 
-				<EditText
-					android:id="@+id/RBlikCodeGenerator_amount_editText"
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
-					android:ems="10"
-					android:inputType="numberDecimal"
-					android:textColor="@color/black"
-					android:textColorHint="@color/hintColor"
-					tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+					<LinearLayout
+						android:id="@+id/layout_Title"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:orientation="vertical">
 
-				<Space
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/RBlikCodeGenerator_spacer_Y" />
+						<TextView
+							android:id="@+id/RBlikCodeGenerator_transfTitle_textView"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/RBlikCodeGenerator_textFieldY"
+							android:gravity="center"
+							android:text="@string/GUI_RBlikCodeGenerator_TitleOfTransferTextView" />
 
-			</LinearLayout>
+						<EditText
+							android:id="@+id/RBlikCodeGenerator_transferTitle_EditText"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
+							android:background="@color/white"
+							android:ems="10"
+							android:inputType="textPersonName"
+							android:maxLength="50"
+							android:textColor="@color/black"
+							android:textColorHint="@color/black"
+							tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
-			<LinearLayout
-				android:id="@+id/layout_Title"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:orientation="vertical">
+						<Space
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/RBlikCodeGenerator_spacer_Y" />
 
-				<TextView
-					android:id="@+id/RBlikCodeGenerator_transfTitle_textView"
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/RBlikCodeGenerator_textFieldY"
-					android:gravity="center"
-					android:text="@string/GUI_RBlikCodeGenerator_TitleOfTransferTextView" />
+					</LinearLayout>
 
-				<EditText
-					android:id="@+id/RBlikCodeGenerator_transferTitle_EditText"
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
-					android:ems="10"
-					android:inputType="textPersonName"
-					android:maxLength="50"
-					android:textColor="@color/black"
-					android:textColorHint="@color/black"
-					tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+					<LinearLayout
+						android:id="@+id/layout_bankList"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical">
 
-				<Space
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/RBlikCodeGenerator_spacer_Y" />
+						<TextView
+							android:id="@+id/RBlikCodeGenerator_accountList_textView"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/RBlikCodeGenerator_textFieldY"
+							android:layout_gravity="fill_vertical|end"
+							android:gravity="center_horizontal"
+							android:text="@string/GUI_RBlikCodeGenerator_chooseAccountTextView" />
 
-			</LinearLayout>
+						<Spinner
+							android:id="@+id/RBlikCodeGenerator_accountList_Spinner"
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
+							android:background="@color/white"
+							android:dropDownWidth="300dp"
+							android:scrollbarSize="40dp"
+							android:spinnerMode="dropdown"
+							tools:ignore="SpeakableTextPresentCheck" />
 
-			<Space
-				android:layout_width="match_parent"
-				android:layout_height="1000dp"
-				android:layout_weight="1" />
+						<Space
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/RBlikCodeGenerator_spacer_Y" />
+
+					</LinearLayout>
+				</LinearLayout>
+			</ScrollView>
 
 			<Button
 				android:id="@+id/RBlikCodeGenerator_goNext_button"
 				android:layout_width="match_parent"
 				android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
 				android:text="@string/GUI_RBlikCodeGenerator_goNextButtonText" />
+
+			<Space
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
 
 		</LinearLayout>
 
