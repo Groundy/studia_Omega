@@ -90,6 +90,7 @@ class ApiConsts {
 
 		const val countryCodeLength = 2
 		const val responseOkCode = 200
+		const val limiExceededCode = 429
 	}
 
 }

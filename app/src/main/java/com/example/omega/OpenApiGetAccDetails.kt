@@ -11,6 +11,7 @@ import com.example.omega.ApiConsts.ApiReqFields.*
 
 class OpenApiGetAccDetails(var token: Token, activity: Activity) {
 	private var accountToSet: ArrayList<PaymentAccount> = ArrayList()
+	private var limitExceeded = false
 	private var callerActivity = activity
 
 	fun run(accNumbers: List<String>): Boolean {
@@ -22,6 +23,10 @@ class OpenApiGetAccDetails(var token: Token, activity: Activity) {
 
 		val success = getAccDetailsForAllAccounts(accNumbers)
 		if(!success) {
+			if(limitExceeded){
+				val msg = callerActivity.resources.getString(R.string.AccHistoryAct_UserMsg_TooManyResuest)
+				Utilities.showToast(callerActivity, msg)
+			}
 			Log.i(TagProduction, "getPaymentAccountDetails failed")
 			return false
 		}
@@ -77,6 +82,8 @@ class OpenApiGetAccDetails(var token: Token, activity: Activity) {
 		val response = OkHttpClient().newCall(request).execute()
 		if (response.code != ApiConsts.responseOkCode) {
 			ApiFunctions.LogResponseError(response, this.javaClass.name)
+			if(response.code == ApiConsts.limiExceededCode)
+				limitExceeded = true
 			return false
 		}
 		return try {
