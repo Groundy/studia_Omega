@@ -48,7 +48,7 @@
         <activity
             android:name=".BasicTransferActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="stateAlwaysVisible"/>
         <activity
             android:name=".PinActivity"
             android:exported="false"
