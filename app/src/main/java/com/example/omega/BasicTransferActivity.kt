@@ -11,7 +11,6 @@ import kotlin.math.floor
 import android.widget.*
 import com.example.omega.Utilities.Companion.TagProduction
 
-
 class BasicTransferActivity : AppCompatActivity() {
 	private lateinit var receiverNumberEditText : EditText
 	private lateinit var amountEditText : EditText
@@ -23,7 +22,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	private lateinit var receiverAccNbrDigitsHint : TextView
 
 	private lateinit var tokenCpy : Token
-	private lateinit var currentPaymentAccount: PaymentAccount
+	private var currentPaymentAccount: PaymentAccount? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -31,9 +30,18 @@ class BasicTransferActivity : AppCompatActivity() {
 		getToken()
 		findGuiElements()
 		setListenersToGuiElements()
-		fillListOfAccounts()
-	}
 
+		//todo tmp
+		/*
+		val ok = fillListOfAccounts()
+		if(ok){
+			finish()
+			return
+		}
+		*/
+
+		wookieTestFillTmpWidgets()
+	}
 
 	private fun setListenersToGuiElements(){
 		val amountEditTextListener = object :TextWatcher{
@@ -108,9 +116,12 @@ class BasicTransferActivity : AppCompatActivity() {
 			return
 		}
 
+		if(currentPaymentAccount==null)
+			return
+
 		if(accBalanceAfterTransfer >= 0){
 			val textBase = resources.getString(R.string.GUI_basicTransfer_amountAfterTransfer)
-			val accountCurrency = currentPaymentAccount.getCurrencyOfAccount()
+			val accountCurrency = currentPaymentAccount!!.getCurrencyOfAccount()
 			val textToSet = "$textBase $accBalanceAfterTransfer $accountCurrency"
 			amountAfterTransferTextView.text = textToSet
 			amountAfterTransferTextView.setTextColor(Color.BLACK)
@@ -147,7 +158,10 @@ class BasicTransferActivity : AppCompatActivity() {
 		return null
 	}
 	private fun getAccountBalanceAfterTransfer() : Double?{
-		val balance = currentPaymentAccount.getBalanceOfAccount()
+		if(currentPaymentAccount == null)
+			return null
+
+		val balance = currentPaymentAccount!!.getBalanceOfAccount()
 		if (balance==null){
 			Log.e(TagProduction, "[getAccountBalanceAfterTransfer/${this.javaClass.name}], error obtained null as balance of account")
 			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
@@ -158,12 +172,12 @@ class BasicTransferActivity : AppCompatActivity() {
 		val balanceAfterTransfer = balance - transferAmount
 		return floor(balanceAfterTransfer * 100) / 100 //trim decimal after 2 digits
 	}
-	private fun fillListOfAccounts(){
+	private fun fillListOfAccounts() : Boolean{
 		if(!tokenCpy.getDetailsOfAccountsFromBank(this)){
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivity(false,errorCodeTextToDisplay)
-			return
+			return false
 		}
 
 		val listOfAccountsFromToken = tokenCpy.getListOfAccountsToDisplay()
@@ -171,7 +185,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token return null or empty account list")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivity(false,errorCodeTextToDisplay)
-			return
+			return false
 		}
 
 		val adapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item)
@@ -179,6 +193,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			adapter.add(it)
 		}
 		spinner.adapter = adapter
+		return true
 	}
 	private fun finishThisActivity(success : Boolean, errorCode : String? = null){
 		if(errorCode!=null && !success)
@@ -191,18 +206,23 @@ class BasicTransferActivity : AppCompatActivity() {
 			Utilities.showToast(this, inputErrorText)
 			return
 		}
+		if(currentPaymentAccount==null)
+			return
 
-		val testTransferData = TransferData()
-		testTransferData.receiverAccNumber = receiverNumberEditText.text.toString()
-		testTransferData.receiverName = receiverNameEditText.text.toString()
-		testTransferData.senderAccName = currentPaymentAccount.getAccNumber()
-		testTransferData.senderAccName = currentPaymentAccount.getOwnerName()
-		testTransferData.amount = amountEditText.text.toString().toDouble()
-		testTransferData.description = transferTitle.text.toString()
-		testTransferData.currency = currentPaymentAccount.getCurrencyOfAccount()
+		val testTransferData = TransferData().also {
+			it.receiverAccNumber = receiverNumberEditText.text.toString()
+			it.receiverName = receiverNameEditText.text.toString()
+			it.senderAccName = currentPaymentAccount!!.getAccNumber()
+			it.senderAccName = currentPaymentAccount!!.getOwnerName()
+			it.amount = amountEditText.text.toString().toDouble()
+			it.description = transferTitle.text.toString()
+			it.currency = currentPaymentAccount!!.getCurrencyOfAccount()
+			it.executionTime = String()
+		}
+
 
 		val transferDataSerialized = testTransferData.toString()
-		if(transferDataSerialized.isNullOrEmpty()){
+		if(transferDataSerialized.isEmpty()){
 			finishThisActivity(false, getString(R.string.UserMsg_basicTransfer_unkownError))
 			return
 		}

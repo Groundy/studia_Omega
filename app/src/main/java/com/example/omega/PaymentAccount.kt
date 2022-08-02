@@ -7,7 +7,7 @@ import com.example.omega.PaymentAccount.Companion.AccountObjectFields.*
 import com.example.omega.PaymentAccount.Companion.OtherJsonFields.*
 
 class PaymentAccount() {
-    private companion object{
+    companion object{
         enum class BankResponseJsonFields(val text: String){
             AccountObj("account"),
             ResponseHeaderObj("responseHeader");
@@ -47,6 +47,16 @@ class PaymentAccount() {
 		    Description("description"),
 		    Value("value"),
 		    TypeOfRelation("typeOfRelation");
+		}
+	    fun wookieTestGetTestPaymentAccountForPaymentAct(): PaymentAccount {
+			return PaymentAccount().also {
+				it.accountNumber = "0123456789012345678901234567"
+				it.ownerName = "Ania Kowalska"
+				it.accountDescription = "Bank milion procent"
+				it.currency = "PLN"
+				it.availableBalance = 1234567.83
+
+			}
 		}
     }
 
@@ -93,8 +103,6 @@ class PaymentAccount() {
 			        bankAdressTmp = bankAdressTmp.plus(", ")
 			}
 
-
-
 	        ownerName = ownerNameTmp
             accountNumber = accountDetailsObj.getString(AccountNumber.text)
             accountDescription = accountDetailsObj.getJSONObject(AccountTypeObj.text).getString(Description.text)
@@ -104,7 +112,6 @@ class PaymentAccount() {
             bookingBalance = accountDetailsObj.getDouble(BookingBalance.text)
             accountHolder = accountDetailsObj.getString(AccountHolderType.text)
 	        psuRelations = psuRealtionsTmp
-
 
             bankName  = bankObj.getString(BankObjFields.Name.text)
             bankAdress = bankAdressTmp

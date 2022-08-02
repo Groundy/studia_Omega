@@ -33,7 +33,7 @@ class OpenApiDomesticPayment(activity: Activity, token: Token, transferData: Tra
 		enum class TransactionsObjFields(val text: String){
 			Description("description"),
 			Amount("amount"),
-			ExecutionDate("executionDate"),
+			ExecutionTate("executionTate"),
 			Currency("currency")
 		}
 		enum class TransactionsExtraInfoObjFields(val text: String){
@@ -88,7 +88,7 @@ class OpenApiDomesticPayment(activity: Activity, token: Token, transferData: Tra
 		val transferDataJsonObj = JSONObject()
 			transferDataJsonObj.put(TransactionsObjFields.Description.text, transferData.description)
 			transferDataJsonObj.put(TransactionsObjFields.Amount.text, transferData.amount)
-			transferDataJsonObj.put(TransactionsObjFields.ExecutionDate.text, transferData.executionDate)
+			transferDataJsonObj.put(TransactionsObjFields.ExecutionTate.text, transferData.executionTime)
 			transferDataJsonObj.put(TransactionsObjFields.Currency.text, transferData.currency)
 
 

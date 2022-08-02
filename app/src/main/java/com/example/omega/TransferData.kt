@@ -6,6 +6,32 @@ import com.example.omega.Utilities.Companion.TagProduction
 import org.json.JSONArray
 
 class TransferData() {
+	companion object{
+	enum class Fields(val text : String){
+		SenderAccNumber("senderAccNumber"),
+		ReceiverAccNumber("receiverAccNumber"),
+		ReceiverName("receiverName"),
+		Description("description"),
+		Amount("amount"),
+		Currency("currency"),
+		ExecutionTime("executionTime"),
+	}
+	fun developerGetTestObjWithFilledData() : TransferData{
+		val testTransferData = TransferData().also {
+			it.receiverAccNumber = "0123456789012345678901234567"
+			it.receiverName = "OdbiorcaName"
+			it.senderAccName = "0001112223334445556667778889"
+			it.senderAccName = "Nadawca"
+			it.amount = 12.34
+			it.description = "zwrot pożyczki"
+			it.currency = "PLN"
+			it.executionTime = OmegaTime.getCurrentTime()
+		}
+
+		return testTransferData
+	}
+}
+
 	var senderAccNumber : String? = null
 	var senderAccName : String? = null
 	var receiverAccNumber : String? = null
@@ -13,7 +39,7 @@ class TransferData() {
 	var description : String? = null
 	var amount : Double? = null
 	var currency : String? = null
-	var executionDate : String? = null//todo new
+	var executionTime : String? = null
 
 	constructor(jsonObj : JSONObject) : this(){
 		try {
@@ -23,20 +49,22 @@ class TransferData() {
 			description = jsonObj.getString(Fields.Description.text)
 			amount = jsonObj.getDouble(Fields.Amount.text)
 			currency = jsonObj.getString(Fields.Currency.text)
+			executionTime = jsonObj.getString(Fields.ExecutionTime.text)
 		}catch (e : Exception){
 			Log.e(TagProduction, "[constructor(json)/${this.javaClass.name}] error in constructing TransferDataObj from json")
 		}
 	}
 	constructor(serializedObject : String) : this(){
 		try{
-			val separator = ";;;"
-			val parts = serializedObject.split(separator)
-			senderAccNumber = parts[0]
-			receiverAccNumber = parts[1]
-			receiverName = parts[2]
-			description = parts[3]
-			amount = parts[4].toDouble()
-			currency = parts[5]
+			val obj = JSONObject(serializedObject)
+			senderAccNumber = obj.getString(Fields.SenderAccNumber.text)
+			senderAccName = obj.getString(Fields.SenderAccNumber.text)
+			receiverAccNumber = obj.getString(Fields.ReceiverAccNumber.text)
+			receiverName = obj.getString(Fields.ReceiverName.text)
+			description = obj.getString(Fields.Description.text)
+			amount = obj.getDouble(Fields.Amount.text)
+			currency = obj.getString(Fields.Currency.text)
+			executionTime = obj.getString(Fields.ExecutionTime.text)
 		}
 		catch (e : Exception){
 			Log.e(TagProduction, "Error in creating transferDataObject from serialized data! [$e]")
@@ -55,12 +83,14 @@ class TransferData() {
 	}
 	private fun toJsonObject() : JSONObject{
 		return JSONObject()
-			.put(Fields.SenderAccNumber.text,senderAccNumber)
-			.put(Fields.ReceiverAccNumber.text,receiverAccNumber)
-			.put(Fields.ReceiverName.text,receiverName)
-			.put(Fields.Description.text,description)
-			.put(Fields.Amount.text,amount)
+			.put(Fields.SenderAccNumber.text, senderAccNumber?: String())
+			.put(Fields.ReceiverAccNumber.text, receiverAccNumber)
+			.put(Fields.ReceiverName.text, receiverName)
+			.put(Fields.Description.text, description)
+			.put(Fields.Amount.text, amount)
 			.put(Fields.Currency.text, currency)
+			.put(Fields.ExecutionTime.text, executionTime)
+
 	}
 	private fun validateTransferData() : Boolean{
 		val objectWrong =
@@ -100,27 +130,7 @@ class TransferData() {
 
 		return true
 	}
-	companion object{
-		enum class Fields(val text : String){
-			SenderAccNumber("senderAccNumber"),
-			ReceiverAccNumber("receiverAccNumber"),
-			ReceiverName("receiverName"),
-			Description("description"),
-			Amount("amount"),
-			Currency("currency"),
-		}
-		fun developerGetTestObjWithFilledData() : TransferData{
-			val testTransferData = TransferData()
-			testTransferData.receiverAccNumber = "0123456789012345678901234567"
-			testTransferData.receiverName = "OdbiorcaName"
-			testTransferData.senderAccName = "0001112223334445556667778889"
-			testTransferData.senderAccName = "Nadawca"
-			testTransferData.amount = 12.34
-			testTransferData.description = "zwrot pożyczki"
-			testTransferData.currency = "PLN"
-			return testTransferData
-		}
-	}
+
 
 
 	fun getSenderNameAsJsonObjForDomesticPayment() : JSONObject{
