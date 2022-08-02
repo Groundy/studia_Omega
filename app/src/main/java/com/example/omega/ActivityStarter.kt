@@ -102,25 +102,21 @@ class ActivityStarter {
 		}
 		fun openDialogWithDefinedPurpose(activity: Activity, purpose : YesNoDialogActivity.Companion.DialogPurpose){
 			val yesNoDialog = Intent(activity, YesNoDialogActivity::class.java)
-			var msgToDisplay = String()
-			var retCode = 0
-			when(purpose){
-				YesNoDialogActivity.Companion.DialogPurpose.CancelBioAuth ->{
-					retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_CancelBioAuth)
-					msgToDisplay = activity.getString(R.string.DIALOG_GUI_CancelBioAuthMsgText)
-				}
-				YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl ->{
-					retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage)
-					msgToDisplay = activity.getString(R.string.DIALOG_GUI_AskForChangeOptionsForAccountsInBankWebPage_TEXT)
-
-				}
-				YesNoDialogActivity.Companion.DialogPurpose.LoginToBankAccount ->{
-					retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank)
-					msgToDisplay = activity.getString(R.string.DIALOG_GUI_AskUserIfHeWantToLoginToBank_TEXT)
-				}
+			var retCode = when(purpose){
+				YesNoDialogActivity.Companion.DialogPurpose.CancelBioAuth ->
+					activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_CancelBioAuth)
+				YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl ->
+					activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage)
+				YesNoDialogActivity.Companion.DialogPurpose.LoginToBankAccount ->
+					activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank)
+				YesNoDialogActivity.Companion.DialogPurpose.ResetPin ->
+					activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ResetPin)
+				else->
+					0
 			}
-			val field = activity.getString(R.string.ACT_COM_DIALOG_TextToDisplay_FIELDNAME)
-			yesNoDialog.putExtra(field,msgToDisplay)
+
+			val purposeField = activity.getString(R.string.ACT_COM_DIALOG_PURPOSE_FIELDNAME)
+			yesNoDialog.putExtra(purposeField,purpose.text)
 			activity.startActivityForResult(yesNoDialog, retCode)
 		}
 		fun openAccountTransfersHistoryActivity(callerActivity: Activity) {

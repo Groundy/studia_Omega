@@ -64,6 +64,7 @@
 	<string name="DIALOG_GUI_CancelBioAuthMsgText">Czy chcesz anulować uwierzytelnianie za pomocą linii papilarnych?</string>
 	<string name="DIALOG_GUI_AskForChangeOptionsForAccountsInBankWebPage_TEXT">Udzielono już takich zgód, czy chcesz zalogować się do banku w celu zmian kont ich dotyczących?</string>
 	<string name="DIALOG_GUI_AskUserIfHeWantToLoginToBank_TEXT">Ta operacja wymaga ponownego zalogowania się do banku, czy chcesz to teraz zrobić?</string>
+	<string name="DIALOG_GUI_ResetPin_Text">Reset pinu aplikacji wymaga cofnięcia udzielonych zgód, czy chcesz kontynuować?</string>
 	<string name="DIALOG_GUI_DefaultMsgText">Text który powinnien zostać zastąpiony pytaniem</string>
 	<string name="DIALOG_GUI_YES">TAK</string>
 	<string name="DIALOG_GUI_No">NIE</string>
