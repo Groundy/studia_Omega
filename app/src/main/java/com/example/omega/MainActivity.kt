@@ -4,6 +4,7 @@ package com.example.omega
 //  Ctrl + B go to definition
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
@@ -20,7 +21,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
 import com.google.firebase.FirebaseApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -31,10 +31,6 @@ import com.karumi.dexter.listener.single.PermissionListener
 import com.example.omega.Utilities.Companion.TagProduction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.omega.BankLoginWebPageActivity.Companion.WebActivtyRedirect
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import okhttp3.OkHttpClient
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 	private var nfcCapturingIsOn = false
@@ -47,8 +43,6 @@ class MainActivity : AppCompatActivity() {
 		initGUI()
 		startNfcOnStartIfUserWishTo()
 		getToken(WebActivtyRedirect.None)
-		//developerTesst()
-		//developerInitaialFun()
 	}
 
 	//Menus
@@ -65,7 +59,6 @@ class MainActivity : AppCompatActivity() {
 		}
 		return true
 	}
-
 
 	//Results
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -211,47 +204,20 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	//Other
-	private fun developerInitaialFun(){
-		val tmpTest = 3
+	private fun getToken(redirectPlace : WebActivtyRedirect){
 		val token = PreferencesOperator.getToken(this)
-		val g = token.toString()
 		val tokenOk = token.isOk(this)
-		if(!tokenOk)
+		if(tokenOk)
 			return
-		//val transferData = TransferData.developerGetTestObjWithFilledData()
-		//ApiDomesticPayment(this, token, transferData).run()
-	}
-	private fun getToken(redirectPlace : WebActivtyRedirect) : Boolean{
-		val token = PreferencesOperator.getToken(this)
-		val tokenOk = token.isOk(this)
-		if(!tokenOk){
-			val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
-			PreferencesOperator.clearAuthData(this)
-			val authOk = ApiAuthorize(this, obj).run(ApiConsts.ScopeValues.Ais)
-			if(!authOk)
-				return true
-			ActivityStarter.openBrowserForLogin(this, redirectPlace)
-			return false
-		}
-		return true
-	}
-	private fun developerTesst(){
-		val body = JSONObject()
-		val request = ApiFunctions.bodyToRequest(ApiConsts.BankUrls.Test, body, ApiFunctions.getUUID())
-		val thread = Thread{
-			try{
-				val response = OkHttpClient().newCall(request).execute()
-				val responseBody = response.body?.string()
-				val responseJsonObject = JSONObject(responseBody!!)
-				responseJsonObject
-			}catch (e : Exception){
-				Log.e(TagProduction,"[sendRequest/${this.javaClass.name}] Error catch $e")
-			}
-		}
-		thread.start()
-		thread.join(3000L)
-		val ttt = 3
 
+		val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
+		PreferencesOperator.clearAuthData(this)
+		val authOk = ApiAuthorize(this, obj).run(ApiConsts.ScopeValues.Ais)
+		if(!authOk){
+			Utilities.showToast(this, "Nie udało się automatycznie pobrać tokenu.")
+			return
+		}
+		ActivityStarter.openBrowserForLogin(this, redirectPlace)
 	}
 	private fun processCode(code: Int) {
 		val codeField = findViewById<EditText>(R.id.MainAct_enterCodeField)
@@ -263,6 +229,7 @@ class MainActivity : AppCompatActivity() {
 		}
 		ActivityStarter.startTransferSummaryActivity(this, transferData.toString())
 	}
+	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun initGUI() {
 		val codeFieldTextListener = object : TextWatcher {
 			override fun afterTextChanged(s: Editable) {
@@ -309,6 +276,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	//NFC
+	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun turnNfcOn(){
 		Log.d(TagProduction, "Nfc turning On started")
 
@@ -320,6 +288,7 @@ class MainActivity : AppCompatActivity() {
 		button.icon = onIco
 		nfcCapturingIsOn = true
 	}
+	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun turnNfcOff(){
 		Log.d(TagProduction, "Nfc turning Off started")
 		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
@@ -330,6 +299,7 @@ class MainActivity : AppCompatActivity() {
 		button.icon = offIco
 		nfcCapturingIsOn = false
 	}
+	@SuppressLint("UnspecifiedImmutableFlag")
 	private fun turnForegroundDispatchOn(){
 		val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 
@@ -373,7 +343,7 @@ class MainActivity : AppCompatActivity() {
 			val tagFromIntent: Tag? = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
 			if(tagFromIntent == null){
 				Utilities.showToast(this, "Wykryto pusty tag NFCC")
-				null
+				return
 			}
 
 			val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
@@ -381,27 +351,25 @@ class MainActivity : AppCompatActivity() {
 			val tagData = String(relayRecord.payload)
 			val tagDataExpectedLength = 6//format UNKOWN_BYTE,LAUNGAGE BYTES(probably 2 bytes), CODE
 			if(tagData.count() < tagDataExpectedLength)
-				null
+				return
 
 			val codeFromIntent = tagData.takeLast(6).toIntOrNull()
 			val codeOk = codeFromIntent != null && codeFromIntent in 0..999999
-
-			if(codeOk) {
-				Log.i(TagProduction, "NFC TAG data found:$tagData")
-				codeFromIntent
-			}
-			else{
+			if(!codeOk){
 				Utilities.showToast(this, "Wykryto nieprawidłowy NFCC")
-				null
+				return
 			}
+
+
+			Log.i(TagProduction, "NFC TAG data found:$tagData")
+			codeFromIntent
 		}catch (e : Exception){
 			Log.e(TagProduction,"Error in cathing NFC tag $e")
 			null
 		}
-		if(code == null)
-			return
 
-		processCode(code.toInt())
+		if(code!=null)
+			processCode(code)
 	}
 	override fun onPause() {
 		super.onPause()
