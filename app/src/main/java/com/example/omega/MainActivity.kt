@@ -1,4 +1,7 @@
 package com.example.omega
+//  Minimize: CTRL + SHIFT + '-'
+//  Expand:   CTRL + SHIFT + '+'
+//  Ctrl + B go to definition
 
 import android.Manifest
 import android.app.PendingIntent
@@ -17,6 +20,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario.launch
 import com.google.firebase.FirebaseApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -27,15 +31,13 @@ import com.karumi.dexter.listener.single.PermissionListener
 import com.example.omega.Utilities.Companion.TagProduction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.omega.BankLoginWebPageActivity.Companion.WebActivtyRedirect
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import org.json.JSONObject
 
-//  Minimize: CTRL + SHIFT + '-'
-//  Expand:   CTRL + SHIFT + '+'
-//  Ctrl + B go to definition
-
 class MainActivity : AppCompatActivity() {
-	private var nfcSignalCatchingIsOn: Boolean = false
+	private var nfcCapturingIsOn = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -43,22 +45,14 @@ class MainActivity : AppCompatActivity() {
 		FirebaseApp.initializeApp(this)
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
+		startNfcOnStartIfUserWishTo()
 	//	developerTesst()
 	//	if(!getTokenOnAppStart())
 	//		return
 	//	developerInitaialFun()
 	}
-	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-		super.onActivityResult(requestCode, resultCode, data)
-		when(requestCode){
-			resources.getInteger(R.integer.ACT_RETCODE_QrScanner) -> qrScannerActivityResult(resultCode, data)
-			resources.getInteger(R.integer.ACT_RETCODE_FINGER) ->fingerAuthActivityResult(resultCode, data)
-			resources.getInteger(R.integer.ACT_RETCODE_PIN_SET) ->pinActivityResult(resultCode)
-			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW) ->webViewActivityResult(resultCode, data)
-			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> resetPermissionActivityResult(resultCode, data)
-			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank) -> dialogIfUserWantToResetBankAuthResult(resultCode)
-		}
-	}
+
+	//Menus
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.main_app_menu, menu)
 		return super.onCreateOptionsMenu(menu)
@@ -72,136 +66,20 @@ class MainActivity : AppCompatActivity() {
 		}
 		return true
 	}
-	override fun onNewIntent(intent: Intent){
-		super.onNewIntent(intent)
-		nfcIntentGet(intent)
-	}
 
-	private fun processCode(code: Int) {
-		val codeField = findViewById<EditText>(R.id.MainAct_enterCodeField)
-		codeField.text.clear()
-		val transferData = Utilities.checkBlikCode(code)
-		if(transferData == null){
-			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_WRONG_CODE)
-			return
-		}
-		ActivityStarter.startTransferSummaryActivity(this, transferData.toString())
-	}
-	private fun checkIfNfcIsTurnedOnPhone(): Boolean {
-		val deviceHasNfc = this.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
-		if (!deviceHasNfc) {
-			Log.e(TagProduction, "[checkIfNfcIsTurnedOnPhone/${this.javaClass.name}]There's no NFC hardware on user's phone")
-			Utilities.showToast(this, resources.getString(R.string.NFC_UserMsg_NoHardwareSupport))
-			return false
-		}
 
-		val permissionListener = object : PermissionListener {
-			override fun onPermissionGranted(response: PermissionGrantedResponse?) {}
-			override fun onPermissionDenied(response: PermissionDeniedResponse?) {
-				Utilities.showToast(
-					this@MainActivity,
-					resources.getString(R.string.NFC_UserMsg_NeedPermission)
-				)
-				Log.e(TagProduction, "User denied permission to use NFC")
-			}
-
-			override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
-				token!!.continuePermissionRequest()
-			}
-		}
-		Dexter.withActivity(this).withPermission(Manifest.permission.NFC)
-			.withListener(permissionListener).check()
-		val permissionNfcDenied = checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_DENIED
-		if (permissionNfcDenied) {
-			Log.e(TagProduction, "There's no permission to use")
-			val displayMsg = resources.getString(R.string.NFC_UserMsg_NeedPermission)
-			Utilities.showToast(this, displayMsg)
-			return false
-		}
-		val manager = this.getSystemService(NFC_SERVICE) as NfcManager
-		val nfcIsOn = manager.defaultAdapter.isEnabled
-		if (!nfcIsOn) {
-			val displayMsg = resources.getString(R.string.NFC_UserMsg_TurnOff)
-			Utilities.showToast(this, displayMsg)
-			Log.e(TagProduction, "User denied permission to use NFC")
-			return false
-		}
-		return true
-	}
-	private fun switchNfcSignalCatching() {
-		val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-		if(nfcSignalCatchingIsOn){
-			nfcAdapter?.disableForegroundDispatch(this)
-			nfcSignalCatchingIsOn = false
-			return
-		}
-
-		val intent = Intent(applicationContext, this.javaClass)
-		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-
-		val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, 0)
-		val filters = arrayOfNulls<IntentFilter>(1)
-		val techList = arrayOf<Array<String>>()
-
-		filters[0] = IntentFilter()
-		with(filters[0]) {
-			this?.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED)
-			this?.addCategory(Intent.CATEGORY_DEFAULT)
-			this?.addDataType("text/plain")
-		}
-		nfcAdapter?.enableForegroundDispatch(this, pendingIntent, filters, techList)
-		nfcSignalCatchingIsOn = true
-	}
-	private fun initGUI() {
-		val codeFieldTextListener = object : TextWatcher {
-			override fun afterTextChanged(s: Editable) {
-				if (s.length == 6) {
-					val code = s.toString().toInt()
-					if (code in 0..999999)
-						processCode(code)
-				}
-			}
-			override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-			override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-		}
-		val codeField = findViewById<EditText>(R.id.MainAct_enterCodeField)
-		codeField.addTextChangedListener(codeFieldTextListener)
-		codeField.requestFocus()
-
-		val listner = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-			when(item.itemId){
-				R.id.AccHistoryTab-> accHistoryTabClicked()
-				R.id.TransferTab ->	basicTransferTabCliked()
-				R.id.GenerateBlikCodeTab -> generateRBlickCodeClicked()
-				R.id.NfcTab -> nfcButtonClicked()
-				R.id.QrScannerTab->qrScannerTabClicked()
-			}
-			true
-		}
-		val firstBar = findViewById<BottomNavigationView>(R.id.MainAct_firstBar)
-		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
-		firstBar.setOnNavigationItemSelectedListener(listner)
-		secondBar.setOnNavigationItemSelectedListener(listner)
-
-		//te funkcje są po to aby ikoni pojawiały się czarne a nie białe
-		firstBar.itemIconTintList = null
-		secondBar.itemIconTintList = null
-		firstBar.menu.findItem(R.id.AccHistoryTab).icon = getDrawable(R.drawable.ico_history)
-		firstBar.menu.findItem(R.id.GenerateBlikCodeTab).icon = getDrawable(R.drawable.ico_qr)
-		firstBar.menu.findItem(R.id.TransferTab).icon = getDrawable(R.drawable.ico_payment)
-		secondBar.menu.findItem(R.id.NfcTab).icon = getDrawable(R.drawable.ico_nfc_off)
-		secondBar.menu.findItem(R.id.ToImplementTab).icon = getDrawable(R.drawable.ico_cancel)
-		secondBar.menu.findItem(R.id.QrScannerTab).icon = getDrawable(R.drawable.ico_qr_scanner)
-	}
-	private fun startNfcOnStartIfUserWishTo(){
-		//TODO ten kod mimo iż jest kopią kodu z przycisku włączającego wyłączającego, ale nie chce się uruchomić automatycznie
-		val turnNfcOnAppStart = PreferencesOperator.readPrefBool(this, R.bool.PREF_turnNfcOnAppStart)
-		if(turnNfcOnAppStart && !nfcSignalCatchingIsOn){
-			//findViewById<Button>(R.id.MainAct_nfcButton).setBackgroundResource(R.drawable.nfc_on_icon) //todo
-			switchNfcSignalCatching()
+	//Results
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		when(requestCode){
+			resources.getInteger(R.integer.ACT_RETCODE_QrScanner) -> qrScannerActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_FINGER) ->fingerAuthActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_PIN_SET) ->pinActivityResult(resultCode)
+			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW) ->webViewActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> resetPermissionActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank) -> dialogIfUserWantToResetBankAuthResult(resultCode)
 		}
 	}
-	//Intents
 	private fun resetPermissionActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode != RESULT_OK){
 			Log.i(TagProduction, "Canceled getting authUrl")
@@ -310,55 +188,13 @@ class MainActivity : AppCompatActivity() {
 			processCode(returnedCode)
 
 	}
-	private fun nfcIntentGet(intent: Intent){
-		val tagFromIntent: Tag? = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
-		if(tagFromIntent == null){
-			Utilities.showToast(this, "Wykryto pusty tag NFCC")
-		}
-		val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
-		val relayRecord = (rawMsgs!![0] as NdefMessage).records[0]
-		val tagData = String(relayRecord.payload)
-
-		val tagDataExpectedLength = 6//format UNKOWN_BYTE,LAUNGAGE BYTES(probably 2 bytes), CODE
-		if(tagData.count() < tagDataExpectedLength)
-			return
-		val code = tagData.takeLast(6).toIntOrNull()
-		val codeOk = code != null && code in 0..999999
-		if(!codeOk){
-			Utilities.showToast(this, "Wykryto pusty tag NFCC")
-			return
-		}
-
-		Log.i(TagProduction, "NFC TAG data found:$tagData")
-		processCode(code!!.toInt())
-	}
 	private fun dialogIfUserWantToResetBankAuthResult(resultCode: Int){
 		if(resultCode != RESULT_OK)
 			return
 		ActivityStarter.startResetPermissionsActivity(this)
 	}
 
-
-	private fun nfcButtonClicked(){
-		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
-		secondBar.backgroundTintList = null
-		val button = secondBar.menu.findItem(R.id.NfcTab)
-
-		val nfcIsTurnedOnOnPhone = checkIfNfcIsTurnedOnPhone()
-		if (!nfcSignalCatchingIsOn && nfcIsTurnedOnOnPhone) {//Turn on
-			val deviceHasNfcService = NfcAdapter.getDefaultAdapter(this) != null
-			if(!deviceHasNfcService)
-				return
-			val onIco = getDrawable(R.drawable.ico_nfc_on)
-			button.icon = onIco
-			switchNfcSignalCatching()
-		}
-		else if (nfcSignalCatchingIsOn) {//Turn off
-			val offIco = getDrawable(R.drawable.ico_nfc_off)
-			button.icon = offIco
-			switchNfcSignalCatching()
-		}
-	}
+	//OptionsClicked
 	private fun basicTransferTabCliked(){
 		getToken(WebActivtyRedirect.Payment)
 		ActivityStarter.startTransferActivityFromMenu(this)
@@ -375,6 +211,7 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startQrScannerActivity(this)
 	}
 
+	//Other
 	private fun developerInitaialFun(){
 		val tmpTest = 3
 		val token = PreferencesOperator.getToken(this)
@@ -417,6 +254,207 @@ class MainActivity : AppCompatActivity() {
 		thread.join(3000L)
 		val ttt = 3
 
+	}
+	private fun processCode(code: Int) {
+		val codeField = findViewById<EditText>(R.id.MainAct_enterCodeField)
+		codeField.text.clear()
+		val transferData = Utilities.checkBlikCode(code)
+		if(transferData == null){
+			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_WRONG_CODE)
+			return
+		}
+		ActivityStarter.startTransferSummaryActivity(this, transferData.toString())
+	}
+	private fun initGUI() {
+		val codeFieldTextListener = object : TextWatcher {
+			override fun afterTextChanged(s: Editable) {
+				if (s.length == 6) {
+					val code = s.toString().toInt()
+					if (code in 0..999999)
+						processCode(code)
+				}
+			}
+			override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+			override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+		}
+		val codeField = findViewById<EditText>(R.id.MainAct_enterCodeField)
+		codeField.addTextChangedListener(codeFieldTextListener)
+		codeField.requestFocus()
+
+		val listner = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+			when(item.itemId){
+				R.id.AccHistoryTab-> accHistoryTabClicked()
+				R.id.TransferTab ->	basicTransferTabCliked()
+				R.id.GenerateBlikCodeTab -> generateRBlickCodeClicked()
+				R.id.NfcTab -> nfcButtonClicked()
+				R.id.QrScannerTab->qrScannerTabClicked()
+			}
+			true
+		}
+		val firstBar = findViewById<BottomNavigationView>(R.id.MainAct_firstBar)
+		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
+		firstBar.setOnNavigationItemSelectedListener(listner)
+		secondBar.setOnNavigationItemSelectedListener(listner)
+
+		//te funkcje są po to aby ikoni pojawiały się czarne a nie białe
+		firstBar.itemIconTintList = null
+		secondBar.itemIconTintList = null
+		firstBar.menu.findItem(R.id.AccHistoryTab).icon = getDrawable(R.drawable.ico_history)
+		firstBar.menu.findItem(R.id.GenerateBlikCodeTab).icon = getDrawable(R.drawable.ico_qr)
+		firstBar.menu.findItem(R.id.TransferTab).icon = getDrawable(R.drawable.ico_payment)
+		secondBar.menu.findItem(R.id.NfcTab).icon = if(nfcCapturingIsOn)
+			getDrawable(R.drawable.ico_nfc_on)
+		else
+			getDrawable(R.drawable.ico_nfc_off)
+		secondBar.menu.findItem(R.id.ToImplementTab).icon = getDrawable(R.drawable.ico_cancel)
+		secondBar.menu.findItem(R.id.QrScannerTab).icon = getDrawable(R.drawable.ico_qr_scanner)
+	}
+
+	//NFC
+	private fun turnNfcOn(){
+		Log.d(TagProduction, "Nfc turning On started")
+
+		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
+		val button = secondBar.menu.findItem(R.id.NfcTab)
+
+		turnForegroundDispatchOn()
+		val onIco = getDrawable(R.drawable.ico_nfc_on)
+		button.icon = onIco
+		nfcCapturingIsOn = true
+	}
+	private fun turnNfcOff(){
+		Log.d(TagProduction, "Nfc turning Off started")
+		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
+		val button = secondBar.menu.findItem(R.id.NfcTab)
+		val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+		nfcAdapter.disableForegroundDispatch(this)
+		val offIco = getDrawable(R.drawable.ico_nfc_off)
+		button.icon = offIco
+		nfcCapturingIsOn = false
+	}
+	private fun turnForegroundDispatchOn(){
+		val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+
+		val intent = Intent(this, this.javaClass)
+			.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+
+		val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+
+		val intentFiltersArray = arrayOf(
+			IntentFilter().also {
+				it.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED)
+				it.addCategory(Intent.CATEGORY_DEFAULT)
+				it.addDataType("text/plain")
+			}
+		)
+		val techListEmptyArray = arrayOf<Array<String>>()
+
+		nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListEmptyArray)
+	}
+	private fun startNfcOnStartIfUserWishTo(){
+		val turnOnNfcOnStart = PreferencesOperator.readPrefBool(this, R.bool.PREF_turnNfcOnAppStart)
+		if(!turnOnNfcOnStart)
+			return
+
+		if(nfcCapturingIsOn)
+			return
+
+		mainExecutor.execute{
+			turnNfcOn()
+		}
+	}
+	private fun nfcButtonClicked(){
+		val nfcIsTurnedOnOnPhone = checkIfNfcIsTurnedOnPhone()
+		if (!nfcCapturingIsOn && nfcIsTurnedOnOnPhone)
+			turnNfcOn()
+		else if (nfcCapturingIsOn)
+			turnNfcOff()
+	}
+	private fun nfcIntentGet(intent: Intent){
+		val code : Int? = try {
+			val tagFromIntent: Tag? = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
+			if(tagFromIntent == null){
+				Utilities.showToast(this, "Wykryto pusty tag NFCC")
+				null
+			}
+
+			val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+			val relayRecord = (rawMsgs!![0] as NdefMessage).records[0]
+			val tagData = String(relayRecord.payload)
+			val tagDataExpectedLength = 6//format UNKOWN_BYTE,LAUNGAGE BYTES(probably 2 bytes), CODE
+			if(tagData.count() < tagDataExpectedLength)
+				null
+
+			val codeFromIntent = tagData.takeLast(6).toIntOrNull()
+			val codeOk = codeFromIntent != null && codeFromIntent in 0..999999
+
+			if(codeOk) {
+				Log.i(TagProduction, "NFC TAG data found:$tagData")
+				codeFromIntent
+			}
+			else{
+				Utilities.showToast(this, "Wykryto nieprawidłowy NFCC")
+				null
+			}
+		}catch (e : Exception){
+			Log.e(TagProduction,"Error in cathing NFC tag $e")
+			null
+		}
+		if(code == null)
+			return
+
+		processCode(code.toInt())
+	}
+	override fun onPause() {
+		super.onPause()
+		if(nfcCapturingIsOn)
+			turnNfcOff()
+	}
+	private fun checkIfNfcIsTurnedOnPhone(): Boolean {
+		val deviceHasNfc = this.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
+		if (!deviceHasNfc) {
+			Log.e(TagProduction, "[checkIfNfcIsTurnedOnPhone/${this.javaClass.name}]There's no NFC hardware on user's phone")
+			Utilities.showToast(this, resources.getString(R.string.NFC_UserMsg_NoHardwareSupport))
+			return false
+		}
+
+		val permissionListener = object : PermissionListener {
+			override fun onPermissionGranted(response: PermissionGrantedResponse?) {}
+			override fun onPermissionDenied(response: PermissionDeniedResponse?) {
+				Utilities.showToast(
+					this@MainActivity,
+					resources.getString(R.string.NFC_UserMsg_NeedPermission)
+				)
+				Log.e(TagProduction, "User denied permission to use NFC")
+			}
+
+			override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
+				token!!.continuePermissionRequest()
+			}
+		}
+		Dexter.withActivity(this).withPermission(Manifest.permission.NFC)
+			.withListener(permissionListener).check()
+		val permissionNfcDenied = checkSelfPermission(Manifest.permission.NFC) == PackageManager.PERMISSION_DENIED
+		if (permissionNfcDenied) {
+			Log.e(TagProduction, "There's no permission to use")
+			val displayMsg = resources.getString(R.string.NFC_UserMsg_NeedPermission)
+			Utilities.showToast(this, displayMsg)
+			return false
+		}
+
+		val manager = this.getSystemService(NFC_SERVICE) as NfcManager
+		val nfcIsOn = manager.defaultAdapter.isEnabled
+		if (!nfcIsOn) {
+			val displayMsg = resources.getString(R.string.NFC_UserMsg_TurnOff)
+			Utilities.showToast(this, displayMsg)
+			Log.e(TagProduction, "User denied permission to use NFC")
+			return false
+		}
+		return true
+	}
+	override fun onNewIntent(intent: Intent){
+		super.onNewIntent(intent)
+		nfcIntentGet(intent)
 	}
 
 }
