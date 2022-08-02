@@ -9,7 +9,7 @@ import java.lang.Exception
 import com.example.omega.ApiConsts.ApiReqFields
 import com.example.omega.ApiConsts.ScopeValues
 
-class ApiRefreshToken(private val refreshToken : String) {
+class OpenApiRefreshToken(private val refreshToken : String) {
 
 	fun run() : JSONObject?{
 		Log.i(Utilities.TagProduction, "refresh token started")

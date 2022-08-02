@@ -12,7 +12,7 @@ import com.example.omega.Utilities.Companion.TagProduction
 import kotlin.Exception
 
 
-class ApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
+class OpenApiAuthorize(activity: Activity, permisionListObject : PermissionList) {
 	private var permissionsList : PermissionList = permisionListObject
 	private var callerActivity : Activity = activity
 	private var stateValue = ApiFunctions.getRandomStateValue()

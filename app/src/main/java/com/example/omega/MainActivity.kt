@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
 		val permissionListObject = PermissionList(serializedPermissionList)
 		PreferencesOperator.clearAuthData(this)
-		ApiAuthorize(this, permissionListObject).run(ApiConsts.ScopeValues.Ais)
+		OpenApiAuthorize(this, permissionListObject).run(ApiConsts.ScopeValues.Ais)
 
 		val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
 		val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
 		if(resultCode != RESULT_OK)
 			return
 
-		val success = ApiGetToken(this).run()
+		val success = OpenApiGetToken(this).run()
 		if (!success){
 			val userMsg = getString(R.string.UserMsg_Banking_errorObtaingToken)
 			Utilities.showToast(this, userMsg)
@@ -212,7 +212,7 @@ class MainActivity : AppCompatActivity() {
 
 		val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 		PreferencesOperator.clearAuthData(this)
-		val authOk = ApiAuthorize(this, obj).run(ApiConsts.ScopeValues.Ais)
+		val authOk = OpenApiAuthorize(this, obj).run(ApiConsts.ScopeValues.Ais)
 		if(!authOk){
 			Utilities.showToast(this, "Nie udało się automatycznie pobrać tokenu.")
 			return

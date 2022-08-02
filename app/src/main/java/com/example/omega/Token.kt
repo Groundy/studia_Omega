@@ -120,7 +120,7 @@ class Token() {
 
 
 		val refreshToken = this.refreshToken!!
-		val newTokenObj = ApiRefreshToken(refreshToken).run()
+		val newTokenObj = OpenApiRefreshToken(refreshToken).run()
 		if(newTokenObj == null){
 			val logMsg = "[refreshIFneeded/${this.javaClass.name}] cant refresh"
 			Log.e(TagProduction, logMsg)
@@ -156,7 +156,7 @@ class Token() {
 			val accountNumbers = getListOfAccountsNumbers()
 			if(accountNumbers.isNullOrEmpty())
 				return false
-			val successfulyObtainedAccountDetails = ApiGetPaymentAccDetails(this, activity).run(accountNumbers)
+			val successfulyObtainedAccountDetails = OpenApiGetAccDetails(this, activity).run(accountNumbers)
 			successfulyObtainedAccountDetails
 		}catch (e : Exception){
 			Log.e(TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json wrong struct")

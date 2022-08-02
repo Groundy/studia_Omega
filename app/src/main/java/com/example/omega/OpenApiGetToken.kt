@@ -9,7 +9,7 @@ import java.lang.Exception
 import com.example.omega.Utilities.Companion.TagProduction
 import com.example.omega.ApiConsts.ApiReqFields.*
 
-class ApiGetToken(activity: Activity) {
+class OpenApiGetToken(activity: Activity) {
 	private var callerActivity = activity
 
 	fun run() : Boolean{

@@ -9,7 +9,7 @@ import java.lang.Exception
 import com.example.omega.Utilities.Companion.TagProduction
 import com.example.omega.ApiConsts.ApiReqFields.*
 
-class ApiGetPaymentAccDetails(var token: Token, activity: Activity) {
+class OpenApiGetAccDetails(var token: Token, activity: Activity) {
 	private var accountToSet: ArrayList<PaymentAccount> = ArrayList()
 	private var callerActivity = activity
 

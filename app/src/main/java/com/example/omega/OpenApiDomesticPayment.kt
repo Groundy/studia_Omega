@@ -9,7 +9,7 @@ import com.example.omega.ApiConsts.ApiReqFields.*
 import okhttp3.OkHttpClient
 import org.json.JSONArray
 
-class ApiDomesticPayment(activity: Activity, token: Token, transferData: TransferData) {
+class OpenApiDomesticPayment(activity: Activity, token: Token, transferData: TransferData) {
 	private val callerActivity = activity
 	private val token = token
 	private val transferData = transferData
