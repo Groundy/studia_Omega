@@ -41,17 +41,19 @@ class TransferSummary : AppCompatActivity() {
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 
-		val isAuthCode =
+		val retCodeisAuthCode =
 			(requestCode == this.resources.getInteger(R.integer.ACT_RETCODE_PIN_AUTH)) ||
 			(requestCode == this.resources.getInteger(R.integer.ACT_RETCODE_FINGER))
 
-		if(isAuthCode){
-			if(resultCode == RESULT_OK)
-				ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_OK)
-			else
-				ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_WRONG_AUTH)
-		}
-		this.finish()
+		if(!retCodeisAuthCode)
+			return
+
+		if(resultCode == RESULT_OK)
+			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_OK)
+		else
+			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_WRONG_AUTH)
+
+		finish()
 	}
 
 }

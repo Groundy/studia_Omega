@@ -232,10 +232,9 @@ class BasicTransferActivity : AppCompatActivity() {
 	}
 	private fun getToken(){
 		val tokenTmp = PreferencesOperator.getToken(this)
-		if(tokenTmp.isOk(this))
-			tokenCpy = tokenTmp
-		else
+		if(!tokenTmp.isOk(this))
 			finish()
+		tokenCpy = tokenTmp
 	}
 	private fun userChangeAnotherAccOnSpiner(){
 		val selectedItemText = spinner.selectedItem.toString()
