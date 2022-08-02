@@ -49,6 +49,7 @@
 	<dimen name="basicTransfer_inputFieldY">50dp</dimen>
 	<dimen name="basicTransfer_textFieldY">20dp</dimen>
 	<dimen name="basicTransfer_textSize">10dp</dimen>
+	<dimen name="basicTransfer_buttonSize">100dp</dimen>
 
 
 	<!--permission list -->

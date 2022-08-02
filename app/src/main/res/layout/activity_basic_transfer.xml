@@ -198,8 +198,9 @@
 			<Button
 				android:id="@+id/RBlikCodeGenerator_goNext_button"
 				android:layout_width="match_parent"
-				android:layout_height="@dimen/basicTransfer_inputFieldY"
-				android:text="@string/GUI_basicTransfer_goNextButtonText" />
+				android:layout_height="@dimen/basicTransfer_buttonSize"
+				android:text="@string/GUI_basicTransfer_goNextButtonText"
+				android:textSize="24sp" />
 
 			<Space
 				android:layout_width="match_parent"

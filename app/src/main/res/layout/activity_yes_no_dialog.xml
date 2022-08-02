@@ -8,15 +8,16 @@
 	android:excludeFromRecents="true">
 
 	<LinearLayout
-		android:orientation="vertical"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		app:layout_constraintTop_toTopOf="parent"
-		android:layout_marginTop="1dp"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
 		android:layout_marginStart="1dp"
-		app:layout_constraintEnd_toEndOf="parent">
+		android:layout_marginTop="1dp"
+		android:minWidth="380dp"
+		android:orientation="vertical"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
 
 		<TextView
 			android:id="@+id/DialogAct_TextView"
@@ -29,12 +30,13 @@
 			android:textSize="@dimen/DIM_CancelFingerAuthFontSize" />
 
 		<LinearLayout
-			android:orientation="horizontal"
 			android:layout_width="300dp"
-			android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT">
+			android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT"
+			android:orientation="horizontal">
 
 			<Button
 				android:id="@+id/DialogAct_OK_Button"
+				style="?android:attr/buttonBarButtonStyle"
 				android:layout_width="@dimen/DIM_CancelFingerAuthButton_WIDTH"
 				android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT"
 				android:layout_weight="1"
@@ -42,11 +44,11 @@
 				android:text="@string/DIALOG_GUI_YES"
 				android:textAlignment="center"
 				android:textColor="@color/mainColor"
-				android:textSize="@dimen/DIM_CancelFingerAuthFontSize"
-				style="?android:attr/buttonBarButtonStyle" />
+				android:textSize="@dimen/DIM_CancelFingerAuthFontSize" />
 
 			<Button
 				android:id="@+id/DialogAct_No_Button"
+				style="?android:attr/buttonBarButtonStyle"
 				android:layout_width="@dimen/DIM_CancelFingerAuthButton_WIDTH"
 				android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT"
 				android:layout_weight="1"
@@ -55,8 +57,7 @@
 				android:textAlignment="center"
 				android:textColor="@color/mainColor"
 				android:textSize="@dimen/DIM_CancelFingerAuthFontSize"
-				tools:ignore="RtlCompat"
-				style="?android:attr/buttonBarButtonStyle" />
+				tools:ignore="RtlCompat" />
 		</LinearLayout>
 	</LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
