@@ -29,14 +29,6 @@ class Utilities {
 		fun showToast(activity: Activity, stringToDisplay:String){
 			Toast.makeText(activity,stringToDisplay, Toast.LENGTH_LONG).show()
 		}
-		fun authSuccessed(context: Context){
-			//TODO implement
-			showToast(context as Activity, "Auth success!")
-		}
-		fun authFailed(context: Context){
-			//TODO implement
-			showToast(context as Activity, "Auth failed!")
-		}
 		fun checkIfAppHasAlreadySetPin(activity: Activity): Boolean {
 			val savedPinHash = PreferencesOperator.readPrefStr(activity, R.string.PREF_hashPin)
 			return savedPinHash.isNotEmpty()

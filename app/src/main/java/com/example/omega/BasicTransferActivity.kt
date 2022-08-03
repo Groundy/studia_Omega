@@ -198,7 +198,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	private fun finishThisActivity(success : Boolean, errorCode : String? = null){
 		if(errorCode!=null && !success)
 			Utilities.showToast(this, errorCode)
-		this.finish()
+		finish()
 	}
 	private fun goNextActivityButtonClicked(){
 		val inputErrorText = checkInputData()

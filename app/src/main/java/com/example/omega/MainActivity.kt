@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
 	}
 	private fun fingerAuthActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode == RESULT_OK){
-			Utilities.authSuccessed(this)
+			Utilities.showToast(this, "Auth ok!")
 			return
 		}
 
@@ -166,7 +166,7 @@ class MainActivity : AppCompatActivity() {
 				else ->"Operacja zakończona niepowodzeniem z nieznanego powodu."
 			}
 			Utilities.showToast(this, textToShow)
-			Utilities.authFailed(this)
+			Utilities.showToast(this, "Auth failed!")
 		}
 	}
 	private fun qrScannerActivityResult(resultCode: Int, data: Intent?){
