@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -228,7 +229,6 @@ class BasicTransferActivity : AppCompatActivity() {
 		}
 
 		ActivityStarter.startTransferSummaryActivity(this, transferDataSerialized)
-		finishThisActivity(true)
 	}
 	private fun getToken(){
 		val tokenTmp = PreferencesOperator.getToken(this)
@@ -270,6 +270,32 @@ class BasicTransferActivity : AppCompatActivity() {
 		amountEditText.text =  Utilities.strToEditable("1.23")
 		receiverNameEditText.text = Utilities.strToEditable("Ciocia Zosia")
 		transferTitle.text = Utilities.strToEditable("Zwrot za paczkę")
+
+	}
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		if(resultCode != RESULT_OK)
+			return
+
+		val fieldName = resources.getString(R.string.ACT_COM_MANY_RetTransferData_FIELDNAME)
+		val transferDataStr = try {
+			data!!.extras!!.getString(fieldName)
+		}catch (e : Exception){
+			//todo give msg
+			null
+		}
+		if(transferDataStr == null){
+			setResult(RESULT_CANCELED)
+			finish()
+			return
+		}
+
+		val newIntent = Intent()
+			.putExtra(fieldName, transferDataStr)
+
+		setResult(RESULT_OK, newIntent)
+		finish()
 
 	}
 }

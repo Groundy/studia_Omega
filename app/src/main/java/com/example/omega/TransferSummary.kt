@@ -16,7 +16,6 @@ class TransferSummary : AppCompatActivity() {
 		getDataFromIntent()
 		setUpGUI()
 	}
-
 	private fun setUpGUI() {
 		val transferAmountText = "${transferData.amount} ${transferData.currency}"
 		findViewById<TextView>(R.id.transferSummary_amount).text = transferAmountText
@@ -41,6 +40,9 @@ class TransferSummary : AppCompatActivity() {
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 
+		if(resultCode != RESULT_OK)
+			return
+
 		val retCodeisAuthCode =
 			(requestCode == this.resources.getInteger(R.integer.ACT_RETCODE_PIN_AUTH)) ||
 			(requestCode == this.resources.getInteger(R.integer.ACT_RETCODE_FINGER))
@@ -48,11 +50,11 @@ class TransferSummary : AppCompatActivity() {
 		if(!retCodeisAuthCode)
 			return
 
-		if(resultCode == RESULT_OK)
-			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_OK)
-		else
-			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_WRONG_AUTH)
 
+		val fieldName = resources.getString(R.string.ACT_COM_MANY_RetTransferData_FIELDNAME)
+		val newIntent = Intent()
+			.putExtra(fieldName, transferData.toString())
+		setResult(RESULT_OK, newIntent)
 		finish()
 	}
 

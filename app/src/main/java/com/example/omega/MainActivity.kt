@@ -5,6 +5,7 @@ package com.example.omega
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
@@ -70,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW) ->webViewActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> resetPermissionActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank) -> dialogIfUserWantToResetBankAuthResult(resultCode)
+			resources.getInteger(R.integer.ACT_RETCODE_BASIC_TRANSFER_ACT) -> startSinglePayment(resultCode, data)
 		}
 	}
 	private fun resetPermissionActivityResult(resultCode: Int, data: Intent?){
@@ -184,6 +186,23 @@ class MainActivity : AppCompatActivity() {
 		if(resultCode != RESULT_OK)
 			return
 		ActivityStarter.startResetPermissionsActivity(this)
+	}
+	private fun startSinglePayment(resultCode: Int, data: Intent?){
+		if(resultCode != RESULT_OK)
+			return
+
+		val dataTransfer = try {
+			val fieldName = resources.getString(R.string.ACT_COM_MANY_RetTransferData_FIELDNAME)
+			val transferDataStr = data!!.extras!!.getString(fieldName)
+			val transferDataObj = TransferData(transferDataStr!!)
+			transferDataObj
+		}catch (e : Exception){
+			Log.e(TagProduction, "[] cant obtain data transfer from intent")
+			null
+		} ?: return
+
+
+		val todoTodod =3
 	}
 
 	//OptionsClicked

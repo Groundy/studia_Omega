@@ -4,14 +4,20 @@
 	<string name="ACT_COM_TRANSACTION_DETAILS_FIELD_NAME">Transaction details</string>
 	<string name="ACT_COM_QrScanner_FIELD_NAME">QR scanner return field</string>
 	<string name="ACT_COM_FINGER_FIELD_NAME">finger_activity_ret_field_name</string>
-	<string name="ACT_COM_PIN_ACT_PURPOSE_FIELDNAME">PIN_PURPOSE_FIELDNAME</string>
 	<string name="ACT_COM_RESULT_TEXT_FIELD_NAME">ACT_COM_RESULT_TEXT_FIELD_NAME</string>
 	<string name="ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME">ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME</string>
 	<string name="ACT_COM_CODEGENERATOR_CODE_FOR_DISPLAY_FIELDNAME">ACT_COM_CODE_FOR_DISPLAY_FIELDNAME</string>
 	<string name="ACT_COM_USERPERMISSIONLIST_FIELDNAME">ACT_COM_USERPERMISSIONLIST_FIELDNAME</string>
 
+	<!-- PIN -->
+	<string name="ACT_COM_PIN_ACT_PURPOSE_FIELDNAME">PIN_PURPOSE_FIELDNAME</string>
+
+	<!-- Dialog -->
 	<string name="ACT_COM_DIALOG_PURPOSE_FIELDNAME">ACT_COM_DIALOG_PURPOSE_FIELDNAME</string>
 	<string name="ACT_COM_DIALOG_ResetPin_FIELDNAME">ACT_COM_DIALOG_ResetPin_FIELDNAME</string>
+
+	<!-- Other -->
+	<string name="ACT_COM_MANY_RetTransferData_FIELDNAME">ACT_COM_PIN_RetTransferData_FIELDNAME</string>
 
 	<!--ACTIVIES ret codes-->
 	<integer name="ACT_RETCODE_QrScanner">0</integer>
@@ -21,6 +27,8 @@
 	<integer name="ACT_RETCODE_PIN_CHANGE">4</integer>
 	<integer name="ACT_RETCODE_WEBVIEW">5</integer>
 	<integer name="ACT_RETCODE_PERMISSION_LIST">6</integer>
+	<integer name="ACT_RETCODE_TRANSFER_SUMMARY">7</integer>
+	<integer name="ACT_RETCODE_BASIC_TRANSFER_ACT">8</integer>
 
 	<integer name="ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage">100</integer>
 	<integer name="ACT_RETCODE_DIALOG_CancelBioAuth">101</integer>

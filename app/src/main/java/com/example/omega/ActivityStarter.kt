@@ -60,8 +60,10 @@ class ActivityStarter {
 			activity.startActivity(settingsActivityIntent)
 		}
 		fun startTransferActivityFromMenu(activity: Activity){
+			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_BASIC_TRANSFER_ACT)
+
 			val transferIntent = Intent(activity, BasicTransferActivity::class.java)
-			activity.startActivity(transferIntent)
+			activity.startActivityForResult(transferIntent, retCode)
 		}
 		fun startRBlikCodeCreatorActivity(activity: Activity){
 			val rblikCodeCreatorIntent = Intent(activity, RBLIKCodeCreator::class.java)
@@ -77,10 +79,11 @@ class ActivityStarter {
 		}
 		fun startTransferSummaryActivity(activity: Activity, serializedTransferDataObj: String){
 			val serializedObjField = activity.getString(R.string.TransferSummary_COM_serializedData)
+			val resultCode = activity.resources.getInteger(R.integer.ACT_RETCODE_TRANSFER_SUMMARY)
 
 			val resultIntent = Intent(activity, TransferSummary::class.java)
 			resultIntent.putExtra(serializedObjField,serializedTransferDataObj)
-			activity.startActivity(resultIntent)
+			activity.startActivityForResult(resultIntent, resultCode)
 		}
 		fun startAuthActivity(context : Activity, description : String?, forcedMethodeCode : Int?){
 			val fingerCode = 1
