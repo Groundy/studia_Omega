@@ -18,16 +18,18 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 	companion object{
 		enum class WebActivtyRedirect(val text : String){
 			AccountHistory("AccountHistory"),
-			Payment("Payment"),
+			PaymentCreation("Payment"),
+			DomesticPaymentProcess("domesticPaymentProcess"),
 			GenerateRBlikCode("GenerateRBlikCode"),
 			None("None");
 
 			companion object{
 				fun fromStr(text : String) : WebActivtyRedirect{
 					val webActivtyRedirect = when(text){
-						"AccountHistory" -> AccountHistory
-						"Payment" -> Payment
-						"GenerateRBlikCode" -> GenerateRBlikCode
+						AccountHistory.text -> AccountHistory
+						PaymentCreation.text -> PaymentCreation
+						GenerateRBlikCode.text -> GenerateRBlikCode
+						DomesticPaymentProcess.text ->DomesticPaymentProcess
 						else -> None
 					}
 					return webActivtyRedirect

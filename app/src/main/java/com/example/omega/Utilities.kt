@@ -1,16 +1,11 @@
 package com.example.omega
 import android.app.Activity
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.text.Editable
 import android.text.SpannableStringBuilder
-import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import org.json.JSONObject
 import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.random.Random
@@ -41,7 +36,7 @@ class Utilities {
 			if(!isProperCode)
 				return null
 
-			return TransferData.developerGetTestObjWithFilledData()
+			return Utilities.wookieTestGetTestObjWithFilledData()
 		}
 
 		fun stopUserFromPuttingMoreThan2DigitsAfterComma(editText : EditText, oldVal : String, newVal : String){
@@ -63,6 +58,19 @@ class Utilities {
 		}
 		fun strToEditable(text: String): Editable {
 			return Editable.Factory.getInstance().newEditable(text)
+		}
+		fun wookieTestGetTestObjWithFilledData() : TransferData{
+			val testTransferData = TransferData().also {
+				it.receiverAccNumber = "PL63249000050000400030900682"
+				it.receiverName = "Regina Aff"
+				it.senderAccNumber = "PL50249000050000400076134538"
+				it.senderAccName = "awfaw awfawf"
+				it.amount = 12.34
+				it.description = "zwrot pozyczki"
+				it.currency = "PLN"
+				it.executionDate = OmegaTime.getDate()
+			}
+			return testTransferData
 		}
 	}
 }

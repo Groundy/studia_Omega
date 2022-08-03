@@ -9,9 +9,9 @@ import java.lang.Exception
 import com.example.omega.Utilities.Companion.TagProduction
 import com.example.omega.ApiConsts.ApiReqFields.*
 
-class OpenApiGetToken(activity: Activity) {
+class OpenApiGetToken(activity: Activity, scope : ApiConsts.ScopeValues) {
 	private var callerActivity = activity
-
+	private var scope = scope
 	fun run() : Boolean{
 		Log.i(TagProduction, "GetToken started")
 		var success = false
@@ -19,7 +19,8 @@ class OpenApiGetToken(activity: Activity) {
 			try {
 				val request = getRequest()
 				val responseJson = sendRequest(request)?: return@Thread
-				success = handleResponse(responseJson)
+				handleResponse(responseJson)
+				success = true
 			} catch (e: Exception) {
 				Log.e(TagProduction,"[run/${this.javaClass.name}] $e")
 			}
@@ -31,13 +32,12 @@ class OpenApiGetToken(activity: Activity) {
 	}
 	private fun getRequest() : Request {
 		val uuidStr = ApiFunctions.getUUID()
-		val currentTimeStr = OmegaTime.getCurrentTime()
 
 		val headerJson = JSONObject()
 			.put(RequestId.text, uuidStr)
 			.put(UserAgent.text, ApiFunctions.getUserAgent())
 			.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-			.put(SendDate.text, currentTimeStr)
+			.put(SendDate.text, OmegaTime.getCurrentTime())
 			.put(TppId.text, ApiConsts.TTP_ID)
 			.put(IsCompanyContext.text, false)
 
@@ -51,14 +51,15 @@ class OpenApiGetToken(activity: Activity) {
 
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl, requestBodyJson, uuidStr)
 	}
-	private fun handleResponse(responseJson : JSONObject) : Boolean{
+	private fun handleResponse(responseJson : JSONObject){
 		val accessToken = Token(responseJson)
-		if(!accessToken.isOk(callerActivity))
-			return false
-
 		val accessTokenSerialized = accessToken.toString()
-		PreferencesOperator.savePref(callerActivity, R.string.PREF_Token, accessTokenSerialized)
-		return true
+		val resouceIdWhereToSaveToken = if(scope == ApiConsts.ScopeValues.Ais)
+			R.string.PREF_Token
+		else
+			R.string.PREF_PaymentToken
+		PreferencesOperator.savePref(callerActivity, resouceIdWhereToSaveToken, accessTokenSerialized)
+		PreferencesOperator.clearPreferences(callerActivity, R.string.PREF_authCode)
 	}
 	private fun sendRequest(request: Request) : JSONObject?{
 		return try {

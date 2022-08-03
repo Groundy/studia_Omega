@@ -5,7 +5,6 @@ package com.example.omega
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
@@ -43,7 +42,10 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
 		startNfcOnStartIfUserWishTo()
-		getToken(WebActivtyRedirect.None)
+
+
+		//getToken(WebActivtyRedirect.None)
+		startSinglePaymentAuthorization(RESULT_OK, null)
 	}
 
 	//Menus
@@ -71,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW) ->webViewActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> resetPermissionActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank) -> dialogIfUserWantToResetBankAuthResult(resultCode)
-			resources.getInteger(R.integer.ACT_RETCODE_BASIC_TRANSFER_ACT) -> startSinglePayment(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_BASIC_TRANSFER_ACT) -> startSinglePaymentAuthorization(resultCode, data)
 		}
 	}
 	private fun resetPermissionActivityResult(resultCode: Int, data: Intent?){
@@ -89,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
 		val permissionListObject = PermissionList(serializedPermissionList)
 		PreferencesOperator.clearAuthData(this)
-		OpenApiAuthorize(this, permissionListObject).run(ApiConsts.ScopeValues.Ais)
+		OpenApiAuthorize(this).runForAis(permissionListObject)
 
 		val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
 		val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
@@ -107,13 +109,6 @@ class MainActivity : AppCompatActivity() {
 		if(resultCode != RESULT_OK)
 			return
 
-		val success = OpenApiGetToken(this).run()
-		if (!success){
-			val userMsg = getString(R.string.UserMsg_Banking_errorObtaingToken)
-			Utilities.showToast(this, userMsg)
-			return
-		}
-
 		val redirectField = getString(R.string.ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME)
 		val redirectPlace : WebActivtyRedirect = try{
 			val redirectStr = data?.extras!!.getString(redirectField)
@@ -122,10 +117,23 @@ class MainActivity : AppCompatActivity() {
 			BankLoginWebPageActivity.Companion.WebActivtyRedirect.None
 		}
 
+		val scopeUsedForLogin = if(redirectPlace == WebActivtyRedirect.DomesticPaymentProcess)
+			 ApiConsts.ScopeValues.Pis
+			else
+				ApiConsts.ScopeValues.Ais
+
+		val success = OpenApiGetToken(this,scopeUsedForLogin).run()
+		if (!success){
+			val userMsg = getString(R.string.UserMsg_Banking_errorObtaingToken)
+			Utilities.showToast(this, userMsg)
+			return
+		}
+
 		when(redirectPlace){
 			WebActivtyRedirect.AccountHistory -> {accHistoryTabClicked()}
-			WebActivtyRedirect.Payment ->{basicTransferTabCliked()}
+			WebActivtyRedirect.PaymentCreation ->{basicTransferTabCliked()}
 			WebActivtyRedirect.GenerateRBlikCode ->{generateRBlickCodeClicked()}
+			WebActivtyRedirect.DomesticPaymentProcess -> {continueSinglePaymentAfterLogin()}
 			else->{return}
 		}
 	}
@@ -187,11 +195,11 @@ class MainActivity : AppCompatActivity() {
 			return
 		ActivityStarter.startResetPermissionsActivity(this)
 	}
-	private fun startSinglePayment(resultCode: Int, data: Intent?){
+	private fun startSinglePaymentAuthorization(resultCode: Int, data: Intent?){
 		if(resultCode != RESULT_OK)
 			return
-
-		val dataTransfer = try {
+/*
+		val transferData = try {
 			val fieldName = resources.getString(R.string.ACT_COM_MANY_RetTransferData_FIELDNAME)
 			val transferDataStr = data!!.extras!!.getString(fieldName)
 			val transferDataObj = TransferData(transferDataStr!!)
@@ -200,14 +208,26 @@ class MainActivity : AppCompatActivity() {
 			Log.e(TagProduction, "[] cant obtain data transfer from intent")
 			null
 		} ?: return
-
-
-		val todoTodod =3
+*/
+		val transferData = Utilities.wookieTestGetTestObjWithFilledData()
+		val permListObj = PermissionList(ApiConsts.Privileges.SinglePayment)
+		val authOk = OpenApiAuthorize(this).runForPis(permListObj, transferData)
+		if(!authOk){
+			//todo
+			return
+		}
+		ActivityStarter.openBrowserForLogin(this, WebActivtyRedirect.DomesticPaymentProcess)
+	}
+	private fun continueSinglePaymentAfterLogin(){
+		val paymentTokenStr = PreferencesOperator.readPrefStr(this, R.string.PREF_PaymentToken)
+		val paymentToken  = Token(paymentTokenStr)
+		OpenApiDomesticPayment(this, paymentToken).run()
+		val t = 3
 	}
 
 	//OptionsClicked
 	private fun basicTransferTabCliked(){
-		getToken(WebActivtyRedirect.Payment)
+		getToken(WebActivtyRedirect.PaymentCreation)
 		ActivityStarter.startTransferActivityFromMenu(this)
 	}
 	private fun accHistoryTabClicked(){
@@ -231,7 +251,7 @@ class MainActivity : AppCompatActivity() {
 
 		val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 		PreferencesOperator.clearAuthData(this)
-		val authOk = OpenApiAuthorize(this, obj).run(ApiConsts.ScopeValues.Ais)
+		val authOk = OpenApiAuthorize(this).runForAis(obj)
 		if(!authOk){
 			Utilities.showToast(this, "Nie udało się automatycznie pobrać tokenu.")
 			return

@@ -13,6 +13,9 @@
 
 	<string name="PREF_Token">token</string>
 
+	<string name="PREF_PaymentToken">PaymentToken</string>
+	<string name="PREF_PaymentID">PaymentID</string>
+
 	<string name="PREF_userLastIp">userLastIp</string>
 	<string name="PREF_userIPLastCheckTime">userIPLastCheckTime</string>
 </resources>

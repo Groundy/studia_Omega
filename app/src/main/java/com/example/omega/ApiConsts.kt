@@ -67,7 +67,14 @@ class ApiConsts {
 	enum class ResponseTypes(val text: String){
 		Code("code")
 	}
-
+	enum class ScopeUsageLimit(val text : String) {
+		Multiple("multiple"),
+		Single("single")
+	}
+	enum class ScopeDetailsFields(val text: String){
+		ScopeUsageLimit("scopeUsageLimit"),
+		MaxAllowedHistoryLong("maxAllowedHistoryLong")
+	}
 	companion object {
 		const val PREFERED_CHARSET = "utf-8"
 		const val PREFERED_ENCODING = "gzip"

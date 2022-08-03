@@ -218,7 +218,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			it.amount = amountEditText.text.toString().toDouble()
 			it.description = transferTitle.text.toString()
 			it.currency = currentPaymentAccount!!.getCurrencyOfAccount()
-			it.executionTime = String()
+			it.executionDate = OmegaTime.getDate()
 		}
 
 

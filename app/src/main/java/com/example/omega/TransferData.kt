@@ -3,34 +3,28 @@ package com.example.omega
 import android.util.Log
 import org.json.JSONObject
 import com.example.omega.Utilities.Companion.TagProduction
-import org.json.JSONArray
 
 class TransferData() {
-	companion object{
-	enum class Fields(val text : String){
-		SenderAccNumber("senderAccNumber"),
-		ReceiverAccNumber("receiverAccNumber"),
-		ReceiverName("receiverName"),
-		Description("description"),
-		Amount("amount"),
-		Currency("currency"),
-		ExecutionTime("executionTime"),
-	}
-	fun developerGetTestObjWithFilledData() : TransferData{
-		val testTransferData = TransferData().also {
-			it.receiverAccNumber = "0123456789012345678901234567"
-			it.receiverName = "OdbiorcaName"
-			it.senderAccName = "0001112223334445556667778889"
-			it.senderAccName = "Nadawca"
-			it.amount = 12.34
-			it.description = "zwrot pożyczki"
-			it.currency = "PLN"
-			it.executionTime = OmegaTime.getCurrentTime()
-		}
+	private companion object{
+		enum class TransferDataFields(val text : String){
+			SenderAccNumber("senderAccNumber"),
+			SenderAccName("senderAccName"),
+			ReceiverAccNumber("receiverAccNumber"),
+			ReceiverName("receiverName"),
+			Description("description"),
+			Amount("amount"),
+			Currency("currency"),
+			ExecutionDate("executionDate"),
 
-		return testTransferData
+			Recipient("recipient"),
+			Sender("sender"),
+			TransferData ("transferData"),
+			Value("value"),
+			NameAdress("nameAddress"),
+			AccountNumber("accountNumber");
+		}
+		const val methodeName = "pis:domestic"
 	}
-}
 
 	var senderAccNumber : String? = null
 	var senderAccName : String? = null
@@ -39,17 +33,18 @@ class TransferData() {
 	var description : String? = null
 	var amount : Double? = null
 	var currency : String? = null
-	var executionTime : String? = null
+	var executionDate : String? = null
 
 	constructor(jsonObj : JSONObject) : this(){
 		try {
-			senderAccNumber = jsonObj.getString(Fields.SenderAccNumber.text)
-			receiverAccNumber = jsonObj.getString(Fields.ReceiverAccNumber.text)
-			receiverName = jsonObj.getString(Fields.ReceiverName.text)
-			description = jsonObj.getString(Fields.Description.text)
-			amount = jsonObj.getDouble(Fields.Amount.text)
-			currency = jsonObj.getString(Fields.Currency.text)
-			executionTime = jsonObj.getString(Fields.ExecutionTime.text)
+			senderAccNumber = jsonObj.getString(TransferDataFields.SenderAccNumber.text)
+			senderAccName = jsonObj.getString(TransferDataFields.SenderAccName.text)
+			receiverAccNumber = jsonObj.getString(TransferDataFields.ReceiverAccNumber.text)
+			receiverName = jsonObj.getString(TransferDataFields.ReceiverName.text)
+			description = jsonObj.getString(TransferDataFields.Description.text)
+			amount = jsonObj.getDouble(TransferDataFields.Amount.text)
+			currency = jsonObj.getString(TransferDataFields.Currency.text)
+			executionDate = jsonObj.getString(TransferDataFields.ExecutionDate.text)
 		}catch (e : Exception){
 			Log.e(TagProduction, "[constructor(json)/${this.javaClass.name}] error in constructing TransferDataObj from json")
 		}
@@ -57,19 +52,60 @@ class TransferData() {
 	constructor(serializedObject : String) : this(){
 		try{
 			val obj = JSONObject(serializedObject)
-			senderAccNumber = obj.getString(Fields.SenderAccNumber.text)
-			senderAccName = obj.getString(Fields.SenderAccNumber.text)
-			receiverAccNumber = obj.getString(Fields.ReceiverAccNumber.text)
-			receiverName = obj.getString(Fields.ReceiverName.text)
-			description = obj.getString(Fields.Description.text)
-			amount = obj.getDouble(Fields.Amount.text)
-			currency = obj.getString(Fields.Currency.text)
-			executionTime = obj.getString(Fields.ExecutionTime.text)
+			val tmpTransferData = TransferData(obj)
+			senderAccNumber = tmpTransferData.senderAccNumber
+			senderAccName = tmpTransferData.senderAccName
+			receiverAccNumber = tmpTransferData.receiverAccNumber
+			receiverName = tmpTransferData.receiverName
+			description = tmpTransferData.description
+			amount = tmpTransferData.amount
+			currency = tmpTransferData.currency
+			executionDate = tmpTransferData.executionDate
 		}
 		catch (e : Exception){
 			Log.e(TagProduction, "Error in creating transferDataObject from serialized data! [$e]")
 		}
 	}
+	constructor(paymentToken : Token): this(){
+		try {
+			val privilegesList = paymentToken.getPriligeList()
+			val methodeObj = privilegesList!!.getJSONObject(0).getJSONObject(methodeName)
+			val subDataObj = methodeObj.getJSONObject(TransferDataFields.TransferData.text)
+			val senderObj = methodeObj.getJSONObject(TransferDataFields.Sender.text)
+			val receiverObj = methodeObj.getJSONObject(TransferDataFields.Recipient.text)
+
+			val senderNameArray = senderObj.getJSONObject(TransferDataFields.NameAdress.text).getJSONArray(TransferDataFields.Value.text)
+			val receiverNameArray = receiverObj.getJSONObject(TransferDataFields.NameAdress.text).getJSONArray(TransferDataFields.Value.text)
+
+			var senderNameTmp = String()
+			var receiverNameTmp = String()
+
+			val separator = ", "
+			for (i in 0 until senderNameArray.length()){
+				senderNameTmp = senderNameTmp.plus(senderNameArray[i])
+				if(i < senderNameArray.length() - 1)
+					senderNameTmp = senderNameTmp.plus(separator)
+			}
+			for (i in 0 until receiverNameArray.length()){
+				receiverNameTmp = receiverNameTmp.plus(receiverNameArray[i])
+				if(i < senderNameArray.length() - 1)
+					receiverNameTmp = receiverNameTmp.plus(separator)
+			}
+
+
+			senderAccNumber = senderObj.getString(TransferDataFields.AccountNumber.text)
+			senderAccName = senderNameTmp
+			receiverAccNumber = receiverObj.getString(TransferDataFields.AccountNumber.text)
+			receiverName = receiverNameTmp
+			description = subDataObj.getString(TransferDataFields.ExecutionDate.text)
+			amount = subDataObj.getString(TransferDataFields.Amount.text).toDouble()
+			currency = subDataObj.getString(TransferDataFields.Currency.text)
+			executionDate = subDataObj.getString(TransferDataFields.ExecutionDate.text)
+		}catch (e : Exception){
+			Log.e(TagProduction, "[constructor(token)/${this.javaClass.name}] failed to obtain tmp data transfer class from payment token")
+		}
+	}
+
 	fun toDisplayString() : String{
 		val line1 = "Nadawca:\n$senderAccNumber"
 		val line2 = "Nazwa odbiorcy:\n$receiverName"
@@ -83,16 +119,18 @@ class TransferData() {
 	}
 	private fun toJsonObject() : JSONObject{
 		return JSONObject()
-			.put(Fields.SenderAccNumber.text, senderAccNumber?: String())
-			.put(Fields.ReceiverAccNumber.text, receiverAccNumber)
-			.put(Fields.ReceiverName.text, receiverName)
-			.put(Fields.Description.text, description)
-			.put(Fields.Amount.text, amount)
-			.put(Fields.Currency.text, currency)
-			.put(Fields.ExecutionTime.text, executionTime)
+			.put(TransferDataFields.SenderAccNumber.text, senderAccNumber?: String())
+			.put(TransferDataFields.SenderAccName.text, senderAccName?: String())
+			.put(TransferDataFields.ReceiverAccNumber.text, receiverAccNumber)
+			.put(TransferDataFields.ReceiverName.text, receiverName)
+			.put(TransferDataFields.Description.text, description)
+			.put(TransferDataFields.Amount.text, amount)
+			.put(TransferDataFields.Currency.text, currency)
+			.put(TransferDataFields.ExecutionDate.text, executionDate)
 
 	}
 	private fun validateTransferData() : Boolean{
+		//todo review
 		val objectWrong =
 			senderAccNumber.isNullOrEmpty() ||
 			receiverAccNumber.isNullOrEmpty() ||
@@ -129,27 +167,5 @@ class TransferData() {
 			return false
 
 		return true
-	}
-
-
-
-	fun getSenderNameAsJsonObjForDomesticPayment() : JSONObject{
-		val str = senderAccName?: String()
-		return strToJsonObj(str)
-	}
-	fun getReceiverNameAsJsonObjForDomesticPayment() : JSONObject{
-		val str = receiverName?: String()
-		return strToJsonObj(str)
-	}
-	private fun strToJsonObj(str : String) : JSONObject{
-		//todo dodac jakies logi
-		val valueFieldName = "Value"
-		val jsonArray = JSONArray()
-		val nameParts = str.split(" ")
-		nameParts.forEach{
-			if(it.isNotEmpty())
-				jsonArray.put(it)
-		}
-		return JSONObject().put(valueFieldName, jsonArray)
 	}
 }

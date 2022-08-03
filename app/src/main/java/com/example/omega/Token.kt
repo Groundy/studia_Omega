@@ -15,6 +15,7 @@ class Token() {
 	private var scope : ApiConsts.ScopeValues? = null
 	private var scopeExpirationTime : String? = null
 	private var privilegeList : JSONArray? = null
+		get() = field
 
 	private companion object{
 		const val expirationTimeInSeconds = 600
@@ -235,5 +236,8 @@ class Token() {
 		scope = tokenCopy.scope
 		scopeExpirationTime = tokenCopy.scopeExpirationTime
 		privilegeList= tokenCopy.privilegeList
+	}
+	fun getPriligeList() : JSONArray?{
+		return privilegeList
 	}
 }
