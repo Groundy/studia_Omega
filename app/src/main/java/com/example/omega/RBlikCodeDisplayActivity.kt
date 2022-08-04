@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.zxing.WriterException
@@ -17,6 +18,7 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 	private lateinit var imgWidget : ImageView
 	private lateinit var codeDisplayField : TextView
 
+	@SuppressLint("UseCompatLoadingForDrawables")
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_blik_code_display)

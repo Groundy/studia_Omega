@@ -7,10 +7,9 @@ import okhttp3.Request
 import org.json.JSONArray
 import org.json.JSONObject
 import com.example.omega.ApiConsts.*
-import com.example.omega.ApiFunctions.Companion.LogResponseError
+import com.example.omega.ApiFunctions.Companion.logResponseError
 import com.example.omega.Utilities.Companion.TagProduction
 import kotlin.Exception
-import com.example.omega.DomesticPaymentSupportClass.*
 
 class OpenApiAuthorize(activity: Activity) {
 	private lateinit var permissionsList : PermissionList
@@ -79,8 +78,8 @@ class OpenApiAuthorize(activity: Activity) {
 	private fun sendRequest (request: Request) : JSONObject?{
 		return try{
 			val response = OkHttpClient().newCall(request).execute()
-			if(response.code!= ApiConsts.ResponseCodes.OK.code){
-				LogResponseError(response, this.javaClass.name)
+			if(response.code!= ResponseCodes.OK.code){
+				logResponseError(response, this.javaClass.name)
 				return null
 			}
 			val responseBody = response.body?.string()
@@ -118,13 +117,12 @@ class OpenApiAuthorize(activity: Activity) {
 			ScopeValues.AisAcc->{getPrivilegeScopeDetailsObjAisAccount()}
 			ScopeValues.Pis->{getPrivilegeScopeDetailsObjPIS()}
 		}
-		val scopeDetailsObj = JSONObject()
+		return JSONObject()
 			.put(ScopeFields.PrivilegeList.text, JSONArray().put(privilegesListJsonObj))
 			.put(ScopeFields.ScopeGroupType.text, scope.text)
 			.put(ScopeFields.ConsentId.text, ApiConsts.ConsentId)
 			.put(ScopeFields.ScopeTimeLimit.text, OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds))
 			.put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
-		return scopeDetailsObj
 	}
 	private fun handleResponse(jsonObject: JSONObject) : Boolean{
 		 val authUrl = try {

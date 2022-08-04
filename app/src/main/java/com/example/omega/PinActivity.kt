@@ -1,7 +1,6 @@
 package com.example.omega
 
 import android.content.Intent
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -353,7 +352,7 @@ class PinActivity : AppCompatActivity() {
 		}
 	}
 	private fun finishActivity(success: Boolean){
-		var result = if(success) RESULT_OK else RESULT_CANCELED
+		val result = if(success) RESULT_OK else RESULT_CANCELED
 		setResult(result,Intent())
 		finish()
 	}

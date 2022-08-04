@@ -165,7 +165,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		val balance = currentPaymentAccount!!.getBalanceOfAccount()
 		if (balance==null){
 			Log.e(TagProduction, "[getAccountBalanceAfterTransfer/${this.javaClass.name}], error obtained null as balance of account")
-			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
+			finishThisActivityWithError(getString(R.string.UserMsg_UNKNOWN_ERROR))
 			return null
 		}
 
@@ -177,7 +177,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(!tokenCpy.getDetailsOfAccountsFromBank(this)){
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
-			finishThisActivity(false,errorCodeTextToDisplay)
+			finishThisActivityWithError(errorCodeTextToDisplay)
 			return false
 		}
 
@@ -185,7 +185,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(listOfAccountsFromToken.isNullOrEmpty()){
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token return null or empty account list")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
-			finishThisActivity(false,errorCodeTextToDisplay)
+			finishThisActivityWithError(errorCodeTextToDisplay)
 			return false
 		}
 
@@ -196,8 +196,8 @@ class BasicTransferActivity : AppCompatActivity() {
 		spinner.adapter = adapter
 		return true
 	}
-	private fun finishThisActivity(success : Boolean, errorCode : String? = null){
-		if(errorCode!=null && !success)
+	private fun finishThisActivityWithError(errorCode : String? = null){
+		if(errorCode!=null)
 			Utilities.showToast(this, errorCode)
 		finish()
 	}
@@ -221,10 +221,10 @@ class BasicTransferActivity : AppCompatActivity() {
 			it.executionDate = OmegaTime.getDate()
 		}
 
-
 		val transferDataSerialized = testTransferData.toString()
 		if(transferDataSerialized.isEmpty()){
-			finishThisActivity(false, getString(R.string.UserMsg_basicTransfer_unkownError))
+			val errorStr = getString(R.string.UserMsg_basicTransfer_unkownError)
+			finishThisActivityWithError(errorStr)
 			return
 		}
 
@@ -242,7 +242,8 @@ class BasicTransferActivity : AppCompatActivity() {
 		val paymentAccountTmp = tokenCpy.getPaymentAccount(accountNumber)
 		if(paymentAccountTmp == null){
 			Log.e(TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] Cant get payment info from token")
-			finishThisActivity(false, getString(R.string.UserMsg_UNKNOWN_ERROR))
+			val errorStr = getString(R.string.UserMsg_UNKNOWN_ERROR)
+			finishThisActivityWithError(errorStr)
 		}
 		else{
 			amountEditText.text = null

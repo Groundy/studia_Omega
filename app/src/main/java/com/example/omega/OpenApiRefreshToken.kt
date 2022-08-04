@@ -50,7 +50,7 @@ class OpenApiRefreshToken(private val refreshToken : String) {
 		return try{
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ApiConsts.ResponseCodes.OK.code){
-				ApiFunctions.LogResponseError(response, this.javaClass.name)
+				ApiFunctions.logResponseError(response, this.javaClass.name)
 				return null
 			}
 			val responseBodyStr = response.body?.string()

@@ -1,4 +1,5 @@
 package com.example.omega
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -46,6 +47,7 @@ class SettingsActivity : AppCompatActivity() {
 		}
 	}
 
+	@SuppressLint("UseSwitchCompatOrMaterialCode")
 	private fun fillGuiSettingsWithSavedState() {
 		val phoneHasNfc = NfcAdapter.getDefaultAdapter(this) != null
 		val nfcSwitch = findViewById<Switch>(R.id.turnOnNFCWhenAppStartsSwitch)
@@ -64,6 +66,7 @@ class SettingsActivity : AppCompatActivity() {
 		val textToSetOnSelectAuthMethode = getString(R.string.Settings_GUI_selectAuthMethodeTextBase) + methodeName
 		selectAuthMethodeField.text = textToSetOnSelectAuthMethode
 	}
+	@SuppressLint("UseSwitchCompatOrMaterialCode")
 	private fun saveResults() {
 		val phoneHasNfc = NfcAdapter.getDefaultAdapter(this) != null
 		if(phoneHasNfc){

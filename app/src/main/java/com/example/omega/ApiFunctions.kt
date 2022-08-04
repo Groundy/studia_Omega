@@ -74,7 +74,7 @@ class ApiFunctions {
 			val secondsToNextIpCheck = OmegaTime.getSecondsToStampExpiration(lastTimeIpRead, ApiConsts.ipTimeCheckPeriodSeconds)
 			if(secondsToNextIpCheck > 0){
 				val lastUsedIp = PreferencesOperator.readPrefStr(activity, R.string.PREF_userLastIp)
-				val ipOk = !lastUsedIp.isNullOrEmpty()
+				val ipOk = lastUsedIp.isNotEmpty()
 				if(ipOk){
 					Log.i(TagProduction, "Użyto ostatnio używanego IP: $lastUsedIp")
 					return lastUsedIp
@@ -116,7 +116,7 @@ class ApiFunctions {
 		fun getLengthOfCountryBankNumberDigitsOnly(country : ApiConsts.Countries = ApiConsts.Countries.PL) : Int{
 			return country.codeLength
 		}
-		fun getErrorTextOfRequestToLog (reqErrorCode : Int) : String{
+		private fun getErrorTextOfRequestToLog (reqErrorCode : Int) : String{
 			return when(reqErrorCode){
 				200 -> ""
 				400 -> "Bad Request 400"
@@ -132,7 +132,7 @@ class ApiFunctions {
 				else -> "Unkown reason, error code $reqErrorCode"
 			}
 		}
-		fun LogResponseError(response: Response, className : String){
+		fun logResponseError(response: Response, className : String){
 			val position = "[sendRequest/$className]"
 			val error = "[${response.code}/${getErrorTextOfRequestToLog(response.code)}]"
 			val additionalErrorMsg : String = try {

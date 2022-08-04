@@ -7,16 +7,13 @@ import org.json.JSONObject
 import com.example.omega.ApiConsts.ApiReqFields.*
 import okhttp3.OkHttpClient
 
-class OpenApiDomesticPayment(activity: Activity, token: Token) {
-	private val callerActivity = activity
-	private val token = token
-
+class OpenApiDomesticPayment(private val callerActivity: Activity, val token: Token) {
 	fun run() : Boolean{
 		Log.i(Utilities.TagProduction, "Domestic Payement started")
 		var success = false
 		val thread = Thread{
 			val request = getRequest()
-			success = sendRequest(request) ?: return@Thread
+			success = sendRequest(request)
 		}
 		thread.start()
 		thread.join(ApiConsts.requestTimeOut)
@@ -49,7 +46,7 @@ class OpenApiDomesticPayment(activity: Activity, token: Token) {
 		return try{
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ApiConsts.ResponseCodes.OK.code){
-				ApiFunctions.LogResponseError(response, this.javaClass.name)
+				ApiFunctions.logResponseError(response, this.javaClass.name)
 				return false
 			}
  			//val responseBody = response.body?.string()

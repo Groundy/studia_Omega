@@ -36,7 +36,7 @@ class PreferencesOperator : Application() {
 				R.string.PREF_Token,
 			)
 		}
-		fun developerShowPref(activity: Activity){
+		fun wookieTestShowPref(activity: Activity){
 			val preferencesFields = arrayOf(
 				R.string.PREF_authURL,
 				R.string.PREF_authCode,

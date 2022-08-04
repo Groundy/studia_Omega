@@ -2,7 +2,6 @@ package com.example.omega
 
 import android.app.Activity
 import android.content.Intent
-import androidx.core.app.ActivityCompat.startActivityForResult
 
 class ActivityStarter {
 	companion object{
@@ -117,7 +116,7 @@ class ActivityStarter {
 		}
 		fun openDialogWithDefinedPurpose(activity: Activity, purpose : YesNoDialogActivity.Companion.DialogPurpose){
 			val yesNoDialog = Intent(activity, YesNoDialogActivity::class.java)
-			var retCode = when(purpose){
+			val retCode = when(purpose){
 				YesNoDialogActivity.Companion.DialogPurpose.CancelBioAuth ->
 					activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_CancelBioAuth)
 				YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl ->

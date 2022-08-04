@@ -38,7 +38,7 @@ class OmegaTime {
 			val c: Calendar = Calendar.getInstance()
 			c.timeInMillis -= daysBack * 24 * 60 * 60 * 1000
 
-			var y = (c.get(Calendar.YEAR)).toString()
+			val y = (c.get(Calendar.YEAR)).toString()
 			var m = (c.get(Calendar.MONTH) + 1).toString()//0-11 -> 1-12
 			var d = (c.get(Calendar.DAY_OF_MONTH)).toString()
 

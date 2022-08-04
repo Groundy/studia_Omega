@@ -15,17 +15,17 @@ class Token() {
 	private var scope : ApiConsts.ScopeValues? = null
 	private var scopeExpirationTime : String? = null
 	private var privilegeList : JSONArray? = null
-		get() = field
 
 	private companion object{
-		const val expirationTimeInSeconds = 600
+		const val expirationTimeInSecondsForAis = 600
+		//const val expirationTimeInSecondsForPis = 300
 		const val minimalTimeTokenNotMustbeRefreshedSeconds = 180
 
 		enum class ResponseFieldsNames(val text : String){
 			TokenType("token_type"),
 			AccessToken("access_token"),
 			RefreshToken("refresh_token"),
-			ExpiresIn("expires_in"),//secondsToExpire
+			//ExpiresIn("expires_in"),//secondsToExpire
 			Scope("scope"),
 			ScopeDetails("scope_details"),
 			ResponseHeader("responseHeader");
@@ -193,7 +193,7 @@ class Token() {
 	private fun getSecondsLeftToTokenExpiration() : Long? {
 		return try {
 			val startTokenTime = this.obtainTime
-			val expireIn = expirationTimeInSeconds
+			val expireIn = expirationTimeInSecondsForAis
 			return OmegaTime.getSecondsToStampExpiration(startTokenTime!!, expireIn)
 		} catch (e: Exception) {
 			Log.e(TagProduction,"[getSecondsLeftToTokenExpiration/${this.javaClass.name}] Probably token is null")

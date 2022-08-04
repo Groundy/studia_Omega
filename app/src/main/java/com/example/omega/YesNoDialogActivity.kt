@@ -14,10 +14,10 @@ class YesNoDialogActivity : AppCompatActivity() {
 			companion object{
 				fun fromStr(str : String) : DialogPurpose{
 					return when(str){
-						"CancelBioAuth" -> CancelBioAuth
-						"ResetAuthUrl" -> ResetAuthUrl
-						"LoginToBankAccount" ->LoginToBankAccount
-						"ResetPin" -> ResetPin
+						CancelBioAuth.text -> CancelBioAuth
+						ResetAuthUrl.text -> ResetAuthUrl
+						LoginToBankAccount.text ->LoginToBankAccount
+						ResetPin.text -> ResetPin
 						else ->None
 					}
 				}

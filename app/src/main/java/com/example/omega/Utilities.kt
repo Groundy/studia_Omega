@@ -36,7 +36,7 @@ class Utilities {
 			if(!isProperCode)
 				return null
 
-			return Utilities.wookieTestGetTestObjWithFilledData()
+			return wookieTestGetTestObjWithFilledData()
 		}
 
 		fun stopUserFromPuttingMoreThan2DigitsAfterComma(editText : EditText, oldVal : String, newVal : String){
@@ -59,7 +59,7 @@ class Utilities {
 		fun strToEditable(text: String): Editable {
 			return Editable.Factory.getInstance().newEditable(text)
 		}
-		fun wookieTestGetTestObjWithFilledData() : TransferData{
+		private fun wookieTestGetTestObjWithFilledData() : TransferData{
 			val testTransferData = TransferData().also {
 				it.receiverAccNumber = "PL63249000050000400030900682"
 				it.receiverName = "Regina Aff"
@@ -71,6 +71,16 @@ class Utilities {
 				it.executionDate = OmegaTime.getDate()
 			}
 			return testTransferData
+		}
+		fun wookieTestGetTestPaymentAccountForPaymentAct(): PaymentAccount {
+			return PaymentAccount().also {
+				it.accountNumber = "0123456789012345678901234567"
+				it.ownerName = "Ania Kowalska"
+				it.accountDescription = "Bank milion procent"
+				it.currency = "PLN"
+				it.availableBalance = 1234567.83
+
+			}
 		}
 	}
 }

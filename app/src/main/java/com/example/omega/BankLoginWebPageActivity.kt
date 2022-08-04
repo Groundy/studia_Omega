@@ -65,7 +65,7 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 			override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
 				view?.isVisible = false
 				request?.let {
-					reciveInfoFromBank(view, request)
+					reciveInfoFromBank(request)
 				}
 				return super.shouldOverrideUrlLoading(view, request)
 			}
@@ -74,13 +74,13 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 	private fun readPrefValues() : Boolean{
 		expectedState = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
 		url = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
-		if(expectedState.isNullOrEmpty() || url.isNullOrEmpty())
+		if(expectedState.isEmpty() || url.isEmpty())
 			return false
 
 		val urlValidityTime = PreferencesOperator.readPrefStr(this, R.string.PREF_authUrlValidityTimeEnd)
 		return OmegaTime.timestampIsValid(urlValidityTime)
 	}
-	private fun reciveInfoFromBank(view: WebView?, request: WebResourceRequest){
+	private fun reciveInfoFromBank(request: WebResourceRequest){
 		val isProperRedirectUri = request.url.toString().startsWith(ApiConsts.REDIRECT_URI, true)
 		if(!isProperRedirectUri){
 			Log.e(TagProduction, "Failed to obtain code[request not started with app callBack], request [${request.url}]")

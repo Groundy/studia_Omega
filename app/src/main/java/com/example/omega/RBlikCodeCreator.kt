@@ -181,7 +181,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		}
 	}
 	private fun fillReceiverName(){
-		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser() ?: return
+		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser()
 		if(paymentAccount == null){
 			Log.e(TagProduction, "[fillReceiverName/${this.receiverNameField.javaClass.name}] Failed to obtain reciever name, paymentAcc is null")
 			return

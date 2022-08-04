@@ -9,10 +9,9 @@ import java.lang.Exception
 import com.example.omega.Utilities.Companion.TagProduction
 import com.example.omega.ApiConsts.ApiReqFields.*
 
-class OpenApiGetAccDetails(var token: Token, activity: Activity) {
+class OpenApiGetAccDetails(private var token: Token, private val callerActivity: Activity) {
 	private var accountToSet: ArrayList<PaymentAccount> = ArrayList()
 	private var limitExceeded = false
-	private var callerActivity = activity
 
 	fun run(accNumbers: List<String>): Boolean {
 		Log.i(TagProduction, "getPaymentAccountDetails started")
@@ -81,7 +80,7 @@ class OpenApiGetAccDetails(var token: Token, activity: Activity) {
 		val request = getPaymentAccDetailsRequest(accNumber)
 		val response = OkHttpClient().newCall(request).execute()
 		if (response.code != ApiConsts.ResponseCodes.OK.code) {
-			ApiFunctions.LogResponseError(response, this.javaClass.name)
+			ApiFunctions.logResponseError(response, this.javaClass.name)
 			if(response.code == ApiConsts.ResponseCodes.LimitExceeded.code)
 				limitExceeded = true
 			return false

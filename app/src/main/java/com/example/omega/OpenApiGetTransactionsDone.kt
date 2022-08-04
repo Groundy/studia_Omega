@@ -7,19 +7,16 @@ import okhttp3.Request
 import org.json.JSONObject
 import com.example.omega.Utilities.Companion.TagProduction
 import com.example.omega.ApiConsts.ApiReqFields.*
-import java.util.*
 import kotlin.Exception
-import com.example.omega.ApiGetTransactionsDone.Companion.GetTransactionsDoneRequestFields.*
-import com.example.omega.ApiGetTransactionsDone.Companion.GetTransactionsResponseFields.*
+import com.example.omega.ApiGetTransactionsDone.Companion.GetTransDoneRequestFields.*
+import com.example.omega.TransactionsDoneAdditionalInfos.Companion.GetTransDoneResponseFields.*
 import kotlin.collections.ArrayList
 
-class ApiGetTransactionsDone(activity: Activity, token: Token){
-	private val token = token
-	private val callerActivity = activity
+class ApiGetTransactionsDone(private val callerActivity: Activity, private val  token: Token){
 	private var historyRecordsToRet : ArrayList<AccountHistoryRecord> = ArrayList()
 
-	companion object {
-		enum class GetTransactionsDoneRequestFields(val text : String){
+	private companion object {
+		enum class GetTransDoneRequestFields(val text : String){
 			TransactionDateFrom("transactionDateFrom"),
 			TransactionDateTo("transactionDateTo"),
 			ItemIdFrom("itemIdFrom"),
@@ -29,42 +26,39 @@ class ApiGetTransactionsDone(activity: Activity, token: Token){
 			MaxAmount("maxAmount"),
 			PageId("pageId"),
 			PerPage("perPage"),
-			Type("type")
-		}
-		enum class GetTransactionsResponseFields(val text : String){
+			Type("type"),
 			TransactionsObj("transactions"),
-
-			ItemId ("itemId"),
-			TransactionCategory ("transactionCategory"),
-			Amount ("amount"),
-			Currency ("currency"),
-			Description ("description"),
-			TradeDate ("tradeDate"),
-			Sender ("sender"),
-			Recipient ("recipient"),
-			BookingDate ("bookingDate"),
 		}
+
 	}
 	fun run(accNumber: String, infos : TransactionsDoneAdditionalInfos = TransactionsDoneAdditionalInfos()): List<AccountHistoryRecord>? {
 		Log.i(TagProduction, "GetTransactionsDone starts")
+		var sucess = false
 		val thread = Thread{
 			try {
 				val request = getRequest(accNumber, infos)
 				val response = sendRequest(request) ?: return@Thread
-				var sucess = handleResponse(response)
-				if(sucess)
-					Log.i(TagProduction, "GetTransactionsDone ends with success")
-				else
-					Log.e(TagProduction, "GetTransactionsDone ends with fail")
+				sucess = handleResponse(response)
 			}catch (e: Exception) {
 				Log.e(TagProduction,"Failed to obtain information for account with number[${accNumber}] [$e]")
 			}
 		}
 		thread.start()
 		thread.join(ApiConsts.requestTimeOut)
-		return historyRecordsToRet.toList()
-	}
 
+		return if(sucess && historyRecordsToRet.isNotEmpty()){
+			Log.i(TagProduction, "GetTransactionsDone ends with success")
+			historyRecordsToRet.toList()
+		}
+		else if(sucess && historyRecordsToRet.isEmpty()){
+			Log.i(TagProduction, "GetTransactionsDone ends with success but list of transcations is empty")
+			historyRecordsToRet.toList()
+		}
+		else{
+			Log.e(TagProduction, "GetTransactionsDone ends with fail")
+			null
+		}
+	}
 	private fun getRequest(accNumber: String, infos : TransactionsDoneAdditionalInfos) : Request {
 		val uuidStr = ApiFunctions.getUUID()
 
@@ -119,8 +113,8 @@ class ApiGetTransactionsDone(activity: Activity, token: Token){
 					val msgForUser = callerActivity.getString(R.string.AccHistoryAct_UserMsg_TooManyResuest)
 					Utilities.showToast(callerActivity, msgForUser)
 				}
-				ApiFunctions.LogResponseError(response, this.javaClass.name)
-				null
+				ApiFunctions.logResponseError(response, this.javaClass.name)
+				return null
 			}
 			JSONObject(response.body?.string()!!)
 		}
@@ -144,10 +138,22 @@ class ApiGetTransactionsDone(activity: Activity, token: Token){
 		}
 	}
 }
+
 class TransactionsDoneAdditionalInfos(daysBack : Int = 5){
 	companion object{
 		enum class Type(val text: String){
 			DEBIT("DEBIT"), CREDIT("CREDIT")
+		}
+		enum class GetTransDoneResponseFields(val text : String){
+			ItemId ("itemId"),
+			TransactionCategory ("transactionCategory"),
+			Amount ("amount"),
+			Currency ("currency"),
+			Description ("description"),
+			TradeDate ("tradeDate"),
+			Sender ("sender"),
+			Recipient ("recipient"),
+			BookingDate ("bookingDate"),
 		}
 	}
 
@@ -165,7 +171,9 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 5){
 	val perPage : Int? = null
 	val type : Type? = null
 }
-class AccountHistoryRecord{
+
+
+class AccountHistoryRecord(jsonObj: JSONObject) {
 	private var itemId : String? = null
 	private var transactionCategory : String? = null
 	private var amount : Double? = null
@@ -176,12 +184,12 @@ class AccountHistoryRecord{
 	private var recipient : String? = null
 	private var bookingDate : String? = null
 
-	constructor(jsonObj: JSONObject){
+	init {
 		try {
 			itemId = jsonObj.getString(ItemId.text)
 			transactionCategory = jsonObj.getString(TransactionCategory.text)
 			amount = jsonObj.getDouble(Amount.text)
-			currency = jsonObj.getString(ApiGetTransactionsDone.Companion.GetTransactionsResponseFields.Currency.text)
+			currency = jsonObj.getString(Currency.text)
 			description = jsonObj.getString(Description.text)
 			tradeDate = jsonObj.getString(TradeDate.text)
 			sender = jsonObj.getString(Sender.text)

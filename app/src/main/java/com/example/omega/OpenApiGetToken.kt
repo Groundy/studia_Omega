@@ -9,9 +9,7 @@ import java.lang.Exception
 import com.example.omega.Utilities.Companion.TagProduction
 import com.example.omega.ApiConsts.ApiReqFields.*
 
-class OpenApiGetToken(activity: Activity, scope : ApiConsts.ScopeValues) {
-	private var callerActivity = activity
-	private var scope = scope
+class OpenApiGetToken(private val callerActivity: Activity,private val scope : ApiConsts.ScopeValues) {
 	fun run() : Boolean{
 		Log.i(TagProduction, "GetToken started")
 		var success = false
@@ -66,7 +64,7 @@ class OpenApiGetToken(activity: Activity, scope : ApiConsts.ScopeValues) {
 			val response = OkHttpClient().newCall(request).execute()
 			val responseCode = response.code
 			if(responseCode != ApiConsts.ResponseCodes.OK.code){
-				ApiFunctions.LogResponseError(response, this.javaClass.name)
+				ApiFunctions.logResponseError(response, this.javaClass.name)
 				val errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
 				Utilities.showToast(callerActivity, errorToDisplay)
 				return null
