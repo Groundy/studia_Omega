@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -14,9 +15,10 @@ class ResultActivity : AppCompatActivity() {
 		setUpGUI()
 	}
 
+	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun setUpGUI(){
 		findViewById<Button>(R.id.result_backButton).setOnClickListener{
-			endActivity()
+			finish()
 		}
 		val textToSet = intent.getStringExtra(resources.getString(R.string.ACT_COM_RESULT_TEXT_FIELD_NAME))
 		findViewById<TextView>(R.id.result_TextView).text = textToSet
@@ -26,8 +28,5 @@ class ResultActivity : AppCompatActivity() {
 			else -> resources.getDrawable(R.drawable.wrong_img,null)
 		}
 		findViewById<ImageView>(R.id.result_imageView).setImageDrawable(imageToSet)
-	}
-	private fun endActivity(){
-		this.finish()
 	}
 }

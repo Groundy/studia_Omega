@@ -221,8 +221,14 @@ class MainActivity : AppCompatActivity() {
 	private fun continueSinglePaymentAfterLogin(){
 		val paymentTokenStr = PreferencesOperator.readPrefStr(this, R.string.PREF_PaymentToken)
 		val paymentToken  = Token(paymentTokenStr)
-		OpenApiDomesticPayment(this, paymentToken).run()
-		val t = 3
+		val paymentSuccessed = OpenApiDomesticPayment(this, paymentToken).run()
+
+		val strMsg = if(paymentSuccessed)
+			R.string.Result_GUI_OK
+		else
+			R.string.Result_GUI_WRONG_ELSE
+
+		ActivityStarter.startOperationResultActivity(this, strMsg)
 	}
 
 	//OptionsClicked
