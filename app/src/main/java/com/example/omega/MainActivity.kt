@@ -31,6 +31,10 @@ import com.karumi.dexter.listener.single.PermissionListener
 import com.example.omega.Utilities.Companion.TagProduction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.omega.BankLoginWebPageActivity.Companion.WebActivtyRedirect
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 	private var nfcCapturingIsOn = false
@@ -326,8 +330,18 @@ class MainActivity : AppCompatActivity() {
 		secondBar.menu.findItem(R.id.QrScannerTab).icon = getDrawable(R.drawable.ico_qr_scanner)
 	}
 	private fun wookieTestFun(){
+		val fff = WaitingDialog(this@MainActivity, R.string.GUI_authTransactionTitle)
+		CoroutineScope(IO).launch {
+			delay(2500)
+			fff.changeText(this@MainActivity,R.string.GUI_basicTransfer_amountAfterTransfer_less_than_zero)
+			val t = PermissionList(ApiConsts.Privileges.AccountsHistory, ApiConsts.Privileges.AccountsDetails)
+			//OpenApiAuthorize(this@MainActivity).runForAis(t)
+			delay(8500)
+			fff.hide()
+		}
+		Log.i(TagProduction, "fun continue")
+         val ff =3
 	}
-
 	//NFC
 	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun turnNfcOn(){
