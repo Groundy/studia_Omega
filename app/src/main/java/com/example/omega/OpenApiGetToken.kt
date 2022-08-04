@@ -9,8 +9,10 @@ import java.lang.Exception
 import com.example.omega.Utilities.Companion.TagProduction
 import com.example.omega.ApiConsts.ApiReqFields.*
 
-class OpenApiGetToken(private val callerActivity: Activity,private val scope : ApiConsts.ScopeValues) {
-	fun run() : Boolean{
+class OpenApiGetToken(private val callerActivity: Activity, private val scope : ApiConsts.ScopeValues) {
+	suspend fun run(dialog: WaitingDialog? = null) : Boolean{
+		if(dialog!=null)
+			dialog.changeText(callerActivity, R.string.POPUP_getToken)
 		Log.i(TagProduction, "GetToken started")
 		var success = false
 		val thread = Thread{
@@ -26,6 +28,8 @@ class OpenApiGetToken(private val callerActivity: Activity,private val scope : A
 		thread.start()
 		thread.join(ApiConsts.requestTimeOut)
 		Log.i(TagProduction, "GetToken ended sucessfuly? $success")
+		if(dialog!=null)
+			dialog.changeText(callerActivity, R.string.POPUP_empty)
 		return success
 	}
 	private fun getRequest() : Request {

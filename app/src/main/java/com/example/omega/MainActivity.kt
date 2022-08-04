@@ -31,10 +31,9 @@ import com.karumi.dexter.listener.single.PermissionListener
 import com.example.omega.Utilities.Companion.TagProduction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.omega.BankLoginWebPageActivity.Companion.WebActivtyRedirect
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers.Main
 
 class MainActivity : AppCompatActivity() {
 	private var nfcCapturingIsOn = false
@@ -46,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
 		startNfcOnStartIfUserWishTo()
-
+		PreferencesOperator.clearAuthData(this)
 
 		//getToken(WebActivtyRedirect.None)
 	}
@@ -80,6 +79,7 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 	private fun resetPermissionActivityResult(resultCode: Int, data: Intent?){
+		/*
 		if(resultCode != RESULT_OK){
 			Log.i(TagProduction, "Canceled getting authUrl")
 			return
@@ -107,38 +107,47 @@ class MainActivity : AppCompatActivity() {
 		}
 
 		ActivityStarter.openBrowserForLogin(this, WebActivtyRedirect.None)
+
+		 */
 	}
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
-		if(resultCode != RESULT_OK)
-			return
+		CoroutineScope(IO).launch {
+			if(resultCode != RESULT_OK)
+				return@launch
 
-		val redirectField = getString(R.string.ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME)
-		val redirectPlace : WebActivtyRedirect = try{
-			val redirectStr = data?.extras!!.getString(redirectField)
-			WebActivtyRedirect.fromStr(redirectStr!!)
-		}catch (e : Exception){
-			BankLoginWebPageActivity.Companion.WebActivtyRedirect.None
-		}
+			val redirectField = getString(R.string.ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME)
+			val redirectPlace : WebActivtyRedirect = try{
+				val redirectStr = data?.extras!!.getString(redirectField)
+				WebActivtyRedirect.fromStr(redirectStr!!)
+			}catch (e : Exception){
+				BankLoginWebPageActivity.Companion.WebActivtyRedirect.None
+			}
 
-		val scopeUsedForLogin = if(redirectPlace == WebActivtyRedirect.DomesticPaymentProcess)
-			 ApiConsts.ScopeValues.Pis
+			val scopeUsedForLogin = if(redirectPlace == WebActivtyRedirect.DomesticPaymentProcess)
+				ApiConsts.ScopeValues.Pis
 			else
 				ApiConsts.ScopeValues.Ais
 
-		val success = OpenApiGetToken(this,scopeUsedForLogin).run()
-		if (!success){
-			val userMsg = getString(R.string.UserMsg_Banking_errorObtaingToken)
-			Utilities.showToast(this, userMsg)
-			return
+			val success = OpenApiGetToken(this@MainActivity, scopeUsedForLogin).run()
+			if (!success){
+				val userMsg = getString(R.string.UserMsg_Banking_errorObtaingToken)
+				Utilities.showToast(this@MainActivity, userMsg)
+				return@launch
+			}
+			withContext(Main){
+				when(redirectPlace){
+					WebActivtyRedirect.AccountHistory -> {accHistoryTabClicked()}
+					WebActivtyRedirect.PaymentCreation ->{basicTransferTabCliked()}
+					WebActivtyRedirect.GenerateRBlikCode ->{generateRBlickCodeClicked()}
+					WebActivtyRedirect.DomesticPaymentProcess -> {continueSinglePaymentAfterLogin()}
+					else->{
+						return@withContext
+					}
+				}
+			}
+
 		}
 
-		when(redirectPlace){
-			WebActivtyRedirect.AccountHistory -> {accHistoryTabClicked()}
-			WebActivtyRedirect.PaymentCreation ->{basicTransferTabCliked()}
-			WebActivtyRedirect.GenerateRBlikCode ->{generateRBlickCodeClicked()}
-			WebActivtyRedirect.DomesticPaymentProcess -> {continueSinglePaymentAfterLogin()}
-			else->{return}
-		}
 	}
 	private fun pinActivityResult(resultCode: Int){
 		if(resultCode == RESULT_OK)
@@ -239,16 +248,47 @@ class MainActivity : AppCompatActivity() {
 
 	//OptionsClicked
 	private fun basicTransferTabCliked(){
-		getToken(WebActivtyRedirect.PaymentCreation)
-		ActivityStarter.startTransferActivityFromMenu(this)
+		CoroutineScope(IO).launch{
+			val ok = getToken(WebActivtyRedirect.PaymentCreation)
+			withContext(Main){
+				if(ok)
+					ActivityStarter.startTransferActivityFromMenu(this@MainActivity)
+				else{
+					//todo kipeko poprawić
+					Log.e(TagProduction, "Nie można otworzyć okna płatności, brak możliwości pobrania tokenu")
+				}
+			}
+		}
 	}
 	private fun accHistoryTabClicked(){
-		getToken(WebActivtyRedirect.AccountHistory)
-		ActivityStarter.openAccountTransfersHistoryActivity(this)
+		val dialog = WaitingDialog(this, R.string.POPUP_empty)
+		CoroutineScope(IO).launch{
+			val ok = getToken(WebActivtyRedirect.AccountHistory, dialog)
+			withContext(Main){
+				if(ok){
+					ActivityStarter.openAccountTransfersHistoryActivity(this@MainActivity)
+					dialog.hide()
+				}
+				else{
+					//todo kipeko poprawić
+					Log.e(TagProduction, "Nie można otworzyć historii rachunek, brak możliwości pobrania tokenu")
+					dialog.hide()
+				}
+			}
+		}
 	}
 	private fun generateRBlickCodeClicked(){
-		getToken(WebActivtyRedirect.GenerateRBlikCode)
-		ActivityStarter.startRBlikCodeCreatorActivity(this)
+		CoroutineScope(IO).launch {
+			val ok = getToken(WebActivtyRedirect.GenerateRBlikCode)
+			withContext(Main){
+				if(ok)
+					ActivityStarter.startRBlikCodeCreatorActivity(this@MainActivity)
+				else{
+					//todo kipeko poprawić
+					Log.e(TagProduction, "Nie można otworzyć okna generowania kodów, brak możliwości pobrania tokenu")
+				}
+			}
+		}
 	}
 	private fun qrScannerTabClicked(){
 		ActivityStarter.startQrScannerActivity(this)
@@ -258,20 +298,21 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	//Other
-	private fun getToken(redirectPlace : WebActivtyRedirect){
+	private suspend fun getToken(redirectPlace : WebActivtyRedirect, dialog: WaitingDialog? = null) : Boolean{
 		val token = PreferencesOperator.getToken(this)
 		val tokenOk = token.isOk(this)
 		if(tokenOk)
-			return
+			return true
 
 		val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 		PreferencesOperator.clearAuthData(this)
-		val authOk = OpenApiAuthorize(this).runForAis(obj)
+		val authOk = OpenApiAuthorize(this).runForAis(obj, dialog)
 		if(!authOk){
 			Utilities.showToast(this, "Nie udało się automatycznie pobrać tokenu.")
-			return
+			return false
 		}
 		ActivityStarter.openBrowserForLogin(this, redirectPlace)
+		return false
 	}
 	private fun processCode(code: Int) {
 		val codeField = findViewById<EditText>(R.id.MainAct_enterCodeField)

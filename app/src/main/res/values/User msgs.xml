@@ -40,4 +40,11 @@
     <string name="AccHistoryAct_UserMsg_ErrorInObtainingToken">Nie można uzyskać tokenu dostępowego, zalecany jest rest tokenu."</string>
     <string name="AccHistoryAct_UserMsg_TooManyResuest">Przekroczono maskymalna ilość zapytań do banku o historię transakcji, zalecamy spróbować później."</string>
 
+    <!-- Dialog msg -->
+    <string name="POPUP_auth">Trwa uzyskiwanie linku autoryzacji. Proszę czekać.</string>
+    <string name="POPUP_empty">Proszę czekać</string>
+    <string name="POPUP_getToken">Trwa uzyskiwanie tokenu dostępowego. Proszę czekać.</string>
+    <string name="POPUP_refreshToken">Trwa odnawianie tokenu dostępowego. Proszę czekać.</string>
+
+
 </resources>

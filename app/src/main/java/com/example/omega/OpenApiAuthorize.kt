@@ -32,13 +32,14 @@ class OpenApiAuthorize(activity: Activity) {
 		const val redirectUriField = "aspspRedirectUri"
 	}
 
-	fun runForAis(permisionListObject : PermissionList) : Boolean{
+	suspend fun runForAis(permisionListObject : PermissionList, dialog: WaitingDialog? = null) : Boolean{
 		permissionsList = permisionListObject
 		if (permissionsList.permissionsArray.isEmpty()) {
 			Log.e(TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
 			return false
 		}
-
+		if(dialog!=null)
+			dialog.changeText(callerActivity, R.string.POPUP_auth)
 		Log.i(TagProduction, "Authorize started")
 		var success = false
 		val thread = Thread{
@@ -52,6 +53,8 @@ class OpenApiAuthorize(activity: Activity) {
 			Log.i(TagProduction, "Authorize ended with sucess")
 		else
 			Log.e(TagProduction, "Authorize ended with error")
+		if(dialog!=null)
+			dialog.changeText(callerActivity, R.string.POPUP_empty)
 		return success
 	}
 	fun runForPis(permisionListObject : PermissionList, transferData: TransferData) : Boolean{
