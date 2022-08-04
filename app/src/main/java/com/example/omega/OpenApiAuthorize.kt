@@ -170,7 +170,7 @@ class OpenApiAuthorize(activity: Activity) {
 		val userWantAccessToSinglePayment = permissionsList.permissionsArray.contains(Privileges.SinglePayment)
 
 		if(userWantAccessToSinglePayment){
-			val domesticPaymentPriviledgeScopeDetailObj = DomesticPaymentSupportClass(transferData).gePrivilegeScopeDetailsObjForAuth(callerActivity)
+			val domesticPaymentPriviledgeScopeDetailObj = DomesticPaymentSupportClass(transferData).gePrivilegeScopeDetailsObjForAuth()
 			privilegesListJsonObjToRet.put(ApiMethodes.PisDomestic.text, domesticPaymentPriviledgeScopeDetailObj)
 		}
 

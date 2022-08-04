@@ -82,36 +82,33 @@ class DomesticPaymentSupportClass(private val transferData: TransferData) {
 			.put(TransactionsExtraInfoObjFields.SpDescription.text,"Epo da jewbe in jimtafo miwjon ra izo on lu kuwimwen zi ijufeb.")
 	}
 
-	fun gePrivilegeScopeDetailsObjForAuth(callerActivity: Activity): JSONObject {
+	fun gePrivilegeScopeDetailsObjForAuth(): JSONObject {
 		val scopeUsageLimitStr = ApiConsts.ScopeDetailsFields.ScopeUsageLimit.text
 		val scopeSingleUsageStr = ApiConsts.ScopeUsageLimit.Single.text
-		val ttpTransactionId = getRandomValueForTppTransId()
-		PreferencesOperator.savePref(callerActivity, R.string.PREF_PaymentID, ttpTransactionId)
 		return JSONObject()
 			.put(scopeUsageLimitStr,scopeSingleUsageStr)
 			.put(RequestFields.Recipient.text, getRecipentbj())
 			.put(RequestFields.Sender.text, getSenderObj())
 			.put(RequestFields.TransferData.text,getTransferDataObj())
-			.put(RequestFields.TppTransactionId.text, ttpTransactionId)
+			.put(RequestFields.TppTransactionId.text, getRandomValueForTppTransId())
 			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
 			.put(RequestFields.System.text, usingSystem)
-			//.put(RequestFields.Hold.text, true)
+			//.put(RequestFields.Hold.text, false)
 			.put(RequestFields.ExecutionMode.text, usingExecutionMode)
 			//.put("splitPayment", false)
 			//.put("transactionInfoSp", getTransactionInfoSpObj())
 	}
 
-	fun getBodyForTokenRequest(callerActivity: Activity, requestHeadersJsonObject: JSONObject): JSONObject {
-		val ttpTransactionId = PreferencesOperator.readPrefStr(callerActivity, R.string.PREF_PaymentID)
+	fun getBodyForTokenRequest(requestHeadersJsonObject: JSONObject): JSONObject {
 		return JSONObject()
 			.put(ApiConsts.ApiReqFields.RequestHeader.text, requestHeadersJsonObject)
 			.put(RequestFields.Recipient.text, getRecipentbj())
 			.put(RequestFields.Sender.text, getSenderObj())
 			.put(RequestFields.TransferData.text,getTransferDataObj())
-			.put(RequestFields.TppTransactionId.text,ttpTransactionId)
+			.put(RequestFields.TppTransactionId.text,getRandomValueForTppTransId())
 			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
 			.put(RequestFields.System.text, usingSystem)
-			//.put(RequestFields.Hold.text, true)
+			//.put(RequestFields.Hold.text, false)
 			.put(RequestFields.ExecutionMode.text, usingExecutionMode)
 			//.put(RequestFields.SplitPayment.text, false)
 			//.put(RequestFields.TransactionInfoSpObj.text,getTransactionInfoSpObj())

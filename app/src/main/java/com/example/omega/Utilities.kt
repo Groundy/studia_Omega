@@ -64,10 +64,10 @@ class Utilities {
 				it.receiverAccNumber = "PL63249000050000400030900682"
 				it.receiverName = "Regina Aff"
 				it.senderAccNumber = "PL50249000050000400076134538"
-				it.senderAccName = "awfaw awfawf"
+				it.senderAccName = "Rwfaw Dawfawf"
 				it.amount = 12.34
 				it.description = "zwrot pozyczki"
-				it.currency = "PLN"
+				it.currency = "EUR"
 				it.executionDate = OmegaTime.getDate()
 			}
 			return testTransferData

@@ -42,7 +42,7 @@ class OpenApiDomesticPayment(activity: Activity, token: Token) {
 
 
 		val transferDataFromToken = TransferData(token)
-		val requestBodyJsonObj = DomesticPaymentSupportClass(transferDataFromToken).getBodyForTokenRequest(callerActivity, requestHeaders)
+		val requestBodyJsonObj = DomesticPaymentSupportClass(transferDataFromToken).getBodyForTokenRequest(requestHeaders)
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, requestBodyJsonObj, uuidStr, additionalHeaderList)
 	}
@@ -53,7 +53,7 @@ class OpenApiDomesticPayment(activity: Activity, token: Token) {
 				ApiFunctions.LogResponseError(response, this.javaClass.name)
 				return null
 			}
-			val responseBody = response.body?.string()
+ 			val responseBody = response.body?.string()
 			val responseJsonObject = JSONObject(responseBody!!)
 			responseJsonObject
 		}catch (e : Exception){

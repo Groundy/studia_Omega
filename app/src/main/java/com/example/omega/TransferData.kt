@@ -97,10 +97,11 @@ class TransferData() {
 			senderAccName = senderNameTmp
 			receiverAccNumber = receiverObj.getString(TransferDataFields.AccountNumber.text)
 			receiverName = receiverNameTmp
-			description = subDataObj.getString(TransferDataFields.ExecutionDate.text)
+			description = subDataObj.getString(TransferDataFields.Description.text)
 			amount = subDataObj.getString(TransferDataFields.Amount.text).toDouble()
 			currency = subDataObj.getString(TransferDataFields.Currency.text)
 			executionDate = subDataObj.getString(TransferDataFields.ExecutionDate.text)
+
 		}catch (e : Exception){
 			Log.e(TagProduction, "[constructor(token)/${this.javaClass.name}] failed to obtain tmp data transfer class from payment token")
 		}
