@@ -249,6 +249,9 @@ class MainActivity : AppCompatActivity() {
 	private fun qrScannerTabClicked(){
 		ActivityStarter.startQrScannerActivity(this)
 	}
+	private fun wookieTestFunClicked(){
+		wookieTestFun()
+	}
 
 	//Other
 	private fun getToken(redirectPlace : WebActivtyRedirect){
@@ -300,6 +303,7 @@ class MainActivity : AppCompatActivity() {
 				R.id.GenerateBlikCodeTab -> generateRBlickCodeClicked()
 				R.id.NfcTab -> nfcButtonClicked()
 				R.id.QrScannerTab->qrScannerTabClicked()
+				R.id.ToImplementTab->wookieTestFunClicked()
 			}
 			true
 		}
@@ -320,6 +324,8 @@ class MainActivity : AppCompatActivity() {
 			getDrawable(R.drawable.ico_nfc_off)
 		secondBar.menu.findItem(R.id.ToImplementTab).icon = getDrawable(R.drawable.ico_cancel)
 		secondBar.menu.findItem(R.id.QrScannerTab).icon = getDrawable(R.drawable.ico_qr_scanner)
+	}
+	private fun wookieTestFun(){
 	}
 
 	//NFC
@@ -471,3 +477,4 @@ class MainActivity : AppCompatActivity() {
 	}
 
 }
+
