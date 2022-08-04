@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
 
 
 		//getToken(WebActivtyRedirect.None)
-		startSinglePaymentAuthorization(RESULT_OK, null)
 	}
 
 	//Menus

@@ -239,9 +239,10 @@ class PinActivity : AppCompatActivity() {
 	}
 	private fun processAuth(pin : Int){
 		val authCorrect = checkIfPinIsCorrect(pin)
-		if(authCorrect)
-			returnActAndMoveToTransaction()
-
+		if(authCorrect){
+			setResult(RESULT_OK,Intent())
+			finish()
+		}
 		else{
 			pinTriesLeft--
 			val allowUserToTryOtherPin = pinTriesLeft > 0
@@ -350,27 +351,6 @@ class PinActivity : AppCompatActivity() {
 		forogtPinField.setOnClickListener{
 			ActivityStarter.openDialogWithDefinedPurpose(this, YesNoDialogActivity.Companion.DialogPurpose.ResetPin)
 		}
-	}
-	private fun returnActAndMoveToTransaction(){
-		/*
-		val transferDataStr = try{
-			val transferDataFieldStr = resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
-			val transferDataStr = intent.extras!!.getString(transferDataFieldStr)!!
-			transferDataStr
-		}catch (e : Exception){
-			Log.e(TagProduction,"[startTransaction/${this.javaClass.name}] error obtaing transcations detail str from intent")
-			//todo show toast unkown error
-			String()
-		}
-
-		val field = resources.getString(R.string.ACT_COM_PIN_RetTransferData_FIELDNAME)
-		val intentRet = Intent()
-			.putExtra(field, transferDataStr)
-
-		setResult(RESULT_OK,intentRet)
-			 */
-		setResult(RESULT_OK,Intent())
-		finish()
 	}
 	private fun finishActivity(success: Boolean){
 		var result = if(success) RESULT_OK else RESULT_CANCELED

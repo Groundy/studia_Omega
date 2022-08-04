@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -52,6 +53,7 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 		webView.loadUrl(url)
 	}
 
+	@SuppressLint("SetJavaScriptEnabled")
 	private fun setWebView(){
 		webView = this.findViewById(R.id.OAuth_webView)
 		webView.settings.javaScriptEnabled = true
@@ -106,6 +108,7 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 		}
 		else {
 			PreferencesOperator.savePref(this, R.string.PREF_authCode, code)
+			PreferencesOperator.clearPreferences(this, R.string.PREF_authURL, R.string.PREF_lastRandomValue)
 			finishActivity(true)
 			Log.i(TagProduction, "Login To Bank activity ended, RESULT_OK")
 			return
