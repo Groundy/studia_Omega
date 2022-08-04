@@ -16,8 +16,7 @@ class OpenApiDomesticPayment(activity: Activity, token: Token) {
 		var success = false
 		val thread = Thread{
 			val request = getRequest()
-			val okResponse = sendRequest(request) ?: return@Thread
-			success = handleResponse(okResponse)
+			success = sendRequest(request) ?: return@Thread
 		}
 		thread.start()
 		thread.join(ApiConsts.requestTimeOut)
@@ -46,23 +45,19 @@ class OpenApiDomesticPayment(activity: Activity, token: Token) {
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, requestBodyJsonObj, uuidStr, additionalHeaderList)
 	}
-	private fun sendRequest(request : Request) : JSONObject?{
+	private fun sendRequest(request : Request) : Boolean{
 		return try{
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ApiConsts.responseOkCode){
 				ApiFunctions.LogResponseError(response, this.javaClass.name)
-				return null
+				return false
 			}
- 			val responseBody = response.body?.string()
-			val responseJsonObject = JSONObject(responseBody!!)
-			responseJsonObject
+ 			//val responseBody = response.body?.string()
+			//val responseJsonObject = JSONObject(responseBody!!)
+			true
 		}catch (e : Exception){
 			Log.e(Utilities.TagProduction,"[sendRequest/${this.javaClass.name}] Error catch $e")
-			null
+			false
 		}
-	}
-	private fun handleResponse(response: JSONObject) : Boolean{
-		//todo
-		return false
 	}
 }
