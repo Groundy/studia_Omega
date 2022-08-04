@@ -85,6 +85,7 @@
 	<!-- main menu -->
 	<string name="MainMenu_GUI_TokenTabName">Token</string>
 	<string name="MainMenu_GUI_ConfigurationTabName">Opcje</string>
+	<string name="MainAct_GUI_mainCodeFieldHint">_ _ _ _ _ _</string>
 
 	<!-- top bar menu -->
 	<string name="MainMenu_GUI_AccHistoryTabName">Historia rachunków</string>

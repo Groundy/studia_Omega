@@ -43,6 +43,7 @@
 	<dimen name="TransferSummary_infoFieldY">20dp</dimen>
 	<dimen name="TransferSummary_valueFieldY">50dp</dimen>
 	<dimen name="TransferSummary_spaceBetweenFields">15dp</dimen>
+	<dimen name="TransferSummary_dataTextSize">25sp</dimen>
 
 	<!--Transfer Activity-->
 	<dimen name="basicTransfer_spacer_Y">20dp</dimen>

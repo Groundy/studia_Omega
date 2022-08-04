@@ -266,7 +266,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		}
 	}
 	private fun wookieTestFillTmpWidgets(){
-		currentPaymentAccount = PaymentAccount.wookieTestGetTestPaymentAccountForPaymentAct()
+		currentPaymentAccount = Utilities.wookieTestGetTestPaymentAccountForPaymentAct()
 		receiverNumberEditText.text = Utilities.strToEditable("11223344556677889911223003")
 		amountEditText.text =  Utilities.strToEditable("1.23")
 		receiverNameEditText.text = Utilities.strToEditable("Ciocia Zosia")

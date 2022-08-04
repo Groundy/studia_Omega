@@ -21,7 +21,7 @@
 		app:layout_constraintHorizontal_bias="1.0"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:menu="@menu/desktop_menu"></com.google.android.material.bottomnavigation.BottomNavigationView>
+		app:menu="@menu/desktop_menu" />
 
 	<com.google.android.material.bottomnavigation.BottomNavigationView
 		android:id="@+id/MainAct_secondBar"
@@ -35,26 +35,50 @@
 		app:layout_constraintTop_toBottomOf="@+id/MainAct_firstBar"
 		app:menu="@menu/desktop_menu_secondary" />
 
-	<EditText
-		android:id="@+id/MainAct_enterCodeField"
-		android:layout_width="match_parent"
+	<LinearLayout
+		android:id="@+id/linearLayout3"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:background="@null"
-		android:ellipsize="start"
-		android:ems="1"
-		android:gravity="center_horizontal"
-		android:hint="_ _ _ _ _ _"
-		android:imeOptions="actionDone"
-		android:inputType="number"
+		android:orientation="horizontal"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/MainAct_secondBar">
 
-		android:maxLength="6"
-		android:textColorHint="#455A64"
-		android:textSize="50sp"
-		android:visibility="visible"
+		<Space
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1" />
+
+		<EditText
+			android:id="@+id/MainAct_enterCodeField"
+			android:layout_width="300dp"
+			android:layout_height="wrap_content"
+			android:background="@drawable/border_for_digit_field_pin_activity"
+			android:ellipsize="start"
+			android:ems="1"
+			android:gravity="center_horizontal"
+			android:hint="@string/MainAct_GUI_mainCodeFieldHint"
+			android:imeOptions="actionDone"
+			android:importantForAutofill="no"
+			android:inputType="number"
+			android:maxLength="6"
+			android:textColorHint="#455A64"
+			android:textSize="50sp"
+			android:visibility="visible"
+			tools:visibility="visible" />
+
+		<Space
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1" />
+	</LinearLayout>
+
+	<Space
+		android:layout_width="0dp"
+		android:layout_height="0dp"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/MainAct_secondBar"
-		app:layout_constraintVertical_bias="0.0" />
+		app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
