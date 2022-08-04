@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="preference_file_key">OmegaApp_User_Data_File</string>
 
 	<!--basic transfer-->
 	<string name="GUI_basicTransfer_chooseAccountTextView">Z Rachunku: </string>
