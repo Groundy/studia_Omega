@@ -80,9 +80,9 @@ class OpenApiGetAccDetails(var token: Token, activity: Activity) {
 	private fun getAccInfo(accNumber: String): Boolean {
 		val request = getPaymentAccDetailsRequest(accNumber)
 		val response = OkHttpClient().newCall(request).execute()
-		if (response.code != ApiConsts.responseOkCode) {
+		if (response.code != ApiConsts.ResponseCodes.OK.code) {
 			ApiFunctions.LogResponseError(response, this.javaClass.name)
-			if(response.code == ApiConsts.limiExceededCode)
+			if(response.code == ApiConsts.ResponseCodes.LimitExceeded.code)
 				limitExceeded = true
 			return false
 		}

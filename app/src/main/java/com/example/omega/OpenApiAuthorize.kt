@@ -79,7 +79,7 @@ class OpenApiAuthorize(activity: Activity) {
 	private fun sendRequest (request: Request) : JSONObject?{
 		return try{
 			val response = OkHttpClient().newCall(request).execute()
-			if(response.code!= ApiConsts.responseOkCode){
+			if(response.code!= ApiConsts.ResponseCodes.OK.code){
 				LogResponseError(response, this.javaClass.name)
 				return null
 			}

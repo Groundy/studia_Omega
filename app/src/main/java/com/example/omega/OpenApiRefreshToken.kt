@@ -49,7 +49,7 @@ class OpenApiRefreshToken(private val refreshToken : String) {
 	private fun sendRequest(request: Request) : JSONObject?{
 		return try{
 			val response = OkHttpClient().newCall(request).execute()
-			if(response.code!= ApiConsts.responseOkCode){
+			if(response.code!= ApiConsts.ResponseCodes.OK.code){
 				ApiFunctions.LogResponseError(response, this.javaClass.name)
 				return null
 			}

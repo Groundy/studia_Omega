@@ -65,7 +65,7 @@ class OpenApiGetToken(activity: Activity, scope : ApiConsts.ScopeValues) {
 		return try {
 			val response = OkHttpClient().newCall(request).execute()
 			val responseCode = response.code
-			if(responseCode != ApiConsts.responseOkCode){
+			if(responseCode != ApiConsts.ResponseCodes.OK.code){
 				ApiFunctions.LogResponseError(response, this.javaClass.name)
 				val errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
 				Utilities.showToast(callerActivity, errorToDisplay)

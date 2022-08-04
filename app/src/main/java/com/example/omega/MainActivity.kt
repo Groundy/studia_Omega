@@ -198,7 +198,7 @@ class MainActivity : AppCompatActivity() {
 	private fun startSinglePaymentAuthorization(resultCode: Int, data: Intent?){
 		if(resultCode != RESULT_OK)
 			return
-/*
+
 		val transferData = try {
 			val fieldName = resources.getString(R.string.ACT_COM_MANY_RetTransferData_FIELDNAME)
 			val transferDataStr = data!!.extras!!.getString(fieldName)
@@ -207,9 +207,12 @@ class MainActivity : AppCompatActivity() {
 		}catch (e : Exception){
 			Log.e(TagProduction, "[] cant obtain data transfer from intent")
 			null
-		} ?: return
-*/
-		val transferData = Utilities.wookieTestGetTestObjWithFilledData()
+		}
+		if(transferData == null){
+			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_WRONG_ELSE)
+			return
+		}
+
 		val permListObj = PermissionList(ApiConsts.Privileges.SinglePayment)
 		val authOk = OpenApiAuthorize(this).runForPis(permListObj, transferData)
 		if(!authOk){

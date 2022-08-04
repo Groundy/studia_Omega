@@ -48,7 +48,7 @@ class OpenApiDomesticPayment(activity: Activity, token: Token) {
 	private fun sendRequest(request : Request) : Boolean{
 		return try{
 			val response = OkHttpClient().newCall(request).execute()
-			if(response.code!= ApiConsts.responseOkCode){
+			if(response.code!= ApiConsts.ResponseCodes.OK.code){
 				ApiFunctions.LogResponseError(response, this.javaClass.name)
 				return false
 			}

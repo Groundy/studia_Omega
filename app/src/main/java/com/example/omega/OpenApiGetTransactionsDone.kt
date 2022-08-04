@@ -114,8 +114,8 @@ class ApiGetTransactionsDone(activity: Activity, token: Token){
 		return try {
 			val response = OkHttpClient().newCall(request).execute()
 			val responseCode = response.code
-			if(responseCode != ApiConsts.responseOkCode){
-				if(responseCode == 429){
+			if(responseCode != ApiConsts.ResponseCodes.OK.code){
+				if(responseCode == ApiConsts.ResponseCodes.LimitExceeded.code){
 					val msgForUser = callerActivity.getString(R.string.AccHistoryAct_UserMsg_TooManyResuest)
 					Utilities.showToast(callerActivity, msgForUser)
 				}

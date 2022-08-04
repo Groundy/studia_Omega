@@ -27,7 +27,7 @@ class ApiConsts {
 		GetPaymentAccount("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccount"),
 		GetTransactionsDone("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getTransactionsDone"),
 		SinglePayment("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/payments/v3_0.1/domestic"),
-		Test("https://omegaserver.azurewebsites.net")
+		//Test("https://omegaserver.azurewebsites.net")
 	}
 	enum class ApiReqFields(val text : String){
 		RequestHeader("requestHeader"),
@@ -75,6 +75,11 @@ class ApiConsts {
 		ScopeUsageLimit("scopeUsageLimit"),
 		MaxAllowedHistoryLong("maxAllowedHistoryLong")
 	}
+	enum class ResponseCodes(val code : Int){
+		OK(200),
+		LimitExceeded(429)
+	}
+
 	companion object {
 		const val PREFERED_CHARSET = "utf-8"
 		const val PREFERED_ENCODING = "gzip"
@@ -92,12 +97,10 @@ class ApiConsts {
 
 		const val AuthUrlValidityTimeSeconds = 24 * 60 * 60
 		const val requestTimeOut = 1000L * 8 * 60
-		const val ThreadTimeOut = requestTimeOut*2
+		//const val ThreadTimeOut = requestTimeOut*2
 		const val ipTimeCheckPeriodSeconds = 120
 
 		const val countryCodeLength = 2
-		const val responseOkCode = 200
-		const val limiExceededCode = 429
 	}
 
 }
