@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 class WaitingDialog {
 	private var dialog : AlertDialog
 
-	constructor(callerActivity: Activity, resId : Int){
+	constructor(callerActivity: Activity, resId : Int = R.string.POPUP_empty){
 		val infalter = callerActivity.layoutInflater
 		val dialogView = infalter.inflate(R.layout.loading_dialog,null)
 		val bulider = AlertDialog.Builder(callerActivity)

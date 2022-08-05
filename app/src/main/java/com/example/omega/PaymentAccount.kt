@@ -140,7 +140,7 @@ class PaymentAccount() {
 	}
 	fun getAccNumber() : String{
 		if(accountNumber == null){
-			Log.e(TagProduction, "[getAccNumber/${this.javaClass.name}] s null")
+			Log.e(TagProduction, "[getAccNumber/${this.javaClass.name}] is null")
 			return "Null"
 		}
 		return accountNumber as String

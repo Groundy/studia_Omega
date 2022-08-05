@@ -2,7 +2,6 @@ package com.example.omega
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -11,7 +10,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.omega.Utilities.Companion.TagProduction
@@ -31,7 +29,7 @@ class AccountHistroyActivity : AppCompatActivity() {
 		setContentView(R.layout.activity_account_histroy)
 		setGUI()
 
-		val dialog = WaitingDialog(this, R.string.POPUP_getAccountsHistory)
+		val dialog = WaitingDialog(this, R.string.POPUP_getAccountsDetails)
 		CoroutineScope(IO).launch{
 			val success = getToken()
 			if(!success){

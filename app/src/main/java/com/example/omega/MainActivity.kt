@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 		startNfcOnStartIfUserWishTo()
 		PreferencesOperator.clearAuthData(this)
 		//val dialog = WaitingDialog(this, "Obtaining token from memory")
-		accHistoryTabClicked()
+		basicTransferTabCliked()
 	}
 
 	//Menus

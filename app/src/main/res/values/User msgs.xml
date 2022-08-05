@@ -19,7 +19,7 @@
     <!-- Basic transfer -->
     <string name="UserMsg_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER">Numer odbiorcy musi mieć 26 cyfr.</string>
     <string name="UserMsg_basicTransfer_Amount_too_hight">Kwota przelewu jest większa niż dostępne na rachunku środki.</string>
-    <string name="UserMsg_basicTransfer_Amount_zero">Kwota przelewu nie musi być większa niż zero.</string>
+    <string name="UserMsg_basicTransfer_Amount_zero">Kwota przelewu musi być większa niż zero.</string>
     <string name="UserMsg_basicTransfer_wrong_receiver_name">Nazwa odbiorca musi mieć między 3 a 50 znaków</string>
     <string name="UserMsg_basicTransfer_wrong_title">Tytuł przelewu musi mieć między 3 a 50 znaków</string>
     <string name="UserMsg_basicTransfer_error_reciving_acc_balance">Błąd pobierania informacji o środkach na rachunku, płatność niemożliwa.</string>
@@ -45,7 +45,8 @@
     <string name="POPUP_empty">Proszę czekać</string>
     <string name="POPUP_getToken">Trwa uzyskiwanie tokenu dostępowego. Proszę czekać.</string>
     <!--<string name="POPUP_refreshToken">Trwa odnawianie tokenu dostępowego. Proszę czekać.</string>-->
-    <string name="POPUP_getAccountsHistory">Trwa pobieranie informacji o rachunkach. Proszę czekać.</string>
+    <string name="POPUP_getAccountsDetails">Trwa pobieranie informacji o rachunkach. Proszę czekać.</string>
     <string name="POPUP_getSingleAccountHistory">Trwa pobieranie historii wybrenego rachunku. Proszę czekać.</string>
+    <string name="POPUP_listOfAccounts">Trwa pobieranie listy rachunków. Proszę czekać.</string>
 
 </resources>
