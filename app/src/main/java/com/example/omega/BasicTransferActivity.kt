@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,11 @@ import android.view.View
 import kotlin.math.floor
 import android.widget.*
 import com.example.omega.Utilities.Companion.TagProduction
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BasicTransferActivity : AppCompatActivity() {
 	private lateinit var receiverNumberEditText : EditText
@@ -28,20 +34,36 @@ class BasicTransferActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_basic_transfer)
-		getToken()
 		findGuiElements()
 		setListenersToGuiElements()
+		val dialog = WaitingDialog(this)
+		CoroutineScope(IO).launch {
+			dialog.changeText(this@BasicTransferActivity, R.string.POPUP_getToken)
+			val tokenObtained = getToken()
+			if(!tokenObtained){
+				withContext(Main){
+					dialog.hide()
+				}
+				//todo info
+				return@launch
+			}
 
-		//todo tmp
-		/*
-		val ok = fillListOfAccounts()
-		if(ok){
-			finish()
-			return
+			dialog.changeText(this@BasicTransferActivity, R.string.POPUP_getAccountsDetails)
+			val spinnerAdapter = getListOfAccountsForSpinner()
+			if(spinnerAdapter == null){
+				withContext(Main){
+					dialog.hide()
+				}
+				//todo info
+				return@launch
+			}
+			withContext(Main){
+				dialog.hide()
+				spinner.adapter = spinnerAdapter
+				wookieTestFillTmpWidgets()
+			}
 		}
-		*/
 
-		wookieTestFillTmpWidgets()
 	}
 
 	private fun setListenersToGuiElements(){
@@ -173,33 +195,23 @@ class BasicTransferActivity : AppCompatActivity() {
 		val balanceAfterTransfer = balance - transferAmount
 		return floor(balanceAfterTransfer * 100) / 100 //trim decimal after 2 digits
 	}
-	private fun fillListOfAccounts() : Boolean{
-		return false//TODO
-		/*
-				if(!tokenCpy.getDetailsOfAccountsFromBank(this)){
+	private fun getListOfAccountsForSpinner() : SpinnerAdapter?{
+		if(!tokenCpy.fillTokenAccountsWithBankDetails(this)){
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivityWithError(errorCodeTextToDisplay)
-			return false
+			return null
 		}
 
-		val listOfAccountsFromToken = tokenCpy.getListOfAccountsToDisplay()
+		val listOfAccountsFromToken = tokenCpy.getListOfAccountsNumbersToDisplay()
 		if(listOfAccountsFromToken.isNullOrEmpty()){
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token return null or empty account list")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivityWithError(errorCodeTextToDisplay)
-			return false
+			return null
 		}
 
-		val adapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item)
-		listOfAccountsFromToken.forEach{
-			adapter.add(it)
-		}
-		spinner.adapter = adapter
-		return true
-
-		*/
-
+		return ArrayAdapter(this@BasicTransferActivity,android.R.layout.simple_spinner_item, listOfAccountsFromToken)
 	}
 	private fun finishThisActivityWithError(errorCode : String? = null){
 		if(errorCode!=null)
@@ -218,7 +230,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		val testTransferData = TransferData().also {
 			it.receiverAccNumber = receiverNumberEditText.text.toString()
 			it.receiverName = receiverNameEditText.text.toString()
-			it.senderAccName = currentPaymentAccount!!.getAccNumber()
+			it.senderAccNumber = currentPaymentAccount!!.getAccNumber()
 			it.senderAccName = currentPaymentAccount!!.getOwnerName()
 			it.amount = amountEditText.text.toString().toDouble()
 			it.description = transferTitle.text.toString()
@@ -235,11 +247,14 @@ class BasicTransferActivity : AppCompatActivity() {
 
 		ActivityStarter.startTransferSummaryActivity(this, transferDataSerialized)
 	}
-	private fun getToken(){
+	private fun getToken() : Boolean{
 		val tokenTmp = PreferencesOperator.getToken(this)
-		if(!tokenTmp.isOk(this))
-			finish()
+		val tokenOk = tokenTmp.isOk(this)
+		if(!tokenOk)
+			return false
+
 		tokenCpy = tokenTmp
+		return true
 	}
 	private fun userChangeAnotherAccOnSpiner(){
 		val selectedItemText = spinner.selectedItem.toString()
@@ -271,7 +286,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		}
 	}
 	private fun wookieTestFillTmpWidgets(){
-		currentPaymentAccount = Utilities.wookieTestGetTestPaymentAccountForPaymentAct()
+		//currentPaymentAccount = Utilities.wookieTestGetTestPaymentAccountForPaymentAct()
 		receiverNumberEditText.text = Utilities.strToEditable("11223344556677889911223003")
 		amountEditText.text =  Utilities.strToEditable("1.23")
 		receiverNameEditText.text = Utilities.strToEditable("Ciocia Zosia")
