@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:background="@color/colorPrimary"
+	android:layout_height="match_parent">
+
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<LinearLayout
+			android:layout_width="366dp"
+			android:layout_height="match_parent"
+			android:layout_gravity="center_horizontal"
+			android:gravity="center_horizontal"
+			android:minWidth="500dp"
+			android:minHeight="300dp"
+			android:orientation="vertical">
+
+			<TextView
+				android:id="@+id/textView2"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:layout_weight="0"
+				android:gravity="center_horizontal"
+				android:text="Od:    "
+				android:textColor="@color/black" />
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:gravity="center_horizontal"
+				android:orientation="horizontal">
+
+				<Button
+					android:id="@+id/button3"
+					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_weight="0"
+					android:text="-5" />
+
+				<Button
+					android:id="@+id/button"
+					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_weight="0"
+					android:text="-1"
+					android:textColor="@color/black" />
+
+				<TextView
+					android:id="@+id/textView7"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:background="@drawable/border_for_digit_field_pin_activity"
+					android:gravity="center_horizontal|center_vertical"
+					android:minWidth="100dp"
+					android:text="05-08-2022"
+					android:textColor="@color/black"
+					android:textStyle="bold" />
+
+				<Button
+					android:id="@+id/button7"
+					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_weight="0"
+					android:text="+1" />
+
+				<Button
+					android:id="@+id/button4"
+					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_weight="0"
+					android:text="+5" />
+
+			</LinearLayout>
+
+			<TextView
+				android:id="@+id/textView3"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:layout_weight="0"
+				android:gravity="center_horizontal"
+				android:text="Do:    "
+				android:textColor="@color/black" />
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:gravity="center_horizontal"
+				android:orientation="horizontal">
+
+				<Button
+					android:id="@+id/button2"
+					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
+					android:text="-5"
+					android:textColor="@color/black" />
+
+				<Button
+					android:id="@+id/button6"
+					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_weight="0"
+					android:text="-1" />
+
+				<TextView
+					android:id="@+id/textView6"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:background="@drawable/border_for_digit_field_pin_activity"
+					android:gravity="center_horizontal|center_vertical"
+					android:minWidth="100dp"
+					android:text="05-08-2022"
+					android:textColor="@color/black"
+					android:textStyle="bold" />
+
+				<Button
+					android:id="@+id/button5"
+					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_weight="0"
+					android:text="+1"
+					app:layout_constraintStart_toStartOf="parent" />
+
+				<Button
+					android:id="@+id/button8"
+					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
+					android:layout_weight="0"
+					android:minWidth="32dp"
+					android:text="+5" />
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:gravity="center_horizontal"
+				android:orientation="horizontal">
+
+				<TextView
+					android:id="@+id/textView4"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:text="Min.  "
+					android:textColor="@color/black" />
+
+				<EditText
+					android:id="@+id/historyFiltersDialog_min_EditText"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:background="@drawable/border_for_digit_field_pin_activity"
+					android:ems="10"
+					android:inputType="numberDecimal"
+					android:minHeight="48dp"
+					android:textColor="@color/black"
+					tools:ignore="SpeakableTextPresentCheck" />
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:gravity="center_horizontal"
+				android:orientation="horizontal">
+
+				<TextView
+					android:id="@+id/textView5"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:text="Max. "
+					android:textColor="@color/black" />
+
+				<EditText
+					android:id="@+id/historyFiltersDialog_max_editText"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:background="@drawable/border_for_digit_field_pin_activity"
+					android:ems="10"
+					android:importantForAutofill="no"
+					android:inputType="numberDecimal"
+					android:minHeight="48dp"
+					android:textColor="@color/black"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					tools:ignore="SpeakableTextPresentCheck" />
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:gravity="center_horizontal">
+
+				<Button
+					android:id="@+id/historyFiltersDialog_cancel_Button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:text="Anuluj"
+					android:textColor="@color/black" />
+
+				<Button
+					android:id="@+id/historyFiltersDialog_apply_Button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:text="Zastosuj"
+					android:textColor="@color/black" />
+			</LinearLayout>
+
+		</LinearLayout>
+	</FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

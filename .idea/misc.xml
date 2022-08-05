@@ -13,7 +13,8 @@
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/qr_scanner_ico.xml" value="0.2685" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/refresh_token_ico.xml" value="0.17" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/selector_nfc_button.xml" value="0.245" />
-        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_account_histroy.xml" value="0.21" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/account_history_filters.xml" value="0.3074107959743824" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_account_histroy.xml" value="0.25" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_basic_transfer.xml" value="0.31837160751565763" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_blik_code_display.xml" value="0.21197916666666666" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_main.xml" value="0.67" />

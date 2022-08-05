@@ -57,4 +57,7 @@
 	<dimen name="userPermissionList_fieldSizeY_dim">48dp</dimen>
 	<dimen name="userPermissionList_fieldSizeX_dim">200dp</dimen>
 	<dimen name="userPermissionList_ButtonSizeX_dim">100dp</dimen>
+
+	<!--acc hist filters -->
+	<dimen name="AccHistFilter_buttonSize_dim">48dp</dimen>
 </resources>

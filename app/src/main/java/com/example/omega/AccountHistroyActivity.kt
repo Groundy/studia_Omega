@@ -2,12 +2,16 @@ package com.example.omega
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.omega.Utilities.Companion.TagProduction
@@ -16,6 +20,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 
 class AccountHistroyActivity : AppCompatActivity() {
 	private lateinit var spinner : Spinner
@@ -98,8 +103,9 @@ class AccountHistroyActivity : AppCompatActivity() {
 		spinner = findViewById(R.id.AccHistoryActivity_Spinner)
 		list = findViewById(R.id.AccHistoryActivity_List)
 		spinner.onItemSelectedListener = spinnerListener
-		//val listAdapter = ArrayAdapter(this@AccountHistroyActivity, android.R.layout.simple_spinner_item, emptyList<String>())
-		//list.adapter = listAdapter
+		findViewById<Button>(R.id.AccHistoryActivity_filterButton).setOnClickListener{
+			showFilterDialog()
+		}
 	}
 	private fun userChangedAccount(){
 		val itemTxt = spinner.selectedItem.toString()
@@ -109,18 +115,24 @@ class AccountHistroyActivity : AppCompatActivity() {
 			val accountHaveHistory = token.fillHistoryToPaymentAccount(this@AccountHistroyActivity, accNumber)
 			if(!accountHaveHistory){
 				Log.e(TagProduction,"[userChangedAccount/${this@AccountHistroyActivity.javaClass.name}], failed to fill PaymentAccount with details")
-				dialog.hide()
+				withContext(Main){
+					list.adapter = CustomAdapter(this@AccountHistroyActivity,accNumber, emptyList())
+					dialog.hide()
+				}
 				return@launch
 			}
 
 			val recordsList = token.getPaymentAccount(accNumber)?.accountHistory
 			if(recordsList.isNullOrEmpty()){
 				Log.e(TagProduction,"[userChangedAccount/${this@AccountHistroyActivity.javaClass.name}], failed to get hist from payment account")
-				dialog.hide()
+				withContext(Main){
+					list.adapter = CustomAdapter(this@AccountHistroyActivity,accNumber, emptyList())
+					dialog.hide()
+				}
 				return@launch
 			}
 
-			val adapterToSet = customAdapter(this@AccountHistroyActivity,accNumber, recordsList)
+			val adapterToSet = CustomAdapter(this@AccountHistroyActivity,accNumber, recordsList.sorted())
 			withContext(Main){
 				list.adapter = adapterToSet
 				dialog.hide()
@@ -128,11 +140,13 @@ class AccountHistroyActivity : AppCompatActivity() {
 		}
 
 	}
+	private fun showFilterDialog(){
+		val dialog = FilterDialog(this)
+	}
 }
 
 
-
-class customAdapter(private val callerActivity : Activity, private val accountNumber: String, private val list : List<AccountHistoryRecord>) : BaseAdapter() {
+class CustomAdapter(private val callerActivity : Activity, private val accountNumber: String, private val list : List<AccountHistoryRecord>) : BaseAdapter() {
 	override fun getCount(): Int {
 		return list.size
 	}
@@ -177,5 +191,26 @@ class customAdapter(private val callerActivity : Activity, private val accountNu
 
 		return rowView
 	}
+}
+class FilterDialog(context: Context) {
+	private var dialog: Dialog
+	init {
+		dialog = Dialog(context)
+		dialog.setContentView(R.layout.account_history_filters)
+		//context.resources.getLayout(R.layout.account_history_filters).
+		dialog.window!!.setLayout(2500,2000)
+		dialog.show()
+	}
 
+	public fun applyClicked(){
+
+	}
+	public fun setGUI(){
+		dialog.findViewById<Button>(R.id.historyFiltersDialog_cancel_Button).setOnClickListener{
+			dialog.dismiss()
+		}
+		dialog.findViewById<Button>(R.id.historyFiltersDialog_apply_Button).setOnClickListener{
+			dialog.dismiss()
+		}
+	}
 }

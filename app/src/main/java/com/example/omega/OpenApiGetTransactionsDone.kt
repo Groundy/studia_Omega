@@ -10,6 +10,7 @@ import com.example.omega.ApiConsts.ApiReqFields.*
 import kotlin.Exception
 import com.example.omega.ApiGetTransactionsDone.Companion.GetTransDoneRequestFields.*
 import com.example.omega.TransactionsDoneAdditionalInfos.Companion.GetTransDoneResponseFields.*
+import java.time.Instant
 import kotlin.collections.ArrayList
 
 class ApiGetTransactionsDone(private val callerActivity: Activity, private val  token: Token){
@@ -75,29 +76,6 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 			.put(TransactionDateFrom.text,infos.fromDate)
 			.put(TransactionDateTo.text,infos.endDate)
 
-		if(infos.itemIdFrom != null)
-			requestBodyJson.put(ItemIdFrom.text, infos.itemIdFrom.toString())
-
-		if(infos.bookingDateFrom != null)
-			requestBodyJson.put(BookingDateFrom.text, infos.bookingDateFrom)
-
-		if(infos.itemIdFrom != null)
-			requestBodyJson.put(BookingDateTo.text, infos.bookingDateTo)
-
-		if(infos.itemIdFrom != null)
-			requestBodyJson.put(MinAmount.text, infos.minAmount.toString())
-
-		if(infos.itemIdFrom != null)
-			requestBodyJson.put(MaxAmount.text, infos.maxAmount.toString())
-
-		if(infos.itemIdFrom != null)
-			requestBodyJson.put(PageId.text, infos.pageId.toString())
-
-		if(infos.itemIdFrom != null)
-			requestBodyJson.put(PerPage.text, infos.perPage.toString())
-
-		if(infos.itemIdFrom != null)
-			requestBodyJson.put(Type.text, infos.type!!.text)
 
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text,token.getAuthFieldValue()))
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone, requestBodyJson, uuidStr, additionalHeaderList)
@@ -137,10 +115,18 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 	}
 }
 
-class TransactionsDoneAdditionalInfos(daysBack : Int = 8){
+
+
+class TransactionsDoneAdditionalInfos(daysBack : Int = 5){
 	companion object{
-		enum class Type(val text: String){
+		private enum class Type(val text: String){
 			DEBIT("DEBIT"), CREDIT("CREDIT")
+		}
+		private enum class JsonFields(val text: String){
+			DateFromInclusvie("DateFromInclusvie"),
+			DateToInclusvie("DateToInclusvie"),
+			AmountMin("AmountMin"),
+			AmountMax("AmountMax"),
 		}
 		enum class GetTransDoneResponseFields(val text : String){
 			ItemId ("itemId"),
@@ -159,21 +145,40 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 8){
 	}
 
 	//mandatory
-	val fromDate : String = OmegaTime.getDate(daysBack)
-	val endDate : String = OmegaTime.getDate()
+	var fromDate : String = OmegaTime.getDate(daysBack)
+	var endDate : String = OmegaTime.getDate()
 
 	//additional
-	val itemIdFrom : Int? = null//Int or String
-	val bookingDateFrom : String? = null
-	val bookingDateTo : String? = null
-	val minAmount : Double? = null
-	val maxAmount : Double? = null
-	val pageId : Int? = null
-	val perPage : Int? = null
-	val type : Type? = null
+	//val itemIdFrom : Int? = null//Int or String
+	//val bookingDateFrom : String? = null
+	//val bookingDateTo : String? = null
+	private var minAmount : Double? = null
+	private var maxAmount : Double? = null
+	//val pageId : Int? = null
+	//val perPage : Int? = null
+	//val type : Type? = null
+
+	fun toJSONObject() : JSONObject{
+		return JSONObject()
+			.put(JsonFields.DateFromInclusvie.text,"")
+			.put(JsonFields.DateToInclusvie.text,"")
+			.put(JsonFields.AmountMin.text,"")
+			.put(JsonFields.AmountMax.text,"")
+	}
+	constructor(jsonObj : JSONObject) : this(){
+		try {
+			minAmount = jsonObj.getDouble(JsonFields.AmountMin.text)
+			maxAmount = jsonObj.getDouble(JsonFields.AmountMax.text)
+			fromDate = jsonObj.getString(JsonFields.DateFromInclusvie.text)
+			endDate = jsonObj.getString(JsonFields.DateToInclusvie.text)
+		}catch (e : Exception){
+			Log.e(TagProduction, "[constructor(json)/${this.javaClass.name}] Error in parsing TransactiondDoneInfo from json obj")
+		}
+	}
 }
 
-class AccountHistoryRecord(jsonObj: JSONObject) {
+
+class AccountHistoryRecord(jsonObj: JSONObject) : Comparable<AccountHistoryRecord> {
 	var senderAccNumber : String? = null
 	var senderName : String? = null
 	var recipientAccNumber : String? = null
@@ -210,5 +215,13 @@ class AccountHistoryRecord(jsonObj: JSONObject) {
 		catch (e : Exception){
 			Log.e(TagProduction, "[constructor/${this.javaClass.name}] Cant parse from Json")
 		}
+	}
+
+	override fun compareTo(other: AccountHistoryRecord): Int {
+		val currentSecSinceEpoch = OmegaTime.converTimeStampToEpoch(tradeDate)
+		val otherSecSinceEpoch = OmegaTime.converTimeStampToEpoch(other.tradeDate)
+
+		//sortowanie od najmłodszych wpisów do najstarszych
+		return (otherSecSinceEpoch - currentSecSinceEpoch).toInt()
 	}
 }

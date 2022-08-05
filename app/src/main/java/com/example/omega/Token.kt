@@ -178,8 +178,10 @@ class Token() {
 		return "$tokenType $accessToken"
 	}
 	fun getListOfAccountsNumbersToDisplay() : List<String>?{
-		if(accessToken == null)
+		if(accounts.isNullOrEmpty()){
+			Log.e(TagProduction, "[getListOfAccountsToDisplay/${this.javaClass.name}] payment account list is empty")
 			return null
+		}
 
 		val displayableStringsToRet = arrayListOf<String>()
 		return try {

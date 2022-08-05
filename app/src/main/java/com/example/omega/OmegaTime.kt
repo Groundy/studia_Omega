@@ -49,6 +49,14 @@ class OmegaTime {
 
 			return "$y-$m-$d"
 		}
+		fun converTimeStampToEpoch(timestamp: String?) : Long{
+			return try{
+				Instant.parse(timestamp).epochSecond
+			}catch (e : Exception){
+				Log.e(TagProduction, "[converTimeStampToEpoch/${this::class.java.name}] passed time stamp in wrong format")
+				Instant.now().minusSeconds(60*24*3600).epochSecond
+			}
+		}
 		fun convertTimeToDisplay(input: String) : String{
 			return try {
 				val str = input.substring(0,10)
