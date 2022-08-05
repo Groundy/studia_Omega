@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<Space
+			android:layout_width="match_parent"
+			android:layout_height="4sp" />
+
+		<LinearLayout
+			android:id="@+id/linearLayout4"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/border_for_digit_field_pin_activity"
+			android:orientation="vertical">
+
+			<TextView
+				android:id="@+id/hisRec_date"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_horizontal"
+				android:text="date"
+				android:textColor="@color/black" />
+
+			<TextView
+				android:id="@+id/hisRec_fromName"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingStart="5sp"
+				android:text="from"
+				android:textColor="@color/black" />
+
+			<TextView
+				android:id="@+id/hisRec_fromAccNumber"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingStart="5sp"
+				android:text="from number"
+				android:textColor="@color/black" />
+
+			<Space
+				android:layout_width="match_parent"
+				android:layout_height="10sp" />
+
+			<TextView
+				android:id="@+id/hisRec_toAccName"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingStart="5sp"
+				android:text="to"
+				android:textColor="@color/black" />
+
+			<TextView
+				android:id="@+id/hisRec_toAccNumber"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingStart="5sp"
+				android:text="to name"
+				android:textColor="@color/black" />
+
+			<Space
+				android:layout_width="match_parent"
+				android:layout_height="10sp" />
+
+			<TextView
+				android:id="@+id/hisRec_amount"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingStart="5sp"
+				android:text="amount"
+				android:textColor="@color/black" />
+
+			<TextView
+				android:id="@+id/hisRec_description"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingStart="5sp"
+				android:text="desciprion"
+				android:maxLines="2"
+				android:textColor="@color/black" />
+
+		</LinearLayout>
+
+		<Space
+			android:layout_width="match_parent"
+			android:layout_height="4sp" />
+	</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

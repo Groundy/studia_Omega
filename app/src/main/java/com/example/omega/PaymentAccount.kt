@@ -153,16 +153,6 @@ class PaymentAccount() {
 		return ownerName as String
 	}
 
-	fun getListOfAccountHistoryStrings() : List<String>?{
-		if(accountHistory.isNullOrEmpty())
-			return null
-
-		val recordsAsStr = arrayListOf<String>()
-		accountHistory!!.forEach {
-			recordsAsStr.add(accountHistory.toString())
-		}
-		return recordsAsStr.toList()
-	}
 	fun hasHistoryFilled() : Boolean{
 		return !accountHistory.isNullOrEmpty()
 	}

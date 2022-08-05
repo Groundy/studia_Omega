@@ -49,5 +49,14 @@ class OmegaTime {
 
 			return "$y-$m-$d"
 		}
+		fun convertTimeToDisplay(input: String) : String{
+			return try {
+				val str = input.substring(0,10)
+				val parts = str.split("-")
+				"${parts[2]}-${parts[1]}-${parts[0]}"
+			}catch (e : Exception){
+				"Date unkown"
+			}
+		}
 	}
 }

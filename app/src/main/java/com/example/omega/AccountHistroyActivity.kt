@@ -1,8 +1,13 @@
 package com.example.omega
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.omega.Utilities.Companion.TagProduction
@@ -16,7 +21,6 @@ class AccountHistroyActivity : AppCompatActivity() {
 	private lateinit var spinner : Spinner
 	private lateinit var list : ListView
 	private lateinit var token: Token
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_account_histroy)
@@ -94,8 +98,8 @@ class AccountHistroyActivity : AppCompatActivity() {
 		spinner = findViewById(R.id.AccHistoryActivity_Spinner)
 		list = findViewById(R.id.AccHistoryActivity_List)
 		spinner.onItemSelectedListener = spinnerListener
-		val listAdapter = ArrayAdapter(this@AccountHistroyActivity, android.R.layout.simple_spinner_item, emptyList<String>())
-		list.adapter = listAdapter
+		//val listAdapter = ArrayAdapter(this@AccountHistroyActivity, android.R.layout.simple_spinner_item, emptyList<String>())
+		//list.adapter = listAdapter
 	}
 	private fun userChangedAccount(){
 		val itemTxt = spinner.selectedItem.toString()
@@ -109,17 +113,14 @@ class AccountHistroyActivity : AppCompatActivity() {
 				return@launch
 			}
 
-			val recordListTexts = token.getPaymentAccount(accNumber)?.getListOfAccountHistoryStrings()
-			if(recordListTexts==null){
+			val recordsList = token.getPaymentAccount(accNumber)?.accountHistory
+			if(recordsList.isNullOrEmpty()){
 				Log.e(TagProduction,"[userChangedAccount/${this@AccountHistroyActivity.javaClass.name}], failed to get hist from payment account")
 				dialog.hide()
 				return@launch
 			}
-			val adapterToSet = ArrayAdapter(
-				this@AccountHistroyActivity,
-				android.R.layout.simple_spinner_item,
-				recordListTexts
-			)
+
+			val adapterToSet = customAdapter(this@AccountHistroyActivity,accNumber, recordsList)
 			withContext(Main){
 				list.adapter = adapterToSet
 				dialog.hide()
@@ -127,4 +128,54 @@ class AccountHistroyActivity : AppCompatActivity() {
 		}
 
 	}
+}
+
+
+
+class customAdapter(private val callerActivity : Activity, private val accountNumber: String, private val list : List<AccountHistoryRecord>) : BaseAdapter() {
+	override fun getCount(): Int {
+		return list.size
+	}
+
+	override fun getItem(p0: Int): Any {
+		return  "test"
+	}
+
+	override fun getItemId(p0: Int): Long {
+		return p0.toLong()
+	}
+
+	@SuppressLint("ViewHolder", "SetTextI18n")
+	override fun getView(position: Int, convertView: View?, viewGroup : ViewGroup?): View {
+		val layoutInflater = LayoutInflater.from(callerActivity)
+		val rowView = layoutInflater.inflate(R.layout.history_record, viewGroup, false)
+
+		val rec = list[position]
+
+		val senderName = rowView.findViewById<TextView>(R.id.hisRec_fromName)
+		val sendeNumber = rowView.findViewById<TextView>(R.id.hisRec_fromAccNumber)
+		val amount = rowView.findViewById<TextView>(R.id.hisRec_amount)
+		val recipientName = rowView.findViewById<TextView>(R.id.hisRec_toAccName)
+		val recipientNumber = rowView.findViewById<TextView>(R.id.hisRec_toAccNumber)
+		val date = rowView.findViewById<TextView>(R.id.hisRec_date)
+		val description = rowView.findViewById<TextView>(R.id.hisRec_description)
+
+		val isTransferFromUser = rec.senderAccNumber == accountNumber
+		if(isTransferFromUser)
+			amount.setTextColor(Color.RED)
+		else
+			amount.setTextColor(Color.GREEN)
+
+		recipientName.text = "Odbiorca: ${rec.recipientName}"
+		recipientNumber.text = "${rec.recipientAccNumber}"
+		senderName.text = "Nadawca: ${rec.senderName}"
+		sendeNumber.text = "${rec.senderAccNumber}"
+		amount.text = "Kwota: ${rec.amount} ${rec.currency}"
+		date.text = OmegaTime.convertTimeToDisplay(rec.tradeDate!!)
+		description.text = "Opis: ${rec.description} "
+
+
+		return rowView
+	}
+
 }

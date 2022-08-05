@@ -152,6 +152,9 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 8){
 			Sender ("sender"),
 			Recipient ("recipient"),
 			BookingDate ("bookingDate"),
+			NameAdress("nameAddress"),
+			Value("value");
+
 		}
 	}
 
@@ -169,35 +172,43 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 8){
 	val perPage : Int? = null
 	val type : Type? = null
 }
-class AccountHistoryRecord(jsonObj: JSONObject) {
-	private var itemId : String? = null
-	private var transactionCategory : String? = null
-	private var amount : Double? = null
-	private var currency : String? = null
-	private var description : String? = null
-	private var tradeDate : String? = null
-	private var sender : String? = null
-	private var recipient : String? = null
-	private var bookingDate : String? = null
 
+class AccountHistoryRecord(jsonObj: JSONObject) {
+	var senderAccNumber : String? = null
+	var senderName : String? = null
+	var recipientAccNumber : String? = null
+	var recipientName : String? = null
+	var amount : Double? = null
+	var currency : String? = null
+	var description : String? = null
+	var tradeDate : String? = null
 	init {
 		try {
-			itemId = jsonObj.getString(ItemId.text)
-			transactionCategory = jsonObj.getString(TransactionCategory.text)
-			amount = jsonObj.getDouble(Amount.text)
+			val senderObj = jsonObj.getJSONObject(Sender.text)
+			val recipientObj = jsonObj.getJSONObject(Recipient.text)
+
+			amount = jsonObj.getString(Amount.text).toDouble()
 			currency = jsonObj.getString(Currency.text)
 			description = jsonObj.getString(Description.text)
 			tradeDate = jsonObj.getString(TradeDate.text)
-			sender = jsonObj.getString(Sender.text)
-			recipient = jsonObj.getString(Recipient.text)
-			bookingDate = jsonObj.getString(BookingDate.text)
+			senderAccNumber = senderObj.getString(AccountNumberField.text)
+			recipientAccNumber = recipientObj.getString(AccountNumberField.text)
+
+			val senderNameArr = senderObj.getJSONObject(NameAdress.text).getJSONArray(Value.text)
+			val recipientNameArr = recipientObj.getJSONObject(NameAdress.text).getJSONArray(Value.text)
+
+			recipientName = if(recipientNameArr.length() > 0)
+				recipientNameArr[0].toString()
+			else
+				"Unknown"
+
+			senderName = if(senderNameArr.length() > 0)
+				senderNameArr[0].toString()
+			else
+				"Unknown"
 		}
 		catch (e : Exception){
 			Log.e(TagProduction, "[constructor/${this.javaClass.name}] Cant parse from Json")
 		}
-	}
-
-	override fun toString(): String {
-		return "${bookingDate?.subSequence(0,11)}--$amount--$description"//todo implement
 	}
 }
