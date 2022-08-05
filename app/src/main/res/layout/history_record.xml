@@ -22,7 +22,7 @@
 			android:id="@+id/linearLayout4"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:background="@drawable/border_for_digit_field_pin_activity"
+			android:background="@drawable/main_frame"
 			android:orientation="vertical">
 
 			<TextView

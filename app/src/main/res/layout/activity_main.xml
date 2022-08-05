@@ -53,7 +53,7 @@
 			android:id="@+id/MainAct_enterCodeField"
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
-			android:background="@drawable/border_for_digit_field_pin_activity"
+			android:background="@drawable/main_frame"
 			android:ellipsize="start"
 			android:ems="1"
 			android:gravity="center_horizontal"
