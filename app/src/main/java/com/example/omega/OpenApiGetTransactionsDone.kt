@@ -34,24 +34,22 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 	fun run(accNumber: String, infos : TransactionsDoneAdditionalInfos = TransactionsDoneAdditionalInfos()): List<AccountHistoryRecord>? {
 		Log.i(TagProduction, "GetTransactionsDone starts")
 		var sucess = false
-		val thread = Thread{
-			try {
-				val request = getRequest(accNumber, infos)
-				val response = sendRequest(request) ?: return@Thread
-				sucess = handleResponse(response)
-			}catch (e: Exception) {
-				Log.e(TagProduction,"Failed to obtain information for account with number[${accNumber}] [$e]")
-			}
+		try {
+			val request = getRequest(accNumber, infos)
+			val response = sendRequest(request)
+			if(response != null)
+				sucess = handleCorretResponse(response)
+		}catch (e: Exception) {
+			Log.e(TagProduction,"Failed to obtain information for account with number[${accNumber}] [$e]")
 		}
-		thread.start()
-		thread.join(ApiConsts.requestTimeOut)
+
 
 		return if(sucess && historyRecordsToRet.isNotEmpty()){
-			Log.i(TagProduction, "GetTransactionsDone ends with success")
+			Log.i(TagProduction, "GetTransactionsDone ends with success, returned ${historyRecordsToRet.size} elements")
 			historyRecordsToRet.toList()
 		}
 		else if(sucess && historyRecordsToRet.isEmpty()){
-			Log.i(TagProduction, "GetTransactionsDone ends with success but list of transcations is empty")
+			Log.w(TagProduction, "GetTransactionsDone ends with success but list of transcations is empty")
 			historyRecordsToRet.toList()
 		}
 		else{
@@ -124,7 +122,7 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 			null
 		}
 	}
-	private fun handleResponse(response : JSONObject) : Boolean{
+	private fun handleCorretResponse(response : JSONObject) : Boolean{
 		return try {
 			val transactionsObj = response.getJSONArray(TransactionsObj.text)
 			for (i in 0 until transactionsObj.length()){
@@ -139,7 +137,7 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 	}
 }
 
-class TransactionsDoneAdditionalInfos(daysBack : Int = 5){
+class TransactionsDoneAdditionalInfos(daysBack : Int = 8){
 	companion object{
 		enum class Type(val text: String){
 			DEBIT("DEBIT"), CREDIT("CREDIT")
@@ -171,8 +169,6 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 5){
 	val perPage : Int? = null
 	val type : Type? = null
 }
-
-
 class AccountHistoryRecord(jsonObj: JSONObject) {
 	private var itemId : String? = null
 	private var transactionCategory : String? = null
