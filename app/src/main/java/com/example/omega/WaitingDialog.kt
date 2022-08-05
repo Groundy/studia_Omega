@@ -25,6 +25,19 @@ class WaitingDialog {
 		}
 		dialog.show()
 	}
+	constructor(callerActivity: Activity, str : String){
+		val infalter = callerActivity.layoutInflater
+		val dialogView = infalter.inflate(R.layout.loading_dialog,null)
+		val bulider = AlertDialog.Builder(callerActivity)
+		bulider.setView(dialogView)
+		bulider.setCancelable(false)
+		dialog = bulider.create()
+		CoroutineScope(Main).launch {
+			val textView = dialog.findViewById<TextView>(R.id.WaitingDial_textView)
+			textView.text = str
+		}
+		dialog.show()
+	}
 	fun changeText(callerActivity: Activity, resId : Int){
 		val str = callerActivity.resources.getString(resId)
 		CoroutineScope(Main).launch {

@@ -271,7 +271,7 @@ class MainActivity : AppCompatActivity() {
 				}
 				else{
 					//todo kipeko poprawić
-					Log.e(TagProduction, "Nie można otworzyć historii rachunek, brak możliwości pobrania tokenu")
+					Log.e(TagProduction, "[accHistoryTabClicked/${this@MainActivity.javaClass.name}]Nie można otworzyć historii rachunek, brak możliwości pobrania tokenu")
 					dialog.hide()
 				}
 			}
@@ -371,17 +371,7 @@ class MainActivity : AppCompatActivity() {
 		secondBar.menu.findItem(R.id.QrScannerTab).icon = getDrawable(R.drawable.ico_qr_scanner)
 	}
 	private fun wookieTestFun(){
-		val fff = WaitingDialog(this@MainActivity, R.string.GUI_authTransactionTitle)
-		CoroutineScope(IO).launch {
-			delay(2500)
-			fff.changeText(this@MainActivity,R.string.GUI_basicTransfer_amountAfterTransfer_less_than_zero)
-			val t = PermissionList(ApiConsts.Privileges.AccountsHistory, ApiConsts.Privileges.AccountsDetails)
-			//OpenApiAuthorize(this@MainActivity).runForAis(t)
-			delay(8500)
-			fff.hide()
-		}
-		Log.i(TagProduction, "fun continue")
-         val ff =3
+
 	}
 	//NFC
 	@SuppressLint("UseCompatLoadingForDrawables")

@@ -32,7 +32,7 @@ class OpenApiAuthorize(activity: Activity) {
 		const val redirectUriField = "aspspRedirectUri"
 	}
 
-	suspend fun runForAis(permisionListObject : PermissionList, dialog: WaitingDialog? = null) : Boolean{
+	fun runForAis(permisionListObject : PermissionList, dialog: WaitingDialog? = null) : Boolean{
 		permissionsList = permisionListObject
 		if (permissionsList.permissionsArray.isEmpty()) {
 			Log.e(TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
