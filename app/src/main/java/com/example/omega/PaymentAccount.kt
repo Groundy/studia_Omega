@@ -64,6 +64,8 @@ class PaymentAccount() {
 	private var bankAdress : String? = null
 	private var bankType : BicOrSwiftType? = null
 
+	var accountHistory : List<AccountHistoryRecord>? = null
+
 	constructor(jsonObjectResponse: JSONObject) : this() {
 		try {
 			val accountDetailsObj = jsonObjectResponse.getJSONObject(BankResponseJsonFields.AccountObj.text)
@@ -149,5 +151,19 @@ class PaymentAccount() {
 			return "null"
 		}
 		return ownerName as String
+	}
+
+	fun getListOfAccountHistoryStrings() : List<String>?{
+		if(accountHistory.isNullOrEmpty())
+			return null
+
+		val recordsAsStr = arrayListOf<String>()
+		accountHistory!!.forEach {
+			recordsAsStr.add(accountHistory.toString())
+		}
+		return recordsAsStr.toList()
+	}
+	fun hasHistoryFilled() : Boolean{
+		return !accountHistory.isNullOrEmpty()
 	}
 }

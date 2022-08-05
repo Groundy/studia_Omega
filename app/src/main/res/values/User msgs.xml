@@ -44,7 +44,8 @@
     <string name="POPUP_auth">Trwa uzyskiwanie linku autoryzacji. Proszę czekać.</string>
     <string name="POPUP_empty">Proszę czekać</string>
     <string name="POPUP_getToken">Trwa uzyskiwanie tokenu dostępowego. Proszę czekać.</string>
-    <string name="POPUP_refreshToken">Trwa odnawianie tokenu dostępowego. Proszę czekać.</string>
-
+    <!--<string name="POPUP_refreshToken">Trwa odnawianie tokenu dostępowego. Proszę czekać.</string>-->
+    <string name="POPUP_getAccountsHistory">Trwa pobieranie informacji o rachunkach. Proszę czekać.</string>
+    <string name="POPUP_getSingleAccountHistory">Trwa pobieranie historii wybrenego rachunku. Proszę czekać.</string>
 
 </resources>

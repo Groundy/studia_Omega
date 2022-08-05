@@ -3,6 +3,7 @@ import android.app.Activity
 import android.util.Log
 import org.json.JSONObject
 import com.example.omega.Utilities.Companion.TagProduction
+import kotlinx.coroutines.delay
 import org.json.JSONArray
 
 class Token() {
@@ -152,11 +153,12 @@ class Token() {
 			return false
 		return refreshIFneeded(activity)
 	}
-	fun getDetailsOfAccountsFromBank(activity: Activity) : Boolean{
+	fun fillTokenAccountsWithBankDetails(activity: Activity) : Boolean{
+		val accountNumbers = getListOfAccountsNumbers()
+		if(accountNumbers.isNullOrEmpty())
+			return false
+
 		return try {
-			val accountNumbers = getListOfAccountsNumbers()
-			if(accountNumbers.isNullOrEmpty())
-				return false
 			val successfulyObtainedAccountDetails = OpenApiGetAccDetails(this, activity).run(accountNumbers)
 			successfulyObtainedAccountDetails
 		}catch (e : Exception){
@@ -175,7 +177,7 @@ class Token() {
 		}
 		return "$tokenType $accessToken"
 	}
-	fun getListOfAccountsToDisplay() : List<String>?{
+	fun getListOfAccountsNumbersToDisplay() : List<String>?{
 		if(accessToken == null)
 			return null
 
@@ -239,5 +241,36 @@ class Token() {
 	}
 	fun getPriligeList() : JSONArray?{
 		return privilegeList
+	}
+	fun fillHistoryToPaymentAccount(callerActivity: Activity, paymentAccountAccNumber: String) : Boolean{
+		val errorBasic = "[fillHistoryToPaymentAccount/${this.javaClass.name}]"
+
+		if(accounts.isNullOrEmpty()){
+			Log.e(TagProduction, "$errorBasic, account list is null")
+			return false
+		}
+
+
+		var paymentAccountRef : PaymentAccount? = null
+		for (i in 0 until accounts!!.size){
+			if(accounts!![i].accountNumber != null && accounts!![i].accountNumber == paymentAccountAccNumber){
+				paymentAccountRef = accounts!![i]
+				break
+			}
+		}
+		if(paymentAccountRef == null)
+			return false
+
+		val alreadyFilledHistory = paymentAccountRef.hasHistoryFilled()
+		if(alreadyFilledHistory)
+			return true
+
+
+		val recordList = ApiGetTransactionsDone(callerActivity, this).run(paymentAccountAccNumber)
+		if(recordList.isNullOrEmpty())
+			return false
+
+		paymentAccountRef.accountHistory = recordList
+		return true
 	}
 }
