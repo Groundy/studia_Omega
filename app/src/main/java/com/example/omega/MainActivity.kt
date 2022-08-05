@@ -46,8 +46,8 @@ class MainActivity : AppCompatActivity() {
 		initGUI()
 		startNfcOnStartIfUserWishTo()
 		PreferencesOperator.clearAuthData(this)
-
-		//getToken(WebActivtyRedirect.None)
+		//val dialog = WaitingDialog(this, "Obtaining token from memory")
+		accHistoryTabClicked()
 	}
 
 	//Menus
@@ -275,6 +275,7 @@ class MainActivity : AppCompatActivity() {
 					dialog.hide()
 				}
 			}
+			return@launch
 		}
 	}
 	private fun generateRBlickCodeClicked(){
@@ -301,16 +302,22 @@ class MainActivity : AppCompatActivity() {
 	private suspend fun getToken(redirectPlace : WebActivtyRedirect, dialog: WaitingDialog? = null) : Boolean{
 		val token = PreferencesOperator.getToken(this)
 		val tokenOk = token.isOk(this)
-		if(tokenOk)
+		if(tokenOk){
+			dialog?.hide()
 			return true
+		}
 
 		val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 		PreferencesOperator.clearAuthData(this)
 		val authOk = OpenApiAuthorize(this).runForAis(obj, dialog)
 		if(!authOk){
-			Utilities.showToast(this, "Nie udało się automatycznie pobrać tokenu.")
+			withContext(Main){
+				Utilities.showToast(this@MainActivity, "Nie udało się automatycznie pobrać tokenu.")
+			}
+			dialog?.hide()
 			return false
 		}
+		dialog?.hide()
 		ActivityStarter.openBrowserForLogin(this, redirectPlace)
 		return false
 	}

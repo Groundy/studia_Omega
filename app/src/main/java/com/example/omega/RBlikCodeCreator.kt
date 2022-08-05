@@ -76,6 +76,9 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		openDisplayActivityWithCode(codeAssociated)
 	}
 	private fun fillListOfAccounts(){
+		//todo
+		return
+		/*
 		if(!tokenCpy.getDetailsOfAccountsFromBank(this)){
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
@@ -98,6 +101,8 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			adapter.add(it)
 		}
 		accountListSpinner.adapter = adapter
+
+		 */
 	}
 	private fun validateDataToGenRBlikCode() : Boolean{
 		val accountChosen = accountListSpinner.selectedItemPosition != Spinner.INVALID_POSITION
@@ -133,6 +138,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		}
 
 		return true
+
 	}
 	private fun getCodeFromServer(transferData: TransferData) : Int?{
 		//todo implement

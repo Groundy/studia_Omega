@@ -174,7 +174,9 @@ class BasicTransferActivity : AppCompatActivity() {
 		return floor(balanceAfterTransfer * 100) / 100 //trim decimal after 2 digits
 	}
 	private fun fillListOfAccounts() : Boolean{
-		if(!tokenCpy.getDetailsOfAccountsFromBank(this)){
+		return false//TODO
+		/*
+				if(!tokenCpy.getDetailsOfAccountsFromBank(this)){
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivityWithError(errorCodeTextToDisplay)
@@ -195,6 +197,9 @@ class BasicTransferActivity : AppCompatActivity() {
 		}
 		spinner.adapter = adapter
 		return true
+
+		*/
+
 	}
 	private fun finishThisActivityWithError(errorCode : String? = null){
 		if(errorCode!=null)
