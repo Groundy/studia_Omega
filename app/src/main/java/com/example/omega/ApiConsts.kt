@@ -61,9 +61,7 @@ class ApiConsts {
 		RefreshToken("refresh_token")
 	}
 
-	enum class Countries(val codeLength : Int){
-		PL(28)
-	}
+
 	enum class ResponseTypes(val text: String){
 		Code("code")
 	}

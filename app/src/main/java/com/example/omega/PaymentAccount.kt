@@ -96,7 +96,7 @@ class PaymentAccount() {
 			}
 
 			ownerName = ownerNameTmp
-			accountNumber = accountDetailsObj.getString(AccountNumber.text)
+			accountNumber = accountDetailsObj.getString(AccountObjectFields.AccountNumber.text)
 			accountDescription = accountDetailsObj.getJSONObject(AccountTypeObj.text).getString(Description.text)
 			accountTypeName = accountDetailsObj.getString(AccountTypeName.text)
 			currency = accountDetailsObj.getString(Currency.text)

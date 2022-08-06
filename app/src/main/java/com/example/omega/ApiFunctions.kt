@@ -113,7 +113,7 @@ class ApiFunctions {
 			}
 			return toRet
 		}
-		fun getLengthOfCountryBankNumberWitchCountryCode(country : ApiConsts.Countries = ApiConsts.Countries.PL) : Int{
+		fun getLengthOfCountryBankNumberWitchCountryCode(country : Countries = Countries.PL) : Int{
 			return country.codeLength
 		}
 		private fun getErrorTextOfRequestToLog (reqErrorCode : Int) : String{

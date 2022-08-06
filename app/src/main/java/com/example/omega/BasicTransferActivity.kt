@@ -165,9 +165,12 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(amountInserted == null || amountInserted == 0.0)
 			return getString(R.string.UserMsg_basicTransfer_Amount_zero)
 
-		val receiverAccNumberCorrect = receiverNumberEditText.text.length == ApiFunctions.getLengthOfCountryBankNumberWitchCountryCode() - ApiConsts.countryCodeLength
-		if(!receiverAccNumberCorrect)
+		val recipientAccNumberLengthOk = receiverNumberEditText.text.length == ApiFunctions.getLengthOfCountryBankNumberWitchCountryCode() - ApiConsts.countryCodeLength
+		if(!recipientAccNumberLengthOk)
 			return resources.getString(R.string.UserMsg_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER)
+
+		//todo
+		//val recipientAccNumberPoperIbanFormat = Utilities.checkIbanProperFormat()
 
 		val receiverNameCorrect = receiverNameEditText.text.length in 3..50
 		if(!receiverNameCorrect)
