@@ -217,7 +217,21 @@ class BasicTransferActivity : AppCompatActivity() {
 			return null
 		}
 
-		return ArrayAdapter(this@BasicTransferActivity,android.R.layout.simple_spinner_item, listOfAccountsFromToken)
+		val listOfAccountsWithPlnCurrency = ArrayList<String>()
+		listOfAccountsFromToken.forEach{
+			if(it.contains("PLN"))
+				listOfAccountsWithPlnCurrency.add(it)
+		}
+
+
+		if(listOfAccountsWithPlnCurrency.isEmpty()){
+			Log.e(TagProduction, "$errorBase token returned ${listOfAccountsFromToken.size} acounts but any of them was in PLN")
+			withContext(Main){
+				Utilities.showToast(this@BasicTransferActivity, "Na liście nie ma konta złotówkowego.")
+			}
+		}
+
+		return ArrayAdapter(this@BasicTransferActivity,android.R.layout.simple_spinner_item, listOfAccountsWithPlnCurrency.toList())
 	}
 	private fun finishThisActivityWithError(errorCode : String? = null){
 		if(errorCode!=null)
