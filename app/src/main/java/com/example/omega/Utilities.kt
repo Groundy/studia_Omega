@@ -3,9 +3,11 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.text.Editable
 import android.text.SpannableStringBuilder
+import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import org.json.JSONObject
 import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.random.Random
@@ -81,6 +83,22 @@ class Utilities {
 				it.availableBalance = 1234567.83
 
 			}
+		}
+		fun doubleToTwoDigitsAfterCommaString(value : Double?) : String{
+			if(value == null){
+				Log.e(TagProduction, "[doubleToTwoDigitsAfterCommaString/${this.javaClass.name}] Wrong struct passed for payment request, amount is null")
+				return String()
+			}
+			var amountStr = value.toString()
+			if(!amountStr.contains('.')){
+				Log.e(TagProduction, "[doubleToTwoDigitsAfterCommaString/${this.javaClass.name}] Wrong struct passed for payment request, amount doesnt have dot sign")
+				return amountStr
+			}
+
+			val theresOnlyOneDigitAfterDot = amountStr.indexOf('.') == amountStr.length -2
+			if(theresOnlyOneDigitAfterDot)
+				amountStr = amountStr.plus("0")
+			return amountStr
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package com.example.omega
 
+import android.util.Log
+import com.example.omega.ApiConsts.Companion.countryCodeLength
 import org.json.JSONObject
 import org.json.JSONArray
 import java.util.*
@@ -57,31 +59,25 @@ class DomesticPaymentSupportClass(private val transferData: TransferData) {
 	}
 
 	private fun getRecipentbj(): JSONObject {
-		val receiverNameStr = transferData.receiverName?: String()
-		val nameAdressObj = JSONObject()
-			.put(RequestFields.Value.text,JSONArray()
-				.put(receiverNameStr)
-			)
-		//todo log
+		val accountNumber = ensureAccNumberGotPLPrefix(transferData.receiverAccNumber)
+		val nameAdressObj = nameToRequestJsonFormat(transferData.receiverName)
+
 		return JSONObject()
-			.put(RequestFields.AccountNumber.text, transferData.receiverAccNumber)
+			.put(RequestFields.AccountNumber.text, accountNumber)
 			.put(RequestFields.NameAddressArray.text,nameAdressObj)
 	}
 	private fun getSenderObj(): JSONObject {
-		val senderNameStr = transferData.senderAccName?: String()
-		//todo log
-		val nameAdressObj = JSONObject()
-			.put(RequestFields.Value.text,JSONArray()
-				.put(senderNameStr)
-			)
+		val nameAdressObj = nameToRequestJsonFormat(transferData.senderAccName)
+		val accountNumber = ensureAccNumberGotPLPrefix(transferData.receiverAccNumber)
 		return JSONObject()
-			.put(RequestFields.AccountNumber.text, transferData.senderAccNumber)
+			.put(RequestFields.AccountNumber.text, accountNumber)
 			.put(RequestFields.NameAddressArray.text,nameAdressObj)
 	}
 	private fun getTransferDataObj(): JSONObject {
+		val amountStr = Utilities.doubleToTwoDigitsAfterCommaString(transferData.amount!!)
 		return JSONObject()
 			.put(TransactionsObjFields.Description.text, transferData.description)
-			.put(TransactionsObjFields.Amount.text, transferData.amount.toString())
+			.put(TransactionsObjFields.Amount.text, amountStr)
 			.put(TransactionsObjFields.ExecutionDate.text, transferData.executionDate)
 			.put(TransactionsObjFields.Currency.text, transferData.currency)
 	}
@@ -129,5 +125,33 @@ class DomesticPaymentSupportClass(private val transferData: TransferData) {
 	private fun getRandomValueForTppTransId() : String{
 		val number = Random().nextInt(Int.MAX_VALUE)
 		return number.toString()
+	}
+	private fun ensureAccNumberGotPLPrefix(accountNumber: String?) : String{
+		if(accountNumber==null){
+			Log.e(Utilities.TagProduction,"[ensureAccNumberGotPLPrefix/${this.javaClass.name}] null acc number passed to request")
+			return String()
+		}
+		val length = accountNumber.length
+		val digitsLengthProperVal = ApiFunctions.getLengthOfCountryBankNumberWitchCountryCode()
+		return when (length) {
+			digitsLengthProperVal - countryCodeLength -> "PL$accountNumber"
+			digitsLengthProperVal -> accountNumber
+			else -> {
+				Log.e(Utilities.TagProduction,"[ensureAccNumberGotPLPrefix/${this.javaClass.name}] error acc number passed to request")
+				String()
+			}
+		}
+
+	}
+	private fun nameToRequestJsonFormat(name : String?) : JSONObject{
+		if(name == null){
+			Log.e(Utilities.TagProduction,"[nameToRequestJsonFormat/${this.javaClass.name}] null acc name passed to request")
+			return JSONObject()
+		}
+
+		return JSONObject()
+			.put(RequestFields.Value.text,JSONArray()
+				.put(name)
+			)
 	}
 }
