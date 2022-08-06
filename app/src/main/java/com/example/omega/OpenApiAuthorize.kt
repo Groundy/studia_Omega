@@ -41,14 +41,9 @@ class OpenApiAuthorize(activity: Activity) {
 
 		dialog?.changeText(callerActivity, R.string.POPUP_auth)
 		Log.i(TagProduction, "Authorize started")
-		var success = false
-		val thread = Thread{
-			val request = getRequest(stateValue, ScopeValues.Ais)
-			val okResponse = sendRequest(request) ?: return@Thread
-			success = handleResponse(okResponse)
-		}
-		thread.start()
-		thread.join(ApiConsts.requestTimeOut)
+		val request = getRequest(stateValue, ScopeValues.Ais)
+		val okResponse = sendRequest(request)
+		val success = handleResponse(okResponse)
 		if(success)
 			Log.i(TagProduction, "Authorize ended with sucess")
 		else
