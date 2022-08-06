@@ -8,10 +8,27 @@ enum class Countries(val codeLength : Int){
 }
 
 class AccountNumber(number : String) {
-	private var numberWithOutCountryCode : String = "63249000050000400030900682"
-	private val country = Countries.PL
-	private var errorInCreation : Boolean = false
+	companion object{
+		fun checkIfIsProperIbanFormar(numberOnlyDigits : String, country : Countries = Countries.PL) : Boolean{
+			val countryCode = country.name
+			val constValSubstraction = 55
+			val firstCharVal = countryCode.first().code - constValSubstraction
+			val secondCharVal = countryCode.last().code - constValSubstraction
+			val countryCodeAsDigitStr = "$firstCharVal$secondCharVal"
 
+			val checkSum = numberOnlyDigits.substring(0,2)
+			val bban = numberOnlyDigits.substring(2, numberOnlyDigits.length)
+			val changeOverReplaced = bban.plus(countryCodeAsDigitStr).plus("00")
+			val bigInt = BigInteger(changeOverReplaced)
+			val modRes = bigInt % BigInteger("97")
+			val properCheckSum = 98 - modRes.toInt()
+
+			val formatOk = properCheckSum == checkSum.toInt()
+			return formatOk
+		}
+	}
+	private var numberOnlyDigits : String = String()
+	private val country = Countries.PL
 	init{
 		var tmpNumber = number
 		try {
@@ -28,13 +45,15 @@ class AccountNumber(number : String) {
 			if(hasCountryCode)
 				tmpNumber = tmpNumber.substring(countryCodeLen, tmpNumber.length)
 
-			numberWithOutCountryCode = tmpNumber
-			errorInCreation = false
+			numberOnlyDigits = tmpNumber
+			if(!checkIfIsProperIbanFormar()){
+				throw Exception("Not Iban Format")
+			}
 		}catch (e : Exception){
 			Log.e(Utilities.TagProduction, "[constructor/ AccountNumber] $e")
-			errorInCreation = true
 		}
 	}
+
 
 	fun checkIfIsProperIbanFormar() : Boolean{
 		val countryCode = country.name
@@ -43,8 +62,8 @@ class AccountNumber(number : String) {
 		val secondCharVal = countryCode.last().code - constValSubstraction
 		val countryCodeAsDigitStr = "$firstCharVal$secondCharVal"
 
-		val checkSum = numberWithOutCountryCode.substring(0,2)
-		val bban = numberWithOutCountryCode.substring(2, numberWithOutCountryCode.length)
+		val checkSum = numberOnlyDigits.substring(0,2)
+		val bban = numberOnlyDigits.substring(2, numberOnlyDigits.length)
 		val changeOverReplaced = bban.plus(countryCodeAsDigitStr).plus("00")
 		val bigInt = BigInteger(changeOverReplaced)
 		val modRes = bigInt % BigInteger("97")
@@ -52,5 +71,24 @@ class AccountNumber(number : String) {
 
 		val formatOk = properCheckSum == checkSum.toInt()
  		return formatOk
+	}
+	override fun toString(): String {
+		return "${country.name}$numberOnlyDigits"
+	}
+	fun toDisplay() : String{
+		//var toRet = "${country.name}${numberWithOutCountryCode.subSequence(0,2)}"
+		var toRet = String()
+		val parts = numberOnlyDigits.subSequence(2, numberOnlyDigits.length).chunked(4)
+		parts.forEach{
+			toRet = toRet.plus(" ").plus(it)
+		}
+		return toRet
+	}
+	fun lengthOK(): Boolean {
+		return ApiFunctions.getLengthOfCountryBankNumberWitchCountryCode() == numberOnlyDigits.length + ApiConsts.countryCodeLength
+	}
+	fun isOk() : Boolean{
+		val ibanOk = checkIfIsProperIbanFormar()
+		return ibanOk && lengthOK()
 	}
 }
