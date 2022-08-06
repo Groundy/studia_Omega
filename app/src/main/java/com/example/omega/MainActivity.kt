@@ -45,9 +45,9 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
 		startNfcOnStartIfUserWishTo()
-		PreferencesOperator.clearAuthData(this)
+		//PreferencesOperator.clearAuthData(this)
 		//val dialog = WaitingDialog(this, "Obtaining token from memory")
-		basicTransferTabCliked()
+		//basicTransferTabCliked()
 	}
 
 	//Menus
@@ -226,12 +226,20 @@ class MainActivity : AppCompatActivity() {
 		}
 
 		val permListObj = PermissionList(ApiConsts.Privileges.SinglePayment)
-		val authOk = OpenApiAuthorize(this).runForPis(permListObj, transferData)
-		if(!authOk){
-			//todo
-			return
+
+		val dialog = WaitingDialog(this, R.string.POPUP_auth)
+		CoroutineScope(IO).launch {
+			val authOk = OpenApiAuthorize(this@MainActivity).runForPis(permListObj, transferData)
+			withContext(Main){
+				dialog.hide()
+				if(!authOk){
+					Log.e(TagProduction, "[startSinglePaymentAuthorization/${this@MainActivity.javaClass.name}] Failed To auth, ending payment process")
+					ActivityStarter.startOperationResultActivity(this@MainActivity, R.string.Result_GUI_WRONG_ELSE)
+				}
+				else
+					ActivityStarter.openBrowserForLogin(this@MainActivity, WebActivtyRedirect.DomesticPaymentProcess)
+			}
 		}
-		ActivityStarter.openBrowserForLogin(this, WebActivtyRedirect.DomesticPaymentProcess)
 	}
 	private fun continueSinglePaymentAfterLogin(){
 		val paymentTokenStr = PreferencesOperator.readPrefStr(this, R.string.PREF_PaymentToken)
@@ -248,12 +256,16 @@ class MainActivity : AppCompatActivity() {
 
 	//OptionsClicked
 	private fun basicTransferTabCliked(){
+		val dialog = WaitingDialog(this, R.string.POPUP_getToken)
 		CoroutineScope(IO).launch{
 			val ok = getToken(WebActivtyRedirect.PaymentCreation)
 			withContext(Main){
-				if(ok)
+				if(ok){
+					dialog.hide()
 					ActivityStarter.startTransferActivityFromMenu(this@MainActivity)
+				}
 				else{
+					dialog.hide()
 					//todo kipeko poprawić
 					Log.w(TagProduction, " Nie można otworzyć okna płatności, brak możliwości pobrania tokenu")
 				}
