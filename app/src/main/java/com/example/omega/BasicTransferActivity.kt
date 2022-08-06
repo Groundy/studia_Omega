@@ -165,7 +165,9 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(amountInserted == null || amountInserted == 0.0)
 			return getString(R.string.UserMsg_basicTransfer_Amount_zero)
 
-		val recipientAccNumberLengthOk = receiverNumberEditText.text.length == ApiFunctions.getLengthOfCountryBankNumberWitchCountryCode() - ApiConsts.countryCodeLength
+		val accountNumber = AccountNumber(receiverNumberEditText.text.toString())
+
+		val recipientAccNumberLengthOk = accountNumber.lengthOK()
 		if(!recipientAccNumberLengthOk)
 			return resources.getString(R.string.UserMsg_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER)
 
@@ -197,9 +199,11 @@ class BasicTransferActivity : AppCompatActivity() {
 		val balanceAfterTransfer = balance - transferAmount
 		return floor(balanceAfterTransfer * 100) / 100 //trim decimal after 2 digits
 	}
-	private fun getListOfAccountsForSpinner() : SpinnerAdapter?{
+	private suspend fun getListOfAccountsForSpinner() : SpinnerAdapter?{
+		val errorBase = "[fillListOfAccounts/${this.javaClass.name}]"
+
 		if(!tokenCpy.fillTokenAccountsWithBankDetails(this)){
-			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
+			Log.e(TagProduction, "$errorBase token cant obtain accounts Details")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivityWithError(errorCodeTextToDisplay)
 			return null
@@ -207,7 +211,7 @@ class BasicTransferActivity : AppCompatActivity() {
 
 		val listOfAccountsFromToken = tokenCpy.getListOfAccountsNumbersToDisplay()
 		if(listOfAccountsFromToken.isNullOrEmpty()){
-			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token return null or empty account list")
+			Log.e(TagProduction, "$errorBase token return null or empty account list")
 			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
 			finishThisActivityWithError(errorCodeTextToDisplay)
 			return null
@@ -240,7 +244,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			it.executionDate = OmegaTime.getDate()
 		}
 
-		val transferDataSerialized = testTransferData.toString()
+		val transferDataSerialized = transferData.toString()
 		if(transferDataSerialized.isEmpty()){
 			val errorStr = getString(R.string.UserMsg_basicTransfer_unkownError)
 			finishThisActivityWithError(errorStr)
@@ -289,7 +293,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	}
 	private fun wookieTestFillTmpWidgets(){
 		//currentPaymentAccount = Utilities.wookieTestGetTestPaymentAccountForPaymentAct()
-		receiverNumberEditText.text = Utilities.strToEditable("11223344556677889911223003")
+		receiverNumberEditText.text = Utilities.strToEditable("09124026981111001066212622")//mj
 		amountEditText.text =  Utilities.strToEditable("1.23")
 		receiverNameEditText.text = Utilities.strToEditable("Ciocia Zosia")
 		transferTitle.text = Utilities.strToEditable("Zwrot za paczkę")
