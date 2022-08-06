@@ -171,8 +171,9 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(!recipientAccNumberLengthOk)
 			return resources.getString(R.string.UserMsg_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER)
 
-		//todo
-		//val recipientAccNumberPoperIbanFormat = Utilities.checkIbanProperFormat()
+		val formatOk = accountNumber.checkIfIsProperIbanFormar()
+		if(!formatOk)
+			return resources.getString(R.string.UserMsg_basicTransfer_NOT_IBAN_FORMAT)
 
 		val receiverNameCorrect = receiverNameEditText.text.length in 3..50
 		if(!receiverNameCorrect)
