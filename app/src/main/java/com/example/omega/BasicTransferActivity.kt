@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.ArrayList
 
 class BasicTransferActivity : AppCompatActivity() {
 	private lateinit var receiverNumberEditText : EditText
@@ -248,8 +249,8 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(currentPaymentAccount==null)
 			return
 
-		val testTransferData = TransferData().also {
-			it.receiverAccNumber = receiverNumberEditText.text.toString()
+		val transferData = TransferData().also {
+			it.receiverAccNumber = "PL".plus(receiverNumberEditText.text.toString()) //todo
 			it.receiverName = receiverNameEditText.text.toString()
 			it.senderAccNumber = currentPaymentAccount!!.getAccNumber()
 			it.senderAccName = currentPaymentAccount!!.getOwnerName()
