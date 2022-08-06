@@ -117,7 +117,7 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 
 
 
-class TransactionsDoneAdditionalInfos(daysBack : Int = 5){
+class TransactionsDoneAdditionalInfos(daysBack : Int = 10){
 	companion object{
 		private enum class Type(val text: String){
 			DEBIT("DEBIT"), CREDIT("CREDIT")

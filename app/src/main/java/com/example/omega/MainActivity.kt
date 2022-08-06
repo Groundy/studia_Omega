@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
 		startNfcOnStartIfUserWishTo()
-		//PreferencesOperator.clearAuthData(this)
+		PreferencesOperator.clearAuthData(this)
 		//val dialog = WaitingDialog(this, "Obtaining token from memory")
 		//basicTransferTabCliked()
 	}
@@ -267,23 +267,23 @@ class MainActivity : AppCompatActivity() {
 				else{
 					dialog.hide()
 					//todo kipeko poprawić
-					Log.w(TagProduction, " Nie można otworzyć okna płatności, brak możliwości pobrania tokenu")
+					Log.w(TagProduction, "Nie można otworzyć okna płatności, brak możliwości pobrania tokenu")
 				}
 			}
 		}
 	}
 	private fun accHistoryTabClicked(){
-		val dialog = WaitingDialog(this, R.string.POPUP_empty)
+		val dialog = WaitingDialog(this, R.string.POPUP_getToken)
 		CoroutineScope(IO).launch{
 			val ok = getToken(WebActivtyRedirect.AccountHistory, dialog)
+			dialog.changeText(this@MainActivity, R.string.POPUP_empty)
 			withContext(Main){
 				if(ok){
 					ActivityStarter.openAccountTransfersHistoryActivity(this@MainActivity)
 					dialog.hide()
 				}
 				else{
-					//todo kipeko poprawić
-					Log.e(TagProduction, "[accHistoryTabClicked/${this@MainActivity.javaClass.name}]Nie można otworzyć historii rachunek, brak możliwości pobrania tokenu")
+					Log.e(TagProduction, "[accHistoryTabClicked/${this@MainActivity.javaClass.name}] Nie można otworzyć historii rachunek, brak możliwości pobrania tokenu")
 					dialog.hide()
 				}
 			}
@@ -390,7 +390,6 @@ class MainActivity : AppCompatActivity() {
 		secondBar.menu.findItem(R.id.QrScannerTab).icon = getDrawable(R.drawable.ico_qr_scanner)
 	}
 	private fun wookieTestFun(){
-
 	}
 	//NFC
 	@SuppressLint("UseCompatLoadingForDrawables")

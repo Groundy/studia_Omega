@@ -59,8 +59,8 @@ class DomesticPaymentSupportClass(private val transferData: TransferData) {
 	}
 
 	private fun getRecipentbj(): JSONObject {
-		val accountNumber = ensureAccNumberGotPLPrefix(transferData.receiverAccNumber)
 		val nameAdressObj = nameToRequestJsonFormat(transferData.receiverName)
+		val accountNumber = ensureAccNumberGotPLPrefix(transferData.receiverAccNumber)
 
 		return JSONObject()
 			.put(RequestFields.AccountNumber.text, accountNumber)
@@ -68,7 +68,7 @@ class DomesticPaymentSupportClass(private val transferData: TransferData) {
 	}
 	private fun getSenderObj(): JSONObject {
 		val nameAdressObj = nameToRequestJsonFormat(transferData.senderAccName)
-		val accountNumber = ensureAccNumberGotPLPrefix(transferData.receiverAccNumber)
+		val accountNumber = ensureAccNumberGotPLPrefix(transferData.senderAccNumber)
 		return JSONObject()
 			.put(RequestFields.AccountNumber.text, accountNumber)
 			.put(RequestFields.NameAddressArray.text,nameAdressObj)
