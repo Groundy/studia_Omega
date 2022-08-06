@@ -255,7 +255,7 @@ class MainActivity : AppCompatActivity() {
 					ActivityStarter.startTransferActivityFromMenu(this@MainActivity)
 				else{
 					//todo kipeko poprawić
-					Log.e(TagProduction, "Nie można otworzyć okna płatności, brak możliwości pobrania tokenu")
+					Log.w(TagProduction, " Nie można otworzyć okna płatności, brak możliwości pobrania tokenu")
 				}
 			}
 		}

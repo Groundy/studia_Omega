@@ -1,6 +1,5 @@
 package com.example.omega
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -166,7 +165,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(amountInserted == null || amountInserted == 0.0)
 			return getString(R.string.UserMsg_basicTransfer_Amount_zero)
 
-		val receiverAccNumberCorrect = receiverNumberEditText.text.length == ApiFunctions.getLengthOfCountryBankNumberDigitsOnly() - ApiConsts.countryCodeLength
+		val receiverAccNumberCorrect = receiverNumberEditText.text.length == ApiFunctions.getLengthOfCountryBankNumberWitchCountryCode() - ApiConsts.countryCodeLength
 		if(!receiverAccNumberCorrect)
 			return resources.getString(R.string.UserMsg_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER)
 
@@ -277,7 +276,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			return
 		}
 
-		val amountOfDigitsThatHaveToBePut = ApiFunctions.getLengthOfCountryBankNumberDigitsOnly() - inputDigitsNumber - ApiConsts.countryCodeLength//countryCode letters
+		val amountOfDigitsThatHaveToBePut = ApiFunctions.getLengthOfCountryBankNumberWitchCountryCode() - inputDigitsNumber - ApiConsts.countryCodeLength
 		if(amountOfDigitsThatHaveToBePut == 0)
 			receiverAccNbrDigitsHint.text = null
 		else{

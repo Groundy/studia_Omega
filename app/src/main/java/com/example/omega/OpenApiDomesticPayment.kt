@@ -10,17 +10,12 @@ import okhttp3.OkHttpClient
 class OpenApiDomesticPayment(private val callerActivity: Activity, val token: Token) {
 	fun run() : Boolean{
 		Log.i(Utilities.TagProduction, "Domestic Payement started")
-		var success = false
-		val thread = Thread{
-			val request = getRequest()
-			success = sendRequest(request)
-		}
-		thread.start()
-		thread.join(ApiConsts.requestTimeOut)
+		val request = getRequest()
+		val success = sendRequest(request)
 		if(success)
-			Log.i(Utilities.TagProduction, "Domestic Payement ended with sucess")
+			Log.i(Utilities.TagProduction, "[run/${this.javaClass.name}] Domestic Payement ended with sucess")
 		else
-			Log.e(Utilities.TagProduction, "Domestic Payement ended with error")
+			Log.e(Utilities.TagProduction, "[run/${this.javaClass.name}] Domestic Payement ended with error")
 		return success
 	}
 	private fun getRequest() : Request{

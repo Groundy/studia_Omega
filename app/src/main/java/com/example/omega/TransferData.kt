@@ -143,11 +143,11 @@ class TransferData() {
 		if(objectWrong)
 			return false
 
-		val senderAccCorrectLength = senderAccNumber?.length == ApiFunctions.getLengthOfCountryBankNumberDigitsOnly() - ApiConsts.countryCodeLength
+		val senderAccCorrectLength = senderAccNumber?.length == ApiFunctions.getLengthOfCountryBankNumberWitchCountryCode() - ApiConsts.countryCodeLength
 		if(!senderAccCorrectLength)
 			return false
 
-		val receiverAccCorrectLength = senderAccNumber?.length == ApiFunctions.getLengthOfCountryBankNumberDigitsOnly() - ApiConsts.countryCodeLength
+		val receiverAccCorrectLength = senderAccNumber?.length == ApiFunctions.getLengthOfCountryBankNumberWitchCountryCode() - ApiConsts.countryCodeLength
 		if(!receiverAccCorrectLength)
 			return false
 

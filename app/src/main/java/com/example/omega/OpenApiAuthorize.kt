@@ -38,8 +38,8 @@ class OpenApiAuthorize(activity: Activity) {
 			Log.e(TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
 			return false
 		}
-		if(dialog!=null)
-			dialog.changeText(callerActivity, R.string.POPUP_auth)
+
+		dialog?.changeText(callerActivity, R.string.POPUP_auth)
 		Log.i(TagProduction, "Authorize started")
 		var success = false
 		val thread = Thread{
@@ -53,23 +53,16 @@ class OpenApiAuthorize(activity: Activity) {
 			Log.i(TagProduction, "Authorize ended with sucess")
 		else
 			Log.e(TagProduction, "Authorize ended with error")
-		if(dialog!=null)
-			dialog.changeText(callerActivity, R.string.POPUP_empty)
+		dialog?.changeText(callerActivity, R.string.POPUP_empty)
 		return success
 	}
 	fun runForPis(permisionListObject : PermissionList, transferData: TransferData) : Boolean{
 		permissionsList = permisionListObject
 		this.transferData = transferData
-
 		Log.i(TagProduction, "Authorize for pis started")
-		var success = false
-		val thread = Thread{
-			val request = getRequest(stateValue, ScopeValues.Pis)
-			val response = sendRequest(request) ?: return@Thread
-			success = handleResponse(response)
-		}
-		thread.start()
-		thread.join(ApiConsts.requestTimeOut)
+		val request = getRequest(stateValue, ScopeValues.Pis)
+		val response = sendRequest(request)
+		val success = handleResponse(response)
 		if(success)
 			Log.i(TagProduction, "Authorize for pis ended with sucess")
 		else
@@ -127,7 +120,10 @@ class OpenApiAuthorize(activity: Activity) {
 			.put(ScopeFields.ScopeTimeLimit.text, OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds))
 			.put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
 	}
-	private fun handleResponse(jsonObject: JSONObject) : Boolean{
+	private fun handleResponse(jsonObject: JSONObject?) : Boolean{
+		if(jsonObject == null)
+			return false
+
 		 val authUrl = try {
 		 	jsonObject.get(redirectUriField).toString()
 		 }
