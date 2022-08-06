@@ -36,4 +36,21 @@ class AccountNumber(number : String) {
 		}
 	}
 
+	fun checkIfIsProperIbanFormar() : Boolean{
+		val countryCode = country.name
+		val constValSubstraction = 55
+		val firstCharVal = countryCode.first().code - constValSubstraction
+		val secondCharVal = countryCode.last().code - constValSubstraction
+		val countryCodeAsDigitStr = "$firstCharVal$secondCharVal"
+
+		val checkSum = numberWithOutCountryCode.substring(0,2)
+		val bban = numberWithOutCountryCode.substring(2, numberWithOutCountryCode.length)
+		val changeOverReplaced = bban.plus(countryCodeAsDigitStr).plus("00")
+		val bigInt = BigInteger(changeOverReplaced)
+		val modRes = bigInt % BigInteger("97")
+		val properCheckSum = 98 - modRes.toInt()
+
+		val formatOk = properCheckSum == checkSum.toInt()
+ 		return formatOk
+	}
 }
