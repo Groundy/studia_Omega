@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +9,12 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.*
 import com.example.omega.Utilities.Companion.TagProduction
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RBLIKCodeCreator : AppCompatActivity() {
 	private lateinit var amountField : EditText
@@ -20,12 +27,31 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_rblik_code_creator)
-		getTokenCpy()
 		setUpGui()
-		fillListOfAccounts()
-		fillReceiverName()
-		if(Utilities.developerMode)
-			developerFillWidgets()
+		val dialog = WaitingDialog(this, R.string.POPUP_getToken)
+		CoroutineScope(IO).launch{
+			val success = getTokenCpy()
+			if(!success){
+				withContext(Main){
+					dialog.hide()	//todo info for user
+				}
+				return@launch//todo maybe finish act
+			}
+			val spinnerAdapter = getListOfAccountsForSpinner()
+			if(spinnerAdapter == null){
+				withContext(Main){
+					dialog.hide()		//todo info
+				}
+				return@launch //todo maybe finish act
+			}
+
+			withContext(Main){
+				accountListSpinner.adapter = spinnerAdapter
+				fillReceiverName()
+				wookieTestFillWidgets()
+				dialog.hide()
+			}
+		}
 	}
 	private fun setUpGui(){
 		amountField = findViewById(R.id.RBlikCodeGenerator_amount_editText)
@@ -60,49 +86,56 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		if(!dataOk)
 			return
 
-		val data = serializeDataForServer()
-		if(data == null){
+		val transferData = getDataForServer()
+		if(transferData == null){
 			val userMsg = getString(R.string.UserMsg_UNKNOWN_ERROR)
 			Utilities.showToast(this, userMsg)
 			return
 		}
 
-		val codeAssociated = getCodeFromServer(data)
-		if(codeAssociated == null){
-			Log.e(TagProduction,"[getCodeFromServer/${this.javaClass.name}] server returned null or wrong fromat code for QR generator")
-			return
+		val dialog = WaitingDialog(this, R.string.POPUP_getCodeFromAzureService)
+		CoroutineScope(IO).launch {
+			//val responseData : ServerSetCodeResponse? = CodeServerApi.setCode(this@RBLIKCodeCreator, transferData)
+			val responseData = ServerSetCodeResponse(123456, OmegaTime.getCurrentTime(10))//todo tmp
+			withContext(Main){
+				dialog.hide()
+				if(responseData == null){
+					ActivityStarter.startOperationResultActivity(this@RBLIKCodeCreator, R.string.Result_GUI_SERVER_PROBLEM)
+					Log.e(TagProduction,"[getCodeFromServer/${this.javaClass.name}] server returned null or wrong fromat code for QR generator")
+				}
+				else
+					ActivityStarter.startDisplayActivity(this@RBLIKCodeCreator, responseData!!)
+			}
 		}
-
-		openDisplayActivityWithCode(codeAssociated)
 	}
-	private fun fillListOfAccounts(){
-		//todo
-		return
-		/*
-		if(!tokenCpy.getDetailsOfAccountsFromBank(this)){
-			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
-			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
-			Utilities.showToast(this, errorCodeTextToDisplay)
-			finish()
-			return
+	private suspend fun getListOfAccountsForSpinner() : SpinnerAdapter?{
+		val errorBase = "[fillListOfAccounts/${this.javaClass.name}]"
+
+		if(!tokenCpy.fillTokenAccountsWithBankDetails(this)){
+			Log.e(TagProduction, "$errorBase token cant obtain accounts Details")
+			withContext(Main){
+				val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
+				Utilities.showToast(this@RBLIKCodeCreator, errorCodeTextToDisplay)
+			}
+			return null
 		}
 
-		val listOfAccountFromToken = tokenCpy.getListOfAccountsToDisplay()
+		val listOfAccountFromToken = tokenCpy.getListOfAccountsNumbersToDisplay()
 		if(listOfAccountFromToken.isNullOrEmpty()){
-			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}] token returned nullOrEmpty accountList")
-			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
-			Utilities.showToast(this, errorCodeTextToDisplay)
-			finish()
-			return //maybe
+			Log.e(TagProduction, "$errorBase token returned nullOrEmpty accountList")
+			withContext(Main){
+				val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
+				Utilities.showToast(this@RBLIKCodeCreator, errorCodeTextToDisplay)
+			}
+			return null
 		}
 
 		val adapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item)
 		listOfAccountFromToken.forEach{
 			adapter.add(it)
 		}
-		accountListSpinner.adapter = adapter
 
-		 */
+		return adapter
 	}
 	private fun validateDataToGenRBlikCode() : Boolean{
 		val accountChosen = accountListSpinner.selectedItemPosition != Spinner.INVALID_POSITION
@@ -140,12 +173,9 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		return true
 
 	}
-	private fun getCodeFromServer(transferData: TransferData) : Int?{
-		//todo implement
-		return Utilities.getRandomTestCode()
-	}
-	private fun serializeDataForServer() : TransferData? {
-		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser() ?: return null
+
+	private fun getDataForServer() : TransferData? {
+		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser() ?: return null//todo
 
 		val testTransferData = TransferData()
 		testTransferData.amount = amountField.text.toString().toDouble()
@@ -159,16 +189,18 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		return testTransferData
 	}
 
-	private fun developerFillWidgets(){
+	private fun wookieTestFillWidgets(){
 		amountField.text = Editable.Factory.getInstance().newEditable("10.0")
 		titleField.text = Editable.Factory.getInstance().newEditable("xyz")
 	}
-	private fun getTokenCpy(){
+	private fun getTokenCpy() : Boolean{
 		val tokenTmp = PreferencesOperator.getToken(this)
-		if(!tokenTmp.isOk(this))
-			finish()
-		else
-			tokenCpy = tokenTmp
+		val tokenOk = tokenTmp.isOk(this)
+		if(!tokenOk)
+			return false
+
+		tokenCpy = tokenTmp
+		return true
 	}
 	private fun getPaymentAccountInfoOfSelectedOneByUser() : PaymentAccount?{
 		val currentlySelectedSpinnerItem =  accountListSpinner.selectedItem.toString()
