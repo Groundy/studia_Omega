@@ -31,9 +31,12 @@ import com.karumi.dexter.listener.single.PermissionListener
 import com.example.omega.Utilities.Companion.TagProduction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.omega.BankLoginWebPageActivity.Companion.WebActivtyRedirect
+import com.example.omega.Utilities.Companion.wookieTestGetTestObjWithFilledData
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import okhttp3.OkHttpClient
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 	private var nfcCapturingIsOn = false
@@ -93,21 +96,25 @@ class MainActivity : AppCompatActivity() {
 
 		val permissionListObject = PermissionList(serializedPermissionList)
 		PreferencesOperator.clearAuthData(this)
-		OpenApiAuthorize(this).runForAis(permissionListObject)
+		CoroutineScope(IO).launch {
+			OpenApiAuthorize(this@MainActivity).runForAis(permissionListObject)
+			val authUrl = PreferencesOperator.readPrefStr(this@MainActivity, R.string.PREF_authURL)
+			val state = PreferencesOperator.readPrefStr(this@MainActivity, R.string.PREF_lastRandomValue)
+			val fieldsAreFilled = authUrl.isNotEmpty() && state.isNotEmpty()
+			if(!fieldsAreFilled){
+				Log.e(TagProduction, "[resetPermissionActivityResult/${this.javaClass.name}]Failed to obtain auth url, tried to pass no authUrl or stateValue")
+				withContext(Main){
+					val userMsg = getString(R.string.BankLogin_UserMsg_ErrorInBankTryAgian)
+					Utilities.showToast(this@MainActivity, userMsg)
+				}
+				return@launch
+			}
 
-		val authUrl = PreferencesOperator.readPrefStr(this, R.string.PREF_authURL)
-		val state = PreferencesOperator.readPrefStr(this, R.string.PREF_lastRandomValue)
-		val fieldsAreFilled = authUrl.isNotEmpty() && state.isNotEmpty()
-		if(!fieldsAreFilled){
-			Log.e(TagProduction, "[resetPermissionActivityResult/${this.javaClass.name}]Failed to obtain auth url, tried to pass no authUrl or stateValue")
-			val userMsg = getString(R.string.BankLogin_UserMsg_ErrorInBankTryAgian)
-			Utilities.showToast(this, userMsg)
-			return
+			ActivityStarter.openBrowserForLogin(this@MainActivity, WebActivtyRedirect.None)
 		}
 
-		ActivityStarter.openBrowserForLogin(this, WebActivtyRedirect.None)
 
-		 */
+
 	}
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
 		CoroutineScope(IO).launch {
@@ -280,8 +287,8 @@ class MainActivity : AppCompatActivity() {
 		val dialog = WaitingDialog(this, R.string.POPUP_getToken)
 		CoroutineScope(IO).launch{
 			val ok = getToken(WebActivtyRedirect.AccountHistory, dialog)
-			dialog.changeText(this@MainActivity, R.string.POPUP_empty)
 			withContext(Main){
+				dialog.changeText(this@MainActivity, R.string.POPUP_empty)
 				if(ok){
 					ActivityStarter.openAccountTransfersHistoryActivity(this@MainActivity)
 					dialog.hide()
@@ -295,11 +302,15 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 	private fun generateRBlickCodeClicked(){
+		val dialog = WaitingDialog(this, R.string.POPUP_getToken)
 		CoroutineScope(IO).launch {
 			val ok = getToken(WebActivtyRedirect.GenerateRBlikCode)
 			withContext(Main){
-				if(ok)
+				dialog.changeText(this@MainActivity, R.string.POPUP_empty)
+				if(ok){
 					ActivityStarter.startRBlikCodeCreatorActivity(this@MainActivity)
+					dialog.hide()
+				}
 				else{
 					Log.e(TagProduction, "[generateRBlickCodeClicked/${this@MainActivity.javaClass.name}] Nie można otworzyć historii rachunek, brak możliwości pobrania tokenu")
 					dialog.hide()
@@ -344,7 +355,12 @@ class MainActivity : AppCompatActivity() {
 		CoroutineScope(IO).launch {
 			val transferData = CodeServerApi.getCodeData(this@MainActivity, code)
 			withContext(Main){
+				dialog.hide()
+				if(transferData!=null)
+					ActivityStarter.startTransferSummaryActivity(this@MainActivity, transferData)
 				else
+					;//todo
+			}
 		}
 	}
 	@SuppressLint("UseCompatLoadingForDrawables")
