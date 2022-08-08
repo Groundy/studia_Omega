@@ -50,4 +50,6 @@
 	<string name="POPUP_getSingleAccountHistory">Trwa pobieranie historii wybrenego rachunku. Proszę czekać.</string>
 	<string name="POPUP_listOfAccounts">Trwa pobieranie listy rachunków. Proszę czekać.</string>
 	<string name="POPUP_payment">Trwa dokonywwanie płatności. Proszę czekać</string>
+	<string name="POPUP_getCodeFromAzureService">Trwa ustalanie kodu płatności. Proszę czekać</string>
+	<string name="POPUP_codeProccess">Trwa realizacja kodu. Proszę czekać</string>
 </resources>

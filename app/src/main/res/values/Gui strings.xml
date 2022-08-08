@@ -62,6 +62,8 @@
 	<string name="Result_GUI_WRONG_CODE">Transakcja zakończona niepowodzeniem. Wprowadzono błędny kod.</string>
 	<string name="Result_GUI_WRONG_AUTH">Transakcja zakończona niepowodzeniem. Błąd autoryzacji.</string>
 	<string name="Result_GUI_WRONG_ELSE">Transakcja zakończona niepowodzeniem z nieznanego powodu.</string>
+	<string name="Result_GUI_SERVER_PROBLEM">Niepowodzeniem. Błąd servera.</string>
+	<string name="Result_GUI_CODE_EXPIRED">Kod wygasł.</string>
 
 	<!-- dialog -->
 	<string name="DIALOG_GUI_CancelBioAuthMsgText">Czy chcesz anulować uwierzytelnianie za pomocą linii papilarnych?</string>
