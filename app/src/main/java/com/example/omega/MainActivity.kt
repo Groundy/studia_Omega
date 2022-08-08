@@ -345,7 +345,7 @@ class MainActivity : AppCompatActivity() {
 			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_WRONG_CODE)
 			return
 		}
-		ActivityStarter.startTransferSummaryActivity(this, transferData.toString())
+		ActivityStarter.startTransferSummaryActivity(this, transferData)
 	}
 	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun initGUI() {

@@ -265,7 +265,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			return
 		}
 
-		ActivityStarter.startTransferSummaryActivity(this, transferDataSerialized)
+		ActivityStarter.startTransferSummaryActivity(this, transferData)
 	}
 	private fun getToken() : Boolean{
 		val tokenTmp = PreferencesOperator.getToken(this)
