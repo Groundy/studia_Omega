@@ -5,58 +5,58 @@ import android.content.Intent
 
 class ActivityStarter {
 	companion object{
-		fun startPinActivity(activity: Activity, purpose : PinActivity.Companion.Purpose, descriptionForAuth: String = String()){
+		fun startPinActivity(callerActivity: Activity, purpose : PinActivity.Companion.Purpose, descriptionForAuth: String = String()){
 			when(purpose){
 				PinActivity.Companion.Purpose.Set->{
-					val pinAlreadySet = Utilities.checkIfAppHasAlreadySetPin(activity)
+					val pinAlreadySet = Utilities.checkIfAppHasAlreadySetPin(callerActivity)
 					if(pinAlreadySet)
 						return
 
 					val pinActPurpose = PinActivity.Companion.Purpose.Set.text
-					val pinActPurposeFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
-					val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_SET)
+					val pinActPurposeFieldName = callerActivity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
+					val retCodeForActivity = callerActivity.resources.getInteger(R.integer.ACT_RETCODE_PIN_SET)
 
-					val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
+					val pinActivityActivityIntent = Intent(callerActivity, PinActivity::class.java)
 					pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
-					activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
+					callerActivity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
 				}
 				PinActivity.Companion.Purpose.Auth->{
-					val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
+					val descriptionFieldName = callerActivity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
 					val pinActPurpose = PinActivity.Companion.Purpose.Auth.text
-					val pinActPurposeFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
-					val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_AUTH)
+					val pinActPurposeFieldName = callerActivity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
+					val retCodeForActivity = callerActivity.resources.getInteger(R.integer.ACT_RETCODE_PIN_AUTH)
 
-					val pinActivityActivityIntent = Intent(activity, PinActivity::class.java)
+					val pinActivityActivityIntent = Intent(callerActivity, PinActivity::class.java)
 					pinActivityActivityIntent.putExtra(descriptionFieldName,descriptionForAuth)
 					pinActivityActivityIntent.putExtra(pinActPurposeFieldName,pinActPurpose)
-					activity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
+					callerActivity.startActivityForResult(pinActivityActivityIntent, retCodeForActivity)
 				}
 				PinActivity.Companion.Purpose.Change->{
 					val activityReason = PinActivity.Companion.Purpose.Change.text
-					val activityReasonFieldName = activity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
-					val retCodeForActivity = activity.resources.getInteger(R.integer.ACT_RETCODE_PIN_CHANGE)
+					val activityReasonFieldName = callerActivity.resources.getString(R.string.ACT_COM_PIN_ACT_PURPOSE_FIELDNAME)
+					val retCodeForActivity = callerActivity.resources.getInteger(R.integer.ACT_RETCODE_PIN_CHANGE)
 
-					val changePinActivityIntent = Intent(activity, PinActivity::class.java)
+					val changePinActivityIntent = Intent(callerActivity, PinActivity::class.java)
 					changePinActivityIntent.putExtra(activityReasonFieldName,activityReason)
-					activity.startActivityForResult(changePinActivityIntent, retCodeForActivity)
+					callerActivity.startActivityForResult(changePinActivityIntent, retCodeForActivity)
 				}
 			}
 		}
-		fun startQrScannerActivity(activity: Activity){
-			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_QrScanner)
+		fun startQrScannerActivity(callerActivity: Activity){
+			val retCode = callerActivity.resources.getInteger(R.integer.ACT_RETCODE_QrScanner)
 
-			val qrScannerActivityIntent = Intent(activity, QrScannerActivity::class.java)
-			activity.startActivityForResult(qrScannerActivityIntent, retCode)
+			val qrScannerActivityIntent = Intent(callerActivity, QrScannerActivity::class.java)
+			callerActivity.startActivityForResult(qrScannerActivityIntent, retCode)
 		}
-		fun startResetPermissionsActivity(activity: Activity){
-			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST)
+		fun startResetPermissionsActivity(callerActivity: Activity){
+			val retCode = callerActivity.resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST)
 
-			val intent = Intent(activity, UserPermissionList::class.java)
-			activity.startActivityForResult(intent,retCode)
+			val intent = Intent(callerActivity, UserPermissionList::class.java)
+			callerActivity.startActivityForResult(intent,retCode)
 		}
-		fun startConfigurationActivity(activity: Activity){
-			val settingsActivityIntent = Intent(activity, SettingsActivity::class.java)
-			activity.startActivity(settingsActivityIntent)
+		fun startConfigurationActivity(callerActivity: Activity){
+			val settingsActivityIntent = Intent(callerActivity, SettingsActivity::class.java)
+			callerActivity.startActivity(settingsActivityIntent)
 		}
 		fun startTransferActivityFromMenu(activity: Activity){
 			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_BASIC_TRANSFER_ACT)
@@ -64,25 +64,25 @@ class ActivityStarter {
 			val transferIntent = Intent(activity, BasicTransferActivity::class.java)
 			activity.startActivityForResult(transferIntent, retCode)
 		}
-		fun startRBlikCodeCreatorActivity(activity: Activity){
-			val rblikCodeCreatorIntent = Intent(activity, RBLIKCodeCreator::class.java)
-			activity.startActivity(rblikCodeCreatorIntent)
+		fun startRBlikCodeCreatorActivity(callerActivity: Activity){
+			val rblikCodeCreatorIntent = Intent(callerActivity, RBLIKCodeCreator::class.java)
+			callerActivity.startActivity(rblikCodeCreatorIntent)
 		}
-		fun startOperationResultActivity(activity: Activity, textIdToDisplay: Int){
-			val textToDisplay = activity.resources.getString(textIdToDisplay)
-			val textFieldName = activity.resources.getString(R.string.ACT_COM_RESULT_TEXT_FIELD_NAME)
+		fun startOperationResultActivity(callerActivity: Activity, textIdToDisplay: Int){
+			val textToDisplay = callerActivity.resources.getString(textIdToDisplay)
+			val textFieldName = callerActivity.resources.getString(R.string.ACT_COM_RESULT_TEXT_FIELD_NAME)
 
-			val resultIntent = Intent(activity, ResultActivity::class.java)
+			val resultIntent = Intent(callerActivity, ResultActivity::class.java)
 			resultIntent.putExtra(textFieldName,textToDisplay)
-			activity.startActivity(resultIntent)
+			callerActivity.startActivity(resultIntent)
 		}
-		fun startTransferSummaryActivity(activity: Activity, transferData: TransferData){
-			val serializedObjField = activity.getString(R.string.TransferSummary_COM_serializedData)
-			val resultCode = activity.resources.getInteger(R.integer.ACT_RETCODE_TRANSFER_SUMMARY)
+		fun startTransferSummaryActivity(callerActivity: Activity, transferData: TransferData){
+			val serializedObjField = callerActivity.getString(R.string.TransferSummary_COM_serializedData)
+			val resultCode = callerActivity.resources.getInteger(R.integer.ACT_RETCODE_TRANSFER_SUMMARY)
 
-			val resultIntent = Intent(activity, TransferSummary::class.java)
+			val resultIntent = Intent(callerActivity, TransferSummary::class.java)
 			resultIntent.putExtra(serializedObjField,transferData.toString())
-			activity.startActivityForResult(resultIntent, resultCode)
+			callerActivity.startActivityForResult(resultIntent, resultCode)
 		}
 		fun startAuthActivity(context : Activity, description : String?, forcedMethodeCode : Int?){
 			val fingerCode = 1
@@ -98,40 +98,40 @@ class ActivityStarter {
 				else -> startPinActivity(context, PinActivity.Companion.Purpose.Auth ,description!!)
 			}
 		}
-		private fun authByFingerPrint(activity: Activity, description : String?){
-			val descriptionFieldName = activity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
-			val retCodeForActivity  = activity.resources.getInteger(R.integer.ACT_RETCODE_FINGER)
+		private fun authByFingerPrint(callerActivity: Activity, description : String?){
+			val descriptionFieldName = callerActivity.resources.getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
+			val retCodeForActivity  = callerActivity.resources.getInteger(R.integer.ACT_RETCODE_FINGER)
 
-			val scanFingerActivityIntent = Intent(activity, ScanFingerActivity::class.java)
+			val scanFingerActivityIntent = Intent(callerActivity, ScanFingerActivity::class.java)
 			scanFingerActivityIntent.putExtra(descriptionFieldName,description)
-			activity.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
+			callerActivity.startActivityForResult(scanFingerActivityIntent, retCodeForActivity)
 		}
-		fun openBrowserForLogin(activity: Activity, redirect : BankLoginWebPageActivity.Companion.WebActivtyRedirect){
-			val redirectField = activity.resources.getString(R.string.ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME)
-			val returnCode = activity.resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)
+		fun openBrowserForLogin(callerActivity: Activity, redirect : BankLoginWebPageActivity.Companion.WebActivtyRedirect){
+			val redirectField = callerActivity.resources.getString(R.string.ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME)
+			val returnCode = callerActivity.resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW)
 
-			val intent = Intent(activity, BankLoginWebPageActivity::class.java)
+			val intent = Intent(callerActivity, BankLoginWebPageActivity::class.java)
 			intent.putExtra(redirectField, redirect.text)
-			activity.startActivityForResult(intent,returnCode)
+			callerActivity.startActivityForResult(intent,returnCode)
 		}
-		fun openDialogWithDefinedPurpose(activity: Activity, purpose : YesNoDialogActivity.Companion.DialogPurpose){
-			val yesNoDialog = Intent(activity, YesNoDialogActivity::class.java)
+		fun openDialogWithDefinedPurpose(callerActivity: Activity, purpose : YesNoDialogActivity.Companion.DialogPurpose){
+			val yesNoDialog = Intent(callerActivity, YesNoDialogActivity::class.java)
 			val retCode = when(purpose){
 				YesNoDialogActivity.Companion.DialogPurpose.CancelBioAuth ->
-					activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_CancelBioAuth)
+					callerActivity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_CancelBioAuth)
 				YesNoDialogActivity.Companion.DialogPurpose.ResetAuthUrl ->
-					activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage)
+					callerActivity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage)
 				YesNoDialogActivity.Companion.DialogPurpose.LoginToBankAccount ->
-					activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank)
+					callerActivity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank)
 				YesNoDialogActivity.Companion.DialogPurpose.ResetPin ->
-					activity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ResetPin)
+					callerActivity.resources.getInteger(R.integer.ACT_RETCODE_DIALOG_ResetPin)
 				else->
 					0
 			}
 
-			val purposeField = activity.getString(R.string.ACT_COM_DIALOG_PURPOSE_FIELDNAME)
+			val purposeField = callerActivity.getString(R.string.ACT_COM_DIALOG_PURPOSE_FIELDNAME)
 			yesNoDialog.putExtra(purposeField,purpose.text)
-			activity.startActivityForResult(yesNoDialog, retCode)
+			callerActivity.startActivityForResult(yesNoDialog, retCode)
 		}
 		fun openAccountTransfersHistoryActivity(callerActivity: Activity) {
 			val intent = Intent(callerActivity, AccountHistroyActivity::class.java)
