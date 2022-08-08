@@ -37,8 +37,15 @@ class TransferData() {
 
 	constructor(jsonObj : JSONObject) : this(){
 		try {
-			senderAccNumber = jsonObj.getString(TransferDataFields.SenderAccNumber.text)
-			senderAccName = jsonObj.getString(TransferDataFields.SenderAccName.text)
+			senderAccNumber = if(jsonObj.has(TransferDataFields.SenderAccNumber.text))
+				jsonObj.getString(TransferDataFields.SenderAccNumber.text)
+			else
+				String()
+
+			senderAccName = if(jsonObj.has(TransferDataFields.SenderAccName.text))
+				jsonObj.getString(TransferDataFields.SenderAccName.text)
+			else
+				String()
 			receiverAccNumber = jsonObj.getString(TransferDataFields.ReceiverAccNumber.text)
 			receiverName = jsonObj.getString(TransferDataFields.ReceiverName.text)
 			description = jsonObj.getString(TransferDataFields.Description.text)
@@ -51,16 +58,24 @@ class TransferData() {
 	}
 	constructor(serializedObject : String) : this(){
 		try{
-			val obj = JSONObject(serializedObject)
-			val tmpTransferData = TransferData(obj)
-			senderAccNumber = tmpTransferData.senderAccNumber
-			senderAccName = tmpTransferData.senderAccName
-			receiverAccNumber = tmpTransferData.receiverAccNumber
-			receiverName = tmpTransferData.receiverName
-			description = tmpTransferData.description
-			amount = tmpTransferData.amount
-			currency = tmpTransferData.currency
-			executionDate = tmpTransferData.executionDate
+			val jsonObj = JSONObject(serializedObject)
+
+			senderAccNumber = if(jsonObj.has(TransferDataFields.SenderAccNumber.text))
+				jsonObj.getString(TransferDataFields.SenderAccNumber.text)
+			else
+				String()
+
+			senderAccName = if(jsonObj.has(TransferDataFields.SenderAccName.text))
+				jsonObj.getString(TransferDataFields.SenderAccName.text)
+			else
+				String()
+
+			receiverAccNumber = jsonObj.getString(TransferDataFields.ReceiverAccNumber.text)
+			receiverName = jsonObj.getString(TransferDataFields.ReceiverName.text)
+			description = jsonObj.getString(TransferDataFields.Description.text)
+			amount = jsonObj.getDouble(TransferDataFields.Amount.text)
+			currency = jsonObj.getString(TransferDataFields.Currency.text)
+			executionDate = jsonObj.getString(TransferDataFields.ExecutionDate.text)
 		}
 		catch (e : Exception){
 			Log.e(TagProduction, "Error in creating transferDataObject from serialized data! [$e]")
