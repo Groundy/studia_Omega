@@ -28,8 +28,9 @@
 			<ImageView
 				android:id="@+id/result_imageView"
 				android:layout_width="match_parent"
+
 				android:layout_height="280dp"
-				app:srcCompat="@drawable/ok_img" />
+				app:srcCompat="@drawable/ico_success" />
 
 			<TextView
 				android:id="@+id/result_TextView"

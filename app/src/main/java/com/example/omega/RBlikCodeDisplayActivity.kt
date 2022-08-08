@@ -34,8 +34,8 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 		var qrCodeBitmap = generateQRCodeImg(code)
 		if(qrCodeBitmap == null){
 			Utilities.showToast(this, getString(R.string.RBLIKDISPLAY_UserMsg_qrGeneratorError))
-			Log.e(TagProduction, "Error in RBlik display class, qr generator return null instead of bitmap.")
-			qrCodeBitmap = resources.getDrawable(R.drawable.wrong_img, null).toBitmap()
+			Log.e(TagProduction, "[onCreate/${this.javaClass.name}] qr generator return null instead of bitmap.")
+			qrCodeBitmap = resources.getDrawable(R.drawable.ico_failure, null).toBitmap()
 		}
 		imgWidget.setImageBitmap(qrCodeBitmap)
 	}
@@ -65,7 +65,7 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 		codeDisplayField.text = codeStr
 	}
 	private fun setUpGui(){
-		codeDisplayField = findViewById(R.id.BLIKDISPLAY_QR_code_ImageView)
+		codeDisplayField = findViewById(R.id.BLIKDISPLAY_code_TextView)
 		imgWidget = findViewById(R.id.BLIKDISPLAY_QR_ImageView)
 		findViewById<Button>(R.id.BLIKDISPLAY_back_button).setOnClickListener{
 			finish()
