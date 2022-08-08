@@ -340,12 +340,12 @@ class MainActivity : AppCompatActivity() {
 	private fun processCode(code: Int) {
 		val codeField = findViewById<EditText>(R.id.MainAct_enterCodeField)
 		codeField.text.clear()
-		val transferData = Utilities.checkBlikCode(code)
-		if(transferData == null){
-			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_WRONG_CODE)
-			return
+		val dialog = WaitingDialog(this, R.string.POPUP_codeProccess)
+		CoroutineScope(IO).launch {
+			val transferData = CodeServerApi.getCodeData(this@MainActivity, code)
+			withContext(Main){
+				else
 		}
-		ActivityStarter.startTransferSummaryActivity(this, transferData)
 	}
 	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun initGUI() {

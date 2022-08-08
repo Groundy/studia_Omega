@@ -31,16 +31,6 @@ class Utilities {
 			return savedPinHash.isNotEmpty()
 		}
 
-		fun checkBlikCode(code : Int) : TransferData?{
-			//TODO implement
-			val properCode = 111111
-			val isProperCode = code == properCode
-			if(!isProperCode)
-				return null
-
-			return wookieTestGetTestObjWithFilledData()
-		}
-
 		fun stopUserFromPuttingMoreThan2DigitsAfterComma(editText : EditText, oldVal : String, newVal : String){
 			val indexOfDecimal = newVal.indexOf('.')
 			if(indexOfDecimal != -1){
