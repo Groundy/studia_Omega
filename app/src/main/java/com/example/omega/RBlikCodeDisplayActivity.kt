@@ -41,14 +41,14 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 		setContentView(R.layout.activity_blik_code_display)
 		setUpGui()
 
-		val code = getCodeFromIntent()
-		if(code == -1){
+		val success = getServerResponseFromIntent()
+		if(!success){
 			Utilities.showToast(this, getString(R.string.RBLIKDISPLAY_UserMsg_incorrectCodePassed))
-			Log.e(TagProduction, "Error, passed code to display RBlik class was incorrect")
 			finish()
+			return
 		}
-		setProperWidgetText(code)
-		var qrCodeBitmap = generateQRCodeImg(code)
+		setProperWidgetText()
+		var qrCodeBitmap = generateQRCodeImg(data.code)
 		if(qrCodeBitmap == null){
 			Utilities.showToast(this, getString(R.string.RBLIKDISPLAY_UserMsg_qrGeneratorError))
 			Log.e(TagProduction, "[onCreate/${this.javaClass.name}] qr generator return null instead of bitmap.")
@@ -67,12 +67,19 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 			null
 		}
 	}
-	private fun getCodeFromIntent() : Int{
-		val fieldName = getString(R.string.ACT_COM_CODEGENERATOR_CODE_FOR_DISPLAY_FIELDNAME)
-		return intent.getIntExtra(fieldName, -1)
+	private fun getServerResponseFromIntent() : Boolean{
+		val fieldName = getString(R.string.ACT_COM_CODEGENERATOR_SERIALIZED_SERVER_RES_FIELD)
+		return try {
+			val serverResStr = intent.extras!!.getString(fieldName)
+			data = ServerSetCodeResponse(serverResStr!!)
+			true
+		}catch (e : Exception){
+			Log.e(TagProduction,"[getServerResponseFromIntent/${this.javaClass.name}] Cant parse data from intent")
+			false
+		}
 	}
-	private fun setProperWidgetText(code : Int){
-		var codeStr = code.toString()
+	private fun setProperWidgetText(){
+		var codeStr = data.code.toString()
 		if(codeStr.length < 6){
 			val missingZerosOnFrontOfStr = 6 - codeStr.length
 			repeat(missingZerosOnFrontOfStr){

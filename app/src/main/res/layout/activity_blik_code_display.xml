@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:layout_weight="0"
 	android:background="@color/colorPrimary"
 	tools:context="com.example.omega.RBlikCodeDisplayActivity">
 
@@ -31,14 +31,9 @@
 				android:id="@+id/BLIKDISPLAY_QR_ImageView"
 				android:layout_width="match_parent"
 				android:layout_height="@dimen/RBLIKDISPLAY_min_QR_DIM"
-				android:layout_weight="2"
+				android:layout_weight="0"
 				android:scaleType="fitCenter"
 				tools:srcCompat="@tools:sample/avatars" />
-
-			<Space
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="2" />
 
 			<TextView
 				android:id="@+id/BLIKDISPLAY_code_TextView"
@@ -69,12 +64,12 @@
 			<Space
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_weight="2" />
+				android:layout_weight="0" />
 
 			<Button
 				android:id="@+id/BLIKDISPLAY_back_button"
 				android:layout_width="match_parent"
-				android:layout_height="@dimen/RBLIKDISPLAY_ButtonHeight"
+				android:layout_height="70dp"
 				android:layout_weight="0"
 				android:maxHeight="@dimen/RBLIKDISPLAY_ButtonHeight"
 				android:text="@string/RBLIKDISPLAY_GUI_buttonText" />
