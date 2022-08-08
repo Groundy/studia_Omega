@@ -45,11 +45,26 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_weight="0"
+				android:foregroundGravity="center_vertical"
+				android:gravity="clip_horizontal|center|center_horizontal"
 				android:text="000000"
 				android:textAlignment="center"
 				android:textColor="@color/black"
 				android:textSize="@dimen/RBLIKDISPLAY_code_Size"
 				android:textStyle="bold" />
+
+			<TextView
+				android:id="@+id/BLIKDISPLAY_timer_textView"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="0"
+				android:foregroundGravity="center_vertical"
+				android:gravity="clip_horizontal|center|center_horizontal"
+				android:text="TextView"
+				android:textColor="@color/black"
+				android:textSize="20sp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent" />
 
 			<Space
 				android:layout_width="match_parent"
