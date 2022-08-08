@@ -137,5 +137,13 @@ class ActivityStarter {
 			val intent = Intent(callerActivity, AccountHistroyActivity::class.java)
 			callerActivity.startActivity(intent)
 		}
+		fun startDisplayActivity(callerActivity: Activity, data : ServerSetCodeResponse){
+			val field = callerActivity.getString(R.string.ACT_COM_CODEGENERATOR_SERIALIZED_SERVER_RES_FIELD)
+			val dataStr = data.toString()
+			val codeDisplayIntent = Intent(callerActivity, RBlikCodeDisplayActivity::class.java)
+
+			codeDisplayIntent.putExtra(field, dataStr)
+			callerActivity.startActivity(codeDisplayIntent)
+		}
 	}
 }
