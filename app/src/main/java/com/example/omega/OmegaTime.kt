@@ -23,9 +23,9 @@ class OmegaTime {
 			val timeCurrent =  Instant.parse(getCurrentTime()).plusMillis(minTimeMarginMili)
 			return timeToCheck > timeCurrent
 		}
-		fun getSecondsToStampExpiration(timestampStartValidityPeriod: String, validityPeriod: Int) : Long{
+		fun getSecondsToStampExpiration(timeStampCreation: String, validityPeriod: Int) : Long{
 			val expirationInstant = try{
-				Instant.parse(timestampStartValidityPeriod).plusSeconds(validityPeriod.toLong())
+				Instant.parse(timeStampCreation).plusSeconds(validityPeriod.toLong())
 			}catch (e : Exception){
 				Log.e(TagProduction, "[getSecondsToStampExpiration/${this::class.java.name}] passed time stamp in wrong format")
 				return -1

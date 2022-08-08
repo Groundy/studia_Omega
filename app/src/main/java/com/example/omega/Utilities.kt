@@ -51,7 +51,7 @@ class Utilities {
 				}
 			}
 		}
-		fun getRandomTestCode() : Int{
+		fun wookieTestGetRandomTestCode() : Int{
 			return Random.nextInt(999999)
 		}
 		fun hashMd5(inputStr : String) : String{
@@ -61,7 +61,7 @@ class Utilities {
 		fun strToEditable(text: String): Editable {
 			return Editable.Factory.getInstance().newEditable(text)
 		}
-		private fun wookieTestGetTestObjWithFilledData() : TransferData{
+		fun wookieTestGetTestObjWithFilledData() : TransferData{
 			val testTransferData = TransferData().also {
 				it.receiverAccNumber = "PL63249000050000400030900682"
 				it.receiverName = "Regina Aff"

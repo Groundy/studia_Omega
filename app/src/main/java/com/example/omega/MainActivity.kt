@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
 		startNfcOnStartIfUserWishTo()
-		PreferencesOperator.clearAuthData(this)
+		//PreferencesOperator.clearAuthData(this)
 		//val dialog = WaitingDialog(this, "Obtaining token from memory")
 		//basicTransferTabCliked()
 	}
@@ -79,7 +79,6 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 	private fun resetPermissionActivityResult(resultCode: Int, data: Intent?){
-		/*
 		if(resultCode != RESULT_OK){
 			Log.i(TagProduction, "Canceled getting authUrl")
 			return
@@ -302,8 +301,8 @@ class MainActivity : AppCompatActivity() {
 				if(ok)
 					ActivityStarter.startRBlikCodeCreatorActivity(this@MainActivity)
 				else{
-					//todo kipeko poprawić
-					Log.e(TagProduction, "Nie można otworzyć okna generowania kodów, brak możliwości pobrania tokenu")
+					Log.e(TagProduction, "[generateRBlickCodeClicked/${this@MainActivity.javaClass.name}] Nie można otworzyć historii rachunek, brak możliwości pobrania tokenu")
+					dialog.hide()
 				}
 			}
 		}

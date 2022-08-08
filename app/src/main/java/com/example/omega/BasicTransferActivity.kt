@@ -42,20 +42,18 @@ class BasicTransferActivity : AppCompatActivity() {
 			val tokenObtained = getToken()
 			if(!tokenObtained){
 				withContext(Main){
-					dialog.hide()
+					dialog.hide()	//todo info for user
 				}
-				//todo info
-				return@launch
+				return@launch//todo maybe finish act
 			}
 
 			dialog.changeText(this@BasicTransferActivity, R.string.POPUP_getAccountsDetails)
 			val spinnerAdapter = getListOfAccountsForSpinner()
 			if(spinnerAdapter == null){
 				withContext(Main){
-					dialog.hide()
+					dialog.hide()		//todo info
 				}
-				//todo info
-				return@launch
+				return@launch//todo maybe finish act
 			}
 			withContext(Main){
 				dialog.hide()
@@ -202,7 +200,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		return floor(balanceAfterTransfer * 100) / 100 //trim decimal after 2 digits
 	}
 	private suspend fun getListOfAccountsForSpinner() : SpinnerAdapter?{
-		val errorBase = "[fillListOfAccounts/${this.javaClass.name}]"
+		val errorBase = "[getListOfAccountsForSpinner/${this.javaClass.name}]"
 
 		if(!tokenCpy.fillTokenAccountsWithBankDetails(this)){
 			Log.e(TagProduction, "$errorBase token cant obtain accounts Details")

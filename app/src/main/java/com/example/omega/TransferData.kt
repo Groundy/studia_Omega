@@ -33,7 +33,7 @@ class TransferData() {
 	var description : String? = null
 	var amount : Double? = null
 	var currency : String? = null
-	var executionDate : String? = null
+	var executionDate : String? = OmegaTime.getDate()
 
 	constructor(jsonObj : JSONObject) : this(){
 		try {
@@ -118,7 +118,7 @@ class TransferData() {
 	override fun toString() : String{
 		return toJsonObject().toString()
 	}
-	private fun toJsonObject() : JSONObject{
+	fun toJsonObject() : JSONObject{
 		return JSONObject()
 			.put(TransferDataFields.SenderAccNumber.text, senderAccNumber?: String())
 			.put(TransferDataFields.SenderAccName.text, senderAccName?: String())

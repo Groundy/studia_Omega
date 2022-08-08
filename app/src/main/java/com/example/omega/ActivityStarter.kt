@@ -76,12 +76,12 @@ class ActivityStarter {
 			resultIntent.putExtra(textFieldName,textToDisplay)
 			activity.startActivity(resultIntent)
 		}
-		fun startTransferSummaryActivity(activity: Activity, serializedTransferDataObj: String){
+		fun startTransferSummaryActivity(activity: Activity, transferData: TransferData){
 			val serializedObjField = activity.getString(R.string.TransferSummary_COM_serializedData)
 			val resultCode = activity.resources.getInteger(R.integer.ACT_RETCODE_TRANSFER_SUMMARY)
 
 			val resultIntent = Intent(activity, TransferSummary::class.java)
-			resultIntent.putExtra(serializedObjField,serializedTransferDataObj)
+			resultIntent.putExtra(serializedObjField,transferData.toString())
 			activity.startActivityForResult(resultIntent, resultCode)
 		}
 		fun startAuthActivity(context : Activity, description : String?, forcedMethodeCode : Int?){
