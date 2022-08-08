@@ -11,6 +11,7 @@ import android.view.View
 import kotlin.math.floor
 import android.widget.*
 import com.example.omega.Utilities.Companion.TagProduction
+import kotlinx.android.synthetic.main.account_history_filters.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -49,6 +50,7 @@ class BasicTransferActivity : AppCompatActivity() {
 
 			dialog.changeText(this@BasicTransferActivity, R.string.POPUP_getAccountsDetails)
 			val spinnerAdapter = getListOfAccountsForSpinner()
+
 			if(spinnerAdapter == null){
 				withContext(Main){
 					dialog.hide()		//todo info
@@ -58,7 +60,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			withContext(Main){
 				dialog.hide()
 				spinner.adapter = spinnerAdapter
-				wookieTestFillTmpWidgets()
+				fillElementsFromIntentDataIfExists()
 			}
 		}
 
@@ -204,16 +206,20 @@ class BasicTransferActivity : AppCompatActivity() {
 
 		if(!tokenCpy.fillTokenAccountsWithBankDetails(this)){
 			Log.e(TagProduction, "$errorBase token cant obtain accounts Details")
-			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
-			finishThisActivityWithError(errorCodeTextToDisplay)
+			withContext(Main){
+				val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
+				finishThisActivityWithError(errorCodeTextToDisplay)
+			}
 			return null
 		}
 
 		val listOfAccountsFromToken = tokenCpy.getListOfAccountsNumbersToDisplay()
 		if(listOfAccountsFromToken.isNullOrEmpty()){
 			Log.e(TagProduction, "$errorBase token return null or empty account list")
-			val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
-			finishThisActivityWithError(errorCodeTextToDisplay)
+			withContext(Main){
+				val errorCodeTextToDisplay = getString(R.string.UserMsg_basicTransfer_error_reciving_acc_balance)
+				finishThisActivityWithError(errorCodeTextToDisplay)
+			}
 			return null
 		}
 
@@ -305,15 +311,40 @@ class BasicTransferActivity : AppCompatActivity() {
 			receiverAccNbrDigitsHint.text = textToSet
 		}
 	}
-	private fun wookieTestFillTmpWidgets(){
-		//currentPaymentAccount = Utilities.wookieTestGetTestPaymentAccountForPaymentAct()
-		receiverNumberEditText.text = Utilities.strToEditable("09124026981111001066212622")//mj
-		amountEditText.text =  Utilities.strToEditable("1.23")
-		receiverNameEditText.text = Utilities.strToEditable("Ciocia Zosia")
-		transferTitle.text = Utilities.strToEditable("Zwrot za paczkę")
+	private fun fillElementsFromIntentDataIfExists(){
+		val fieldName = this.getString(R.string.ACT_COM_BASIC_TRANS_INTENT_FIELDNAME)
+		val transferDataSerialized = try {
+			intent.getStringExtra(fieldName)
+		}catch (e : Exception){
+			null
+		}
+		val startedFromCode = transferDataSerialized != null
+		if(startedFromCode){
+			val transferData = try {
+				TransferData(transferDataSerialized!!)
+			}catch (e : Exception){
+				Log.e(TagProduction, "[fillElementsFromIntentDataIfExists/${this.javaClass.name}] error in recreating TransferData Obj from str from intent")
+				null
+			} ?: return
+			receiverNumberEditText.text =  Utilities.strToEditable(transferData.receiverAccNumber)
+			amountEditText.text = Utilities.strToEditable(transferData.amount.toString())
+			receiverNameEditText.text = Utilities.strToEditable(transferData.receiverName)
+			transferTitle.text = Utilities.strToEditable(transferData.description)
 
+			receiverNumberEditText.isFocusable = false
+			amountEditText.isFocusable = false
+			receiverNameEditText.isFocusable = false
+			transferTitle.isFocusable = false
+		}
+		else{
+			//todo tmp
+			//currentPaymentAccount = Utilities.wookieTestGetTestPaymentAccountForPaymentAct()
+			receiverNumberEditText.text = Utilities.strToEditable("09124026981111001066212622")//mj
+			amountEditText.text =  Utilities.strToEditable("1.23")
+			receiverNameEditText.text = Utilities.strToEditable("Ciocia Zosia")
+			transferTitle.text = Utilities.strToEditable("Zwrot za paczkę")
+		}
 	}
-
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 		if(resultCode != RESULT_OK)

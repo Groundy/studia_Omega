@@ -76,7 +76,6 @@ class CodeServerApi {
 			val request = getInternalRequest(GateWay.Get, body)
 			return try {
 				val response = OkHttpClient().newCall(request).execute()
-				val t = code + 1
 				val responseJson = JSONObject(response.body!!.string())
 				val success = responseJson.get(Fields.Status.text) == Fields.Ok.text
 				if(!success){

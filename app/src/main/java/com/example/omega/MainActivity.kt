@@ -31,12 +31,9 @@ import com.karumi.dexter.listener.single.PermissionListener
 import com.example.omega.Utilities.Companion.TagProduction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.omega.BankLoginWebPageActivity.Companion.WebActivtyRedirect
-import com.example.omega.Utilities.Companion.wookieTestGetTestObjWithFilledData
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import okhttp3.OkHttpClient
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 	private var nfcCapturingIsOn = false
@@ -273,7 +270,7 @@ class MainActivity : AppCompatActivity() {
 			withContext(Main){
 				if(ok){
 					dialog.hide()
-					ActivityStarter.startTransferActivityFromMenu(this@MainActivity)
+					ActivityStarter.startTransferActivity(this@MainActivity)
 				}
 				else{
 					dialog.hide()
@@ -357,7 +354,7 @@ class MainActivity : AppCompatActivity() {
 			withContext(Main){
 				dialog.hide()
 				if(transferData!=null)
-					ActivityStarter.startTransferSummaryActivity(this@MainActivity, transferData)
+					ActivityStarter.startTransferActivity(this@MainActivity, transferData)
 				else
 					;//todo
 			}

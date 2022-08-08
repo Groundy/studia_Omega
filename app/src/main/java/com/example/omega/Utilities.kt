@@ -48,7 +48,11 @@ class Utilities {
 			val md = MessageDigest.getInstance("MD5")
 			return BigInteger(1, md.digest(inputStr.toByteArray())).toString(16).padStart(32, '0')
 		}
-		fun strToEditable(text: String): Editable {
+		fun strToEditable(text: String?): Editable {
+			if(text.isNullOrEmpty()){
+				Log.e(TagProduction,"[strToEditable/${this.javaClass.name}] null or empty string passed")
+				return Editable.Factory.getInstance().newEditable(String())
+			}
 			return Editable.Factory.getInstance().newEditable(text)
 		}
 		fun wookieTestGetTestObjWithFilledData() : TransferData{

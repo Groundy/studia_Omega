@@ -58,11 +58,16 @@ class ActivityStarter {
 			val settingsActivityIntent = Intent(callerActivity, SettingsActivity::class.java)
 			callerActivity.startActivity(settingsActivityIntent)
 		}
-		fun startTransferActivityFromMenu(activity: Activity){
-			val retCode = activity.resources.getInteger(R.integer.ACT_RETCODE_BASIC_TRANSFER_ACT)
+		fun startTransferActivity(callerActivity: Activity, transferData: TransferData? = null){
+			val retCode = callerActivity.resources.getInteger(R.integer.ACT_RETCODE_BASIC_TRANSFER_ACT)
+			val transferIntent = Intent(callerActivity, BasicTransferActivity::class.java)
+			if(transferData!=null){
+				val serializedTransferData = transferData.toString()
+				val fieldName = callerActivity.resources.getString(R.string.ACT_COM_BASIC_TRANS_INTENT_FIELDNAME)
+				transferIntent.putExtra(fieldName, serializedTransferData)
+			}
 
-			val transferIntent = Intent(activity, BasicTransferActivity::class.java)
-			activity.startActivityForResult(transferIntent, retCode)
+			callerActivity.startActivityForResult(transferIntent, retCode)
 		}
 		fun startRBlikCodeCreatorActivity(callerActivity: Activity){
 			val rblikCodeCreatorIntent = Intent(callerActivity, RBLIKCodeCreator::class.java)
