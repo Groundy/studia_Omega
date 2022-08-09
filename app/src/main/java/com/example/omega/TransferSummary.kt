@@ -1,6 +1,7 @@
 package com.example.omega
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -17,18 +18,33 @@ class TransferSummary : AppCompatActivity() {
 		setUpGUI()
 	}
 	private fun setUpGUI() {
-		val transferAmountText = "${transferData.amount} ${transferData.currency}"
-		findViewById<TextView>(R.id.transferSummary_amount).text = transferAmountText
-		findViewById<TextView>(R.id.transferSummary_receAcc).text = "${transferData.receiverAccNumber}"
-		findViewById<TextView>(R.id.transferSummary_receName).text = "${transferData.receiverName}"
-		findViewById<TextView>(R.id.transferSummary_senderAcc).text = "${transferData.senderAccNumber}"
-		findViewById<TextView>(R.id.transferSummary_title).text = "${transferData.description}"
+		with(findViewById<TextView>(R.id.transferSummary_amount)){
+			val transferAmountText = "${transferData.amount} ${transferData.currency}"
+			text = transferAmountText
+			setTextColor(Color.GRAY)
+		}
+		with(findViewById<TextView>(R.id.transferSummary_receAcc)){
+			text = "${transferData.receiverAccNumber}"
+			setTextColor(Color.GRAY)
+		}
+		with(findViewById<TextView>(R.id.transferSummary_receName)){
+			text = "${transferData.receiverName}"
+			setTextColor(Color.GRAY)
+		}
+		with(findViewById<TextView>(R.id.transferSummary_senderAcc)){
+			text = "${transferData.senderAccNumber}"
+			setTextColor(Color.GRAY)
+		}
+		with(findViewById<TextView>(R.id.transferSummary_title)){
+			text = "${transferData.description}"
+			setTextColor(Color.GRAY)
+		}
 
 		findViewById<Button>(R.id.TransferSummary_cancel_Button).setOnClickListener{
 			finish()
 		}
 		findViewById<Button>(R.id.TransferSummary_auth_Button).setOnClickListener{
-			val description  = transferData.toDisplayString()
+			val description  = "${transferData.amount.toString()} ${transferData.currency}"
 			ActivityStarter.startAuthActivity(this, description, null)
 		}
 	}

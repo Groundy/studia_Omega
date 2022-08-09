@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity() {
 	}
 	private fun fingerAuthActivityResult(resultCode: Int, data: Intent?){
 		if(resultCode == RESULT_OK){
-			Utilities.showToast(this, "Auth ok!")
+			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_OK)
 			return
 		}
 
