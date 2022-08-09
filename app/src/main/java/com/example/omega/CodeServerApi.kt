@@ -70,7 +70,7 @@ class CodeServerApi {
 				null
 			}
 		}
-		suspend fun getCodeData(callerActivity: Activity, code: Int) : TransferData?{
+		suspend fun getCodeData(callerActivity: Activity, code: Int, ) : TransferData?{
 			val body = JSONObject()
 				.put(Fields.Code.text, code)
 			val request = getInternalRequest(GateWay.Get, body)
@@ -81,8 +81,8 @@ class CodeServerApi {
 				if(!success){
 					val errorMsg = responseJson.getString(Fields.ErrorMsg.text)
 					withContext(Main){
-						Utilities.showToast(callerActivity, errorMsg)
-						Log.e(Utilities.TagProduction, "[getCodeData/CodeServerApi}] $errorMsg")
+						ActivityStarter.startOperationResultActivity(callerActivity, errorMsg)
+						Log.e(Utilities.TagProduction, "[getCodeData/CodeServerApi] $errorMsg")
 					}
 					return null
 				}

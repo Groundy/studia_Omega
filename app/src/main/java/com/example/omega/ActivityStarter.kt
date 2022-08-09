@@ -73,12 +73,19 @@ class ActivityStarter {
 			val rblikCodeCreatorIntent = Intent(callerActivity, RBLIKCodeCreator::class.java)
 			callerActivity.startActivity(rblikCodeCreatorIntent)
 		}
-		fun startOperationResultActivity(callerActivity: Activity, textIdToDisplay: Int){
-			val textToDisplay = callerActivity.resources.getString(textIdToDisplay)
+		fun startOperationResultActivity(callerActivity: Activity, textToDisplayId: Int){
+			val textToDisplay = callerActivity.resources.getString(textToDisplayId)
 			val textFieldName = callerActivity.resources.getString(R.string.ACT_COM_RESULT_TEXT_FIELD_NAME)
 
 			val resultIntent = Intent(callerActivity, ResultActivity::class.java)
 			resultIntent.putExtra(textFieldName,textToDisplay)
+			callerActivity.startActivity(resultIntent)
+		}
+		fun startOperationResultActivity(callerActivity: Activity, textIdToDisplay: String){
+			val textFieldName = callerActivity.resources.getString(R.string.ACT_COM_RESULT_TEXT_FIELD_NAME)
+
+			val resultIntent = Intent(callerActivity, ResultActivity::class.java)
+			resultIntent.putExtra(textFieldName,textIdToDisplay)
 			callerActivity.startActivity(resultIntent)
 		}
 		fun startTransferSummaryActivity(callerActivity: Activity, transferData: TransferData){

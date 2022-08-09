@@ -354,8 +354,6 @@ class MainActivity : AppCompatActivity() {
 				dialog.hide()
 				if(transferData!=null)
 					ActivityStarter.startTransferActivity(this@MainActivity, transferData)
-				else
-					;//todo
 			}
 		}
 	}
