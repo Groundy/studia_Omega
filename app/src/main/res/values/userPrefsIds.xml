@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<bool name="PREF_turnNfcOnAppStart">false</bool>
+	<bool name="PREF_skipSummaryWindows">false</bool>
 	<string name="PREF_hashPin">HashPinField</string>
 	<integer name="PREF_preferedAuthMethode">0</integer> <!--0-PIN, 1-finger-->
 

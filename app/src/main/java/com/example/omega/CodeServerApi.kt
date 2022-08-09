@@ -57,15 +57,24 @@ class CodeServerApi {
 				val response = OkHttpClient().newCall(request).execute()
 				val resBodyStr = response.body?.string()
 				val responseJson = JSONObject(resBodyStr)
+				val success = responseJson.get(Fields.Status.text) == Fields.Ok.text
+				if(!success){
+					val errorMsg = responseJson.getString(Fields.ErrorMsg.text)
+					withContext(Main){
+						ActivityStarter.startOperationResultActivity(callerActivity, errorMsg)
+						Log.e(Utilities.TagProduction, "[setCode/CodeServerApi] $errorMsg")//todo to file
+					}
+					return null
+				}
+
 				val expTimeStamp = responseJson.getString(Fields.ExpirationTime.text)
 				val code = responseJson.getInt(Fields.Code.text)
 				val okResponse = ServerSetCodeResponse(code, expTimeStamp)
 				okResponse
 			}catch (e : Exception){
 				Log.e(Utilities.TagProduction, "[setCode/${this.javaClass.name}] error in obtaing code from azure app e=[$e]")
-				val userMsg = "Server nieosiągalny"//todo
 				withContext(Main){
-					Utilities.showToast(callerActivity, userMsg)
+					ActivityStarter.startOperationResultActivity(callerActivity, "Serwer nieosiągalny")//todo to file
 				}
 				null
 			}
@@ -94,9 +103,8 @@ class CodeServerApi {
 				transferData
 			}catch (e : Exception){
 				Log.e(Utilities.TagProduction, "[getCodeData/CodeServerApi] error in obtaing code from azure app e=[$e]")
-				val userMsg = "Server nieosiągalny"//todo
 				withContext(Main){
-					Utilities.showToast(callerActivity, userMsg)
+					ActivityStarter.startOperationResultActivity(callerActivity, "Serwer nieosiągalny")
 				}
 				null
 			}

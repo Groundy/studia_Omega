@@ -10,53 +10,60 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.dialog_select_auth_methode.*
-import com.example.omega.Utilities.Companion.TagProduction
 
 
 class SettingsActivity : AppCompatActivity() {
+	@SuppressLint("UseSwitchCompatOrMaterialCode")
+	private lateinit var nfcSwitch: Switch
+	@SuppressLint("UseSwitchCompatOrMaterialCode")
+	private lateinit var skipSummarySwith: Switch
+	private lateinit var selectAuthMethodeField : TextView
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_settings)
 		fillGuiSettingsWithSavedState()
 		addListenersToGuiElements()
 	}
+
+
 	override fun onBackPressed() {
 		super.onBackPressed()
 		saveResults()
+		finish()
 	}
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
-		when(requestCode){
-			resources.getInteger(R.integer.ACT_RETCODE_PIN_CHANGE) ->{
-				if(resultCode == RESULT_OK || data == null)
-					return
+		if(requestCode == resources.getInteger(R.integer.ACT_RETCODE_PIN_CHANGE) && resultCode == RESULT_OK && data != null)
+			return
 
-				val resetPinFieldName = resources.getString(R.string.ACT_COM_DIALOG_ResetPin_FIELDNAME)
-				val resetPin = try {
-					data.extras!!.getBoolean(resetPinFieldName)
-				}catch (e : Exception){
-					false
-				}
-				if(!resetPin)
-					return
-
-				PreferencesOperator.clearPreferences(this, R.string.PREF_hashPin)
-				PreferencesOperator.clearAuthData(this)
-				ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
-			}
+		val resetPinFieldName = resources.getString(R.string.ACT_COM_DIALOG_ResetPin_FIELDNAME)
+		val resetPin = try {
+			data!!.extras!!.getBoolean(resetPinFieldName)
+		}catch (e : Exception){
+			false
 		}
+
+		if(!resetPin)
+			return
+
+		PreferencesOperator.clearPreferences(this, R.string.PREF_hashPin)
+		PreferencesOperator.clearAuthData(this)
+		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 	}
 
-	@SuppressLint("UseSwitchCompatOrMaterialCode")
+
 	private fun fillGuiSettingsWithSavedState() {
+		nfcSwitch = findViewById(R.id.SettingsAct_turnOnNFCWhenAppStartsSwitch)
+		skipSummarySwith = findViewById(R.id.SettingsAct_skipTransSummarySwitch)
+		selectAuthMethodeField = findViewById(R.id.selectAuthMethodeTextView)
+
 		val phoneHasNfc = NfcAdapter.getDefaultAdapter(this) != null
-		val nfcSwitch = findViewById<Switch>(R.id.turnOnNFCWhenAppStartsSwitch)
 		if(phoneHasNfc)
 			nfcSwitch.isChecked = PreferencesOperator.readPrefBool(this, R.bool.PREF_turnNfcOnAppStart)
 		else
 			nfcSwitch.isVisible = false
 
-		val selectAuthMethodeField = findViewById<TextView>(R.id.selectAuthMethodeTextView)
 		val methodeCode = PreferencesOperator.readPrefInt(this, R.integer.PREF_preferedAuthMethode)
 		val methodeName = when(methodeCode){
 			1->getString(R.string.Settings_GUI_selectAuthMethodeTextFinger)
@@ -65,14 +72,16 @@ class SettingsActivity : AppCompatActivity() {
 
 		val textToSetOnSelectAuthMethode = getString(R.string.Settings_GUI_selectAuthMethodeTextBase) + methodeName
 		selectAuthMethodeField.text = textToSetOnSelectAuthMethode
+
+		val skipSummarySwitchStateToSet = PreferencesOperator.readPrefBool(this, R.bool.PREF_skipSummaryWindows)
+		skipSummarySwith.isChecked = skipSummarySwitchStateToSet
+		
 	}
-	@SuppressLint("UseSwitchCompatOrMaterialCode")
 	private fun saveResults() {
 		val phoneHasNfc = NfcAdapter.getDefaultAdapter(this) != null
-		if(phoneHasNfc){
-			val nfcSwitch = findViewById<Switch>(R.id.turnOnNFCWhenAppStartsSwitch)
+		if(phoneHasNfc)
 			PreferencesOperator.savePref(this, R.bool.PREF_turnNfcOnAppStart, nfcSwitch.isChecked)
-		}
+		PreferencesOperator.savePref(this, R.bool.PREF_skipSummaryWindows, skipSummarySwith.isChecked)
 	}
 	private fun showSelectAuthMethodeDialog(){
 		val dialog = Dialog(this)

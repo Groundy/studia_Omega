@@ -95,15 +95,11 @@ class RBLIKCodeCreator : AppCompatActivity() {
 
 		val dialog = WaitingDialog(this, R.string.POPUP_getCodeFromAzureService)
 		CoroutineScope(IO).launch {
-			//val responseData : ServerSetCodeResponse? = CodeServerApi.setCode(this@RBLIKCodeCreator, transferData)
-			val responseData = ServerSetCodeResponse(123456, OmegaTime.getCurrentTime(10))//todo tmp
+			val responseData : ServerSetCodeResponse? = CodeServerApi.setCode(this@RBLIKCodeCreator, transferData)
+			//val responseData = ServerSetCodeResponse(123456, OmegaTime.getCurrentTime(10))//todo tmp
 			withContext(Main){
 				dialog.hide()
-				if(responseData == null){
-					ActivityStarter.startOperationResultActivity(this@RBLIKCodeCreator, R.string.Result_GUI_SERVER_PROBLEM)
-					Log.e(TagProduction,"[getCodeFromServer/${this.javaClass.name}] server returned null or wrong fromat code for QR generator")
-				}
-				else
+				if(responseData != null)
 					ActivityStarter.startDisplayActivity(this@RBLIKCodeCreator, responseData!!)
 			}
 		}
@@ -171,7 +167,6 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		}
 
 		return true
-
 	}
 
 	private fun getDataForServer() : TransferData? {
@@ -190,8 +185,8 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	}
 
 	private fun wookieTestFillWidgets(){
-		amountField.text = Editable.Factory.getInstance().newEditable("10.0")
-		titleField.text = Editable.Factory.getInstance().newEditable("xyz")
+		//amountField.text = Editable.Factory.getInstance().newEditable("10.0")
+		//titleField.text = Editable.Factory.getInstance().newEditable("xyz")
 	}
 	private fun getTokenCpy() : Boolean{
 		val tokenTmp = PreferencesOperator.getToken(this)

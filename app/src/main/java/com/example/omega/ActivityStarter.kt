@@ -96,7 +96,7 @@ class ActivityStarter {
 			resultIntent.putExtra(serializedObjField,transferData.toString())
 			callerActivity.startActivityForResult(resultIntent, resultCode)
 		}
-		fun startAuthActivity(context : Activity, description : String?, forcedMethodeCode : Int?){
+		fun startAuthActivity(context : Activity, description : String?, forcedMethodeCode : Int? = null){
 			val fingerCode = 1
 
 			var preferredMethodeCode =

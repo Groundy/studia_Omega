@@ -78,8 +78,9 @@ class ScanFingerActivity : AppCompatActivity() {
 		val errorCodeFieldName = resources.getString(R.string.ACT_COM_FINGER_FIELD_NAME)
 		val descriptionFieldName = getString(R.string.ACT_COM_TRANSACTION_DETAILS_FIELD_NAME)
 		val output = Intent()
-		output.putExtra(descriptionFieldName, getAdditionalDescription())
-		output.putExtra(errorCodeFieldName, errorCode)
+			.putExtra(descriptionFieldName, getAdditionalDescription())
+			.putExtra(errorCodeFieldName, errorCode)
+
 		if(result)
 			setResult(RESULT_OK, output)
 		else

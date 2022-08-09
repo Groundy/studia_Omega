@@ -63,7 +63,6 @@ class BasicTransferActivity : AppCompatActivity() {
 				fillElementsFromIntentDataIfExists()
 			}
 		}
-
 	}
 
 	private fun setListenersToGuiElements(){
@@ -166,13 +165,12 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(amountInserted == null || amountInserted == 0.0)
 			return getString(R.string.UserMsg_basicTransfer_Amount_zero)
 
-		val accountNumberObj = AccountNumber(receiverNumberEditText.text.toString())
-
-		val recipientAccNumberLengthOk = accountNumberObj.lengthOK()
+		val recipientAccNumbOjb = AccountNumber(receiverNumberEditText.text.toString())
+		val recipientAccNumberLengthOk = recipientAccNumbOjb.lengthOK()
 		if(!recipientAccNumberLengthOk)
 			return resources.getString(R.string.UserMsg_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER)
 
-		val formatOk = accountNumberObj.checkIfIsProperIbanFormar()
+		val formatOk = recipientAccNumbOjb.checkIfIsProperIbanFormar()
 		if(!formatOk)
 			return resources.getString(R.string.UserMsg_basicTransfer_NOT_IBAN_FORMAT)
 
@@ -183,7 +181,6 @@ class BasicTransferActivity : AppCompatActivity() {
 		val titleCorrect = transferTitle.text.length in 3..50
 		if(!titleCorrect)
 			return resources.getString(R.string.UserMsg_basicTransfer_wrong_title)
-
 		return null
 	}
 	private fun getAccountBalanceAfterTransfer() : Double?{
@@ -253,15 +250,11 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(currentPaymentAccount==null)
 			return
 
-		val transferData = TransferData().also {
-			it.receiverAccNumber = "PL".plus(receiverNumberEditText.text.toString()) //todo
-			it.receiverName = receiverNameEditText.text.toString()
-			it.senderAccNumber = currentPaymentAccount!!.getAccNumber()
-			it.senderAccName = currentPaymentAccount!!.getOwnerName()
-			it.amount = amountEditText.text.toString().toDouble()
-			it.description = transferTitle.text.toString()
-			it.currency = currentPaymentAccount!!.getCurrencyOfAccount()
-			it.executionDate = OmegaTime.getDate()
+		val transferData = getTransferDataFromFields()
+		if(transferData == null){
+			val errorStr = getString(R.string.UserMsg_basicTransfer_unkownError)
+			finishThisActivityWithError(errorStr)
+			return
 		}
 
 		val transferDataSerialized = transferData.toString()
@@ -271,7 +264,13 @@ class BasicTransferActivity : AppCompatActivity() {
 			return
 		}
 
-		ActivityStarter.startTransferSummaryActivity(this, transferData)
+		val showSummary = PreferencesOperator.readPrefBool(this, R.bool.PREF_skipSummaryWindows)
+		if(showSummary)
+			ActivityStarter.startTransferSummaryActivity(this, transferData)
+		else{
+			val descripitionToShow = "${transferData.amount.toString()} ${transferData.currency}"
+			ActivityStarter.startAuthActivity(this, descripitionToShow)
+		}
 	}
 	private fun getToken() : Boolean{
 		val tokenTmp = PreferencesOperator.getToken(this)
@@ -361,25 +360,21 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(resultCode != RESULT_OK)
 			return
 
-		val fieldName = resources.getString(R.string.ACT_COM_MANY_RetTransferData_FIELDNAME)
-		val transferDataStr = try {
-			data!!.extras!!.getString(fieldName)
-		}catch (e : Exception){
-			//todo give msg
-			null
-		}
-		if(transferDataStr == null){
+
+		val transferData = getTransferDataFromFields()
+		val serializedTransferData = transferData.toString()
+		if(serializedTransferData.isNullOrEmpty()) {
 			setResult(RESULT_CANCELED)
 			finish()
 			return
 		}
 
+		val fieldName = resources.getString(R.string.ACT_COM_MANY_RetTransferData_FIELDNAME)
 		val newIntent = Intent()
-			.putExtra(fieldName, transferDataStr)
+			.putExtra(fieldName, serializedTransferData)
 
 		setResult(RESULT_OK, newIntent)
 		finish()
-
 	}
 	private fun wookieTestFillWidgetsWithTestData(){
 		//todo tmp tymc
@@ -388,5 +383,26 @@ class BasicTransferActivity : AppCompatActivity() {
 		amountEditText.text =  Utilities.strToEditable("1.23")
 		receiverNameEditText.text = Utilities.strToEditable("Ciocia Zosia")
 		transferTitle.text = Utilities.strToEditable("Zwrot za paczkę")
+	}
+	private fun getTransferDataFromFields() : TransferData?{
+		return try {
+			val transferData = TransferData()
+			with(transferData){
+				val recipientAccNumberObj = AccountNumber(receiverNumberEditText.text.toString())
+				receiverAccNumber = recipientAccNumberObj.toStringWithCountry()
+				receiverName = receiverNameEditText.text.toString()
+				senderAccNumber = currentPaymentAccount!!.getAccNumber()
+				senderAccName = currentPaymentAccount!!.getOwnerName()
+				amount = amountEditText.text.toString().toDouble()
+				description = transferTitle.text.toString()
+				currency = currentPaymentAccount!!.getCurrencyOfAccount()
+				executionDate = OmegaTime.getDate()
+			}
+			transferData
+		}catch (e : Exception){
+			null
+			//todo
+		}
+
 	}
 }

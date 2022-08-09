@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:background="@color/colorPrimary"
@@ -9,13 +10,27 @@
 		android:text="@string/Settings_GUI_turnNfcOnAppStartText"
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/DIM_field_height_settings"
-		android:id="@+id/turnOnNFCWhenAppStartsSwitch"
+		android:id="@+id/SettingsAct_turnOnNFCWhenAppStartsSwitch"
 		android:minHeight="50dp"
 		android:showText="false"
 		android:textSize="@dimen/DIM_font_size_settings"
 		android:height="@dimen/DIM_field_height_settings"
 		android:textColor="@color/black"
-		android:gravity="center_vertical" />
+		android:gravity="center_vertical"
+		tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+	<Switch
+		android:id="@+id/SettingsAct_skipTransSummarySwitch"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/DIM_field_height_settings"
+		android:height="@dimen/DIM_field_height_settings"
+		android:gravity="center_vertical"
+		android:minHeight="50dp"
+		android:showText="false"
+		android:text="@string/Settings_GUI_skipTransSummaryText"
+		android:textColor="@color/black"
+		android:textSize="@dimen/DIM_font_size_settings"
+		tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 	<View
 		android:layout_width="match_parent"

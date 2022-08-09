@@ -55,6 +55,7 @@
 	<string name="Settings_GUI_selectAuthMethodeTextBase">"Preferowana metoda autoryzacji: "</string>
 	<string name="Settings_GUI_preferredAuthMethode">Preferowana metoda autoryzacji: </string>
 	<string name="Settings_GUI_turnNfcOnAppStartText">Włącz NFC po starcie aplikacji</string>
+	<string name="Settings_GUI_skipTransSummaryText">Pomijaj okno podsumowania przelewu</string>
 	<string name="Settings_GUI_changePinText">Zmień pin</string>
 
 	<!-- result activity -->
