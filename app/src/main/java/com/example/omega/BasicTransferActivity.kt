@@ -321,31 +321,39 @@ class BasicTransferActivity : AppCompatActivity() {
 			null
 		}
 		val startedFromCode = transferDataSerialized != null
-		if(startedFromCode){
-			val transferData = try {
-				TransferData(transferDataSerialized!!)
-			}catch (e : Exception){
-				Log.e(TagProduction, "[fillElementsFromIntentDataIfExists/${this.javaClass.name}] error in recreating TransferData Obj from str from intent")
-				null
-			} ?: return
-			val recieverAccNumberStr = AccountNumber(transferData.receiverAccNumber!!).toStringWithoutCountry()
-			receiverNumberEditText.text =  Utilities.strToEditable(recieverAccNumberStr)
-			amountEditText.text = Utilities.strToEditable(transferData.amount.toString())
-			receiverNameEditText.text = Utilities.strToEditable(transferData.receiverName)
-			transferTitle.text = Utilities.strToEditable(transferData.description)
-
-			receiverNumberEditText.isFocusable = false
-			amountEditText.isFocusable = false
-			receiverNameEditText.isFocusable = false
-			transferTitle.isFocusable = false
+		if(!startedFromCode){
+			wookieTestFillWidgetsWithTestData()//todo tmp tymczasowe
+			return
 		}
-		else{
-			//todo tmp
-			//currentPaymentAccount = Utilities.wookieTestGetTestPaymentAccountForPaymentAct()
-			receiverNumberEditText.text = Utilities.strToEditable("09124026981111001066212622")//mj
-			amountEditText.text =  Utilities.strToEditable("1.23")
-			receiverNameEditText.text = Utilities.strToEditable("Ciocia Zosia")
-			transferTitle.text = Utilities.strToEditable("Zwrot za paczkę")
+
+
+		val transferData = try {
+			TransferData(transferDataSerialized!!)
+		}catch (e : Exception){
+			Log.e(TagProduction, "[fillElementsFromIntentDataIfExists/${this.javaClass.name}] error in recreating TransferData Obj from str from intent")
+			null
+		} ?: return
+
+		with(receiverNumberEditText){
+			val recieverAccNumberStr = AccountNumber(transferData.receiverAccNumber!!).toStringWithoutCountry()
+			text = Utilities.strToEditable(recieverAccNumberStr)
+			isFocusable = false
+			setTextColor(Color.GRAY)
+		}
+		with(amountEditText){
+			text = Utilities.strToEditable(transferData.amount.toString())
+			isFocusable = false
+			setTextColor(Color.GRAY)
+		}
+		with(receiverNameEditText){
+			text = Utilities.strToEditable(transferData.receiverName)
+			isFocusable = false
+			setTextColor(Color.GRAY)
+		}
+		with(transferTitle){
+			text = Utilities.strToEditable(transferData.description)
+			isFocusable = false
+			setTextColor(Color.GRAY)
 		}
 	}
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -372,5 +380,13 @@ class BasicTransferActivity : AppCompatActivity() {
 		setResult(RESULT_OK, newIntent)
 		finish()
 
+	}
+	private fun wookieTestFillWidgetsWithTestData(){
+		//todo tmp tymc
+		//currentPaymentAccount = Utilities.wookieTestGetTestPaymentAccountForPaymentAct()
+		receiverNumberEditText.text = Utilities.strToEditable("09124026981111001066212622")//mj
+		amountEditText.text =  Utilities.strToEditable("1.23")
+		receiverNameEditText.text = Utilities.strToEditable("Ciocia Zosia")
+		transferTitle.text = Utilities.strToEditable("Zwrot za paczkę")
 	}
 }
