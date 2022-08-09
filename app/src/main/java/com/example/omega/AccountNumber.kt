@@ -72,9 +72,13 @@ class AccountNumber(number : String) {
 		val formatOk = properCheckSum == checkSum.toInt()
  		return formatOk
 	}
-	override fun toString(): String {
+	fun toStringWithCountry(): String {
 		return "${country.name}$numberOnlyDigits"
 	}
+	fun toStringWithoutCountry(): String {
+		return "$numberOnlyDigits"
+	}
+
 	fun toDisplay() : String{
 		//var toRet = "${country.name}${numberWithOutCountryCode.subSequence(0,2)}"
 		var toRet = String()

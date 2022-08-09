@@ -75,7 +75,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			}
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun afterTextChanged(p0: Editable?) {
-				if(p0 != null)
+				if(!p0.isNullOrEmpty())
 					Utilities.stopUserFromPuttingMoreThan2DigitsAfterComma(
 						amountEditText,
 						previousValue,
@@ -166,13 +166,13 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(amountInserted == null || amountInserted == 0.0)
 			return getString(R.string.UserMsg_basicTransfer_Amount_zero)
 
-		val accountNumber = AccountNumber(receiverNumberEditText.text.toString())
+		val accountNumberObj = AccountNumber(receiverNumberEditText.text.toString())
 
-		val recipientAccNumberLengthOk = accountNumber.lengthOK()
+		val recipientAccNumberLengthOk = accountNumberObj.lengthOK()
 		if(!recipientAccNumberLengthOk)
 			return resources.getString(R.string.UserMsg_basicTransfer_TOO_SHORT_RECEIVER_ACC_NUMBER)
 
-		val formatOk = accountNumber.checkIfIsProperIbanFormar()
+		val formatOk = accountNumberObj.checkIfIsProperIbanFormar()
 		if(!formatOk)
 			return resources.getString(R.string.UserMsg_basicTransfer_NOT_IBAN_FORMAT)
 
@@ -291,10 +291,12 @@ class BasicTransferActivity : AppCompatActivity() {
 			val errorStr = getString(R.string.UserMsg_UNKNOWN_ERROR)
 			finishThisActivityWithError(errorStr)
 		}
-		else{
+
+		val calledByUserAction = amountEditText.isFocusable
+		if(calledByUserAction)
 			amountEditText.text = null
-			currentPaymentAccount = paymentAccountTmp
-		}
+		currentPaymentAccount = paymentAccountTmp
+		showAmountAfterTransfer()
 	}
 	private fun showDigitsLeftToHaveProperAmountOfDigits(){
 		val inputDigitsNumber = receiverNumberEditText.text.length
@@ -326,7 +328,8 @@ class BasicTransferActivity : AppCompatActivity() {
 				Log.e(TagProduction, "[fillElementsFromIntentDataIfExists/${this.javaClass.name}] error in recreating TransferData Obj from str from intent")
 				null
 			} ?: return
-			receiverNumberEditText.text =  Utilities.strToEditable(transferData.receiverAccNumber)
+			val recieverAccNumberStr = AccountNumber(transferData.receiverAccNumber!!).toStringWithoutCountry()
+			receiverNumberEditText.text =  Utilities.strToEditable(recieverAccNumberStr)
 			amountEditText.text = Utilities.strToEditable(transferData.amount.toString())
 			receiverNameEditText.text = Utilities.strToEditable(transferData.receiverName)
 			transferTitle.text = Utilities.strToEditable(transferData.description)
