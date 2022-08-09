@@ -5,6 +5,8 @@
 8.  W errorAuth dodać rozóznienie między tym gdy użytkownik chce autoryzacji za pomocą innej metody a innym błędem.
 
 //DONE
+31 Server zwraca bad request w przypadku pytań o kodu które nie istnieją
+30  Po uzyskaniu danych z kodu Rblik i wpisaniu ich do formularzy amount raz sie uzpelnia a potem wywoluje sie funkcja ktora go czysci
 28. WAŻNE dodać obsługę wprowadzenia tylko jednej cyfry w baisc trans act
 26. Dodać kasowanie odpowiednich informacji w pref po autoryzacji, loginie do banku, otrzymaniu tokenu
 25. Dodać zapisywanie publicznego IP tak aby nie robić tego zbyt często

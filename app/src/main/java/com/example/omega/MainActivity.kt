@@ -220,7 +220,7 @@ class MainActivity : AppCompatActivity() {
 			val transferDataObj = TransferData(transferDataStr!!)
 			transferDataObj
 		}catch (e : Exception){
-			Log.e(TagProduction, "[] cant obtain data transfer from intent")
+			Log.e(TagProduction, "[startSinglePaymentAuthorization/${this.javaClass.name}] cant obtain data transfer from intent")
 			null
 		}
 		if(transferData == null){
@@ -269,13 +269,12 @@ class MainActivity : AppCompatActivity() {
 			val ok = getToken(WebActivtyRedirect.PaymentCreation)
 			withContext(Main){
 				if(ok){
-					dialog.hide()
 					ActivityStarter.startTransferActivity(this@MainActivity)
+					dialog.hide()
 				}
 				else{
+					Log.w(TagProduction, "Nie można otworzyć okna płatności, brak możliwości pobrania tokenu, prwadopodobnie nastąpiło przekierowanie")
 					dialog.hide()
-					//todo kipeko poprawić
-					Log.w(TagProduction, "Nie można otworzyć okna płatności, brak możliwości pobrania tokenu")
 				}
 			}
 		}
@@ -336,7 +335,7 @@ class MainActivity : AppCompatActivity() {
 		val authOk = OpenApiAuthorize(this).runForAis(obj, dialog)
 		if(!authOk){
 			withContext(Main){
-				Utilities.showToast(this@MainActivity, "Nie udało się automatycznie pobrać tokenu.")
+				Utilities.showToast(this@MainActivity, "Nie udało się automatycznie pobrać tokenu.")//todo to file
 			}
 			dialog?.hide()
 			return false
@@ -407,6 +406,7 @@ class MainActivity : AppCompatActivity() {
 		secondBar.menu.findItem(R.id.QrScannerTab).icon = getDrawable(R.drawable.ico_qr_scanner)
 	}
 	private fun wookieTestFun(){
+
 	}
 	//NFC
 	@SuppressLint("UseCompatLoadingForDrawables")
