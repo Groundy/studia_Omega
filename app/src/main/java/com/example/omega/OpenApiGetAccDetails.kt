@@ -53,7 +53,7 @@ class OpenApiGetAccDetails(private var token: Token, private val callerActivity:
 		return true
 	}
 
-	private fun getPaymentAccDetailsRequest(accNumber: String): Request {
+	private fun getRequestForSignleAcc(accNumber: String): Request {
 		val uuidStr = ApiFunctions.getUUID()
 		val currentTimeStr = OmegaTime.getCurrentTime()
 
@@ -76,8 +76,8 @@ class OpenApiGetAccDetails(private var token: Token, private val callerActivity:
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
 		return ApiFunctions.bodyToRequest( ApiConsts.BankUrls.GetPaymentAccount, requestBodyJson, uuidStr, additionalHeaderList)
 	}
-	private fun getAccInfo(accNumber: String): Boolean {
-		val request = getPaymentAccDetailsRequest(accNumber)
+	private fun sendSingleRequest(accNumber: String): Boolean {
+		val request = getRequestForSignleAcc(accNumber)
 		val response = OkHttpClient().newCall(request).execute()
 		if (response.code != ApiConsts.ResponseCodes.OK.code) {
 			ApiFunctions.logResponseError(response, this.javaClass.name)
@@ -107,7 +107,7 @@ class OpenApiGetAccDetails(private var token: Token, private val callerActivity:
 			val boolsOfThreadsSuccessfullness = ArrayList<Boolean>()
 			for (i in accNumbers.indices) {
 				val thread = Thread {
-					val success = getAccInfo(accNumbers[i])
+					val success = sendSingleRequest(accNumbers[i])
 					boolsOfThreadsSuccessfullness.add(success)
 				}
 				listOfThreadCheckingAccInfo.add(thread)
@@ -123,4 +123,5 @@ class OpenApiGetAccDetails(private var token: Token, private val callerActivity:
 			false
 		}
 	}
+
 }
