@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="hintColor">#74807E</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="background">#E7DEBE</color>
+
+    <color name="hintColor">#74807E</color>
     <color name="errorRed">#FF0000</color>
     <color name="linkColor">#0044CC</color>
     <color name="colorPrimary">#8EC5F0</color>
     <color name="mainColor">#2196F3</color>
     <color name="colorPrimaryDark">#3F51B5</color>
     <color name="buttonTextColor">#E90C0C</color>
-
-
-    <color name="colorAccent">#9C27B0</color>
-    <color name="purple_200">#E91E63</color>
-    <color name="purple_500">#9C27B0</color>
-    <color name="purple_700">#9C27B0</color>
-    <color name="teal_200">#9C27B0</color>
-    <color name="teal_700">#9C27B0</color>
-
 </resources>
