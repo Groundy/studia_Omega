@@ -264,7 +264,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			return
 		}
 
-		val showSummary = PreferencesOperator.readPrefBool(this, R.string.PREF_skipSummaryWindows)
+		val showSummary = !PreferencesOperator.readPrefBool(this, R.string.PREF_skipSummaryWindows)
 		if(showSummary)
 			ActivityStarter.startTransferSummaryActivity(this, transferData)
 		else{
