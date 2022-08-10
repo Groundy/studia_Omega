@@ -4,16 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    style="@style/AppTheme"
     tools:context=".AccountHistroyActivity">
 
     <FrameLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/marginSizeX"
-        android:layout_marginTop="@dimen/marginSizeY"
-        android:layout_marginEnd="@dimen/marginSizeX"
-        android:layout_marginBottom="@dimen/marginSizeY"
+        style="@style/frameLayoutStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

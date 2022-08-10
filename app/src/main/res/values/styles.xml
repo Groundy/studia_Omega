@@ -2,7 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimary">#001067</item>
         <item name="colorPrimaryDark">#03A9F4</item>
         <item name="colorAccent">#03A9F4</item>
 
@@ -13,7 +13,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/buttonTextColor</item>
         <item name="android:padding">5dp</item>
         <item name="android:minWidth">100dp</item>
         <item name="android:minHeight">48dp</item>
