@@ -24,12 +24,12 @@
 
 		<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
+			android:layout_height="wrap_content"
 			android:orientation="vertical">
 
 			<ScrollView
 				android:layout_width="match_parent"
-				android:layout_height="310dp"
+				android:layout_height="wrap_content"
 				android:layout_gravity="fill_horizontal"
 				tools:ignore="SpeakableTextPresentCheck">
 
@@ -71,7 +71,7 @@
 					<LinearLayout
 						android:id="@+id/layout_Amount"
 						android:layout_width="match_parent"
-						android:layout_height="match_parent"
+						android:layout_height="wrap_content"
 						android:orientation="vertical">
 
 						<TextView
@@ -110,7 +110,7 @@
 					<LinearLayout
 						android:id="@+id/layout_ReciverNumber"
 						android:layout_width="match_parent"
-						android:layout_height="match_parent"
+						android:layout_height="wrap_content"
 						android:orientation="vertical">
 
 						<TextView
@@ -152,7 +152,7 @@
 					<LinearLayout
 						android:id="@+id/layout_Title"
 						android:layout_width="match_parent"
-						android:layout_height="match_parent"
+						android:layout_height="wrap_content"
 						android:orientation="vertical">
 
 						<TextView
@@ -186,7 +186,7 @@
 					<LinearLayout
 						android:id="@+id/layout_reciverName"
 						android:layout_width="match_parent"
-						android:layout_height="match_parent"
+						android:layout_height="wrap_content"
 						android:orientation="vertical">
 
 						<TextView
@@ -216,17 +216,18 @@
 
 					</LinearLayout>
 
+					<Button
+						android:id="@+id/RBlikCodeGenerator_goNext_button"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:text="@string/GUI_basicTransfer_goNextButtonText"
+						android:textSize="24sp"
+						tools:layout_editor_absoluteX="-193dp"
+						tools:layout_editor_absoluteY="399dp" />
+
 				</LinearLayout>
 			</ScrollView>
 
-			<Button
-				android:id="@+id/RBlikCodeGenerator_goNext_button"
-				android:layout_width="match_parent"
-				android:layout_height="@dimen/basicTransfer_buttonSize"
-				android:text="@string/GUI_basicTransfer_goNextButtonText"
-				android:textSize="24sp"
-				tools:layout_editor_absoluteX="-193dp"
-				tools:layout_editor_absoluteY="399dp" />
 		</LinearLayout>
 
 	</FrameLayout>

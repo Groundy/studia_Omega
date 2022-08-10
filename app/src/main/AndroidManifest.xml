@@ -28,7 +28,7 @@
         <activity
             android:name=".RBLIKCodeCreator"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".UserPermissionList"
             android:exported="false"
@@ -48,7 +48,7 @@
         <activity
             android:name=".BasicTransferActivity"
             android:exported="false"
-            android:windowSoftInputMode="stateAlwaysVisible" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".PinActivity"
             android:exported="false"
