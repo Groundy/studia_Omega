@@ -171,8 +171,7 @@
 
 			<Button
 				android:id="@+id/RBlikCodeGenerator_goNext_button"
-				android:layout_width="match_parent"
-				android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
+				style="@style/OmegaButtonStyle"
 				android:text="@string/GUI_RBlikCodeGenerator_goNextButtonText" />
 
 			<Space

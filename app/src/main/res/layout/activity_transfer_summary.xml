@@ -170,12 +170,12 @@
 
 						<TextView
 							android:id="@+id/transferSummary_title"
-							android:layout_width="match_parent"
+							android:layout_width="wrap_content"
 							android:layout_height="@dimen/TransferSummary_valueFieldY"
 							android:background="@drawable/main_frame"
 							android:paddingStart="7sp"
 							android:paddingEnd="7sp"
-							android:text="------------------------------------------------------------------------------------------------------"
+							android:text=""
 							android:textColor="@color/black"
 							android:textSize="@dimen/TransferSummary_dataTextSize" />
 					</LinearLayout>
@@ -230,23 +230,15 @@
 
 				<Button
 					android:id="@+id/TransferSummary_cancel_Button"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
+					style="@style/OmegaButtonStyle"
 					android:text="@string/TransferSummary_GUI_BackButtonText" />
 
 				<Button
 					android:id="@+id/TransferSummary_auth_Button"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
+					style="@style/OmegaButtonStyle"
 					android:text="@string/TransferSummary_GUI_AuthButtonText" />
 			</LinearLayout>
 
-			<Space
-				android:layout_width="match_parent"
-				android:layout_height="1000dp"
-				android:layout_weight="1" />
 		</LinearLayout>
 	</FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

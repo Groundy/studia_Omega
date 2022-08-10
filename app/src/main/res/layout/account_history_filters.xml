@@ -15,7 +15,7 @@
 		app:layout_constraintTop_toTopOf="parent">
 
 		<LinearLayout
-			android:layout_width="366dp"
+			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:layout_gravity="center_horizontal"
 			android:gravity="center_horizontal"
@@ -42,16 +42,12 @@
 
 				<Button
 					android:id="@+id/button3"
-					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_weight="0"
+					style="@style/OmegaButtonStyle"
 					android:text="-5" />
 
 				<Button
 					android:id="@+id/button"
-					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_weight="0"
+					style="@style/OmegaButtonStyle"
 					android:text="-1"
 					android:textColor="@color/black" />
 
@@ -68,16 +64,12 @@
 
 				<Button
 					android:id="@+id/button7"
-					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_weight="0"
+					style="@style/OmegaButtonStyle"
 					android:text="+1" />
 
 				<Button
 					android:id="@+id/button4"
-					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_weight="0"
+					style="@style/OmegaButtonStyle"
 					android:text="+5" />
 
 			</LinearLayout>
@@ -101,16 +93,12 @@
 
 				<Button
 					android:id="@+id/button2"
-					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
-					android:text="-5"
-					android:textColor="@color/black" />
+					style="@style/OmegaButtonStyle"
+					android:text="-5" />
 
 				<Button
 					android:id="@+id/button6"
-					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_weight="0"
+					style="@style/OmegaButtonStyle"
 					android:text="-1" />
 
 				<TextView
@@ -126,17 +114,13 @@
 
 				<Button
 					android:id="@+id/button5"
-					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_weight="0"
+					style="@style/OmegaButtonStyle"
 					android:text="+1"
 					app:layout_constraintStart_toStartOf="parent" />
 
 				<Button
 					android:id="@+id/button8"
-					android:layout_width="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_height="@dimen/AccHistFilter_buttonSize_dim"
-					android:layout_weight="0"
+					style="@style/OmegaButtonStyle"
 					android:minWidth="32dp"
 					android:text="+5" />
 
@@ -211,19 +195,13 @@
 
 				<Button
 					android:id="@+id/historyFiltersDialog_cancel_Button"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_weight="0"
-					android:text="Anuluj"
-					android:textColor="@color/black" />
+					style="@style/OmegaButtonStyle"
+					android:text="Anuluj" />
 
 				<Button
 					android:id="@+id/historyFiltersDialog_apply_Button"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_weight="0"
-					android:text="Zastosuj"
-					android:textColor="@color/black" />
+					style="@style/OmegaButtonStyle"
+					android:text="Zastosuj" />
 			</LinearLayout>
 
 		</LinearLayout>

@@ -6,4 +6,19 @@
         <item name="colorPrimaryDark">#03A9F4</item>
         <item name="colorAccent">#03A9F4</item>
     </style>
+
+    <style name="OmegaButtonStyle" parent="TextAppearance.AppCompat.Button">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:minWidth">100dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:elevation">1dp</item>
+        <item name="android:translationZ">1dp</item>
+        <item name="android:background">@drawable/rounded_corner_button</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
 </resources>

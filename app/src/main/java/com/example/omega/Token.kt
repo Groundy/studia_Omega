@@ -153,11 +153,11 @@ class Token() {
 			return false
 		return refreshIFneeded(activity)
 	}
-	suspend fun fillTokenAccountsWithBankDetails(activity: Activity) : Boolean{
 		val accountNumbers = getListOfAccountsNumbers()
 		if(accountNumbers.isNullOrEmpty())
 			return false
 
+	suspend fun fillTokenAccountsWithBankDetails(activity: Activity) : Boolean{
 		return try {
 			val successfulyObtainedAccountDetails = OpenApiGetAccDetails(this, activity).run(accountNumbers)
 			successfulyObtainedAccountDetails
@@ -244,7 +244,7 @@ class Token() {
 	fun getPriligeList() : JSONArray?{
 		return privilegeList
 	}
-	suspend fun fillHistoryToPaymentAccount(callerActivity: Activity, paymentAccountAccNumber: String) : Boolean{
+	fun fillHistoryToPaymentAccount(callerActivity: Activity, paymentAccountAccNumber: String) : Boolean{
 		val errorBasic = "[fillHistoryToPaymentAccount/${this.javaClass.name}]"
 
 		if(accounts.isNullOrEmpty()){

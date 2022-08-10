@@ -37,21 +37,13 @@
 
 			<Button
 				android:id="@+id/userPermisionList_continue_Button"
-				android:layout_width="@dimen/userPermissionList_ButtonSizeX_dim"
-				android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
-				android:layout_gravity="center_horizontal"
-				android:minWidth="48dp"
 				android:text="@string/UserPermListDialog_GUI_continueButtonText"
-				android:textSize="14sp"
-				style="?android:attr/buttonBarButtonStyle" />
+				style="@style/OmegaButtonStyle" />
 
 			<Button
 				android:id="@+id/userPermisionList_cancel_Button"
-				android:layout_width="@dimen/userPermissionList_ButtonSizeX_dim"
-				android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
 				android:text="@string/UserPermListDialog_GUI_cancelButtonText"
-				android:textSize="14sp"
-				style="?android:attr/buttonBarButtonStyle" />
+				style="@style/OmegaButtonStyle"/>
 
 		</LinearLayout>
 

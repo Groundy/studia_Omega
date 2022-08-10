@@ -218,13 +218,8 @@
 
 					<Button
 						android:id="@+id/RBlikCodeGenerator_goNext_button"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:text="@string/GUI_basicTransfer_goNextButtonText"
-						android:textSize="24sp"
-						tools:layout_editor_absoluteX="-193dp"
-						tools:layout_editor_absoluteY="399dp" />
-
+						style="@style/OmegaButtonStyle"
+						android:text="@string/GUI_basicTransfer_goNextButtonText" />
 				</LinearLayout>
 			</ScrollView>
 

@@ -21,8 +21,8 @@
 
 		<TextView
 			android:id="@+id/DialogAct_TextView"
-			android:layout_width="@dimen/DIM_CancelFingerAuthText_WIDTH"
-			android:layout_height="@dimen/DIM_CancelFingerAuthText_HEIGHT"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:gravity="center|center_vertical"
 			android:text="@string/DIALOG_GUI_DefaultMsgText"
 			android:textAlignment="center"
@@ -30,34 +30,19 @@
 			android:textSize="@dimen/DIM_CancelFingerAuthFontSize" />
 
 		<LinearLayout
-			android:layout_width="300dp"
-			android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
 			android:orientation="horizontal">
 
 			<Button
 				android:id="@+id/DialogAct_OK_Button"
-				style="?android:attr/buttonBarButtonStyle"
-				android:layout_width="@dimen/DIM_CancelFingerAuthButton_WIDTH"
-				android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT"
-				android:layout_weight="1"
-				android:gravity="center|center_vertical"
-				android:text="@string/DIALOG_GUI_YES"
-				android:textAlignment="center"
-				android:textColor="@color/mainColor"
-				android:textSize="@dimen/DIM_CancelFingerAuthFontSize" />
+				style="@style/OmegaButtonStyle"
+				android:text="@string/DIALOG_GUI_YES" />
 
 			<Button
 				android:id="@+id/DialogAct_No_Button"
-				style="?android:attr/buttonBarButtonStyle"
-				android:layout_width="@dimen/DIM_CancelFingerAuthButton_WIDTH"
-				android:layout_height="@dimen/DIM_CancelFingerAuthButton_HEIGHT"
-				android:layout_weight="1"
-				android:gravity="center_vertical"
-				android:text="@string/DIALOG_GUI_No"
-				android:textAlignment="center"
-				android:textColor="@color/mainColor"
-				android:textSize="@dimen/DIM_CancelFingerAuthFontSize"
-				tools:ignore="RtlCompat" />
+				style="@style/OmegaButtonStyle"
+				android:text="@string/DIALOG_GUI_No" />
 		</LinearLayout>
 	</LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
