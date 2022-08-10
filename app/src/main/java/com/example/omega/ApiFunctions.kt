@@ -101,7 +101,7 @@ class ApiFunctions {
 				}
 			}
 			thread.start()
-			thread.join(2 * ApiConsts.requestTimeOut)
+			thread.join(2 * ApiConsts.requestTimeOutMiliSeconds)
 			return ip
 		}
 		fun getRandomStateValue(length: Int = 13) : String{

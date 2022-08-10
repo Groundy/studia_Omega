@@ -26,7 +26,7 @@ class OpenApiGetToken(private val callerActivity: Activity, private val scope : 
 			}
 		}
 		thread.start()
-		thread.join(ApiConsts.requestTimeOut)
+		thread.join(ApiConsts.requestTimeOutMiliSeconds)
 		Log.i(TagProduction, "GetToken ended sucessfuly? $success")
 		if(dialog!=null)
 			dialog.changeText(callerActivity, R.string.POPUP_empty)

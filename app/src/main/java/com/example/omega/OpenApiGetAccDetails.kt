@@ -4,6 +4,10 @@ import android.app.Activity
 import android.util.Log
 import com.example.omega.ApiConsts.ApiReqFields.*
 import com.example.omega.Utilities.Companion.TagProduction
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -59,46 +63,44 @@ class OpenApiGetAccDetails(private var token: Token, private val callerActivity:
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
 		return ApiFunctions.bodyToRequest( ApiConsts.BankUrls.GetPaymentAccount, requestBodyJson, uuidStr, additionalHeaderList)
 	}
-	private fun sendSingleRequest(accNumber: String): Boolean {
-		val request = getRequestForSignleAcc(accNumber)
-		val response = OkHttpClient().newCall(request).execute()
-		if (response.code != ApiConsts.ResponseCodes.OK.code) {
-			ApiFunctions.logResponseError(response, this.javaClass.name)
-			if(response.code == ApiConsts.ResponseCodes.LimitExceeded.code)
-				limitExceeded = true
-			return false
-		}
+	private suspend fun sendSingleRequest(request: Request): Boolean {
 		return try {
+			val response = OkHttpClient().newCall(request).execute()
+			if (response.code != ApiConsts.ResponseCodes.OK.code) {
+				ApiFunctions.logResponseError(response, this.javaClass.name)
+				if(response.code == ApiConsts.ResponseCodes.LimitExceeded.code)
+					limitExceeded = true
+				 return false
+			}
 			val responseBodyJson = JSONObject(response.body?.string()!!)
-			parseResponseJson(responseBodyJson)
-		} catch (e: Exception) {
+			val successParsing = parseResponseJson(responseBodyJson)
+			successParsing
+		}catch (e : Exception){
 			Log.e(TagProduction, e.toString())
 			false
 		}
 	}
 	private fun parseResponseJson(obj: JSONObject): Boolean {
-		val tmpPaymentAcc = PaymentAccount(obj)
-		if(!tmpPaymentAcc.isValid())
-			return false
+		try {
+			val tmpPaymentAcc = PaymentAccount(obj)
+			if(!tmpPaymentAcc.isValid())
+				return false
 
-		this.accountToSet.add(tmpPaymentAcc)
-		return true
+			this.accountToSet.add(tmpPaymentAcc)
+			return true
+		}catch (e : Exception){
+			//todo
+			return false
+		}
 	}
-	private fun getAccDetailsForAccountsInSeparteThreads(accNumbers: List<String>): Boolean {
+	private suspend fun getAccDetailsForAccountsInSeparteThreads(accNumbers: List<String>): Boolean {
 		return try {
-			val listOfThreadCheckingAccInfo = arrayListOf<Thread>()
 			val boolsOfThreadsSuccessfullness = ArrayList<Boolean>()
 			for (i in accNumbers.indices) {
-				val thread = Thread {
-					val success = sendSingleRequest(accNumbers[i])
-					boolsOfThreadsSuccessfullness.add(success)
-				}
-				listOfThreadCheckingAccInfo.add(thread)
+				val request = getRequestForSignleAcc(accNumbers[i])
+				val success = sendSingleRequest(request)
+				boolsOfThreadsSuccessfullness.add(success)
 			}
-			for (i in 0 until listOfThreadCheckingAccInfo.size)
-				listOfThreadCheckingAccInfo[i].start()
-			for (i in 0 until listOfThreadCheckingAccInfo.size)
-				listOfThreadCheckingAccInfo[i].join(ApiConsts.requestTimeOut)
 			return !boolsOfThreadsSuccessfullness.contains(false)
 		} catch (e: Exception) {
 			val msg = "Failed to obtain information for at account with numbers[$accNumbers] [$e]"
