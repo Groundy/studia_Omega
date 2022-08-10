@@ -451,7 +451,7 @@ class MainActivity : AppCompatActivity() {
 		nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListEmptyArray)
 	}
 	private fun startNfcOnStartIfUserWishTo(){
-		val turnOnNfcOnStart = PreferencesOperator.readPrefBool(this, R.bool.PREF_turnNfcOnAppStart)
+		val turnOnNfcOnStart = PreferencesOperator.readPrefBool(this, R.string.PREF_turnNfcOnAppStart)
 		if(!turnOnNfcOnStart)
 			return
 
