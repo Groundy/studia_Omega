@@ -8,7 +8,7 @@ import com.example.omega.ApiConsts.ApiReqFields.*
 import okhttp3.OkHttpClient
 
 class OpenApiDomesticPayment(private val callerActivity: Activity, val token: Token) {
-	fun run() : Boolean{
+	suspend fun run() : Boolean{
 		Log.i(Utilities.TagProduction, "Domestic Payement started")
 		val request = getRequest()
 		val success = sendRequest(request)
@@ -37,15 +37,13 @@ class OpenApiDomesticPayment(private val callerActivity: Activity, val token: To
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, requestBodyJsonObj, uuidStr, additionalHeaderList)
 	}
-	private fun sendRequest(request : Request) : Boolean{
+	private suspend fun sendRequest(request : Request) : Boolean{
 		return try{
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ApiConsts.ResponseCodes.OK.code){
 				ApiFunctions.logResponseError(response, this.javaClass.name)
 				return false
 			}
- 			//val responseBody = response.body?.string()
-			//val responseJsonObject = JSONObject(responseBody!!)
 			true
 		}catch (e : Exception){
 			Log.e(Utilities.TagProduction,"[sendRequest/${this.javaClass.name}] Error catch $e")

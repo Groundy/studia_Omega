@@ -5,32 +5,21 @@ import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
-import java.lang.Exception
 import com.example.omega.Utilities.Companion.TagProduction
 import com.example.omega.ApiConsts.ApiReqFields.*
 
 class OpenApiGetToken(private val callerActivity: Activity, private val scope : ApiConsts.ScopeValues) {
-	fun run(dialog: WaitingDialog? = null) : Boolean{
-		if(dialog!=null)
-			dialog.changeText(callerActivity, R.string.POPUP_getToken)
-		Log.i(TagProduction, "GetToken started")
-		var success = false
-		val thread = Thread{
-			try {
-				val request = getRequest()
-				val responseJson = sendRequest(request)?: return@Thread
-				handleResponse(responseJson)
-				success = true
-			} catch (e: Exception) {
-				Log.e(TagProduction,"[run/${this.javaClass.name}] $e")
-			}
+	suspend fun run() : Boolean{
+		return try {
+			Log.i(TagProduction, "GetToken started")
+			val request = getRequest()
+			val responseJson = sendRequest(request) ?: throw Exception("logged before")
+			handleResponse(responseJson)
+			true
+		} catch (e: Exception) {
+			Log.e(TagProduction,"[run/${this.javaClass.name}] GetToken ended with failure, e=$e")
+			false
 		}
-		thread.start()
-		thread.join(ApiConsts.requestTimeOutMiliSeconds)
-		Log.i(TagProduction, "GetToken ended sucessfuly? $success")
-		if(dialog!=null)
-			dialog.changeText(callerActivity, R.string.POPUP_empty)
-		return success
 	}
 	private fun getRequest() : Request {
 		val uuidStr = ApiFunctions.getUUID()

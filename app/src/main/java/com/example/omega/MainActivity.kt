@@ -114,6 +114,7 @@ class MainActivity : AppCompatActivity() {
 
 	}
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
+		val dialog = WaitingDialog(this, R.string.POPUP_getToken)
 		CoroutineScope(IO).launch {
 			if(resultCode != RESULT_OK)
 				return@launch
@@ -133,11 +134,14 @@ class MainActivity : AppCompatActivity() {
 
 			val success = OpenApiGetToken(this@MainActivity, scopeUsedForLogin).run()
 			if (!success){
-				val userMsg = getString(R.string.UserMsg_Banking_errorObtaingToken)
-				Utilities.showToast(this@MainActivity, userMsg)
+				withContext(Main){
+					dialog.hide()
+					ActivityStarter.startOperationResultActivity(this@MainActivity, R.string.UserMsg_Banking_errorObtaingToken)
+				}
 				return@launch
 			}
 			withContext(Main){
+				dialog.hide()
 				when(redirectPlace){
 					WebActivtyRedirect.AccountHistory -> {accHistoryTabClicked()}
 					WebActivtyRedirect.PaymentCreation ->{basicTransferTabCliked()}
