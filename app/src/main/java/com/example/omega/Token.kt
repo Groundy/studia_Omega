@@ -99,7 +99,7 @@ class Token() {
 		}
 	}
 
-	private fun refreshIFneeded(activity : Activity) : Boolean{
+	private suspend fun refreshIFneeded(activity : Activity) : Boolean{
 		if(refreshToken == null){
 			val logMsg = "[refreshIFneeded/${this.javaClass.name}] null refresh token"
 			Log.e(TagProduction, logMsg)
@@ -148,7 +148,7 @@ class Token() {
 			null
 		}
 	}
-	fun isOk(activity: Activity): Boolean {
+	suspend fun isOk(activity: Activity): Boolean {
 		if (accessToken == null)
 			return false
 		return refreshIFneeded(activity)

@@ -193,7 +193,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		//amountField.text = Editable.Factory.getInstance().newEditable("10.0")
 		//titleField.text = Editable.Factory.getInstance().newEditable("xyz")
 	}
-	private fun getTokenCpy() : Boolean{
+	private suspend fun getTokenCpy() : Boolean{
 		val tokenTmp = PreferencesOperator.getToken(this)
 		val tokenOk = tokenTmp.isOk(this)
 		if(!tokenOk)

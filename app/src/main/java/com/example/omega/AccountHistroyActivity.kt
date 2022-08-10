@@ -53,7 +53,7 @@ class AccountHistroyActivity : AppCompatActivity() {
 		}
 	}
 
-	private fun getToken() : Boolean{
+	private suspend fun getToken() : Boolean{
 		val tokenTmp = PreferencesOperator.getToken(this)
 		return if(tokenTmp.isOk(this)) {
 			token = tokenTmp

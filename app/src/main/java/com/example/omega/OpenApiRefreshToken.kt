@@ -10,24 +10,15 @@ import com.example.omega.ApiConsts.ApiReqFields
 import com.example.omega.ApiConsts.ScopeValues
 
 class OpenApiRefreshToken(private val refreshToken : String) {
-
-	fun run() : JSONObject?{
+	suspend fun run() : JSONObject?{
 		Log.i(Utilities.TagProduction, "refresh token started")
-		var toRet : JSONObject? = null
-		val thread = Thread{
-			toRet = try {
-				val request = getRequest()
-				val response = sendRequest(request)
-				response
-			} catch (e: Exception) {
-				Log.e(Utilities.TagProduction,"[ApiRefreshToken/${this.javaClass.name}] $e  ")
-				null
-			}
+		val request = getRequest()
+		val response = sendRequest(request)
+		if(response == null){
+			Log.e(Utilities.TagProduction, "refresh token ended with failiure")
+			return null
 		}
-		thread.start()
-		thread.join(ApiConsts.requestTimeOut)
-		Log.i(Utilities.TagProduction, "refresh token ended with sucess? ${toRet != null}")
-		return toRet
+		return response
 	}
 	private fun getRequest() : Request{
 		val uuid = ApiFunctions.getUUID()

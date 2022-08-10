@@ -272,7 +272,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			ActivityStarter.startAuthActivity(this, descripitionToShow)
 		}
 	}
-	private fun getToken() : Boolean{
+	private suspend fun getToken() : Boolean{
 		val tokenTmp = PreferencesOperator.getToken(this)
 		val tokenOk = tokenTmp.isOk(this)
 		if(!tokenOk)
