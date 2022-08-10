@@ -153,7 +153,7 @@ class Token() {
 			return false
 		return refreshIFneeded(activity)
 	}
-	fun fillTokenAccountsWithBankDetails(activity: Activity) : Boolean{
+	suspend fun fillTokenAccountsWithBankDetails(activity: Activity) : Boolean{
 		val accountNumbers = getListOfAccountsNumbers()
 		if(accountNumbers.isNullOrEmpty())
 			return false

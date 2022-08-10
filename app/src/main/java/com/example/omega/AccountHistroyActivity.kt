@@ -66,7 +66,7 @@ class AccountHistroyActivity : AppCompatActivity() {
 			false
 		}
 	}
-	private fun fillListOfAccounts() : SpinnerAdapter?{
+	private suspend fun fillListOfAccounts() : SpinnerAdapter?{
 		if(!token.fillTokenAccountsWithBankDetails(this)){
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
 			//val errorCodeTextToDisplay = getString(R.string.AccHistoryAct_UserMsg_ErrorInObtainingToken)
