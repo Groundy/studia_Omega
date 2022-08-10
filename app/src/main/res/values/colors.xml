@@ -3,11 +3,12 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 
+    <color name="colorPrimary">#8EC5F0</color>
+    <color name="colorPrimaryDark">#3F51B5</color>
+
     <color name="hintColor">#74807E</color>
     <color name="errorRed">#FF0000</color>
     <color name="linkColor">#0044CC</color>
-    <color name="colorPrimary">#8EC5F0</color>
     <color name="mainColor">#2196F3</color>
-    <color name="colorPrimaryDark">#3F51B5</color>
     <color name="buttonTextColor">#E90C0C</color>
 </resources>

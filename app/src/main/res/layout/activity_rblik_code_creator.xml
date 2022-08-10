@@ -4,17 +4,12 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:background="@color/colorPrimary"
 	android:layout_height="match_parent"
+	style="@style/AppTheme"
 	tools:context="com.example.omega.RBLIKCodeCreator">
 
 	<FrameLayout
-		android:layout_width="0dp"
-		android:layout_height="0dp"
-		android:layout_marginStart="@dimen/marginSizeY"
-		android:layout_marginTop="@dimen/marginSizeX"
-		android:layout_marginEnd="@dimen/marginSizeY"
-		android:layout_marginBottom="@dimen/marginSizeX"
+		style="@style/frameLayoutStyle"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
@@ -52,17 +47,10 @@
 
 						<EditText
 							android:id="@+id/RBlikCodeGenerator_reciverName_EditText"
-							android:layout_width="match_parent"
-							android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
-							android:background="@drawable/main_frame"
-							android:ems="10"
+							style="@style/inputFieldStyle"
 							android:inputType="textPersonName"
 							android:maxLength="50"
-							android:paddingStart="5sp"
-							android:paddingEnd="5sp"
-							android:textColor="@color/black"
-							android:textColorHint="@color/hintColor"
-							tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+							tools:ignore="SpeakableTextPresentCheck" />
 
 						<Space
 							android:layout_width="match_parent"
@@ -85,16 +73,9 @@
 
 						<EditText
 							android:id="@+id/RBlikCodeGenerator_amount_editText"
-							android:layout_width="match_parent"
-							android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
-							android:background="@drawable/main_frame"
-							android:ems="10"
+							style="@style/inputFieldStyle"
 							android:inputType="numberDecimal"
-							android:paddingStart="5sp"
-							android:paddingEnd="5sp"
-							android:textColor="@color/black"
-							android:textColorHint="@color/hintColor"
-							tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+							tools:ignore="SpeakableTextPresentCheck" />
 
 						<Space
 							android:layout_width="match_parent"
@@ -117,17 +98,9 @@
 
 						<EditText
 							android:id="@+id/RBlikCodeGenerator_transferTitle_EditText"
-							android:layout_width="match_parent"
-							android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
-							android:background="@drawable/main_frame"
-							android:ems="10"
+							style="@style/inputFieldStyle"
 							android:inputType="textPersonName"
-							android:maxLength="50"
-							android:paddingStart="5sp"
-							android:paddingEnd="5sp"
-							android:textColor="@color/black"
-							android:textColorHint="@color/black"
-							tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+							tools:ignore="SpeakableTextPresentCheck" />
 
 						<Space
 							android:layout_width="match_parent"
@@ -166,17 +139,13 @@
 							android:layout_height="@dimen/RBlikCodeGenerator_spacer_Y" />
 
 					</LinearLayout>
+
+					<Button
+						android:id="@+id/RBlikCodeGenerator_goNext_button"
+						style="@style/OmegaButtonStyle"
+						android:text="@string/GUI_RBlikCodeGenerator_goNextButtonText" />
 				</LinearLayout>
 			</ScrollView>
-
-			<Button
-				android:id="@+id/RBlikCodeGenerator_goNext_button"
-				style="@style/OmegaButtonStyle"
-				android:text="@string/GUI_RBlikCodeGenerator_goNextButtonText" />
-
-			<Space
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
 
 		</LinearLayout>
 

@@ -10,12 +10,7 @@
 
 
 	<FrameLayout
-		android:layout_width="0dp"
-		android:layout_height="0dp"
-		android:layout_marginStart="@dimen/marginSizeY"
-		android:layout_marginTop="@dimen/marginSizeX"
-		android:layout_marginEnd="@dimen/marginSizeY"
-		android:layout_marginBottom="@dimen/marginSizeX"
+		style="@style/frameLayoutStyle"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
@@ -83,17 +78,9 @@
 
 						<EditText
 							android:id="@+id/basicTransfer_amount_editText"
-							android:layout_width="match_parent"
-							android:layout_height="@dimen/basicTransfer_inputFieldY"
-							android:background="@drawable/main_frame"
-							android:ems="10"
+							style="@style/inputFieldStyle"
 							android:hint="0,00"
-							android:inputType="numberDecimal"
-							android:paddingStart="5sp"
-							android:paddingEnd="5sp"
-							android:textColor="@color/black"
-							android:textColorHint="@color/hintColor"
-							tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+							android:inputType="numberDecimal"/>
 
 						<TextView
 							android:id="@+id/basicTransfer_amountAfterTransfer_TextView"
@@ -122,19 +109,10 @@
 
 						<EditText
 							android:id="@+id/basicTransfer_receiverNumber_EditText"
-							android:layout_width="match_parent"
-							android:layout_height="@dimen/basicTransfer_inputFieldY"
-							android:background="@drawable/main_frame"
-							android:ems="10"
+							style="@style/inputFieldStyle"
 							android:hint="0123456..."
-							android:importantForAutofill="no"
 							android:inputType="number"
-							android:maxLength="26"
-							android:paddingStart="5sp"
-							android:paddingEnd="5sp"
-							android:textColor="@color/black"
-							android:textColorHint="@color/hintColor"
-							tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+							android:maxLength="26"/>
 
 						<TextView
 							android:id="@+id/basicTransfer_receiverNumberDigitsLeft_TextView"
@@ -164,18 +142,9 @@
 
 						<EditText
 							android:id="@+id/basicTransfer_transferTitle_EditText"
-							android:layout_width="match_parent"
-							android:layout_height="@dimen/basicTransfer_inputFieldY"
-							android:background="@drawable/main_frame"
-							android:ems="10"
+							style="@style/inputFieldStyle"
 							android:hint="np. Opłata czynszu"
-							android:inputType="textPersonName"
-							android:maxLength="50"
-							android:paddingStart="5sp"
-							android:paddingEnd="5sp"
-							android:textColor="@color/black"
-							android:textColorHint="@color/hintColor"
-							tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+							android:inputType="textPersonName"/>
 
 						<Space
 							android:layout_width="match_parent"
