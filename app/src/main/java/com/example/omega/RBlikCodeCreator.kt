@@ -96,7 +96,6 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		val dialog = WaitingDialog(this, R.string.POPUP_getCodeFromAzureService)
 		CoroutineScope(IO).launch {
 			val responseData : ServerSetCodeResponse? = CodeServerApi.setCode(this@RBLIKCodeCreator, transferData)
-			//val responseData = ServerSetCodeResponse(123456, OmegaTime.getCurrentTime(10))//todo tmp
 			withContext(Main){
 				dialog.hide()
 				if(responseData != null)
@@ -150,6 +149,12 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		}
 
 		val amountText = findViewById<EditText>(R.id.RBlikCodeGenerator_amount_editText).text.toString()
+		if(amountText.isNullOrEmpty()){
+			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_Amount_zero)
+			Utilities.showToast(this, textToShow)
+			return false
+		}
+
 		val amountOk = amountText.toDouble() > 0.0
 		if(!amountOk){
 			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_Amount_zero)
@@ -159,7 +164,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 
 
 		val titleText = findViewById<EditText>(R.id.RBlikCodeGenerator_transferTitle_EditText).text.toString()
-		val titleOk = titleText.length in 3..50
+		val titleOk = titleText.replace(" ","").length in 3..50
 		if(!titleOk){
 			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_wrong_title)
 			Utilities.showToast(this, textToShow)
