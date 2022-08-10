@@ -86,7 +86,7 @@ class ApiFunctions {
 				try {
 					val url = "http://www.ip-api.com/json"
 					val request = Request.Builder().url(url).build()
-					val client = OkHttpClient.Builder().connectTimeout(2, TimeUnit.SECONDS).build()
+					val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()
 					val response = client.newCall(request).execute()
 					val responseBody = response.body?.string()
 					val responseJsonObject = JSONObject(responseBody!!)

@@ -7,6 +7,7 @@ import okhttp3.Request
 import org.json.JSONObject
 import com.example.omega.Utilities.Companion.TagProduction
 import com.example.omega.ApiConsts.ApiReqFields.*
+import java.util.concurrent.TimeUnit
 
 class OpenApiGetToken(private val callerActivity: Activity, private val scope : ApiConsts.ScopeValues) {
 	suspend fun run() : Boolean{
@@ -54,7 +55,8 @@ class OpenApiGetToken(private val callerActivity: Activity, private val scope : 
 	}
 	private suspend fun sendRequest(request: Request) : JSONObject?{
 		return try {
-			val response = OkHttpClient().newCall(request).execute()
+			val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()
+			val response = client.newCall(request).execute()
 			val responseCode = response.code
 			if(responseCode != ApiConsts.ResponseCodes.OK.code){
 				ApiFunctions.logResponseError(response, this.javaClass.name)

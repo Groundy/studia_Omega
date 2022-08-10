@@ -11,6 +11,7 @@ import kotlin.Exception
 import com.example.omega.ApiGetTransactionsDone.Companion.GetTransDoneRequestFields.*
 import com.example.omega.TransactionsDoneAdditionalInfos.Companion.GetTransDoneResponseFields.*
 import java.time.Instant
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class ApiGetTransactionsDone(private val callerActivity: Activity, private val  token: Token){
@@ -82,7 +83,8 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 	}
 	private suspend fun sendRequest(request: Request) : JSONObject?{
 		return try {
-			val response = OkHttpClient().newCall(request).execute()
+			val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()
+			val response = client.newCall(request).execute()
 			val responseCode = response.code
 			if(responseCode != ApiConsts.ResponseCodes.OK.code){
 				if(responseCode == ApiConsts.ResponseCodes.LimitExceeded.code){

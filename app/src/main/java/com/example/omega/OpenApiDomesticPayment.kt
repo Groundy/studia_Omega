@@ -6,6 +6,7 @@ import okhttp3.Request
 import org.json.JSONObject
 import com.example.omega.ApiConsts.ApiReqFields.*
 import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
 
 class OpenApiDomesticPayment(private val callerActivity: Activity, val token: Token) {
 	suspend fun run() : Boolean{
@@ -39,7 +40,8 @@ class OpenApiDomesticPayment(private val callerActivity: Activity, val token: To
 	}
 	private suspend fun sendRequest(request : Request) : Boolean{
 		return try{
-			val response = OkHttpClient().newCall(request).execute()
+			val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()
+			val response = client.newCall(request).execute()
 			if(response.code!= ApiConsts.ResponseCodes.OK.code){
 				ApiFunctions.logResponseError(response, this.javaClass.name)
 				return false

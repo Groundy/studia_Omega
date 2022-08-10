@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
+import java.util.concurrent.TimeUnit
 
 
 class OpenApiGetAccDetails(private var token: Token, private val callerActivity: Activity) {
@@ -65,7 +66,8 @@ class OpenApiGetAccDetails(private var token: Token, private val callerActivity:
 	}
 	private suspend fun sendSingleRequest(request: Request): Boolean {
 		return try {
-			val response = OkHttpClient().newCall(request).execute()
+			val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()
+			val response = client.newCall(request).execute()
 			if (response.code != ApiConsts.ResponseCodes.OK.code) {
 				ApiFunctions.logResponseError(response, this.javaClass.name)
 				if(response.code == ApiConsts.ResponseCodes.LimitExceeded.code)

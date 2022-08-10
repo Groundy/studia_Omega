@@ -8,6 +8,7 @@ import org.json.JSONObject
 import java.lang.Exception
 import com.example.omega.ApiConsts.ApiReqFields
 import com.example.omega.ApiConsts.ScopeValues
+import java.util.concurrent.TimeUnit
 
 class OpenApiRefreshToken(private val refreshToken : String) {
 	suspend fun run() : JSONObject?{
@@ -39,7 +40,8 @@ class OpenApiRefreshToken(private val refreshToken : String) {
 	}
 	private suspend fun sendRequest(request: Request) : JSONObject?{
 		return try{
-			val response = OkHttpClient().newCall(request).execute()
+			val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()
+			val response = client.newCall(request).execute()
 			if(response.code!= ApiConsts.ResponseCodes.OK.code){
 				ApiFunctions.logResponseError(response, this.javaClass.name)
 				return null

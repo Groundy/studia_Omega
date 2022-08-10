@@ -94,7 +94,7 @@ class ApiConsts {
 
 
 		const val AuthUrlValidityTimeSeconds = 24 * 60 * 60
-		const val requestTimeOutMiliSeconds = 2000L
+		const val requestTimeOutMiliSeconds = 10 * 1000L
 		//const val ThreadTimeOut = requestTimeOut*2
 		const val ipTimeCheckPeriodSeconds = 120
 

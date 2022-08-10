@@ -9,6 +9,7 @@ import org.json.JSONObject
 import com.example.omega.ApiConsts.*
 import com.example.omega.ApiFunctions.Companion.logResponseError
 import com.example.omega.Utilities.Companion.TagProduction
+import java.util.concurrent.TimeUnit
 import kotlin.Exception
 
 class OpenApiAuthorize(activity: Activity) {
@@ -68,7 +69,8 @@ class OpenApiAuthorize(activity: Activity) {
 
 	private suspend fun sendRequest (request: Request) : JSONObject?{
 		return try{
-			val response = OkHttpClient().newCall(request).execute()
+			val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()
+			val response = client.newCall(request).execute()
 			if(response.code!= ResponseCodes.OK.code){
 				logResponseError(response, this.javaClass.name)
 				return null
