@@ -37,7 +37,7 @@ class OpenApiRefreshToken(private val refreshToken : String) {
 
 		return 	ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl, jsonBodyRequest, uuid)
 	}
-	private fun sendRequest(request: Request) : JSONObject?{
+	private suspend fun sendRequest(request: Request) : JSONObject?{
 		return try{
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ApiConsts.ResponseCodes.OK.code){

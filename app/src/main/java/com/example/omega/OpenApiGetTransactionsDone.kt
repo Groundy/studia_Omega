@@ -32,7 +32,7 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 		}
 
 	}
-	fun run(accNumber: String, infos : TransactionsDoneAdditionalInfos = TransactionsDoneAdditionalInfos()): List<AccountHistoryRecord>? {
+	suspend fun run(accNumber: String, infos : TransactionsDoneAdditionalInfos = TransactionsDoneAdditionalInfos()): List<AccountHistoryRecord>? {
 		Log.i(TagProduction, "GetTransactionsDone starts")
 		var sucess = false
 		try {
@@ -80,7 +80,7 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text,token.getAuthFieldValue()))
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone, requestBodyJson, uuidStr, additionalHeaderList)
 	}
-	private fun sendRequest(request: Request) : JSONObject?{
+	private suspend fun sendRequest(request: Request) : JSONObject?{
 		return try {
 			val response = OkHttpClient().newCall(request).execute()
 			val responseCode = response.code

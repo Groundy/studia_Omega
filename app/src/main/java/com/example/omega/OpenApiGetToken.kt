@@ -52,7 +52,7 @@ class OpenApiGetToken(private val callerActivity: Activity, private val scope : 
 		PreferencesOperator.savePref(callerActivity, resouceIdWhereToSaveToken, accessTokenSerialized)
 		PreferencesOperator.clearPreferences(callerActivity, R.string.PREF_authCode)
 	}
-	private fun sendRequest(request: Request) : JSONObject?{
+	private suspend fun sendRequest(request: Request) : JSONObject?{
 		return try {
 			val response = OkHttpClient().newCall(request).execute()
 			val responseCode = response.code

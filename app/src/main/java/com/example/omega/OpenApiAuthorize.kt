@@ -32,7 +32,7 @@ class OpenApiAuthorize(activity: Activity) {
 		const val redirectUriField = "aspspRedirectUri"
 	}
 
-	fun runForAis(permisionListObject : PermissionList, dialog: WaitingDialog? = null) : Boolean{
+	suspend fun runForAis(permisionListObject : PermissionList, dialog: WaitingDialog? = null) : Boolean{
 		permissionsList = permisionListObject
 		if (permissionsList.permissionsArray.isEmpty()) {
 			Log.e(TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
@@ -51,7 +51,7 @@ class OpenApiAuthorize(activity: Activity) {
 		dialog?.changeText(callerActivity, R.string.POPUP_empty)
 		return success
 	}
-	fun runForPis(permisionListObject : PermissionList, transferData: TransferData) : Boolean{
+	suspend fun runForPis(permisionListObject : PermissionList, transferData: TransferData) : Boolean{
 		permissionsList = permisionListObject
 		this.transferData = transferData
 		Log.i(TagProduction, "Authorize for pis started")
@@ -66,7 +66,7 @@ class OpenApiAuthorize(activity: Activity) {
 	}
 
 
-	private fun sendRequest (request: Request) : JSONObject?{
+	private suspend fun sendRequest (request: Request) : JSONObject?{
 		return try{
 			val response = OkHttpClient().newCall(request).execute()
 			if(response.code!= ResponseCodes.OK.code){
