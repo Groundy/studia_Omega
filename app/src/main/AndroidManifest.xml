@@ -56,12 +56,10 @@
         <activity
             android:name=".YesNoDialogActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.Dialog.Alert"
-            android:windowSoftInputMode="adjustPan" />
+            android:theme="@style/Theme.AppCompat.Light.Dialog.Alert"/>
         <activity
             android:name=".ScanFingerActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:exported="false"/>
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />
