@@ -2,14 +2,19 @@ package com.example.omega
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.DatePickerDialog.OnDateSetListener
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.omega.Utilities.Companion.TagProduction
@@ -18,6 +23,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 
 
 class AccountHistroyActivity : AppCompatActivity() {
@@ -139,7 +145,7 @@ class AccountHistroyActivity : AppCompatActivity() {
 
 	}
 	private fun showFilterDialog(){
-		val dialog = FilterDialog(this)
+		FilterDialog(this).show()
 	}
 }
 
@@ -190,25 +196,231 @@ class CustomAdapter(private val callerActivity : Activity, private val accountNu
 		return rowView
 	}
 }
-class FilterDialog(context: Context) {
-	private var dialog: Dialog
-	init {
-		dialog = Dialog(context)
-		dialog.setContentView(R.layout.account_history_filters)
-		//context.resources.getLayout(R.layout.account_history_filters).
-		dialog.window!!.setLayout(2500,2000)
-		dialog.show()
+
+class FilterDialog(context: Context) : Dialog(context) {
+	private lateinit var minAmountField : EditText
+	private lateinit var maxAmountField : EditText
+	private lateinit var applyButton : Button
+	private lateinit var backButton : Button
+	private lateinit var startDateField : TextView
+	private lateinit var endDateField : TextView
+
+	private fun setGui(){
+		minAmountField = findViewById(R.id.FilterAct_minAmount_editText)
+		maxAmountField= findViewById(R.id.FilterAct_maxAmount_editText)
+		applyButton = findViewById(R.id.FilterAct_apply_Button)
+		backButton = findViewById(R.id.FilterAct_cancel_Button)
+		startDateField = findViewById(R.id.FilterAct_dateFrom_textView)
+		endDateField = findViewById(R.id.FilterAct_dateTo_textView)
+
+		startDateField.text = OmegaTime.getDate(7, false)
+		endDateField.text = OmegaTime.getDate(0, false)
+		checkDatesCorrectness()
+	}
+	private fun setListeners(){
+		backButton.setOnClickListener {
+			this.dismiss()
+		}
+		val minAmountListener = object : TextWatcher {
+			var previousValue : String = ""
+			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+				if(p0 != null)
+					previousValue = p0.toString()
+			}
+			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+			override fun afterTextChanged(p0: Editable?) {
+				if(!p0.isNullOrEmpty())
+					Utilities.stopUserFromPuttingMoreThan2DigitsAfterComma(
+						minAmountField,
+						previousValue,
+						p0.toString()
+					)
+				checkIfMaxAmountIsBiggerThanMin()
+			}
+		}
+		val maxAmountListener = object : TextWatcher {
+			var previousValue : String = ""
+			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+				if(p0 != null)
+					previousValue = p0.toString()
+			}
+			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+			override fun afterTextChanged(p0: Editable?) {
+				if(!p0.isNullOrEmpty())
+					Utilities.stopUserFromPuttingMoreThan2DigitsAfterComma(
+						maxAmountField,
+						previousValue,
+						p0.toString()
+					)
+				checkIfMaxAmountIsBiggerThanMin()
+			}
+		}
+		minAmountField.addTextChangedListener(minAmountListener)
+		maxAmountField.addTextChangedListener(maxAmountListener)
+
+
+		val startDateFieldClickedListener = View.OnClickListener{
+			val c = Calendar.getInstance()
+			val year = c.get(Calendar.YEAR)
+			val month = c.get(Calendar.MONTH)
+			val day = c.get(Calendar.DAY_OF_MONTH)
+			val listener = OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+				var dayOfMonthStr = dayOfMonth.toString()
+				if(dayOfMonthStr.length == 1)
+					dayOfMonthStr = "0$dayOfMonthStr"
+
+				var monthOfYearStr = (monthOfYear+1).toString()
+				if(monthOfYearStr.length == 1)
+					monthOfYearStr = "0$monthOfYearStr"
+
+				val str = "$dayOfMonthStr-$monthOfYearStr-$year"
+				startDateField.text = str
+				checkDatesCorrectness()
+			}
+
+			val dpd = DatePickerDialog(this.context, listener, year, month, day)
+			dpd.show()
+
+		}
+
+		val endDateFieldClickedListener = View.OnClickListener{
+			val c = Calendar.getInstance()
+			val year = c.get(Calendar.YEAR)
+			val month = c.get(Calendar.MONTH)
+			val day = c.get(Calendar.DAY_OF_MONTH)
+			val listener = OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+				var dayOfMonthStr = dayOfMonth.toString()
+				if(dayOfMonthStr.length == 1)
+					dayOfMonthStr = "0$dayOfMonthStr"
+
+				var monthOfYearStr = (monthOfYear+1).toString()
+				if(monthOfYearStr.length == 1)
+					monthOfYearStr = "0$monthOfYearStr"
+
+				val str = "$dayOfMonthStr-$monthOfYearStr-$year"
+				endDateField.text = str
+				checkDatesCorrectness()
+			}
+
+			val dpd = DatePickerDialog(this.context, listener, year, month, day)
+			dpd.show()
+		}
+
+		startDateField.setOnClickListener(startDateFieldClickedListener)
+		endDateField.setOnClickListener(endDateFieldClickedListener)
+	}
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		requestWindowFeature(Window.FEATURE_NO_TITLE)
+		setContentView(R.layout.account_history_filters)
+		setGui()
+		setListeners()
+		setCancelable(false)
 	}
 
-	public fun applyClicked(){
+	@SuppressLint("UseCompatLoadingForDrawables")
+	private fun checkIfMaxAmountIsBiggerThanMin() : Boolean{
+		val minText = minAmountField.text.toString()
+		val minAmount = if(minText.isEmpty())
+			0.0
+		else
+			minText.toDouble()
+
+
+		val maxText = maxAmountField.text.toString()
+		val maxAmount = if(maxText.isEmpty())
+			0.0
+		else
+			maxText.toDouble()
+
+		var ok = maxAmount > minAmount
+		if(maxAmount == 0.0 && minAmount == 0.0)
+			ok =true
+
+		val img = if(ok)
+			this.context.resources.getDrawable(R.drawable.main_frame)
+		else
+			this.context.resources.getDrawable(R.drawable.error_frame)
+
+		minAmountField.background = img
+		maxAmountField.background = img
+		return ok
+	}
+
+	@SuppressLint("UseCompatLoadingForDrawables")
+	private fun checkDatesCorrectness(): Boolean {
+		val okImg = this.context.resources.getDrawable(R.drawable.main_frame)
+		val errIng = this.context.resources.getDrawable(R.drawable.error_frame)
+
+		val todayTimeVal = OmegaTime.convertDateToLong(OmegaTime.getDate(0,false))
+		val startDayTimeVal = OmegaTime.convertDateToLong(startDateField.text.toString())
+		val endDayTimeVal = OmegaTime.convertDateToLong(endDateField.text.toString())
+
+		if(endDayTimeVal <= todayTimeVal)
+			endDateField.background = okImg
+		else{
+			endDateField.background = errIng
+			return false
+		}
+
+		if(startDayTimeVal <= endDayTimeVal){
+			endDateField.background = okImg
+			startDateField.background = okImg
+		}
+		else{
+			endDateField.background = errIng
+			startDateField.background = errIng
+			return false
+		}
+
+		return true
+	}
+
+	fun applyButtonClicked(){
+		val ok = checkDatesCorrectness() && checkIfMaxAmountIsBiggerThanMin()
+		if(!ok)
+			return
+
+		val dataObj = getFillterDataObj()
+		if(dataObj == null)//todo
+			return
+
+
 
 	}
-	public fun setGUI(){
-		dialog.findViewById<Button>(R.id.historyFiltersDialog_cancel_Button).setOnClickListener{
-			dialog.dismiss()
-		}
-		dialog.findViewById<Button>(R.id.historyFiltersDialog_apply_Button).setOnClickListener{
-			dialog.dismiss()
+	private fun getFillterDataObj() : FillterDataObj?{
+		return try {
+			val startParts = startDateField.text.split("-")
+			val dateFrom = "${startParts[2]}-${startParts[1]}-${startParts[0]}"
+
+			val endParts = endDateField.text.split("-")
+			val dateTo = "${endParts[2]}-${endParts[1]}-${endParts[0]}"
+
+			val amountMinText =  minAmountField.text.toString()
+			val amountMin = if(amountMinText.isNullOrEmpty())
+				0.0
+			else
+				amountMinText.toDouble()
+
+			val amountMaxText =  maxAmountField.text.toString()
+			val amountMax = if(amountMaxText.isNullOrEmpty())
+				0.0
+			else
+				amountMaxText.toDouble()
+
+			val fillterDataObj = FillterDataObj(amountMin, amountMax, dateFrom, dateTo)
+			fillterDataObj
+		}catch (e : Exception){
+			Log.e(TagProduction, "applyButtonClicked/${this.javaClass.name} error in parsing data")
+			null
 		}
 	}
+
 }
+
+data class FillterDataObj(
+	val minAmount: Double,
+	val maxAmount: Double,
+	val dateFrom: String,
+	val dateTo: String
+)

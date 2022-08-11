@@ -1,10 +1,12 @@
 package com.example.omega
 
+import android.annotation.SuppressLint
 import android.util.Log
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import com.example.omega.Utilities.Companion.TagProduction
+import java.text.SimpleDateFormat
 import java.util.*
 
 class OmegaTime {
@@ -34,7 +36,7 @@ class OmegaTime {
 			val currentTimeInstant = Instant.parse(getCurrentTime())
 			return ChronoUnit.SECONDS.between(currentTimeInstant, expirationInstant) //secondsToExpiration
 		}
-		fun getDate(daysBack : Int = 0) : String{
+		fun getDate(daysBack : Int = 0, yearsFirst: Boolean = true) : String{
 			val c: Calendar = Calendar.getInstance()
 			c.timeInMillis -= daysBack * 24 * 60 * 60 * 1000
 
@@ -47,7 +49,10 @@ class OmegaTime {
 			if(d.length == 1)
 				d = "0${d}"
 
-			return "$y-$m-$d"
+			if(yearsFirst)
+				return "$y-$m-$d"
+			else
+				return "$d-$m-$y"
 		}
 		fun converTimeStampToEpoch(timestamp: String?) : Long{
 			return try{
@@ -65,6 +70,18 @@ class OmegaTime {
 			}catch (e : Exception){
 				"Date unkown"
 			}
+		}
+		@SuppressLint("SimpleDateFormat")
+		fun convertDateToLong(date: String): Long {
+			return try {
+				val df = SimpleDateFormat("dd-MM-yyyy")
+				val time = df.parse(date).time
+				time
+			}catch (e : Exception){
+				Log.e(TagProduction, "wrong date passed to [convertDateToLong/Omegatime] str = $date")
+				0L
+			}
+
 		}
 	}
 }

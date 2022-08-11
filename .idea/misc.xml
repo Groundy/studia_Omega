@@ -4,10 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/border_for_digit_field_pin_activity.xml" value="0.2585" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/error_frame.xml" value="0.278" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/history_icon.xml" value="0.2585" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ic_baseline_cancel_24.xml" value="0.196" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2585" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ico_cancel.xml" value="0.343" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ico_failure.xml" value="0.2195" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ico_filter.xml" value="0.1935" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ico_history.xml" value="0.197" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ico_nfc_off.xml" value="0.197" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/ico_nfc_on.xml" value="0.196" />
@@ -18,9 +21,9 @@
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/refresh_token_ico.xml" value="0.17" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/rounded_corner_button.xml" value="0.2165" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/drawable/selector_nfc_button.xml" value="0.245" />
-        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/account_history_filters.xml" value="0.25" />
-        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_account_histroy.xml" value="0.25" />
-        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_basic_transfer.xml" value="0.31837160751565763" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/account_history_filters.xml" value="0.75" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_account_histroy.xml" value="0.27456331877729256" />
+        <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_basic_transfer.xml" value="0.22247706422018348" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_blik_code_display.xml" value="0.21197916666666666" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_main.xml" value="0.20421052631578948" />
         <entry key="..\:/Moje/pliki/repos/Omega/app/src/main/res/layout/activity_main_menu.xml" value="0.21197916666666666" />

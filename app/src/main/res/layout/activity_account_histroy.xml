@@ -33,8 +33,11 @@
                 <Button
                     android:id="@+id/AccHistoryActivity_filterButton"
                     style="@style/OmegaButtonStyle"
-                    android:text="F"
-                    android:visibility="gone" />
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="0"
+                    android:foreground="@drawable/ico_filter"
+                    android:visibility="visible" />
             </LinearLayout>
 
             <ScrollView
