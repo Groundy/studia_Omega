@@ -12,5 +12,5 @@
     <color name="linkColor">#0044CC</color>
 
     <color name="buttonTextColor">@color/black</color>
-    <color name="buttonColor">#A146D3</color>
+    <color name="buttonColor">#EBD3D3D3</color>
 </resources>

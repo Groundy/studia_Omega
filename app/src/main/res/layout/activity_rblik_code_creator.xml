@@ -124,14 +124,7 @@
 
 						<Spinner
 							android:id="@+id/RBlikCodeGenerator_accountList_Spinner"
-							android:layout_width="match_parent"
-							android:layout_height="@dimen/RBlikCodeGenerator_inputFieldY"
-							android:background="@drawable/main_frame"
-							android:dropDownWidth="300dp"
-							android:paddingStart="5sp"
-							android:paddingEnd="5sp"
-							android:scrollbarSize="40dp"
-							android:spinnerMode="dropdown"
+							style="@style/spinnerStyle"
 							tools:ignore="SpeakableTextPresentCheck" />
 
 						<Space

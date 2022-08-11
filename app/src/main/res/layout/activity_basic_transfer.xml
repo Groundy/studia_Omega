@@ -49,12 +49,7 @@
 
 						<Spinner
 							android:id="@+id/basicTransfer_accountList_Spinner"
-							android:layout_width="match_parent"
-							android:layout_height="@dimen/basicTransfer_inputFieldY"
-							android:background="@drawable/main_frame"
-							android:dropDownWidth="300dp"
-							android:scrollbarSize="40dp"
-							android:spinnerMode="dropdown"
+							style="@style/spinnerStyle"
 							tools:ignore="SpeakableTextPresentCheck" />
 
 						<Space
