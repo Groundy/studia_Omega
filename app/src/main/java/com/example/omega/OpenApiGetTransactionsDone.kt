@@ -79,12 +79,21 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 
 		if(infos.minAmount != null){
 			if(infos.minAmount!! > 0.0){
+				var textToPut = infos.minAmount.toString()
+				val theresOnlyOneDigitAfterDot = textToPut.indexOf('.') == textToPut.length -2
+				if (theresOnlyOneDigitAfterDot)
+					textToPut = "${textToPut}0"
+				requestBodyJson.put(MinAmount.text, textToPut)
 			}
 		}
 
 		if(infos.maxAmount != null){
 			if(infos.maxAmount!! > 0.0){
-				requestBodyJson.put(MaxAmount.text, infos.maxAmount)
+				var textToPut = infos.maxAmount.toString()
+				val theresOnlyOneDigitAfterDot = textToPut.indexOf('.') == textToPut.length -2
+				if (theresOnlyOneDigitAfterDot)
+					textToPut = "${textToPut}0"
+				requestBodyJson.put(MaxAmount.text, textToPut)
 			}
 		}
 
@@ -127,7 +136,7 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 	}
 }
 
-class TransactionsDoneAdditionalInfos(daysBack : Int = 10){
+class TransactionsDoneAdditionalInfos(daysBack : Int = 7){
 	companion object{
 		private enum class Type(val text: String){
 			DEBIT("DEBIT"), CREDIT("CREDIT")
@@ -157,13 +166,13 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 10){
 	//mandatory
 	var fromDate : String = OmegaTime.getDate(daysBack)
 	var endDate : String = OmegaTime.getDate()
-
+	var minAmount : Double? = null
+	var maxAmount : Double? = null
 	//additional
 	//val itemIdFrom : Int? = null//Int or String
 	//val bookingDateFrom : String? = null
 	//val bookingDateTo : String? = null
-	private var minAmount : Double? = null
-	private var maxAmount : Double? = null
+
 	//val pageId : Int? = null
 	//val perPage : Int? = null
 	//val type : Type? = null
@@ -185,8 +194,6 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 10){
 			Log.e(TagProduction, "[constructor(json)/${this.javaClass.name}] Error in parsing TransactiondDoneInfo from json obj")
 		}
 	}
-}
-
 	constructor(amountMin: Double, amountMax: Double, dateFrom: String, dateTo: String) : this(){
 		this.maxAmount = amountMax
 		this.minAmount = amountMin

@@ -142,6 +142,7 @@ class AccountHistroyActivity : AppCompatActivity() {
 
 			val adapterToSet = CustomAdapter(this@AccountHistroyActivity,accNumber, recordsList.sorted())
 			withContext(Main){
+				list.adapter = null
 				list.adapter = adapterToSet
 				dialog.hide()
 			}

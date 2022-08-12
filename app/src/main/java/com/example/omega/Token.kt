@@ -282,7 +282,7 @@ class Token() {
 		if(recordList.isNullOrEmpty())
 			return false
 
-		paymentAccountRef.accountHistory = recordList
+ 		paymentAccountRef.accountHistory = recordList
 		return true
 	}
 }
