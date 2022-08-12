@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.omega.FilterDialog.OnMyDialogResult
 import com.example.omega.Utilities.Companion.TagProduction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -30,6 +31,8 @@ class AccountHistroyActivity : AppCompatActivity() {
 	private lateinit var spinner : Spinner
 	private lateinit var list : ListView
 	private lateinit var token: Token
+	private var fillterDataObj : TransactionsDoneAdditionalInfos = TransactionsDoneAdditionalInfos()
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_account_histroy)
@@ -84,6 +87,7 @@ class AccountHistroyActivity : AppCompatActivity() {
 		val listOfAccountsFromToken = token.getListOfAccountsNumbersToDisplay()
 		if(listOfAccountsFromToken.isNullOrEmpty()){
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token return null or empty account list")
+			//todo its suspended
 			//val errorCodeTextToDisplay = getString(R.string.AccHistoryAct_UserMsg_ErrorInObtainingToken)
 			//Utilities.showToast(this, errorCodeTextToDisplay)
 			finish()
@@ -116,7 +120,7 @@ class AccountHistroyActivity : AppCompatActivity() {
 		val accNumber = token.getAccountNbrByDisplayStr(itemTxt)?: return
 		val dialog = WaitingDialog(this, R.string.POPUP_getSingleAccountHistory)
 		CoroutineScope(IO).launch{
-			val accountHaveHistory = token.fillHistoryToPaymentAccount(this@AccountHistroyActivity, accNumber)
+			val accountHaveHistory = token.fillHistoryToPaymentAccount(this@AccountHistroyActivity, accNumber, fillterDataObj)
 			if(!accountHaveHistory){
 				Log.e(TagProduction,"[userChangedAccount/${this@AccountHistroyActivity.javaClass.name}], failed to fill PaymentAccount with details")
 				withContext(Main){
@@ -145,7 +149,21 @@ class AccountHistroyActivity : AppCompatActivity() {
 
 	}
 	private fun showFilterDialog(){
-		FilterDialog(this).show()
+		val dialog = FilterDialog(this)
+		dialog.setDialogResult(object : OnMyDialogResult {
+			override fun finish(result: TransactionsDoneAdditionalInfos?) {
+				if(result!=null){
+					dialog.dismiss()
+					userAppliedFillters(result)
+				}
+			}
+		})
+		dialog.show()
+	}
+	private fun userAppliedFillters(fillterDataObj: TransactionsDoneAdditionalInfos){
+		token.clearPaymentAccsHistory()
+		this.fillterDataObj = fillterDataObj
+		userChangedAccount()
 	}
 }
 
@@ -204,6 +222,16 @@ class FilterDialog(context: Context) : Dialog(context) {
 	private lateinit var backButton : Button
 	private lateinit var startDateField : TextView
 	private lateinit var endDateField : TextView
+	var mDialogResult: OnMyDialogResult? = null
+
+	fun setDialogResult(dialogResult: OnMyDialogResult) {
+		mDialogResult = dialogResult
+	}
+
+	interface OnMyDialogResult {
+		fun finish(result: TransactionsDoneAdditionalInfos?)
+	}
+
 
 	private fun setGui(){
 		minAmountField = findViewById(R.id.FilterAct_minAmount_editText)
@@ -220,6 +248,9 @@ class FilterDialog(context: Context) : Dialog(context) {
 	private fun setListeners(){
 		backButton.setOnClickListener {
 			this.dismiss()
+		}
+		applyButton.setOnClickListener {
+			applyButtonClicked()
 		}
 		val minAmountListener = object : TextWatcher {
 			var previousValue : String = ""
@@ -363,20 +394,19 @@ class FilterDialog(context: Context) : Dialog(context) {
 			return false
 		}
 
-		if(startDayTimeVal <= endDayTimeVal){
+		return if(startDayTimeVal <= endDayTimeVal){
 			endDateField.background = okImg
 			startDateField.background = okImg
+			true
 		}
 		else{
 			endDateField.background = errIng
 			startDateField.background = errIng
-			return false
+			false
 		}
-
-		return true
 	}
 
-	fun applyButtonClicked(){
+	private fun applyButtonClicked(){
 		val ok = checkDatesCorrectness() && checkIfMaxAmountIsBiggerThanMin()
 		if(!ok)
 			return
@@ -385,10 +415,9 @@ class FilterDialog(context: Context) : Dialog(context) {
 		if(dataObj == null)//todo
 			return
 
-
-
+		mDialogResult!!.finish(dataObj)
 	}
-	private fun getFillterDataObj() : FillterDataObj?{
+	private fun getFillterDataObj() : TransactionsDoneAdditionalInfos?{
 		return try {
 			val startParts = startDateField.text.split("-")
 			val dateFrom = "${startParts[2]}-${startParts[1]}-${startParts[0]}"
@@ -408,7 +437,7 @@ class FilterDialog(context: Context) : Dialog(context) {
 			else
 				amountMaxText.toDouble()
 
-			val fillterDataObj = FillterDataObj(amountMin, amountMax, dateFrom, dateTo)
+			val fillterDataObj = TransactionsDoneAdditionalInfos(amountMin, amountMax, dateFrom, dateTo)
 			fillterDataObj
 		}catch (e : Exception){
 			Log.e(TagProduction, "applyButtonClicked/${this.javaClass.name} error in parsing data")
@@ -417,10 +446,3 @@ class FilterDialog(context: Context) : Dialog(context) {
 	}
 
 }
-
-data class FillterDataObj(
-	val minAmount: Double,
-	val maxAmount: Double,
-	val dateFrom: String,
-	val dateTo: String
-)

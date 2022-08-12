@@ -33,7 +33,7 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 		}
 
 	}
-	suspend fun run(accNumber: String, infos : TransactionsDoneAdditionalInfos = TransactionsDoneAdditionalInfos()): List<AccountHistoryRecord>? {
+	suspend fun run(accNumber: String, infos : TransactionsDoneAdditionalInfos): List<AccountHistoryRecord>? {
 		Log.i(TagProduction, "GetTransactionsDone starts")
 		var sucess = false
 		try {
@@ -117,8 +117,6 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 	}
 }
 
-
-
 class TransactionsDoneAdditionalInfos(daysBack : Int = 10){
 	companion object{
 		private enum class Type(val text: String){
@@ -179,6 +177,13 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 10){
 	}
 }
 
+	constructor(amountMin: Double, amountMax: Double, dateFrom: String, dateTo: String) : this(){
+		this.maxAmount = amountMax
+		this.minAmount = amountMin
+		this.fromDate = dateFrom
+		this.endDate = dateTo
+	}
+}
 
 class AccountHistoryRecord(jsonObj: JSONObject) : Comparable<AccountHistoryRecord> {
 	var senderAccNumber : String? = null
