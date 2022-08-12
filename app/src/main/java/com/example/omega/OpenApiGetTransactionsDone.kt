@@ -77,6 +77,16 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 			.put(TransactionDateFrom.text,infos.fromDate)
 			.put(TransactionDateTo.text,infos.endDate)
 
+		if(infos.minAmount != null){
+			if(infos.minAmount!! > 0.0){
+			}
+		}
+
+		if(infos.maxAmount != null){
+			if(infos.maxAmount!! > 0.0){
+				requestBodyJson.put(MaxAmount.text, infos.maxAmount)
+			}
+		}
 
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text,token.getAuthFieldValue()))
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone, requestBodyJson, uuidStr, additionalHeaderList)

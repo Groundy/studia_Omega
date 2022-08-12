@@ -245,6 +245,16 @@ class Token() {
 	fun getPriligeList() : JSONArray?{
 		return privilegeList
 	}
+	fun clearPaymentAccsHistory(){
+		if(accounts.isNullOrEmpty())
+			return
+
+		accounts!!.forEach{
+			if(it.accountHistory != null)
+				it.accountHistory = emptyList<AccountHistoryRecord>()
+		}
+	}
+	suspend fun fillHistoryToPaymentAccount(callerActivity: Activity, paymentAccountAccNumber: String, fillterDataObj : TransactionsDoneAdditionalInfos) : Boolean{
 		val errorBasic = "[fillHistoryToPaymentAccount/${this.javaClass.name}]"
 
 		if(accounts.isNullOrEmpty()){
