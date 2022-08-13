@@ -54,11 +54,8 @@ class OpenApiAuthorize(activity: Activity) {
 			Log.e(TagProduction, "Authorize ended with error")
 		return success
 	}
-
-
-
-	suspend fun runForPis(permisionListObject : PermissionList, transferData: TransferData) : Boolean{
-		permissionsList = permisionListObject
+	suspend fun runForPis(transferData: TransferData) : Boolean{
+		permissionsList = PermissionList(Privileges.SinglePayment)
 		this.transferData = transferData
 		Log.i(TagProduction, "Authorize for pis started")
 		val request = getRequest(stateValue, ScopeValues.Pis)
@@ -179,7 +176,7 @@ class OpenApiAuthorize(activity: Activity) {
 		val userWantAccessToSinglePayment = permissionsList.permissionsArray.contains(Privileges.SinglePayment)
 
 		if(userWantAccessToSinglePayment){
-			val domesticPaymentPriviledgeScopeDetailObj = PaymentSuppClass(transferData).gePrivilegeScopeDetailsObjForAuth()
+			val domesticPaymentPriviledgeScopeDetailObj = PaymentSuppClass(transferData).toDomesticPaymentScopeDetialObjForAuth()
 			privilegesListJsonObjToRet.put(ApiMethodes.PisDomestic.text, domesticPaymentPriviledgeScopeDetailObj)
 		}
 
@@ -245,6 +242,5 @@ class OpenApiAuthorize(activity: Activity) {
 			.put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
 
 		return scopeDetailsObj
-
 	}
 }

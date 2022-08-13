@@ -81,47 +81,6 @@ class PaymentSuppClass(private val transferData: TransferData) {
 			.put(TransactionsObjFields.ExecutionDate.text, transferData.executionDate)
 			.put(TransactionsObjFields.Currency.text, transferData.currency)
 	}
-	/*
-	private fun getTransactionInfoSpObj(): JSONObject {
-		return JSONObject()
-			.put(TransactionsExtraInfoObjFields.SpInvoiceNumber.text, "spInvoiceNumber")
-			.put(TransactionsExtraInfoObjFields.SpTaxIdentificationNumber.text, "1111111112")
-			.put(TransactionsExtraInfoObjFields.SpTaxAmount.text, "1.23")
-			.put(TransactionsExtraInfoObjFields.SpDescription.text,"Epo da jewbe in jimtafo miwjon ra izo on lu kuwimwen zi ijufeb.")
-	}
-	*/
-
-	fun gePrivilegeScopeDetailsObjForAuth(): JSONObject {
-		val scopeUsageLimitStr = ApiConsts.ScopeDetailsFields.ScopeUsageLimit.text
-		val scopeSingleUsageStr = ApiConsts.ScopeUsageLimit.Single.text
-		return JSONObject()
-			.put(scopeUsageLimitStr,scopeSingleUsageStr)
-			.put(RequestFields.Recipient.text, getRecipentbj())
-			.put(RequestFields.Sender.text, getSenderObj())
-			.put(RequestFields.TransferData.text,getTransferDataObj())
-			.put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
-			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
-			.put(RequestFields.System.text, usingSystem)
-			.put(RequestFields.ExecutionMode.text, usingExecutionMode)
-			//.put(RequestFields.Hold.text, false)
-			//.put("splitPayment", false)
-			//.put("transactionInfoSp", getTransactionInfoSpObj())
-	}
-	fun getBodyForTokenRequest(requestHeadersJsonObject: JSONObject): JSONObject {
-		return JSONObject()
-			.put(ApiConsts.ApiReqFields.RequestHeader.text, requestHeadersJsonObject)
-			.put(RequestFields.Recipient.text, getRecipentbj())
-			.put(RequestFields.Sender.text, getSenderObj())
-			.put(RequestFields.TransferData.text,getTransferDataObj())
-			.put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
-			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
-			.put(RequestFields.System.text, usingSystem)
-			//.put(RequestFields.Hold.text, false)
-			.put(RequestFields.ExecutionMode.text, usingExecutionMode)
-			//.put(RequestFields.SplitPayment.text, false)
-			//.put(RequestFields.TransactionInfoSpObj.text,getTransactionInfoSpObj())
-	}
-
 	private fun ensureAccNumberGotPLPrefix(accountNumber: String?) : String{
 		if(accountNumber==null){
 			Log.e(Utilities.TagProduction,"[ensureAccNumberGotPLPrefix/${this.javaClass.name}] null acc number passed to request")
@@ -137,7 +96,6 @@ class PaymentSuppClass(private val transferData: TransferData) {
 				String()
 			}
 		}
-
 	}
 	private fun nameToRequestJsonFormat(name : String?) : JSONObject{
 		if(name == null){
@@ -149,6 +107,32 @@ class PaymentSuppClass(private val transferData: TransferData) {
 			.put(RequestFields.Value.text,JSONArray()
 				.put(name)
 			)
+	}
+
+	fun toDomesticPaymentScopeDetialObjForAuth(): JSONObject {
+		val scopeUsageLimitStr = ApiConsts.ScopeDetailsFields.ScopeUsageLimit.text
+		val scopeSingleUsageStr = ApiConsts.ScopeUsageLimit.Single.text
+		return JSONObject()
+			.put(scopeUsageLimitStr,scopeSingleUsageStr)
+			.put(RequestFields.Recipient.text, getRecipentbj())
+			.put(RequestFields.Sender.text, getSenderObj())
+			.put(RequestFields.TransferData.text,getTransferDataObj())
+			.put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
+			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
+			.put(RequestFields.System.text, usingSystem)
+			.put(RequestFields.ExecutionMode.text, usingExecutionMode)
+	}
+	fun toDomesticPaymentRequest(requestHeadersJsonObject: JSONObject): JSONObject {
+		return JSONObject()
+			.put(ApiConsts.ApiReqFields.RequestHeader.text, requestHeadersJsonObject)
+			.put(RequestFields.Recipient.text, getRecipentbj())
+			.put(RequestFields.Sender.text, getSenderObj())
+			.put(RequestFields.TransferData.text,getTransferDataObj())
+			.put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
+			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
+			.put(RequestFields.System.text, usingSystem)
+			.put(RequestFields.ExecutionMode.text, usingExecutionMode)
+
 	}
 
 	fun toBundleJsonArrayElement() : JSONObject{
