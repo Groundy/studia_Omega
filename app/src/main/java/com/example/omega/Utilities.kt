@@ -57,9 +57,9 @@ class Utilities {
 		fun wookieTestGetTestObjWithFilledData() : TransferData{
 			val testTransferData = TransferData().also {
 				it.receiverAccNumber = "09124026981111001066212622"
-				it.receiverName = "Regina Aff"
-				it.senderAccNumber = "PL50249000050000400076134538"
-				it.senderAccName = "Rwfaw Dawfawf"
+				it.receiverName = "AAA BBB"
+				it.senderAccNumber = "PL63249000050000400030900682"
+				it.senderAccName = "Regina Adamiec "
 				it.amount = 12.34
 				it.description = "zwrot pozyczki"
 				it.currency = "PLN"

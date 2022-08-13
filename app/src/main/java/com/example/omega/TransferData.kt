@@ -23,11 +23,12 @@ class TransferData() {
 			NameAdress("nameAddress"),
 			AccountNumber("accountNumber");
 		}
-		private const val methodeName = "pis:domestic"
+		private const val domesticMethodeName = "pis:domestic"
+		private const val bundleMethodeName = "pis:bundle"
 		fun fromDomesticPaymentToken(singlePaymentToken : Token) : TransferData?{
 			return try {
 				val privilegesList = singlePaymentToken.getPriligeList()
-				val methodeObj = privilegesList!!.getJSONObject(0).getJSONObject(methodeName)
+				val methodeObj = privilegesList!!.getJSONObject(0).getJSONObject(domesticMethodeName)
 				val toRet = fromTokenObj(methodeObj)
 				toRet
 			}catch (e : Exception){
@@ -41,7 +42,7 @@ class TransferData() {
 				var toRet = arrayListOf<TransferData>()
 				val transfersArray = privilegesList!!
 					.getJSONObject(0)
-					.getJSONObject("pis:bundle")
+					.getJSONObject(bundleMethodeName)
 					.getJSONArray("domesticTransfers")
 
 				for (i in 0 until transfersArray.length()){

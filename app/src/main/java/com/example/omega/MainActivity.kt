@@ -241,11 +241,9 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 
-		val permListObj = PermissionList(ApiConsts.Privileges.SinglePayment)
-
 		val dialog = WaitingDialog(this, R.string.POPUP_auth)
 		CoroutineScope(IO).launch {
-			val authOk = OpenApiAuthorize(this@MainActivity).runForPis(permListObj, transferData)
+			val authOk = OpenApiAuthorize(this@MainActivity).runForPis(transferData)
 			withContext(Main){
 				dialog.hide()
 				if(!authOk){
