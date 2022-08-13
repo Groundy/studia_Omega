@@ -56,13 +56,13 @@ class Utilities {
 		}
 		fun wookieTestGetTestObjWithFilledData() : TransferData{
 			val testTransferData = TransferData().also {
-				it.receiverAccNumber = "09 1240 2698 1111 0010 6621 2622"
+				it.receiverAccNumber = "09124026981111001066212622"
 				it.receiverName = "Regina Aff"
 				it.senderAccNumber = "PL50249000050000400076134538"
 				it.senderAccName = "Rwfaw Dawfawf"
 				it.amount = 12.34
 				it.description = "zwrot pozyczki"
-				it.currency = "EUR"
+				it.currency = "PLN"
 				it.executionDate = OmegaTime.getDate()
 			}
 			return testTransferData
@@ -85,7 +85,7 @@ class Utilities {
 			var amountStr = value.toString()
 			if(!amountStr.contains('.')){
 				Log.e(TagProduction, "[doubleToTwoDigitsAfterCommaString/${this.javaClass.name}] Wrong struct passed for payment request, amount doesnt have dot sign")
-				return amountStr
+				return amountStr.plus(".00")
 			}
 
 			val theresOnlyOneDigitAfterDot = amountStr.indexOf('.') == amountStr.length -2

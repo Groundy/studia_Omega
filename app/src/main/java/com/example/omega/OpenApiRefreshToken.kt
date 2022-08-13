@@ -34,7 +34,7 @@ class OpenApiRefreshToken(private val refreshToken : String) {
 			.put(ApiReqFields.RedirectUri.text, ApiConsts.REDIRECT_URI)
 			.put(ApiReqFields.ClientId.text, ApiConsts.userId_ALIOR)
 			.put(ApiReqFields.RefreshToken.text, refreshToken)
-			.put(ApiReqFields.Scope.text, ScopeValues.AisAcc.text)
+			.put(ApiReqFields.Scope.text, ScopeValues.Ais.text)
 
 		return 	ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl, jsonBodyRequest, uuid)
 	}

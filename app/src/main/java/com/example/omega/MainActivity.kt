@@ -45,6 +45,19 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
 		startNfcOnStartIfUserWishTo()
+
+		CoroutineScope(IO).launch{
+			//getToken(WebActivtyRedirect.None)
+			val token = PreferencesOperator.getToken(this@MainActivity)
+			val t1 = Utilities.wookieTestGetTestObjWithFilledData()
+			val t2 = Utilities.wookieTestGetTestObjWithFilledData()
+			t2.description = "test test test"
+			val list = arrayListOf<TransferData>()
+			list.add(t1)
+			list.add(t2)
+			OpenApiAuthorize(this@MainActivity).runForBundle(list)
+			//OpenApiBundle(this@MainActivity , token, list).run()
+		}
 		//accHistoryTabClicked()
 		//PreferencesOperator.clearAuthData(this)
 		//val dialog = WaitingDialog(this, "Obtaining token from memory")
@@ -337,7 +350,7 @@ class MainActivity : AppCompatActivity() {
 
 		val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 		PreferencesOperator.clearAuthData(this)
-		val authOk = OpenApiAuthorize(this).runForAis(obj, dialog)
+		val authOk = OpenApiAuthorize(this).runForAis(obj)
 		if(!authOk){
 			withContext(Main){
 				Utilities.showToast(this@MainActivity, "Nie udało się automatycznie pobrać tokenu.")//todo to file

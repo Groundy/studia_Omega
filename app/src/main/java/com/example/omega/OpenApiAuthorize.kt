@@ -29,18 +29,25 @@ class OpenApiAuthorize(activity: Activity) {
 			AisGetTransactionsDone("ais:getTransactionsDone"),
 			AisGetAccount("ais:getAccount"),
 			PisDomestic("pis:domestic"),
+			PisBundle("pis:bundle"),
+		}
+		private enum class BundleFields(val text : String){
+			TppBundleId("tppBundleId"),
+			TransfersTotalAmount("transfersTotalAmount"),
+			TypeOfTransfers("typeOfTransfers"),
+			DomesticTransfers("domesticTransfers"),
+			Domestic("domestic")
 		}
 		const val redirectUriField = "aspspRedirectUri"
 	}
 
-	suspend fun runForAis(permisionListObject : PermissionList, dialog: WaitingDialog? = null) : Boolean{
+	suspend fun runForAis(permisionListObject : PermissionList) : Boolean{
 		permissionsList = permisionListObject
 		if (permissionsList.permissionsArray.isEmpty()) {
 			Log.e(TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
 			return false
 		}
 
-		dialog?.changeText(callerActivity, R.string.POPUP_auth)
 		Log.i(TagProduction, "Authorize started")
 		val request = getRequest(stateValue, ScopeValues.Ais)
 		val okResponse = sendRequest(request)
@@ -49,7 +56,6 @@ class OpenApiAuthorize(activity: Activity) {
 			Log.i(TagProduction, "Authorize ended with sucess")
 		else
 			Log.e(TagProduction, "Authorize ended with error")
-		dialog?.changeText(callerActivity, R.string.POPUP_empty)
 		return success
 	}
 	suspend fun runForPis(permisionListObject : PermissionList, transferData: TransferData) : Boolean{
@@ -63,6 +69,17 @@ class OpenApiAuthorize(activity: Activity) {
 			Log.i(TagProduction, "Authorize for pis ended with sucess")
 		else
 			Log.e(TagProduction, "Authorize for pis ended with error")
+		return success
+	}
+	suspend fun runForBundle(trDataList: List<TransferData>) : Boolean{
+		Log.i(TagProduction, "Authorize for pis:bundle started")
+		val request = getRequestForBundle(trDataList)
+		val response = sendRequest(request)
+		val success = handleResponse(response)
+		if(success)
+			Log.i(TagProduction, "Authorize for pis:bundle ended with sucess")
+		else
+			Log.e(TagProduction, "Authorize for pis:bundle ended with error")
 		return success
 	}
 
@@ -107,7 +124,6 @@ class OpenApiAuthorize(activity: Activity) {
 	private fun getScopeDetailsObject(scope: ScopeValues) : JSONObject? {
 		val privilegesListJsonObj = when(scope){
 			ScopeValues.Ais->{getPrivilegeScopeDetailsObjAIS()}
-			ScopeValues.AisAcc->{getPrivilegeScopeDetailsObjAisAccount()}
 			ScopeValues.Pis->{getPrivilegeScopeDetailsObjPIS()}
 		}
 		return JSONObject()
@@ -133,7 +149,7 @@ class OpenApiAuthorize(activity: Activity) {
 
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_authURL, authUrl)
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_lastRandomValue, stateValue)
-		PreferencesOperator.savePref(callerActivity, R.string.PREF_lastUsedPermissionsForAuth, permissionsList.toString())
+		//todo// PreferencesOperator.savePref(callerActivity, R.string.PREF_lastUsedPermissionsForAuth, permissionsList.toString())
 		val validityTime = OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds)
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_authUrlValidityTimeEnd, validityTime)
 		return true
@@ -170,8 +186,67 @@ class OpenApiAuthorize(activity: Activity) {
 
 		return privilegesListJsonObjToRet
 	}
-	private fun getPrivilegeScopeDetailsObjAisAccount() : JSONObject{
-		//todo implement
-		return JSONObject()
+
+
+	private fun getRequestForBundle(trDataList: List<TransferData>) : Request{
+		val uuidStr = ApiFunctions.getUUID()
+
+		val requestHeaderJsonObj = JSONObject()
+			.put(ApiReqFields.RequestId.text, uuidStr)
+			.put(ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
+			.put(ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			.put(ApiReqFields.SendDate.text, OmegaTime.getCurrentTime())
+			.put(ApiReqFields.TppId.text, ApiConsts.TTP_ID)
+			.put(ApiReqFields.IsCompanyContext.text, false)
+
+		val requestBodyJson = JSONObject()
+			.put(ApiReqFields.RequestHeader.text, requestHeaderJsonObj)
+			.put(ApiReqFields.ResponseType.text,ResponseTypes.Code.text)
+			.put(ApiReqFields.ClientId.text, ApiConsts.userId_ALIOR)
+			.put(ApiReqFields.Scope.text, ScopeValues.Pis.text)
+			.put(ApiReqFields.ScopeDetails.text,getBundleScopeDetailsObject(trDataList))
+			.put(ApiReqFields.RedirectUri.text, ApiConsts.REDIRECT_URI)
+			.put(ApiReqFields.State.text,stateValue)
+		return ApiFunctions.bodyToRequest(BankUrls.AuthUrl, requestBodyJson, uuidStr)
+	}
+
+	private fun getBundleScopeDetailsObject(trDataList: List<TransferData>) : JSONObject{
+		var amount = 0.0
+		trDataList.forEach{
+			if(it.amount != null){
+				if(it.amount!! > 0.0)
+					amount += it.amount!!
+			}else{
+				//todo
+			}
+		}
+		val amountStr = Utilities.doubleToTwoDigitsAfterCommaString(amount)
+
+		val transfersArray = JSONArray()
+		trDataList.forEach {
+			val toAdd = DomesticPaymentSupportClass(it).toBundleJsonArrayElement()
+			transfersArray.put(toAdd)
+		}
+
+		val methodeJsonObj = JSONObject()
+			.put(ScopeDetailsFields.ScopeUsageLimit.text, ScopeUsageLimit.Single.text)
+			.put(BundleFields.TransfersTotalAmount.text, amountStr)
+			.put(BundleFields.TypeOfTransfers.text, BundleFields.Domestic.text)
+			.put(BundleFields.DomesticTransfers.text, transfersArray)
+
+		val privilegesArray = JSONArray()
+			.put(JSONObject()
+				.put(ApiMethodes.PisBundle.text, methodeJsonObj)
+			)
+
+		val scopeDetailsObj = JSONObject()
+			.put(ScopeFields.PrivilegeList.text, privilegesArray)
+			.put(ScopeFields.ScopeGroupType.text, ScopeValues.Pis.text)
+			.put(ScopeFields.ConsentId.text, ApiConsts.ConsentId)
+			.put(ScopeFields.ScopeTimeLimit.text, OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds))
+			.put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
+
+		return scopeDetailsObj
+
 	}
 }

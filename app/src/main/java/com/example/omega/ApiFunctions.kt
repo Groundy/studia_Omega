@@ -148,5 +148,9 @@ class ApiFunctions {
 			val finalMsg = "$position $error $additionalErrorMsg"
 			Log.e(TagProduction, finalMsg)
 		}
+		fun getRandomValueForTppTransId() : String{
+			val number = Random().nextInt(Int.MAX_VALUE)
+			return number.toString()
+		}
 	}
 }

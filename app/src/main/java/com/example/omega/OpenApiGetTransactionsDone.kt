@@ -79,20 +79,14 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 
 		if(infos.minAmount != null){
 			if(infos.minAmount!! > 0.0){
-				var textToPut = infos.minAmount.toString()
-				val theresOnlyOneDigitAfterDot = textToPut.indexOf('.') == textToPut.length -2
-				if (theresOnlyOneDigitAfterDot)
-					textToPut = "${textToPut}0"
+				val textToPut = Utilities.doubleToTwoDigitsAfterCommaString(infos.minAmount)
 				requestBodyJson.put(MinAmount.text, textToPut)
 			}
 		}
 
 		if(infos.maxAmount != null){
 			if(infos.maxAmount!! > 0.0){
-				var textToPut = infos.maxAmount.toString()
-				val theresOnlyOneDigitAfterDot = textToPut.indexOf('.') == textToPut.length -2
-				if (theresOnlyOneDigitAfterDot)
-					textToPut = "${textToPut}0"
+				val textToPut = Utilities.doubleToTwoDigitsAfterCommaString(infos.maxAmount)
 				requestBodyJson.put(MaxAmount.text, textToPut)
 			}
 		}

@@ -3,13 +3,13 @@ package com.example.omega
 class ApiConsts {
 	enum class ScopeValues(val text : String) {
 		Ais("ais"),
-		AisAcc("ais-accounts"),
+		//AisAcc("ais-accounts"),
 		Pis("pis");
 		companion object{
 			fun fromStr(text: String) : ScopeValues{
 				return when(text){
 					"ais" -> Ais
-					"ais-accounts" -> AisAcc
+					//"ais-accounts" -> AisAcc
 					"pis" -> Pis
 					else -> Ais
 				}

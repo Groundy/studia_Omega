@@ -184,4 +184,8 @@ class TransferData() {
 
 		return true
 	}
+
+	fun toBundleJsonArrayElement(){
+
+	}
 }

@@ -99,11 +99,11 @@ class DomesticPaymentSupportClass(private val transferData: TransferData) {
 			.put(RequestFields.Recipient.text, getRecipentbj())
 			.put(RequestFields.Sender.text, getSenderObj())
 			.put(RequestFields.TransferData.text,getTransferDataObj())
-			.put(RequestFields.TppTransactionId.text, getRandomValueForTppTransId())
+			.put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
 			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
 			.put(RequestFields.System.text, usingSystem)
-			//.put(RequestFields.Hold.text, false)
 			.put(RequestFields.ExecutionMode.text, usingExecutionMode)
+			//.put(RequestFields.Hold.text, false)
 			//.put("splitPayment", false)
 			//.put("transactionInfoSp", getTransactionInfoSpObj())
 	}
@@ -113,7 +113,7 @@ class DomesticPaymentSupportClass(private val transferData: TransferData) {
 			.put(RequestFields.Recipient.text, getRecipentbj())
 			.put(RequestFields.Sender.text, getSenderObj())
 			.put(RequestFields.TransferData.text,getTransferDataObj())
-			.put(RequestFields.TppTransactionId.text,getRandomValueForTppTransId())
+			.put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
 			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
 			.put(RequestFields.System.text, usingSystem)
 			//.put(RequestFields.Hold.text, false)
@@ -122,10 +122,6 @@ class DomesticPaymentSupportClass(private val transferData: TransferData) {
 			//.put(RequestFields.TransactionInfoSpObj.text,getTransactionInfoSpObj())
 	}
 
-	private fun getRandomValueForTppTransId() : String{
-		val number = Random().nextInt(Int.MAX_VALUE)
-		return number.toString()
-	}
 	private fun ensureAccNumberGotPLPrefix(accountNumber: String?) : String{
 		if(accountNumber==null){
 			Log.e(Utilities.TagProduction,"[ensureAccNumberGotPLPrefix/${this.javaClass.name}] null acc number passed to request")
@@ -153,5 +149,16 @@ class DomesticPaymentSupportClass(private val transferData: TransferData) {
 			.put(RequestFields.Value.text,JSONArray()
 				.put(name)
 			)
+	}
+
+	fun toBundleJsonArrayElement() : JSONObject{
+		return JSONObject()
+			.put(RequestFields.Recipient.text, getRecipentbj())
+			.put(RequestFields.Sender.text, getSenderObj())
+			.put(RequestFields.TransferData.text,getTransferDataObj())
+			.put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
+			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
+			.put(RequestFields.System.text, usingSystem)
+			.put(RequestFields.ExecutionMode.text, usingExecutionMode)
 	}
 }
