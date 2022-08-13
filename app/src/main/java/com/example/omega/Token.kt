@@ -3,7 +3,6 @@ import android.app.Activity
 import android.util.Log
 import org.json.JSONObject
 import com.example.omega.Utilities.Companion.TagProduction
-import kotlinx.coroutines.delay
 import org.json.JSONArray
 
 class Token() {
@@ -134,7 +133,7 @@ class Token() {
 		return true
 	}
 
-	fun getListOfAccountsNumbers() : List<String>?{
+	private fun getListOfAccountsNumbers() : List<String>?{
 		return try {
 			val accountsArray = privilegeList!!
 			val array : ArrayList<String> = ArrayList()
@@ -251,7 +250,7 @@ class Token() {
 
 		accounts!!.forEach{
 			if(it.accountHistory != null)
-				it.accountHistory = emptyList<AccountHistoryRecord>()
+				it.accountHistory = emptyList()
 		}
 	}
 	suspend fun fillHistoryToPaymentAccount(callerActivity: Activity, paymentAccountAccNumber: String, fillterDataObj : TransactionsDoneAdditionalInfos) : Boolean{

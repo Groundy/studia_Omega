@@ -11,7 +11,6 @@ import android.view.View
 import kotlin.math.floor
 import android.widget.*
 import com.example.omega.Utilities.Companion.TagProduction
-import kotlinx.android.synthetic.main.account_history_filters.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -363,7 +362,7 @@ class BasicTransferActivity : AppCompatActivity() {
 
 		val transferData = getTransferDataFromFields()
 		val serializedTransferData = transferData.toString()
-		if(serializedTransferData.isNullOrEmpty()) {
+		if(serializedTransferData.isEmpty()) {
 			setResult(RESULT_CANCELED)
 			finish()
 			return

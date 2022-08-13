@@ -223,7 +223,7 @@ class FilterDialog(context: Context) : Dialog(context) {
 	private lateinit var backButton : Button
 	private lateinit var startDateField : TextView
 	private lateinit var endDateField : TextView
-	var mDialogResult: OnMyDialogResult? = null
+	private var mDialogResult: OnMyDialogResult? = null
 
 	fun setDialogResult(dialogResult: OnMyDialogResult) {
 		mDialogResult = dialogResult
@@ -292,11 +292,7 @@ class FilterDialog(context: Context) : Dialog(context) {
 
 
 		val startDateFieldClickedListener = View.OnClickListener{
-			val c = Calendar.getInstance()
-			val year = c.get(Calendar.YEAR)
-			val month = c.get(Calendar.MONTH)
-			val day = c.get(Calendar.DAY_OF_MONTH)
-			val listener = OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+			val listener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
 				var dayOfMonthStr = dayOfMonth.toString()
 				if(dayOfMonthStr.length == 1)
 					dayOfMonthStr = "0$dayOfMonthStr"
@@ -309,18 +305,17 @@ class FilterDialog(context: Context) : Dialog(context) {
 				startDateField.text = str
 				checkDatesCorrectness()
 			}
-
+			val c = Calendar.getInstance()
+			val year = c.get(Calendar.YEAR)
+			val month = c.get(Calendar.MONTH)
+			val day = c.get(Calendar.DAY_OF_MONTH)
 			val dpd = DatePickerDialog(this.context, listener, year, month, day)
 			dpd.show()
 
 		}
 
 		val endDateFieldClickedListener = View.OnClickListener{
-			val c = Calendar.getInstance()
-			val year = c.get(Calendar.YEAR)
-			val month = c.get(Calendar.MONTH)
-			val day = c.get(Calendar.DAY_OF_MONTH)
-			val listener = OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+			val listener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
 				var dayOfMonthStr = dayOfMonth.toString()
 				if(dayOfMonthStr.length == 1)
 					dayOfMonthStr = "0$dayOfMonthStr"
@@ -333,7 +328,10 @@ class FilterDialog(context: Context) : Dialog(context) {
 				endDateField.text = str
 				checkDatesCorrectness()
 			}
-
+			val c = Calendar.getInstance()
+			val year = c.get(Calendar.YEAR)
+			val month = c.get(Calendar.MONTH)
+			val day = c.get(Calendar.DAY_OF_MONTH)
 			val dpd = DatePickerDialog(this.context, listener, year, month, day)
 			dpd.show()
 		}
@@ -427,13 +425,13 @@ class FilterDialog(context: Context) : Dialog(context) {
 			val dateTo = "${endParts[2]}-${endParts[1]}-${endParts[0]}"
 
 			val amountMinText =  minAmountField.text.toString()
-			val amountMin = if(amountMinText.isNullOrEmpty())
+			val amountMin = if(amountMinText.isEmpty())
 				0.0
 			else
 				amountMinText.toDouble()
 
 			val amountMaxText =  maxAmountField.text.toString()
-			val amountMax = if(amountMaxText.isNullOrEmpty())
+			val amountMax = if(amountMaxText.isEmpty())
 				0.0
 			else
 				amountMaxText.toDouble()

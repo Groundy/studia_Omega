@@ -49,10 +49,10 @@ class OmegaTime {
 			if(d.length == 1)
 				d = "0${d}"
 
-			if(yearsFirst)
-				return "$y-$m-$d"
+			return if(yearsFirst)
+				"$y-$m-$d"
 			else
-				return "$d-$m-$y"
+				"$d-$m-$y"
 		}
 		fun converTimeStampToEpoch(timestamp: String?) : Long{
 			return try{
@@ -75,7 +75,7 @@ class OmegaTime {
 		fun convertDateToLong(date: String): Long {
 			return try {
 				val df = SimpleDateFormat("dd-MM-yyyy")
-				val time = df.parse(date).time
+				val time = df.parse(date)!!.time
 				time
 			}catch (e : Exception){
 				Log.e(TagProduction, "wrong date passed to [convertDateToLong/Omegatime] str = $date")

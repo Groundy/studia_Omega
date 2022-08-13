@@ -9,22 +9,24 @@ enum class Countries(val codeLength : Int){
 
 class AccountNumber(number : String) {
 	companion object{
-		fun checkIfIsProperIbanFormar(numberOnlyDigits : String, country : Countries = Countries.PL) : Boolean{
+		fun checkIfIsProperIbanFormar(
+			numberOnlyDigits: String,
+			country: Countries = Countries.PL
+		): Boolean {
 			val countryCode = country.name
 			val constValSubstraction = 55
 			val firstCharVal = countryCode.first().code - constValSubstraction
 			val secondCharVal = countryCode.last().code - constValSubstraction
 			val countryCodeAsDigitStr = "$firstCharVal$secondCharVal"
 
-			val checkSum = numberOnlyDigits.substring(0,2)
+			val checkSum = numberOnlyDigits.substring(0, 2)
 			val bban = numberOnlyDigits.substring(2, numberOnlyDigits.length)
 			val changeOverReplaced = bban.plus(countryCodeAsDigitStr).plus("00")
 			val bigInt = BigInteger(changeOverReplaced)
 			val modRes = bigInt % BigInteger("97")
 			val properCheckSum = 98 - modRes.toInt()
 
-			val formatOk = properCheckSum == checkSum.toInt()
-			return formatOk
+			return properCheckSum == checkSum.toInt()
 		}
 	}
 	private var numberOnlyDigits : String = String()
@@ -55,28 +57,27 @@ class AccountNumber(number : String) {
 	}
 
 
-	fun checkIfIsProperIbanFormar() : Boolean{
+	fun checkIfIsProperIbanFormar(): Boolean {
 		val countryCode = country.name
 		val constValSubstraction = 55
 		val firstCharVal = countryCode.first().code - constValSubstraction
 		val secondCharVal = countryCode.last().code - constValSubstraction
 		val countryCodeAsDigitStr = "$firstCharVal$secondCharVal"
 
-		val checkSum = numberOnlyDigits.substring(0,2)
+		val checkSum = numberOnlyDigits.substring(0, 2)
 		val bban = numberOnlyDigits.substring(2, numberOnlyDigits.length)
 		val changeOverReplaced = bban.plus(countryCodeAsDigitStr).plus("00")
 		val bigInt = BigInteger(changeOverReplaced)
 		val modRes = bigInt % BigInteger("97")
 		val properCheckSum = 98 - modRes.toInt()
 
-		val formatOk = properCheckSum == checkSum.toInt()
- 		return formatOk
+		return properCheckSum == checkSum.toInt()
 	}
 	fun toStringWithCountry(): String {
 		return "${country.name}$numberOnlyDigits"
 	}
 	fun toStringWithoutCountry(): String {
-		return "$numberOnlyDigits"
+		return numberOnlyDigits
 	}
 
 	fun toDisplay() : String{

@@ -55,7 +55,7 @@ class CodeServerApi {
 			val request = getInternalRequest(GateWay.Set, body)
 			return try {
 				val response = OkHttpClient().newCall(request).execute()
-				val resBodyStr = response.body?.string()
+				val resBodyStr = response.body!!.string()
 				val responseJson = JSONObject(resBodyStr)
 				val success = responseJson.get(Fields.Status.text) == Fields.Ok.text
 				if(!success){
@@ -72,14 +72,14 @@ class CodeServerApi {
 				val okResponse = ServerSetCodeResponse(code, expTimeStamp)
 				okResponse
 			}catch (e : Exception){
-				Log.e(Utilities.TagProduction, "[setCode/${this.javaClass.name}] error in obtaing code from azure app e=[$e]")
+				Log.e(Utilities.TagProduction, "[setCode/CodeServerApi] error in obtaing code from azure app e=[$e]")
 				withContext(Main){
 					ActivityStarter.startOperationResultActivity(callerActivity, "Serwer nieosiągalny")//todo to file
 				}
 				null
 			}
 		}
-		suspend fun getCodeData(callerActivity: Activity, code: Int, ) : TransferData?{
+		suspend fun getCodeData(callerActivity: Activity, code: Int) : TransferData?{
 			val body = JSONObject()
 				.put(Fields.Code.text, code)
 			val request = getInternalRequest(GateWay.Get, body)
