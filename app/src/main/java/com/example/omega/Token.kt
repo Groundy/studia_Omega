@@ -98,6 +98,19 @@ class Token() {
 		}
 	}
 
+	suspend fun fillTokenAccountsWithBankDetails(activity: Activity) : Boolean{
+		val accountNumbers = getListOfAccountsNumbers()
+		if(accountNumbers.isNullOrEmpty())
+			return false
+
+		return try {
+			val successfulyObtainedAccountDetails = OpenApiGetAccDetails(this, activity).run(accountNumbers)
+			successfulyObtainedAccountDetails
+		}catch (e : Exception){
+			Log.e(TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json wrong struct")
+			false
+		}
+	}
 	private suspend fun refreshIFneeded(activity : Activity) : Boolean{
 		if(refreshToken == null){
 			val logMsg = "[refreshIFneeded/${this.javaClass.name}] null refresh token"
@@ -132,6 +145,43 @@ class Token() {
 		PreferencesOperator.savePref(activity, R.string.PREF_Token , this.toString())
 		return true
 	}
+	suspend fun fillHistoryToPaymentAccount(callerActivity: Activity, paymentAccountAccNumber: String, fillterDataObj : TransactionsDoneAdditionalInfos) : Boolean{
+		val errorBasic = "[fillHistoryToPaymentAccount/${this.javaClass.name}]"
+
+		if(accounts.isNullOrEmpty()){
+			Log.e(TagProduction, "$errorBasic, account list is null")
+			return false
+		}
+
+
+		var paymentAccountRef : PaymentAccount? = null
+		for (i in 0 until accounts!!.size){
+			if(accounts!![i].accountNumber != null && accounts!![i].accountNumber == paymentAccountAccNumber){
+				paymentAccountRef = accounts!![i]
+				break
+			}
+		}
+		if(paymentAccountRef == null)
+			return false
+
+		val alreadyFilledHistory = paymentAccountRef.hasHistoryFilled()
+		if(alreadyFilledHistory)
+			return true
+
+
+		val recordList = ApiGetTransactionsDone(callerActivity, this).run(paymentAccountAccNumber, fillterDataObj)
+		if(recordList.isNullOrEmpty())
+			return false
+
+		paymentAccountRef.accountHistory = recordList
+		return true
+	}
+	suspend fun isOk(activity: Activity): Boolean {
+		if (accessToken == null)
+			return false
+		return refreshIFneeded(activity)
+	}
+
 
 	private fun getListOfAccountsNumbers() : List<String>?{
 		return try {
@@ -145,25 +195,6 @@ class Token() {
 		}catch (e : Exception){
 			Log.e(TagProduction, "[getListOfAccountsNumbers()/${this.javaClass.name}] wrong struct of Token struct")
 			null
-		}
-	}
-	suspend fun isOk(activity: Activity): Boolean {
-		if (accessToken == null)
-			return false
-		return refreshIFneeded(activity)
-	}
-
-	suspend fun fillTokenAccountsWithBankDetails(activity: Activity) : Boolean{
-		val accountNumbers = getListOfAccountsNumbers()
-		if(accountNumbers.isNullOrEmpty())
-			return false
-
-		return try {
-			val successfulyObtainedAccountDetails = OpenApiGetAccDetails(this, activity).run(accountNumbers)
-			successfulyObtainedAccountDetails
-		}catch (e : Exception){
-			Log.e(TagProduction, "[getDetailsOfAccountsFromBank()/${this.javaClass.name}] Token json wrong struct")
-			false
 		}
 	}
 	fun updateListOfAccountWithDetails(accList : List<PaymentAccount>){
@@ -253,35 +284,5 @@ class Token() {
 				it.accountHistory = emptyList()
 		}
 	}
-	suspend fun fillHistoryToPaymentAccount(callerActivity: Activity, paymentAccountAccNumber: String, fillterDataObj : TransactionsDoneAdditionalInfos) : Boolean{
-		val errorBasic = "[fillHistoryToPaymentAccount/${this.javaClass.name}]"
 
-		if(accounts.isNullOrEmpty()){
-			Log.e(TagProduction, "$errorBasic, account list is null")
-			return false
-		}
-
-
-		var paymentAccountRef : PaymentAccount? = null
-		for (i in 0 until accounts!!.size){
-			if(accounts!![i].accountNumber != null && accounts!![i].accountNumber == paymentAccountAccNumber){
-				paymentAccountRef = accounts!![i]
-				break
-			}
-		}
-		if(paymentAccountRef == null)
-			return false
-
-		val alreadyFilledHistory = paymentAccountRef.hasHistoryFilled()
-		if(alreadyFilledHistory)
-			return true
-
-
-		val recordList = ApiGetTransactionsDone(callerActivity, this).run(paymentAccountAccNumber, fillterDataObj)
-		if(recordList.isNullOrEmpty())
-			return false
-
- 		paymentAccountRef.accountHistory = recordList
-		return true
-	}
 }

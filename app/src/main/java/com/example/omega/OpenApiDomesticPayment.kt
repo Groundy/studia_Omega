@@ -32,10 +32,13 @@ class OpenApiDomesticPayment(private val callerActivity: Activity, val token: To
 			.put(TppId.text, ApiConsts.TTP_ID)
 			.put(TokenField.text, authFieldValue)
 
-
-		val transferDataFromToken = TransferData(token)
-		val requestBodyJsonObj = DomesticPaymentSupportClass(transferDataFromToken).getBodyForTokenRequest(requestHeaders)
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
+		val transferDataFromToken = TransferData.fromDomesticPaymentToken(token)
+		if(transferDataFromToken == null){
+			//todo
+			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, JSONObject(), uuidStr, additionalHeaderList)
+		}
+		val requestBodyJsonObj = PaymentSuppClass(transferDataFromToken).getBodyForTokenRequest(requestHeaders)
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, requestBodyJsonObj, uuidStr, additionalHeaderList)
 	}
 	private suspend fun sendRequest(request : Request) : Boolean{

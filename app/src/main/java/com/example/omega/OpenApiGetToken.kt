@@ -61,7 +61,7 @@ class OpenApiGetToken(private val callerActivity: Activity, private val scope : 
 			if(responseCode != ApiConsts.ResponseCodes.OK.code){
 				ApiFunctions.logResponseError(response, this.javaClass.name)
 				val errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
-				Utilities.showToast(callerActivity, errorToDisplay)
+				//Utilities.showToast(callerActivity, errorToDisplay)//todo toast on main thread
 				return null
 			}
 			val bodyStr = response.body?.string()

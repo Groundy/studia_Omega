@@ -10,7 +10,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
-class OpenApiBundle(private val callerActivity : Activity, private val paymentToken : Token, private val trDataList : List<TransferData>) {
+class OpenApiBundle(private val callerActivity : Activity, private val paymentToken : Token) {
 	companion object{
 		private enum class BundleFields(val text : String){
 			TppBundleId("tppBundleId"),
@@ -36,6 +36,8 @@ class OpenApiBundle(private val callerActivity : Activity, private val paymentTo
 		val currentTime = OmegaTime.getCurrentTime()
 		val authFieldValue = paymentToken.getAuthFieldValue()
 
+		val trDataList = TransferData.fromBundleToken(paymentToken)
+
 		var totalAmount = 0.0
 		trDataList.forEach{
 			if(it.amount != null)
@@ -48,7 +50,7 @@ class OpenApiBundle(private val callerActivity : Activity, private val paymentTo
 
 		val trasferArray = JSONArray()
 		trDataList.forEach{
-			val toAdd = DomesticPaymentSupportClass(it).toBundleJsonArrayElement()
+			val toAdd = PaymentSuppClass(it).toBundleJsonArrayElement()
 			trasferArray.put(toAdd)
 		}
 
@@ -69,7 +71,7 @@ class OpenApiBundle(private val callerActivity : Activity, private val paymentTo
 			.put(BundleFields.DomesticTransfers.text, trasferArray)
 
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
-		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, requestBodyJsonObj, uuidStr, additionalHeaderList)
+		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.Bundle, requestBodyJsonObj, uuidStr, additionalHeaderList)
 	}
 	private fun sendRequest(request: Request) : Boolean{
 		return try{
@@ -84,8 +86,5 @@ class OpenApiBundle(private val callerActivity : Activity, private val paymentTo
 			Log.e(TagProduction,"[sendRequest/${this.javaClass.name}] Error catch $e")
 			false
 		}
-	}
-	private fun hanldeResponse(){
-
 	}
 }

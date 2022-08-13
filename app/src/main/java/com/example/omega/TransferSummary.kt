@@ -51,7 +51,12 @@ class TransferSummary : AppCompatActivity() {
 	private fun getDataFromIntent(){
 		val transferDataSerializedField = getString(R.string.TransferSummary_COM_serializedData)
 		val transferDataSerialized = intent.getStringExtra(transferDataSerializedField)
-		transferData = TransferData(transferDataSerialized!!)
+		val transferDataTmp = TransferData.fromJsonSerialized(transferDataSerialized!!)
+		if(transferDataTmp == null){
+			//todo
+			return
+		}
+		transferData = transferDataTmp
 	}
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)

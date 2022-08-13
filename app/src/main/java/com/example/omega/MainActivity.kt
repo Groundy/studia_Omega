@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
 		CoroutineScope(IO).launch{
 			//getToken(WebActivtyRedirect.None)
-			val token = PreferencesOperator.getToken(this@MainActivity)
+			//val token = PreferencesOperator.getToken(this@MainActivity)
 			val t1 = Utilities.wookieTestGetTestObjWithFilledData()
 			val t2 = Utilities.wookieTestGetTestObjWithFilledData()
 			t2.description = "test test test"
@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
 			list.add(t1)
 			list.add(t2)
 			OpenApiAuthorize(this@MainActivity).runForBundle(list)
+			ActivityStarter.openBrowserForLogin(this@MainActivity, WebActivtyRedirect.BundlePaymentProcess)
 			//OpenApiBundle(this@MainActivity , token, list).run()
 		}
 		//accHistoryTabClicked()
@@ -98,17 +99,9 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 
-		val field = getString(R.string.ACT_COM_USERPERMISSIONLIST_FIELDNAME)
-		val serializedPermissionList = data?.getStringExtra(field)
-		if(serializedPermissionList.isNullOrEmpty()){
-			Log.i(TagProduction, "Canceled getting authUrl")
-			return
-		}
-
-		val permissionListObject = PermissionList(serializedPermissionList)
 		PreferencesOperator.clearAuthData(this)
 		CoroutineScope(IO).launch {
-			OpenApiAuthorize(this@MainActivity).runForAis(permissionListObject)
+			OpenApiAuthorize(this@MainActivity).runForAis()
 			val authUrl = PreferencesOperator.readPrefStr(this@MainActivity, R.string.PREF_authURL)
 			val state = PreferencesOperator.readPrefStr(this@MainActivity, R.string.PREF_lastRandomValue)
 			val fieldsAreFilled = authUrl.isNotEmpty() && state.isNotEmpty()
@@ -130,8 +123,12 @@ class MainActivity : AppCompatActivity() {
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
 		val dialog = WaitingDialog(this, R.string.POPUP_getToken)
 		CoroutineScope(IO).launch {
-			if(resultCode != RESULT_OK)
+			if(resultCode != RESULT_OK){
+				withContext(Main){
+					dialog.hide()
+				}
 				return@launch
+			}
 
 			val redirectField = getString(R.string.ACT_COM_WEBVIEW_REDIRECT_FIELD_NAME)
 			val redirectPlace : WebActivtyRedirect = try{
@@ -141,10 +138,7 @@ class MainActivity : AppCompatActivity() {
 				BankLoginWebPageActivity.Companion.WebActivtyRedirect.None
 			}
 
-			val scopeUsedForLogin = if(redirectPlace == WebActivtyRedirect.DomesticPaymentProcess)
-				ApiConsts.ScopeValues.Pis
-			else
-				ApiConsts.ScopeValues.Ais
+			val scopeUsedForLogin = redirectPlace.scope
 
 			val success = OpenApiGetToken(this@MainActivity, scopeUsedForLogin).run()
 			if (!success){
@@ -161,6 +155,7 @@ class MainActivity : AppCompatActivity() {
 					WebActivtyRedirect.PaymentCreation ->{basicTransferTabCliked()}
 					WebActivtyRedirect.GenerateRBlikCode ->{generateRBlickCodeClicked()}
 					WebActivtyRedirect.DomesticPaymentProcess -> {continueSinglePaymentAfterLogin()}
+					WebActivtyRedirect.BundlePaymentProcess -> {continueBundlePaymentAfterLogin()}
 					else->{
 						return@withContext
 					}
@@ -235,7 +230,7 @@ class MainActivity : AppCompatActivity() {
 		val transferData = try {
 			val fieldName = resources.getString(R.string.ACT_COM_MANY_RetTransferData_FIELDNAME)
 			val transferDataStr = data!!.extras!!.getString(fieldName)
-			val transferDataObj = TransferData(transferDataStr!!)
+			val transferDataObj = TransferData.fromJsonSerialized(transferDataStr!!)
 			transferDataObj
 		}catch (e : Exception){
 			Log.e(TagProduction, "[startSinglePaymentAuthorization/${this.javaClass.name}] cant obtain data transfer from intent")
@@ -268,6 +263,23 @@ class MainActivity : AppCompatActivity() {
 		val dialog = WaitingDialog(this, R.string.POPUP_auth)
 		CoroutineScope(IO).launch{
 			val paymentSuccessed = OpenApiDomesticPayment(this@MainActivity, paymentToken).run()
+
+			val strMsg = if(paymentSuccessed)
+				R.string.Result_GUI_OK
+			else
+				R.string.Result_GUI_WRONG_ELSE
+			withContext(Main){
+				dialog.hide()
+				ActivityStarter.startOperationResultActivity(this@MainActivity, strMsg)
+			}
+		}
+	}
+	private fun continueBundlePaymentAfterLogin(){
+		val paymentTokenStr = PreferencesOperator.readPrefStr(this, R.string.PREF_PaymentToken)
+		val paymentToken  = Token(paymentTokenStr)
+		val dialog = WaitingDialog(this, R.string.POPUP_auth)
+		CoroutineScope(IO).launch{
+			val paymentSuccessed = OpenApiBundle(this@MainActivity, paymentToken).run()
 
 			val strMsg = if(paymentSuccessed)
 				R.string.Result_GUI_OK
@@ -348,9 +360,8 @@ class MainActivity : AppCompatActivity() {
 			return true
 		}
 
-		val obj = PermissionList(ApiConsts.Privileges.AccountsDetails, ApiConsts.Privileges.AccountsHistory)
 		PreferencesOperator.clearAuthData(this)
-		val authOk = OpenApiAuthorize(this).runForAis(obj)
+		val authOk = OpenApiAuthorize(this).runForAis()
 		if(!authOk){
 			withContext(Main){
 				Utilities.showToast(this@MainActivity, "Nie udało się automatycznie pobrać tokenu.")//todo to file

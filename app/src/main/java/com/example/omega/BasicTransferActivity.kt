@@ -326,7 +326,7 @@ class BasicTransferActivity : AppCompatActivity() {
 
 
 		val transferData = try {
-			TransferData(transferDataSerialized!!)
+			TransferData.fromJsonSerialized(transferDataSerialized!!)
 		}catch (e : Exception){
 			Log.e(TagProduction, "[fillElementsFromIntentDataIfExists/${this.javaClass.name}] error in recreating TransferData Obj from str from intent")
 			null

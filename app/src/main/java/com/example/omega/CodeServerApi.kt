@@ -99,7 +99,7 @@ class CodeServerApi {
 				var transferDataStr = responseJson.getString(Fields.TransferData.text)
 				transferDataStr = transferDataStr.replace("\r","")
 				transferDataStr = transferDataStr.replace("\n","")
-				val transferData = TransferData(transferDataStr)
+				val transferData = TransferData.fromJsonSerialized(transferDataStr)
 				transferData
 			}catch (e : Exception){
 				Log.e(Utilities.TagProduction, "[getCodeData/CodeServerApi] error in obtaing code from azure app e=[$e]")

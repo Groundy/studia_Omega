@@ -17,6 +17,7 @@ class OpenApiAuthorize(activity: Activity) {
 	private var callerActivity : Activity = activity
 	private lateinit var transferData: TransferData
 	private var stateValue = ApiFunctions.getRandomStateValue()
+
 	private companion object{
 		enum class ScopeFields(val text: String){
 			PrivilegeList("privilegeList"),
@@ -41,13 +42,8 @@ class OpenApiAuthorize(activity: Activity) {
 		const val redirectUriField = "aspspRedirectUri"
 	}
 
-	suspend fun runForAis(permisionListObject : PermissionList) : Boolean{
-		permissionsList = permisionListObject
-		if (permissionsList.permissionsArray.isEmpty()) {
-			Log.e(TagProduction, "Error, passed null or empty permissionListObject to ApiAuthorized")
-			return false
-		}
-
+	suspend fun runForAis() : Boolean{
+		permissionsList = PermissionList(Privileges.AccountsDetails, Privileges.AccountsHistory)
 		Log.i(TagProduction, "Authorize started")
 		val request = getRequest(stateValue, ScopeValues.Ais)
 		val okResponse = sendRequest(request)
@@ -58,6 +54,9 @@ class OpenApiAuthorize(activity: Activity) {
 			Log.e(TagProduction, "Authorize ended with error")
 		return success
 	}
+
+
+
 	suspend fun runForPis(permisionListObject : PermissionList, transferData: TransferData) : Boolean{
 		permissionsList = permisionListObject
 		this.transferData = transferData
@@ -180,7 +179,7 @@ class OpenApiAuthorize(activity: Activity) {
 		val userWantAccessToSinglePayment = permissionsList.permissionsArray.contains(Privileges.SinglePayment)
 
 		if(userWantAccessToSinglePayment){
-			val domesticPaymentPriviledgeScopeDetailObj = DomesticPaymentSupportClass(transferData).gePrivilegeScopeDetailsObjForAuth()
+			val domesticPaymentPriviledgeScopeDetailObj = PaymentSuppClass(transferData).gePrivilegeScopeDetailsObjForAuth()
 			privilegesListJsonObjToRet.put(ApiMethodes.PisDomestic.text, domesticPaymentPriviledgeScopeDetailObj)
 		}
 
@@ -209,7 +208,6 @@ class OpenApiAuthorize(activity: Activity) {
 			.put(ApiReqFields.State.text,stateValue)
 		return ApiFunctions.bodyToRequest(BankUrls.AuthUrl, requestBodyJson, uuidStr)
 	}
-
 	private fun getBundleScopeDetailsObject(trDataList: List<TransferData>) : JSONObject{
 		var amount = 0.0
 		trDataList.forEach{
@@ -224,7 +222,7 @@ class OpenApiAuthorize(activity: Activity) {
 
 		val transfersArray = JSONArray()
 		trDataList.forEach {
-			val toAdd = DomesticPaymentSupportClass(it).toBundleJsonArrayElement()
+			val toAdd = PaymentSuppClass(it).toBundleJsonArrayElement()
 			transfersArray.put(toAdd)
 		}
 

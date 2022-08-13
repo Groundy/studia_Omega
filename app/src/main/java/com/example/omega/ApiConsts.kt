@@ -28,6 +28,7 @@ class ApiConsts {
 		GetPaymentAccounts("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccounts"),
 		GetTransactionsDone("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getTransactionsDone"),
 		SinglePayment("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/payments/v3_0.1/domestic"),
+		Bundle("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/payments/v3_0.1/bundle")
 	}
 	enum class ApiReqFields(val text : String){
 		RequestHeader("requestHeader"),

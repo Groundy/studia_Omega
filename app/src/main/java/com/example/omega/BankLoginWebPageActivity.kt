@@ -9,6 +9,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.view.isVisible
+import com.example.omega.ApiConsts.ScopeValues.*
 import com.example.omega.Utilities.Companion.TagProduction
 
 class BankLoginWebPageActivity : AppCompatActivity() {
@@ -17,12 +18,13 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 	private var url = String()
 	private lateinit var redirect : WebActivtyRedirect
 	companion object{
-		enum class WebActivtyRedirect(val text : String){
-			AccountHistory("AccountHistory"),
-			PaymentCreation("Payment"),
-			DomesticPaymentProcess("domesticPaymentProcess"),
-			GenerateRBlikCode("GenerateRBlikCode"),
-			None("None");
+		enum class WebActivtyRedirect(val text : String, val scope: ApiConsts.ScopeValues){
+			AccountHistory("AccountHistory", Ais),
+			PaymentCreation("Payment", Ais),
+			DomesticPaymentProcess("domesticPaymentProcess", Pis),
+			BundlePaymentProcess("bundlePaymentProcess", Pis),
+			GenerateRBlikCode("generateRBlikCode", Ais),
+			None("None", Pis);
 
 			companion object{
 				fun fromStr(text : String) : WebActivtyRedirect{
@@ -30,6 +32,7 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 						AccountHistory.text -> AccountHistory
 						PaymentCreation.text -> PaymentCreation
 						GenerateRBlikCode.text -> GenerateRBlikCode
+						BundlePaymentProcess.text -> BundlePaymentProcess
 						DomesticPaymentProcess.text ->DomesticPaymentProcess
 						else -> None
 					}

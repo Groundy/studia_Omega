@@ -6,7 +6,7 @@ import org.json.JSONObject
 import org.json.JSONArray
 import java.util.*
 
-class DomesticPaymentSupportClass(private val transferData: TransferData) {
+class PaymentSuppClass(private val transferData: TransferData) {
 	private companion object{
 		enum class RequestFields(val text : String){
 			Recipient("recipient"),
