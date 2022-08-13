@@ -4,6 +4,8 @@ import android.app.Activity
 import android.util.Log
 import com.example.omega.ApiConsts.ApiReqFields.*
 import com.example.omega.Utilities.Companion.TagProduction
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
@@ -24,10 +26,24 @@ class OpenApiBundle(private val callerActivity : Activity, private val paymentTo
 		return try {
 			Log.i(TagProduction, "Bundle started")
 			val request = getRequest()
-			val ok = sendRequest(request)
-			ok
+			val errorStr = sendRequest(request)
+			if(errorStr == null){
+				Log.i(TagProduction, "Bundle ended with success")
+				false
+			}
+			else{
+				Log.e(TagProduction, "Bundle ended with failure")
+				withContext(Main){
+					ActivityStarter.startOperationResultActivity(callerActivity, errorStr)
+				}
+				true
+			}
 		}catch (e : Exception){
-			//todo
+			Log.e(TagProduction, "Bundle ended with failure, e=$e")
+			withContext(Main){
+				val msg = callerActivity.resources.getString(R.string.UserMsg_UNKNOWN_ERROR)
+				ActivityStarter.startOperationResultActivity(callerActivity, msg)
+			}
 			false
 		}
 	}
@@ -73,18 +89,18 @@ class OpenApiBundle(private val callerActivity : Activity, private val paymentTo
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.Bundle, requestBodyJsonObj, uuidStr, additionalHeaderList)
 	}
-	private fun sendRequest(request: Request) : Boolean{
+	private fun sendRequest(request: Request) : String?{
 		return try{
 			val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()
 			val response = client.newCall(request).execute()
 			if(response.code!= ApiConsts.ResponseCodes.OK.code){
 				ApiFunctions.logResponseError(response, this.javaClass.name)
-				return false
+				"Nieznany błąd ${response.code}"
 			}
-			true
+			null
 		}catch (e : Exception){
 			Log.e(TagProduction,"[sendRequest/${this.javaClass.name}] Error catch $e")
-			false
+			"Nieznany błąd"
 		}
 	}
 }

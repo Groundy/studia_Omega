@@ -4,10 +4,6 @@ import android.app.Activity
 import android.util.Log
 import com.example.omega.ApiConsts.ApiReqFields.*
 import com.example.omega.Utilities.Companion.TagProduction
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -83,16 +79,13 @@ class OpenApiGetAccDetails(private var token: Token, private val callerActivity:
 		}
 	}
 	private fun parseResponseJson(obj: JSONObject): Boolean {
-		try {
+		return try {
 			val tmpPaymentAcc = PaymentAccount(obj)
-			if(!tmpPaymentAcc.isValid())
-				return false
-
 			this.accountToSet.add(tmpPaymentAcc)
-			return true
+			true
 		}catch (e : Exception){
-			//todo
-			return false
+			Log.e(TagProduction, "[parseResponseJson/${this.javaClass.name}] error in parsing response from json")
+			false
 		}
 	}
 	private suspend fun getAccDetailsForAccountsInSeparteThreads(accNumbers: List<String>): Boolean {

@@ -7,6 +7,8 @@ import okhttp3.Request
 import org.json.JSONObject
 import com.example.omega.Utilities.Companion.TagProduction
 import com.example.omega.ApiConsts.ApiReqFields.*
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 class OpenApiGetToken(private val callerActivity: Activity, private val scope : ApiConsts.ScopeValues) {
@@ -60,14 +62,20 @@ class OpenApiGetToken(private val callerActivity: Activity, private val scope : 
 			val responseCode = response.code
 			if(responseCode != ApiConsts.ResponseCodes.OK.code){
 				ApiFunctions.logResponseError(response, this.javaClass.name)
-				val errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
-				//Utilities.showToast(callerActivity, errorToDisplay)//todo toast on main thread
+				withContext(Main){
+					val errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
+					ActivityStarter.startOperationResultActivity(callerActivity, errorToDisplay)
+				}
 				return null
 			}
 			val bodyStr = response.body?.string()
 			JSONObject(bodyStr!!)
 		}catch (e : Exception){
 			Log.e(TagProduction,e.toString())
+			withContext(Main){
+				val errorToDisplay = callerActivity.getString(R.string.UserMsg_Banking_errorObtaingToken)
+				ActivityStarter.startOperationResultActivity(callerActivity, errorToDisplay)
+			}
 			null
 		}
 	}

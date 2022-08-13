@@ -35,9 +35,10 @@ class OpenApiDomesticPayment(private val callerActivity: Activity, val token: To
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
 		val transferDataFromToken = TransferData.fromDomesticPaymentToken(token)
 		if(transferDataFromToken == null){
-			//todo
+			Log.e(Utilities.TagProduction, "[getRequest/${this.javaClass.name}]  null transferDatat returned and passed further")
 			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, JSONObject(), uuidStr, additionalHeaderList)
 		}
+
 		val requestBodyJsonObj = PaymentSuppClass(transferDataFromToken).toDomesticPaymentRequest(requestHeaders)
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, requestBodyJsonObj, uuidStr, additionalHeaderList)
 	}

@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.omega.FilterDialog.OnMyDialogResult
 import com.example.omega.Utilities.Companion.TagProduction
 import kotlinx.coroutines.CoroutineScope
@@ -53,7 +54,7 @@ class AccountHistroyActivity : AppCompatActivity() {
 				withContext(Main){
 					dialog.hide()
 				}
-				return@launch//todo
+				return@launch
 			}
 			withContext(Main){
 				dialog.hide()
@@ -78,8 +79,10 @@ class AccountHistroyActivity : AppCompatActivity() {
 	private suspend fun fillListOfAccounts() : SpinnerAdapter?{
 		if(!token.fillTokenAccountsWithBankDetails(this)){
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token cant obtain accounts Details")
-			//val errorCodeTextToDisplay = getString(R.string.AccHistoryAct_UserMsg_ErrorInObtainingToken)
-			//Utilities.showToast(this, errorCodeTextToDisplay)
+			withContext(Main){
+				val errorCodeTextToDisplay = getString(R.string.AccHistoryAct_UserMsg_ErrorInObtainingToken)
+				Utilities.showToast(this@AccountHistroyActivity, errorCodeTextToDisplay)
+			}
 			finish()
 			return null
 		}
@@ -87,9 +90,10 @@ class AccountHistroyActivity : AppCompatActivity() {
 		val listOfAccountsFromToken = token.getListOfAccountsNumbersToDisplay()
 		if(listOfAccountsFromToken.isNullOrEmpty()){
 			Log.e(TagProduction, "[fillListOfAccounts/${this.javaClass.name}], token return null or empty account list")
-			//todo its suspended
-			//val errorCodeTextToDisplay = getString(R.string.AccHistoryAct_UserMsg_ErrorInObtainingToken)
-			//Utilities.showToast(this, errorCodeTextToDisplay)
+			withContext(Main){
+				val errorCodeTextToDisplay = getString(R.string.AccHistoryAct_UserMsg_ErrorInObtainingToken)
+				Utilities.showToast(this@AccountHistroyActivity, errorCodeTextToDisplay)
+			}
 			finish()
 			return null
 		}
@@ -348,7 +352,6 @@ class FilterDialog(context: Context) : Dialog(context) {
 		setCancelable(false)
 	}
 
-	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun checkIfMaxAmountIsBiggerThanMin() : Boolean{
 		val minText = minAmountField.text.toString()
 		val minAmount = if(minText.isEmpty())
@@ -368,19 +371,18 @@ class FilterDialog(context: Context) : Dialog(context) {
 			ok =true
 
 		val img = if(ok)
-			this.context.resources.getDrawable(R.drawable.main_frame)
+			ContextCompat.getDrawable(context, R.drawable.main_frame)
 		else
-			this.context.resources.getDrawable(R.drawable.error_frame)
+			ContextCompat.getDrawable(context, R.drawable.error_frame)
 
 		minAmountField.background = img
 		maxAmountField.background = img
 		return ok
 	}
 
-	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun checkDatesCorrectness(): Boolean {
-		val okImg = this.context.resources.getDrawable(R.drawable.main_frame)
-		val errIng = this.context.resources.getDrawable(R.drawable.error_frame)
+		val okImg = ContextCompat.getDrawable(context, R.drawable.main_frame)
+		val errIng = ContextCompat.getDrawable(context, R.drawable.error_frame)
 
 		val todayTimeVal = OmegaTime.convertDateToLong(OmegaTime.getDate(0,false))
 		val startDayTimeVal = OmegaTime.convertDateToLong(startDateField.text.toString())
@@ -411,8 +413,11 @@ class FilterDialog(context: Context) : Dialog(context) {
 			return
 
 		val dataObj = getFillterDataObj()
-		if(dataObj == null)//todo
-			return
+		if(dataObj == null){
+			val msg = context.resources.getString(R.string.UserMsg_FILLTER_NOT_APPLIED)
+			Utilities.showToast(context as Activity, msg)
+			mDialogResult!!.finish(null)
+		}
 
 		mDialogResult!!.finish(dataObj)
 	}

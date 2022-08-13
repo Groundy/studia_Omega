@@ -4,7 +4,6 @@ import android.util.Log
 import com.example.omega.ApiConsts.Companion.countryCodeLength
 import org.json.JSONObject
 import org.json.JSONArray
-import java.util.*
 
 class PaymentSuppClass(private val transferData: TransferData) {
 	private companion object{

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
-import com.example.omega.Utilities.Companion.TagProduction
 
 class PermissionList(){
 	companion object{
@@ -21,15 +20,7 @@ class PermissionList(){
 		}
 		return toRet
 	}
-	constructor(inputString : String) : this() {
-		ApiConsts.Privileges.values().forEach {
-			if(inputString.contains(it.text))
-				permissionsArray.add(it)
-		}
-	}
-	constructor(privilegesArray : List<ApiConsts.Privileges>) : this() {
-		permissionsArray = privilegesArray as ArrayList<ApiConsts.Privileges>
-	}
+
 	constructor(vararg permissions : ApiConsts.Privileges) : this() {
 		permissions.forEach {
 			permissionsArray.add(permissionsArray.size, it)

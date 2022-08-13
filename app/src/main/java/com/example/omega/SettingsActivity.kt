@@ -5,7 +5,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.nfc.NfcAdapter
 import android.os.Bundle
-import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -45,13 +44,11 @@ class SettingsActivity : AppCompatActivity() {
 		val nfcSwitch : Switch = findViewById(R.id.SettingsAct_turnOnNFCWhenAppStartsSwitch)
 		val phoneHasNfc = NfcAdapter.getDefaultAdapter(this) != null
 		val skipSummarySwitch: Switch = findViewById(R.id.SettingsAct_skipTransSummarySwitch)
-		val listener = object : CompoundButton.OnCheckedChangeListener{
-			override fun onCheckedChanged(view: CompoundButton?, isCheckd: Boolean) {
-				if(view == nfcSwitch)
-					PreferencesOperator.savePref(this@SettingsActivity, R.string.PREF_turnNfcOnAppStart, isCheckd)
-				if(view == skipSummarySwitch)
-					PreferencesOperator.savePref(this@SettingsActivity, R.string.PREF_skipSummaryWindows, isCheckd)
-			}
+		val listener = CompoundButton.OnCheckedChangeListener { view, isCheckd ->
+			if(view == nfcSwitch)
+				PreferencesOperator.savePref(this@SettingsActivity, R.string.PREF_turnNfcOnAppStart, isCheckd)
+			if(view == skipSummarySwitch)
+				PreferencesOperator.savePref(this@SettingsActivity, R.string.PREF_skipSummaryWindows, isCheckd)
 		}
 		skipSummarySwitch.setOnCheckedChangeListener(listener)
 		nfcSwitch.setOnCheckedChangeListener(listener)

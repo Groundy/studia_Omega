@@ -77,7 +77,7 @@ class PreferencesOperator : Application() {
 			val fieldName = activity.getString(strResourceId)
 			val editor = getSharedProperties(activity).edit()
 			editor.putBoolean(fieldName,value)
-			editor.commit()
+			editor.apply()
 		}
 		fun savePref(activity: Activity, strResourceId : Int, value : String){
 			val fieldName = activity.getString(strResourceId)

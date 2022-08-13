@@ -114,10 +114,6 @@ class PaymentAccount() {
 		}
 	}
 
-	fun isValid() : Boolean{
-		//todo implement
-		return true
-	}
 	fun toDisplayableString() : String{
 		val availableBalance = getBalanceOfAccount()
 		val currency = getCurrencyOfAccount()

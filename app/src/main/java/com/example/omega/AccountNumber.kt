@@ -9,10 +9,8 @@ enum class Countries(val codeLength : Int){
 
 class AccountNumber(number : String) {
 	companion object{
-		fun checkIfIsProperIbanFormar(
-			numberOnlyDigits: String,
-			country: Countries = Countries.PL
-		): Boolean {
+		/*
+		fun checkIfIsProperIbanFormar(numberOnlyDigits: String,	country: Countries = Countries.PL): Boolean {
 			val countryCode = country.name
 			val constValSubstraction = 55
 			val firstCharVal = countryCode.first().code - constValSubstraction
@@ -28,6 +26,7 @@ class AccountNumber(number : String) {
 
 			return properCheckSum == checkSum.toInt()
 		}
+		*/
 	}
 	private var numberOnlyDigits : String = String()
 	private val country = Countries.PL
@@ -79,8 +78,12 @@ class AccountNumber(number : String) {
 	fun toStringWithoutCountry(): String {
 		return numberOnlyDigits
 	}
+	fun lengthOK(): Boolean {
+		return ApiFunctions.getLengthOfCountryBankNumberWitchCountryCode() == numberOnlyDigits.length + ApiConsts.countryCodeLength
+	}
 
-	fun toDisplay() : String{
+	/*
+		fun toDisplay() : String{
 		//var toRet = "${country.name}${numberWithOutCountryCode.subSequence(0,2)}"
 		var toRet = String()
 		val parts = numberOnlyDigits.subSequence(2, numberOnlyDigits.length).chunked(4)
@@ -89,11 +92,11 @@ class AccountNumber(number : String) {
 		}
 		return toRet
 	}
-	fun lengthOK(): Boolean {
-		return ApiFunctions.getLengthOfCountryBankNumberWitchCountryCode() == numberOnlyDigits.length + ApiConsts.countryCodeLength
-	}
+	*/
+	/*
 	fun isOk() : Boolean{
 		val ibanOk = checkIfIsProperIbanFormar()
 		return ibanOk && lengthOK()
 	}
+	*/
 }

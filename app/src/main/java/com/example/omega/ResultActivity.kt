@@ -1,12 +1,11 @@
 package com.example.omega
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.omega.Utilities.Companion.TagProduction
+import androidx.core.content.ContextCompat
 
 class ResultActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,8 +13,6 @@ class ResultActivity : AppCompatActivity() {
 		setContentView(R.layout.activity_result)
 		setUpGUI()
 	}
-
-	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun setUpGUI(){
 		findViewById<Button>(R.id.result_backButton).setOnClickListener{
 			finish()
@@ -24,8 +21,8 @@ class ResultActivity : AppCompatActivity() {
 		findViewById<TextView>(R.id.result_TextView).text = textToSet
 
 		val imageToSet = when(textToSet){
-			resources.getString(R.string.Result_GUI_OK)->resources.getDrawable(R.drawable.ico_success,null)
-			else -> resources.getDrawable(R.drawable.ico_failure,null)
+			resources.getString(R.string.Result_GUI_OK)->ContextCompat.getDrawable(this, R.drawable.ico_success)
+			else -> ContextCompat.getDrawable(this, R.drawable.ico_failure)
 		}
 		findViewById<ImageView>(R.id.result_imageView).setImageDrawable(imageToSet)
 	}

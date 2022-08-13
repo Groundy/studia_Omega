@@ -39,8 +39,8 @@ class TransferData() {
 		fun fromBundleToken(bundle : Token) : List<TransferData>{
 			return try {
 				val privilegesList = bundle.getPriligeList() ?: return emptyList()
-				var toRet = arrayListOf<TransferData>()
-				val transfersArray = privilegesList!!
+				val toRet = arrayListOf<TransferData>()
+				val transfersArray = privilegesList
 					.getJSONObject(0)
 					.getJSONObject(bundleMethodeName)
 					.getJSONArray("domesticTransfers")
@@ -180,14 +180,6 @@ class TransferData() {
 	var currency : String? = null
 	var executionDate : String? = OmegaTime.getDate()
 
-	fun toDisplayString() : String{
-		val line1 = "Nadawca:\n$senderAccNumber"
-		val line2 = "Nazwa odbiorcy:\n$receiverName"
-		val line3 = "Numer odbiorcy:\n$receiverAccNumber"
-		val line4 = "Tytuł:\n$description"
-		val line5 = "kwota:\n${amount.toString()} ${currency.toString()}"
-		return "$line1\n $line2\n $line3\n $line4\n $line5"
-	}
 	override fun toString() : String{
 		return toJsonObject().toString()
 	}
@@ -203,8 +195,20 @@ class TransferData() {
 			.put(TransferDataFields.ExecutionDate.text, executionDate)
 
 	}
+}
+
+/*
+	fun toDisplayString() : String{
+		val line1 = "Nadawca:\n$senderAccNumber"
+		val line2 = "Nazwa odbiorcy:\n$receiverName"
+		val line3 = "Numer odbiorcy:\n$receiverAccNumber"
+		val line4 = "Tytuł:\n$description"
+		val line5 = "kwota:\n${amount.toString()} ${currency.toString()}"
+		return "$line1\n $line2\n $line3\n $line4\n $line5"
+	}
+*/
+/*
 	private fun validateTransferData() : Boolean{
-		//todo review
 		val objectWrong =
 			senderAccNumber.isNullOrEmpty() ||
 			receiverAccNumber.isNullOrEmpty() ||
@@ -242,4 +246,4 @@ class TransferData() {
 
 		return true
 	}
-}
+ */

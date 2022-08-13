@@ -16,7 +16,7 @@ class CodeServerApi {
 		Code("code"),
 		Status("status"),
 		Ok("ok"),
-		Failed("failed"),
+		//Failed("failed"),
 		ErrorMsg("errorMsg"),
 		ExpirationTime("expirationTime"),
 		TransferData("transferData");
@@ -24,7 +24,7 @@ class CodeServerApi {
 	private enum class GateWay(val text : String) {
 		Set("https://omegaserver.azurewebsites.net/OmegaServer-v1/setCode"),
 		Get("https://omegaserver.azurewebsites.net/OmegaServer-v1/getCode"),
-		Test("https://omegaserver.azurewebsites.net/OmegaServer-v1/test");
+		//Test("https://omegaserver.azurewebsites.net/OmegaServer-v1/test");
 	}
 
 	companion object{
@@ -62,7 +62,7 @@ class CodeServerApi {
 					val errorMsg = responseJson.getString(Fields.ErrorMsg.text)
 					withContext(Main){
 						ActivityStarter.startOperationResultActivity(callerActivity, errorMsg)
-						Log.e(Utilities.TagProduction, "[setCode/CodeServerApi] $errorMsg")//todo to file
+						Log.e(Utilities.TagProduction, "[setCode/CodeServerApi] $errorMsg")
 					}
 					return null
 				}
@@ -74,7 +74,8 @@ class CodeServerApi {
 			}catch (e : Exception){
 				Log.e(Utilities.TagProduction, "[setCode/CodeServerApi] error in obtaing code from azure app e=[$e]")
 				withContext(Main){
-					ActivityStarter.startOperationResultActivity(callerActivity, "Serwer nieosiągalny")//todo to file
+					val msg = callerActivity.resources.getString(R.string.UserMsg_SERVER_UNAVAILABLE)
+					ActivityStarter.startOperationResultActivity(callerActivity, msg)
 				}
 				null
 			}

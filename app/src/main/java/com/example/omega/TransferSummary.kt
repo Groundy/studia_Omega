@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import com.example.omega.Utilities.Companion.TagProduction
@@ -49,14 +50,14 @@ class TransferSummary : AppCompatActivity() {
 		}
 	}
 	private fun getDataFromIntent(){
-		val transferDataSerializedField = getString(R.string.TransferSummary_COM_serializedData)
-		val transferDataSerialized = intent.getStringExtra(transferDataSerializedField)
-		val transferDataTmp = TransferData.fromJsonSerialized(transferDataSerialized!!)
-		if(transferDataTmp == null){
-			//todo
-			return
+		transferData = try {
+			val transferDataSerializedField = getString(R.string.TransferSummary_COM_serializedData)
+			val transferDataSerialized = intent.getStringExtra(transferDataSerializedField)
+			TransferData.fromJsonSerialized(transferDataSerialized!!)!!
+		}catch (e : Exception){
+			Log.e(TagProduction, "[getDataFromIntent/${this.javaClass.name}] numm transfer Data obtained from intent")
+			TransferData()
 		}
-		transferData = transferDataTmp
 	}
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)

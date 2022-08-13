@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="UserMsg_UNKNOWN_ERROR">Wystąpił nieznany bład</string>
+	<string name="UserMsg_SERVER_UNAVAILABLE">Server jest nieosiągalny</string>
+	<string name="UserMsg_FILLTER_NOT_APPLIED">Nieznany błąd, nie udało się zastosować filtrów.</string>
 
 	<string name="PIN_UserMsg_triesLeft2">Pozostały 2 próby</string>
 	<string name="PIN_UserMsg_triesLeft1">Pozostała ostatnia próba</string>

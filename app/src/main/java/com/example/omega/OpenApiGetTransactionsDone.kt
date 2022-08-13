@@ -10,7 +10,6 @@ import com.example.omega.ApiConsts.ApiReqFields.*
 import kotlin.Exception
 import com.example.omega.ApiGetTransactionsDone.Companion.GetTransDoneRequestFields.*
 import com.example.omega.TransactionsDoneAdditionalInfos.Companion.GetTransDoneResponseFields.*
-import java.time.Instant
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
@@ -21,14 +20,14 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 		enum class GetTransDoneRequestFields(val text : String){
 			TransactionDateFrom("transactionDateFrom"),
 			TransactionDateTo("transactionDateTo"),
-			ItemIdFrom("itemIdFrom"),
-			BookingDateFrom ("bookingDateFrom"),
-			BookingDateTo ("bookingDateTo"),
+			//ItemIdFrom("itemIdFrom"),
+			//BookingDateFrom ("bookingDateFrom"),
+			//BookingDateTo ("bookingDateTo"),
 			MinAmount("minAmount"),
 			MaxAmount("maxAmount"),
-			PageId("pageId"),
-			PerPage("perPage"),
-			Type("type"),
+			//PageId("pageId"),
+			//PerPage("perPage"),
+			//Type("type"),
 			TransactionsObj("transactions"),
 		}
 
@@ -132,25 +131,29 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 
 class TransactionsDoneAdditionalInfos(daysBack : Int = 7){
 	companion object{
+		/*
 		private enum class Type(val text: String){
 			DEBIT("DEBIT"), CREDIT("CREDIT")
 		}
+		*/
+		/*
 		private enum class JsonFields(val text: String){
 			DateFromInclusvie("DateFromInclusvie"),
 			DateToInclusvie("DateToInclusvie"),
 			AmountMin("AmountMin"),
 			AmountMax("AmountMax"),
 		}
+		*/
 		enum class GetTransDoneResponseFields(val text : String){
-			ItemId ("itemId"),
-			TransactionCategory ("transactionCategory"),
+			//ItemId ("itemId"),
+			//TransactionCategory ("transactionCategory"),
 			Amount ("amount"),
 			Currency ("currency"),
 			Description ("description"),
 			TradeDate ("tradeDate"),
 			Sender ("sender"),
 			Recipient ("recipient"),
-			BookingDate ("bookingDate"),
+			//BookingDate ("bookingDate"),
 			NameAdress("nameAddress"),
 			Value("value");
 
@@ -160,9 +163,18 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 7){
 	//mandatory
 	var fromDate : String = OmegaTime.getDate(daysBack)
 	var endDate : String = OmegaTime.getDate()
+
+	//additional
 	var minAmount : Double? = null
 	var maxAmount : Double? = null
-	//additional
+	constructor(amountMin: Double, amountMax: Double, dateFrom: String, dateTo: String) : this(){
+		this.maxAmount = amountMax
+		this.minAmount = amountMin
+		this.fromDate = dateFrom
+		this.endDate = dateTo
+	}
+
+
 	//val itemIdFrom : Int? = null//Int or String
 	//val bookingDateFrom : String? = null
 	//val bookingDateTo : String? = null
@@ -170,7 +182,7 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 7){
 	//val pageId : Int? = null
 	//val perPage : Int? = null
 	//val type : Type? = null
-
+	/*
 	fun toJSONObject() : JSONObject{
 		return JSONObject()
 			.put(JsonFields.DateFromInclusvie.text,"")
@@ -178,7 +190,8 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 7){
 			.put(JsonFields.AmountMin.text,"")
 			.put(JsonFields.AmountMax.text,"")
 	}
-	constructor(jsonObj : JSONObject) : this(){
+
+	consctor(jsonObj : JSONObject) : this(){
 		try {
 			minAmount = jsonObj.getDouble(JsonFields.AmountMin.text)
 			maxAmount = jsonObj.getDouble(JsonFields.AmountMax.text)
@@ -188,12 +201,7 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 7){
 			Log.e(TagProduction, "[constructor(json)/${this.javaClass.name}] Error in parsing TransactiondDoneInfo from json obj")
 		}
 	}
-	constructor(amountMin: Double, amountMax: Double, dateFrom: String, dateTo: String) : this(){
-		this.maxAmount = amountMax
-		this.minAmount = amountMin
-		this.fromDate = dateFrom
-		this.endDate = dateTo
-	}
+	 */
 }
 
 class AccountHistoryRecord(jsonObj: JSONObject) : Comparable<AccountHistoryRecord> {

@@ -1,7 +1,5 @@
 package com.example.omega
 
-import android.app.Activity
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -10,7 +8,6 @@ import android.util.Log
 import android.widget.*
 import com.example.omega.Utilities.Companion.TagProduction
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
@@ -33,16 +30,20 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			val success = getTokenCpy()
 			if(!success){
 				withContext(Main){
-					dialog.hide()	//todo info for user
+					dialog.hide()
+					val msg = this@RBLIKCodeCreator.getString(R.string.UserMsg_UNKNOWN_ERROR)
+					Utilities.showToast(this@RBLIKCodeCreator, msg)
 				}
-				return@launch//todo maybe finish act
+				return@launch
 			}
 			val spinnerAdapter = getListOfAccountsForSpinner()
 			if(spinnerAdapter == null){
 				withContext(Main){
-					dialog.hide()		//todo info
+					dialog.hide()
+					val msg = this@RBLIKCodeCreator.getString(R.string.UserMsg_UNKNOWN_ERROR)
+					Utilities.showToast(this@RBLIKCodeCreator, msg)
 				}
-				return@launch //todo maybe finish act
+				return@launch
 			}
 
 			withContext(Main){
@@ -99,7 +100,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			withContext(Main){
 				dialog.hide()
 				if(responseData != null)
-					ActivityStarter.startDisplayActivity(this@RBLIKCodeCreator, responseData!!)
+					ActivityStarter.startDisplayActivity(this@RBLIKCodeCreator, responseData)
 			}
 		}
 	}
@@ -149,7 +150,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		}
 
 		val amountText = findViewById<EditText>(R.id.RBlikCodeGenerator_amount_editText).text.toString()
-		if(amountText.isNullOrEmpty()){
+		if(amountText.isEmpty()){
 			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_Amount_zero)
 			Utilities.showToast(this, textToShow)
 			return false
@@ -175,18 +176,24 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	}
 
 	private fun getDataForServer() : TransferData? {
-		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser() ?: return null//todo
+		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser()
+		if(paymentAccount == null){
+			val msg = this.resources.getString(R.string.UserMsg_UNKNOWN_ERROR)
+			Utilities.showToast(this, msg)
+			return null
+		}
 
-		val testTransferData = TransferData()
-		testTransferData.amount = amountField.text.toString().toDouble()
-		testTransferData.description = titleField.text.toString()
-		testTransferData.currency = paymentAccount.getCurrencyOfAccount()
-		testTransferData.receiverAccNumber = paymentAccount.getAccNumber()
-		testTransferData.receiverName = receiverNameField.text.toString()
-		testTransferData.senderAccName = null
-		testTransferData.senderAccNumber = null
-
-		return testTransferData
+		val transferData = TransferData()
+		with(transferData){
+			amount = amountField.text.toString().toDouble()
+			description = titleField.text.toString()
+			currency = paymentAccount.getCurrencyOfAccount()
+			receiverAccNumber = paymentAccount.getAccNumber()
+			receiverName = receiverNameField.text.toString()
+			senderAccName = null
+			senderAccNumber = null
+		}
+		return transferData
 	}
 
 	private fun wookieTestFillWidgets(){
@@ -204,7 +211,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	}
 	private fun getPaymentAccountInfoOfSelectedOneByUser() : PaymentAccount?{
 		val currentlySelectedSpinnerItem =  accountListSpinner.selectedItem.toString()
-		val accountNumber = tokenCpy.getAccountNbrByDisplayStr(currentlySelectedSpinnerItem)?: return null//todo give msg
+		val accountNumber = tokenCpy.getAccountNbrByDisplayStr(currentlySelectedSpinnerItem)?: return null
 		val paymentAccount = tokenCpy.getPaymentAccount(accountNumber)
 		return if(paymentAccount != null)
 			paymentAccount

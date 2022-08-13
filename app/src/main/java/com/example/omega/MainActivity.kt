@@ -21,6 +21,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.firebase.FirebaseApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -88,12 +89,12 @@ class MainActivity : AppCompatActivity() {
 			resources.getInteger(R.integer.ACT_RETCODE_FINGER) ->fingerAuthActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_PIN_SET) ->pinActivityResult(resultCode)
 			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW) ->webViewActivityResult(resultCode, data)
-			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> resetPermissionActivityResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> resetPermissionActivityResult(resultCode)
 			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank) -> dialogIfUserWantToResetBankAuthResult(resultCode)
 			resources.getInteger(R.integer.ACT_RETCODE_BASIC_TRANSFER_ACT) -> startSinglePaymentAuthorization(resultCode, data)
 		}
 	}
-	private fun resetPermissionActivityResult(resultCode: Int, data: Intent?){
+	private fun resetPermissionActivityResult(resultCode: Int){
 		if(resultCode != RESULT_OK){
 			Log.i(TagProduction, "Canceled getting authUrl")
 			return
@@ -169,7 +170,6 @@ class MainActivity : AppCompatActivity() {
 		if(resultCode == RESULT_OK)
 			return
 
-		//TODO to tworzy infinity loop w ktorym urzytkownik do upadlego o utworzenie Pinu
 		val msgForUser = getString(R.string.PIN_UserMsg_failedToSetNewPin_differentPinsInserted)
 		Utilities.showToast(this, msgForUser)
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
@@ -362,7 +362,9 @@ class MainActivity : AppCompatActivity() {
 		val authOk = OpenApiAuthorize(this).runForAis()
 		if(!authOk){
 			withContext(Main){
-				Utilities.showToast(this@MainActivity, "Nie udało się automatycznie pobrać tokenu.")//todo to file
+				Log.e(TagProduction, "[getToken/${this@MainActivity.javaClass.name}] error in obatin token")
+				val msg = this@MainActivity.resources.getString(R.string.UserMsg_Banking_errorObtaingToken)
+				Utilities.showToast(this@MainActivity, msg)
 			}
 			dialog?.hide()
 			return false
@@ -384,7 +386,7 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 	}
-	@SuppressLint("UseCompatLoadingForDrawables")
+
 	private fun initGUI() {
 		val codeFieldTextListener = object : TextWatcher {
 			override fun afterTextChanged(s: Editable) {
@@ -420,21 +422,21 @@ class MainActivity : AppCompatActivity() {
 		//te funkcje są po to aby ikoni pojawiały się czarne a nie białe
 		firstBar.itemIconTintList = null
 		secondBar.itemIconTintList = null
-		firstBar.menu.findItem(R.id.AccHistoryTab).icon = getDrawable(R.drawable.ico_history)
-		firstBar.menu.findItem(R.id.GenerateBlikCodeTab).icon = getDrawable(R.drawable.ico_qr)
-		firstBar.menu.findItem(R.id.TransferTab).icon = getDrawable(R.drawable.ico_payment)
+
+		firstBar.menu.findItem(R.id.AccHistoryTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_history)
+		firstBar.menu.findItem(R.id.GenerateBlikCodeTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_qr)
+		firstBar.menu.findItem(R.id.TransferTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_payment)
 		secondBar.menu.findItem(R.id.NfcTab).icon = if(nfcCapturingIsOn)
-			getDrawable(R.drawable.ico_nfc_on)
+			ContextCompat.getDrawable(this, R.drawable.ico_nfc_on)
 		else
-			getDrawable(R.drawable.ico_nfc_off)
-		secondBar.menu.findItem(R.id.ToImplementTab).icon = getDrawable(R.drawable.ico_cancel)
-		secondBar.menu.findItem(R.id.QrScannerTab).icon = getDrawable(R.drawable.ico_qr_scanner)
+			ContextCompat.getDrawable(this, R.drawable.ico_nfc_off)
+		secondBar.menu.findItem(R.id.ToImplementTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_cancel)
+		secondBar.menu.findItem(R.id.QrScannerTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_qr_scanner)
 	}
 	private fun wookieTestFun(){
 
 	}
 	//NFC
-	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun turnNfcOn(){
 		Log.d(TagProduction, "Nfc turning On started")
 
@@ -442,18 +444,18 @@ class MainActivity : AppCompatActivity() {
 		val button = secondBar.menu.findItem(R.id.NfcTab)
 
 		turnForegroundDispatchOn()
-		val onIco = getDrawable(R.drawable.ico_nfc_on)
+		val onIco = ContextCompat.getDrawable(this, R.drawable.ico_nfc_on)
 		button.icon = onIco
 		nfcCapturingIsOn = true
 	}
-	@SuppressLint("UseCompatLoadingForDrawables")
+
 	private fun turnNfcOff(){
 		Log.d(TagProduction, "Nfc turning Off started")
 		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
 		val button = secondBar.menu.findItem(R.id.NfcTab)
 		val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 		nfcAdapter.disableForegroundDispatch(this)
-		val offIco = getDrawable(R.drawable.ico_nfc_off)
+		val offIco = ContextCompat.getDrawable(this, R.drawable.ico_nfc_off)
 		button.icon = offIco
 		nfcCapturingIsOn = false
 	}

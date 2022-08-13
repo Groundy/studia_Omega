@@ -7,10 +7,8 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import org.json.JSONObject
 import java.math.BigInteger
 import java.security.MessageDigest
-import kotlin.random.Random
 
 class Utilities {
 	companion object{
@@ -40,16 +38,13 @@ class Utilities {
 				}
 			}
 		}
-		fun wookieTestGetRandomTestCode() : Int{
-			return Random.nextInt(999999)
-		}
 		fun hashMd5(inputStr : String) : String{
 			val md = MessageDigest.getInstance("MD5")
 			return BigInteger(1, md.digest(inputStr.toByteArray())).toString(16).padStart(32, '0')
 		}
 		fun strToEditable(text: String?): Editable {
 			if(text.isNullOrEmpty()){
-				Log.e(TagProduction,"[strToEditable/${this.javaClass.name}] null or empty string passed")
+				Log.e(TagProduction,"[strToEditable/${this::class.java.name}] null or empty string passed")
 				return Editable.Factory.getInstance().newEditable(String())
 			}
 			return Editable.Factory.getInstance().newEditable(text)
@@ -74,17 +69,16 @@ class Utilities {
 				it.accountDescription = "Bank milion procent"
 				it.currency = "PLN"
 				it.availableBalance = 1234567.83
-
 			}
 		}
 		fun doubleToTwoDigitsAfterCommaString(value : Double?) : String{
 			if(value == null){
-				Log.e(TagProduction, "[doubleToTwoDigitsAfterCommaString/${this.javaClass.name}] Wrong struct passed for payment request, amount is null")
+				Log.e(TagProduction, "[doubleToTwoDigitsAfterCommaString/${this::class.java.name}] Wrong struct passed for payment request, amount is null")
 				return String()
 			}
 			var amountStr = value.toString()
 			if(!amountStr.contains('.')){
-				Log.e(TagProduction, "[doubleToTwoDigitsAfterCommaString/${this.javaClass.name}] Wrong struct passed for payment request, amount doesnt have dot sign")
+				Log.e(TagProduction, "[doubleToTwoDigitsAfterCommaString/${this::class.java.name}] Wrong struct passed for payment request, amount doesnt have dot sign")
 				return amountStr.plus(".00")
 			}
 

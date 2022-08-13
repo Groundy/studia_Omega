@@ -1,6 +1,5 @@
 package com.example.omega
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.zxing.WriterException
@@ -12,9 +11,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.example.omega.Utilities.Companion.TagProduction
-import java.util.*
 import kotlin.math.floor
 
 class RBlikCodeDisplayActivity : AppCompatActivity() {
@@ -23,7 +22,6 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 	private lateinit var data : ServerSetCodeResponse
 	private lateinit var timer : CountDownTimer
 
-	@SuppressLint("UseCompatLoadingForDrawables")
 	override fun onResume() {
 		super.onResume()
 		val timeLeft = OmegaTime.getSecondsToStampExpiration(data.timestamp,0)
@@ -52,7 +50,7 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 		if(qrCodeBitmap == null){
 			Utilities.showToast(this, getString(R.string.RBLIKDISPLAY_UserMsg_qrGeneratorError))
 			Log.e(TagProduction, "[onCreate/${this.javaClass.name}] qr generator return null instead of bitmap.")
-			qrCodeBitmap = resources.getDrawable(R.drawable.ico_failure, null).toBitmap()
+			qrCodeBitmap = ContextCompat.getDrawable(this, R.drawable.ico_failure)!!.toBitmap()
 		}
 		imgWidget.setImageBitmap(qrCodeBitmap)
 		startTimer()
@@ -113,7 +111,8 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 				var secondsToDisplay = (secondsToLeft % 60).toInt().toString()
 				if(secondsToDisplay.length == 1)
 					secondsToDisplay = "0$secondsToDisplay"
-				timerView.text = "$minutesToDisplay:$secondsToDisplay"
+				val textToSet = "$minutesToDisplay:$secondsToDisplay"
+				timerView.text = textToSet
 			}
 
 			override fun onFinish() {

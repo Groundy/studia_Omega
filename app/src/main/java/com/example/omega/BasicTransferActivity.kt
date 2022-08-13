@@ -42,9 +42,11 @@ class BasicTransferActivity : AppCompatActivity() {
 			val tokenObtained = getToken()
 			if(!tokenObtained){
 				withContext(Main){
-					dialog.hide()	//todo info for user
+					dialog.hide()
+					val msg = this@BasicTransferActivity.getString(R.string.UserMsg_UNKNOWN_ERROR)
+					Utilities.showToast(this@BasicTransferActivity, msg)
 				}
-				return@launch//todo maybe finish act
+				return@launch
 			}
 
 			dialog.changeText(this@BasicTransferActivity, R.string.POPUP_getAccountsDetails)
@@ -52,9 +54,11 @@ class BasicTransferActivity : AppCompatActivity() {
 
 			if(spinnerAdapter == null){
 				withContext(Main){
-					dialog.hide()		//todo info
+					dialog.hide()
+					val msg = this@BasicTransferActivity.getString(R.string.UserMsg_UNKNOWN_ERROR)
+					Utilities.showToast(this@BasicTransferActivity, msg)
 				}
-				return@launch//todo maybe finish act
+				return@launch
 			}
 			withContext(Main){
 				dialog.hide()
@@ -282,12 +286,20 @@ class BasicTransferActivity : AppCompatActivity() {
 	}
 	private fun userChangeAnotherAccOnSpiner(){
 		val selectedItemText = spinner.selectedItem.toString()
-		val accountNumber = tokenCpy.getAccountNbrByDisplayStr(selectedItemText) ?: return//todo give some msg
+		val accountNumber = tokenCpy.getAccountNbrByDisplayStr(selectedItemText)
+		if(accountNumber == null){
+			Log.e(TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] Cant get payment info from token")
+			val errorStr = getString(R.string.UserMsg_UNKNOWN_ERROR)
+			finishThisActivityWithError(errorStr)
+			return
+		}
+
 		val paymentAccountTmp = tokenCpy.getPaymentAccount(accountNumber)
 		if(paymentAccountTmp == null){
 			Log.e(TagProduction, "[userChangeAnotherAccOnSpiner/${this.javaClass.name}] Cant get payment info from token")
 			val errorStr = getString(R.string.UserMsg_UNKNOWN_ERROR)
 			finishThisActivityWithError(errorStr)
+			return
 		}
 
 		val calledByUserAction = amountEditText.isFocusable
@@ -359,12 +371,17 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(resultCode != RESULT_OK)
 			return
 
-
 		val transferData = getTransferDataFromFields()
+		if(transferData == null){
+			val errorStr = getString(R.string.UserMsg_basicTransfer_unkownError)
+			finishThisActivityWithError(errorStr)
+			return
+		}
+
 		val serializedTransferData = transferData.toString()
 		if(serializedTransferData.isEmpty()) {
-			setResult(RESULT_CANCELED)
-			finish()
+			val errorStr = getString(R.string.UserMsg_basicTransfer_unkownError)
+			finishThisActivityWithError(errorStr)
 			return
 		}
 
@@ -376,9 +393,9 @@ class BasicTransferActivity : AppCompatActivity() {
 		finish()
 	}
 	private fun wookieTestFillWidgetsWithTestData(){
-		//todo tmp tymc
+		//todo tmp tymczasowe
 		//currentPaymentAccount = Utilities.wookieTestGetTestPaymentAccountForPaymentAct()
-		receiverNumberEditText.text = Utilities.strToEditable("09124026981111001066212622")//mj
+		receiverNumberEditText.text = Utilities.strToEditable("09124026981111001066212622")
 		amountEditText.text =  Utilities.strToEditable("1.23")
 		receiverNameEditText.text = Utilities.strToEditable("Ciocia Zosia")
 		transferTitle.text = Utilities.strToEditable("Zwrot za paczkę")
@@ -399,8 +416,8 @@ class BasicTransferActivity : AppCompatActivity() {
 			}
 			transferData
 		}catch (e : Exception){
+			Log.e(TagProduction, "[getTransferDataFromFields/${this.javaClass.name}]")
 			null
-			//todo
 		}
 
 	}

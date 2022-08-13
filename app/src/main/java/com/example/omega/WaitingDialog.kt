@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.widget.TextView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class WaitingDialog {

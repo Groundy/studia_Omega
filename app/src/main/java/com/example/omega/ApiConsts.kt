@@ -8,9 +8,8 @@ class ApiConsts {
 		companion object{
 			fun fromStr(text: String) : ScopeValues{
 				return when(text){
-					"ais" -> Ais
-					//"ais-accounts" -> AisAcc
-					"pis" -> Pis
+					Ais.text -> Ais
+					Pis.text -> Pis
 					else -> Ais
 				}
 			}
@@ -19,13 +18,14 @@ class ApiConsts {
 	enum class Privileges(val text : String){
 		AccountsDetails("ACC_DETAILS"),
 		AccountsHistory("ACC_HISTORY"),
-		SinglePayment("SINGLE_PAYMENT")
+		SinglePayment("SINGLE_PAYMENT"),
+		Bundle("Bundle")
 	}
 	enum class BankUrls(val text : String){
 		AuthUrl("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/authorize"),
 		GetTokenUrl ("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/token"),
 		GetPaymentAccount("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccount"),
-		GetPaymentAccounts("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccounts"),
+		//GetPaymentAccounts("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccounts"),
 		GetTransactionsDone("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getTransactionsDone"),
 		SinglePayment("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/payments/v3_0.1/domestic"),
 		Bundle("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/payments/v3_0.1/bundle")
@@ -49,7 +49,7 @@ class ApiConsts {
 		DirectPsu("directPsu"),
 		AccountNumberField("accountNumber"),
 
-		Authorization("authorization"),//todo temp I changed that from all uppercase to all lowewercase
+		Authorization("authorization"),
 
 		ResponseType("response_type"),
 		Scope("scope"),

@@ -33,7 +33,7 @@ class OpenApiAuthorize(activity: Activity) {
 			PisBundle("pis:bundle"),
 		}
 		private enum class BundleFields(val text : String){
-			TppBundleId("tppBundleId"),
+			//TppBundleId("tppBundleId"),
 			TransfersTotalAmount("transfersTotalAmount"),
 			TypeOfTransfers("typeOfTransfers"),
 			DomesticTransfers("domesticTransfers"),
@@ -68,6 +68,7 @@ class OpenApiAuthorize(activity: Activity) {
 		return success
 	}
 	suspend fun runForBundle(trDataList: List<TransferData>) : Boolean{
+		permissionsList = PermissionList(Privileges.Bundle)
 		Log.i(TagProduction, "Authorize for pis:bundle started")
 		val request = getRequestForBundle(trDataList)
 		val response = sendRequest(request)
@@ -145,7 +146,7 @@ class OpenApiAuthorize(activity: Activity) {
 
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_authURL, authUrl)
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_lastRandomValue, stateValue)
-		//todo// PreferencesOperator.savePref(callerActivity, R.string.PREF_lastUsedPermissionsForAuth, permissionsList.toString())
+		PreferencesOperator.savePref(callerActivity, R.string.PREF_lastUsedPermissionsForAuth, permissionsList.toString())
 		val validityTime = OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds)
 		PreferencesOperator.savePref(callerActivity, R.string.PREF_authUrlValidityTimeEnd, validityTime)
 		return true
@@ -212,7 +213,7 @@ class OpenApiAuthorize(activity: Activity) {
 				if(it.amount!! > 0.0)
 					amount += it.amount!!
 			}else{
-				//todo
+				Log.e(TagProduction, "[getBundleScopeDetailsObject/${this.javaClass.name}] bad amount double")
 			}
 		}
 		val amountStr = Utilities.doubleToTwoDigitsAfterCommaString(amount)
