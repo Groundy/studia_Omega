@@ -22,12 +22,14 @@
 			android:id="@+id/userPermisionList_accHistory_checkBox"
 			android:layout_width="match_parent"
 			android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
+			android:checked="true"
 			android:text="@string/UserPermListDialog_GUI_accHistoryCheckBoxText" />
 
 		<CheckBox
 			android:id="@+id/userPermisionList_accDetails_checkBox"
 			android:layout_width="match_parent"
 			android:layout_height="@dimen/userPermissionList_fieldSizeY_dim"
+			android:checked="true"
 			android:text="@string/UserPermListDialog_GUI_accDetailsCheckBoxText" />
 
 		<LinearLayout

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.CompoundButton
 
 class PermissionList(){
 	companion object{
@@ -36,14 +37,25 @@ class UserPermissionList : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		//supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
+		this.title = Utilities.strToEditable("Zgoda na:")
+
 		setContentView(R.layout.activity_user_permission_list)
 		setListeners()
 	}
 	private fun setListeners(){
-		findViewById<Button>(R.id.userPermisionList_continue_Button).setOnClickListener{
-			okClicked()}
-		findViewById<Button>(R.id.userPermisionList_cancel_Button).setOnClickListener{
-			endActivity(false)}
+		val okButton = findViewById<Button>(R.id.userPermisionList_continue_Button)
+		okButton.setOnClickListener{okClicked()}
+		val cancelButton = findViewById<Button>(R.id.userPermisionList_cancel_Button)
+		cancelButton.setOnClickListener{endActivity(false)}
+
+		val firstCheckBox = findViewById<CheckBox>(R.id.userPermisionList_accDetails_checkBox)
+		val secondCheckBox = findViewById<CheckBox>(R.id.userPermisionList_accHistory_checkBox)
+		val checkBoxListner = CompoundButton.OnCheckedChangeListener { _, isCheckd ->
+			val allChecked = firstCheckBox.isChecked && secondCheckBox.isChecked
+			okButton.isEnabled = allChecked
+		}
+		firstCheckBox.setOnCheckedChangeListener(checkBoxListner)
+		secondCheckBox.setOnCheckedChangeListener(checkBoxListner)
 	}
 
 	private fun okClicked(){
