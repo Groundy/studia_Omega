@@ -48,23 +48,6 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
 		startNfcOnStartIfUserWishTo()
-
-		CoroutineScope(IO).launch{
-			//getToken(WebActivtyRedirect.None)
-			//val token = PreferencesOperator.getToken(this@MainActivity)
-			val t1 = Utilities.wookieTestGetTestObjWithFilledData()
-			val t2 = Utilities.wookieTestGetTestObjWithFilledData()
-			t2.description = "test test test"
-			val list = arrayListOf<TransferData>()
-			list.add(t1)
-			list.add(t2)
-			val ok= OpenApiAuthorize(this@MainActivity).runForBundle(list.toList())
-			ActivityStarter.openBrowserForLogin(this@MainActivity, WebActivtyRedirect.BundlePaymentProcess)
-		}
-		//accHistoryTabClicked()
-		//PreferencesOperator.clearAuthData(this)
-		//val dialog = WaitingDialog(this, "Obtaining token from memory")
-		//basicTransferTabCliked()
 	}
 
 	//Menus
@@ -484,12 +467,9 @@ class MainActivity : AppCompatActivity() {
 	@SuppressLint("UnspecifiedImmutableFlag")
 	private fun turnForegroundDispatchOn(){
 		val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-
 		val intent = Intent(this, this.javaClass)
 			.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-
 		val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-
 		val intentFiltersArray = arrayOf(
 			IntentFilter().also {
 				it.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED)
