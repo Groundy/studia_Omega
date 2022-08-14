@@ -21,7 +21,8 @@ class TransferData() {
 			TransferData ("transferData"),
 			Value("value"),
 			NameAdress("nameAddress"),
-			AccountNumber("accountNumber");
+			AccountNumber("accountNumber"),
+			TppId("tppTransactionId")
 		}
 		private const val domesticMethodeName = "pis:domestic"
 		private const val bundleMethodeName = "pis:bundle"
@@ -91,6 +92,7 @@ class TransferData() {
 					amount = subDataObj.getString(TransferDataFields.Amount.text).toDouble()
 					currency = subDataObj.getString(TransferDataFields.Currency.text)
 					executionDate = subDataObj.getString(TransferDataFields.ExecutionDate.text)
+					tppId = methodeObj.getString(TransferDataFields.TppId.text)
 				}
 				objToRet
 			}catch (e : Exception){
@@ -179,6 +181,7 @@ class TransferData() {
 	var amount : Double? = null
 	var currency : String? = null
 	var executionDate : String? = OmegaTime.getDate()
+	var tppId : String? = null//for bundleOnly
 
 	override fun toString() : String{
 		return toJsonObject().toString()

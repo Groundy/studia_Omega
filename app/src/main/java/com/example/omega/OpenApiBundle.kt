@@ -29,14 +29,14 @@ class OpenApiBundle(private val callerActivity : Activity, private val paymentTo
 			val errorStr = sendRequest(request)
 			if(errorStr == null){
 				Log.i(TagProduction, "Bundle ended with success")
-				false
+				true
 			}
 			else{
 				Log.e(TagProduction, "Bundle ended with failure")
 				withContext(Main){
 					ActivityStarter.startOperationResultActivity(callerActivity, errorStr)
 				}
-				true
+				false
 			}
 		}catch (e : Exception){
 			Log.e(TagProduction, "Bundle ended with failure, e=$e")

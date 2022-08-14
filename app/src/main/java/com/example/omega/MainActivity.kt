@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
 		startNfcOnStartIfUserWishTo()
-/*
+
 		CoroutineScope(IO).launch{
 			//getToken(WebActivtyRedirect.None)
 			//val token = PreferencesOperator.getToken(this@MainActivity)
@@ -58,11 +58,9 @@ class MainActivity : AppCompatActivity() {
 			val list = arrayListOf<TransferData>()
 			list.add(t1)
 			list.add(t2)
-			OpenApiAuthorize(this@MainActivity).runForBundle(list)
+			val ok= OpenApiAuthorize(this@MainActivity).runForBundle(list.toList())
 			ActivityStarter.openBrowserForLogin(this@MainActivity, WebActivtyRedirect.BundlePaymentProcess)
-			//OpenApiBundle(this@MainActivity , token, list).run()
 		}
-		*/
 		//accHistoryTabClicked()
 		//PreferencesOperator.clearAuthData(this)
 		//val dialog = WaitingDialog(this, "Obtaining token from memory")

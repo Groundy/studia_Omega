@@ -135,13 +135,19 @@ class PaymentSuppClass(private val transferData: TransferData) {
 	}
 
 	fun toBundleJsonArrayElement() : JSONObject{
-		return JSONObject()
+		val toRet = JSONObject()
 			.put(RequestFields.Recipient.text, getRecipentbj())
 			.put(RequestFields.Sender.text, getSenderObj())
 			.put(RequestFields.TransferData.text,getTransferDataObj())
-			.put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
 			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
 			.put(RequestFields.System.text, usingSystem)
 			.put(RequestFields.ExecutionMode.text, usingExecutionMode)
+
+		if(transferData.tppId == null)
+			toRet.put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
+		else
+			toRet.put(RequestFields.TppTransactionId.text, transferData.tppId)
+
+		return toRet
 	}
 }
