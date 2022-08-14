@@ -64,7 +64,6 @@
 			android:maxLength="6"
 			android:textColorHint="#455A64"
 			android:textSize="50sp"
-			android:visibility="visible"
 			tools:visibility="visible" />
 
 		<Space

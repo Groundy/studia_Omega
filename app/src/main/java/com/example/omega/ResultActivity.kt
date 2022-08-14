@@ -22,6 +22,7 @@ class ResultActivity : AppCompatActivity() {
 
 		val imageToSet = when(textToSet){
 			resources.getString(R.string.Result_GUI_OK)->ContextCompat.getDrawable(this, R.drawable.ico_success)
+			resources.getString(R.string.Result_GUI_PAYMENT_ACCEPTED)->ContextCompat.getDrawable(this, R.drawable.ico_success)
 			else -> ContextCompat.getDrawable(this, R.drawable.ico_failure)
 		}
 		findViewById<ImageView>(R.id.result_imageView).setImageDrawable(imageToSet)

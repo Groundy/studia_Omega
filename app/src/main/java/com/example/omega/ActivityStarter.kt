@@ -71,7 +71,9 @@ class ActivityStarter {
 		}
 		fun startRBlikCodeCreatorActivity(callerActivity: Activity){
 			val rblikCodeCreatorIntent = Intent(callerActivity, RBLIKCodeCreator::class.java)
-			callerActivity.startActivity(rblikCodeCreatorIntent)
+			val retCode = callerActivity.resources.getInteger(R.integer.ACT_RETCODE_RBLIK_CREATOR)
+
+			callerActivity.startActivityForResult(rblikCodeCreatorIntent, retCode)
 		}
 		fun startOperationResultActivity(callerActivity: Activity, textToDisplayId: Int){
 			val textToDisplay = callerActivity.resources.getString(textToDisplayId)
@@ -151,11 +153,12 @@ class ActivityStarter {
 		}
 		fun startDisplayActivity(callerActivity: Activity, data : ServerSetCodeResponse){
 			val field = callerActivity.getString(R.string.ACT_COM_CODEGENERATOR_SERIALIZED_SERVER_RES_FIELD)
+			val retCode = callerActivity.resources.getInteger(R.integer.ACT_RETCODE_DISPLAY_ACTIVITY)
 			val dataStr = data.toString()
 			val codeDisplayIntent = Intent(callerActivity, RBlikCodeDisplayActivity::class.java)
 
 			codeDisplayIntent.putExtra(field, dataStr)
-			callerActivity.startActivity(codeDisplayIntent)
+			callerActivity.startActivityForResult(codeDisplayIntent, retCode)
 		}
 	}
 }

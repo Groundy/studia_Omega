@@ -32,6 +32,8 @@
 	<integer name="ACT_RETCODE_PERMISSION_LIST">6</integer>
 	<integer name="ACT_RETCODE_TRANSFER_SUMMARY">7</integer>
 	<integer name="ACT_RETCODE_BASIC_TRANSFER_ACT">8</integer>
+	<integer name="ACT_RETCODE_DISPLAY_ACTIVITY">9</integer>
+	<integer name="ACT_RETCODE_RBLIK_CREATOR">10</integer>
 
 	<integer name="ACT_RETCODE_DIALOG_ChangeAccountOnBankWebPage">100</integer>
 	<integer name="ACT_RETCODE_DIALOG_CancelBioAuth">101</integer>

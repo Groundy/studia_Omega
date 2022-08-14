@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import java.util.concurrent.TimeUnit
 
 class CodeServerApi {
 	private enum class Fields(val text : String){
@@ -24,7 +25,8 @@ class CodeServerApi {
 	private enum class GateWay(val text : String) {
 		Set("https://omegaserver.azurewebsites.net/OmegaServer-v1/setCode"),
 		Get("https://omegaserver.azurewebsites.net/OmegaServer-v1/getCode"),
-		//Test("https://omegaserver.azurewebsites.net/OmegaServer-v1/test");
+		Done("https://omegaserver.azurewebsites.net/OmegaServer-v1/codeDone"),
+		Waiting("https://omegaserver.azurewebsites.net/OmegaServer-v1/waitCodeDone"),
 	}
 
 	companion object{
@@ -51,7 +53,8 @@ class CodeServerApi {
 				.put("data", transferDataStr)
 			val request = getInternalRequest(GateWay.Set, body)
 			return try {
-				val response = OkHttpClient().newCall(request).execute()
+				val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()
+				val response = client.newCall(request).execute()
 				val resBodyStr = response.body!!.string()
 				val responseJson = JSONObject(resBodyStr)
 				val success = responseJson.get(Fields.Status.text) == Fields.Ok.text
@@ -107,6 +110,51 @@ class CodeServerApi {
 				null
 			}
 
+		}
+		suspend fun codeDone(callerActivity: Activity, code: Int) : Boolean{
+			val body = JSONObject()
+				.put(Fields.Code.text, code)
+			val request = getInternalRequest(GateWay.Done, body)
+			try {
+				val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()
+				val response = client.newCall(request).execute()
+				val responseJson = JSONObject(response.body!!.string())
+				val success = responseJson.get(Fields.Status.text) == Fields.Ok.text
+				if(!success){
+					val errorMsg = responseJson.getString(Fields.ErrorMsg.text)
+					withContext(Main){
+						ActivityStarter.startOperationResultActivity(callerActivity, errorMsg)
+						Log.e(Utilities.TagProduction, "[codeDone/CodeServerApi] $errorMsg")
+					}
+					return false
+				}
+				return true
+			}catch (e : Exception){
+				Log.e(Utilities.TagProduction, "[getCodeData/CodeServerApi] error in obtaing code from azure app e=[$e]")
+				return false
+			}
+
+		}
+		suspend fun waitCodeDone(callerActivity: Activity, code: Int) : Boolean{
+			//long request
+			val body = JSONObject()
+				.put(Fields.Code.text, code)
+			val request = getInternalRequest(GateWay.Waiting, body)
+			return try {
+				val client = OkHttpClient.Builder().readTimeout(10, TimeUnit.MINUTES).build()
+				val response = client.newCall(request).execute()
+				val responseJson = JSONObject(response.body!!.string())
+				val success = responseJson.get(Fields.Status.text) == Fields.Ok.text
+				if(!success){
+					val errorMsg = responseJson.getString(Fields.ErrorMsg.text)
+					Log.e(Utilities.TagProduction, "[waitCodeDone/CodeServerApi] $errorMsg")
+					false
+				}
+				true
+			}catch (e : Exception){
+				Log.e(Utilities.TagProduction, "[getCodeData/CodeServerApi] error in obtaing code from azure app e=[$e]")
+				false
+			}
 		}
 	}
 

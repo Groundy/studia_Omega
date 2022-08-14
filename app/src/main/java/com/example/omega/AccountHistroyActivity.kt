@@ -172,7 +172,6 @@ class AccountHistroyActivity : AppCompatActivity() {
 	}
 }
 
-
 class CustomAdapter(private val callerActivity : Activity, private val accountNumber: String, private val list : List<AccountHistoryRecord>) : BaseAdapter() {
 	override fun getCount(): Int {
 		return list.size

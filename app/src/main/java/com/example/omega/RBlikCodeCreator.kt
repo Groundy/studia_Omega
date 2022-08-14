@@ -1,5 +1,6 @@
 package com.example.omega
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -54,6 +55,19 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			}
 		}
 	}
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		if(requestCode != resources.getInteger(R.integer.ACT_RETCODE_DISPLAY_ACTIVITY))
+			return
+
+		if(resultCode == RESULT_CANCELED)
+			return
+
+		setResult(RESULT_OK)
+		finish()
+	}
+
 	private fun setUpGui(){
 		amountField = findViewById(R.id.RBlikCodeGenerator_amount_editText)
 		titleField = findViewById(R.id.RBlikCodeGenerator_transferTitle_EditText)
@@ -128,7 +142,8 @@ class RBLIKCodeCreator : AppCompatActivity() {
 
 		val adapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item)
 		listOfAccountFromToken.forEach{
-			adapter.add(it)
+			if(it.contains("PLN"))
+				adapter.add(it)
 		}
 
 		return adapter
@@ -174,7 +189,6 @@ class RBLIKCodeCreator : AppCompatActivity() {
 
 		return true
 	}
-
 	private fun getDataForServer() : TransferData? {
 		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser()
 		if(paymentAccount == null){
@@ -195,7 +209,6 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		}
 		return transferData
 	}
-
 	private fun wookieTestFillWidgets(){
 		//amountField.text = Editable.Factory.getInstance().newEditable("10.0")
 		//titleField.text = Editable.Factory.getInstance().newEditable("xyz")

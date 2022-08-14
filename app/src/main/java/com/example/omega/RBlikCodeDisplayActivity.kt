@@ -14,6 +14,11 @@ import androidmads.library.qrgenearator.QRGEncoder
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.example.omega.Utilities.Companion.TagProduction
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.floor
 
 class RBlikCodeDisplayActivity : AppCompatActivity() {
@@ -29,7 +34,6 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 			finish()
 		}
 	}
-
 	override fun onDestroy() {
 		super.onDestroy()
 		timer.cancel()
@@ -54,6 +58,11 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 		}
 		imgWidget.setImageBitmap(qrCodeBitmap)
 		startTimer()
+		CoroutineScope(IO).launch{
+			val paymentAccepted = CodeServerApi.waitCodeDone(this@RBlikCodeDisplayActivity, data.code)
+			if(paymentAccepted)
+				endActivityWithPaymentAcceptance()
+		}
 	}
 
 	private fun generateQRCodeImg(code: Int) : Bitmap?{
@@ -121,6 +130,11 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 			}
 		}
 		timer.start()
+	}
+	private fun endActivityWithPaymentAcceptance(){
+		timer.cancel()
+		setResult(RESULT_OK)
+		this.finish()
 	}
 }
 

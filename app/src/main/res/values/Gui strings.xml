@@ -62,6 +62,7 @@
 
 	<!-- result activity -->
 	<string name="Result_GUI_OK">Transakcja zakończona pomyślnie.</string>
+	<string name="Result_GUI_PAYMENT_ACCEPTED">Zaakceptowano płatność.</string>
 	<string name="Result_GUI_WRONG_CODE">Transakcja zakończona niepowodzeniem. Wprowadzono błędny kod.</string>
 	<string name="Result_GUI_WRONG_AUTH">Transakcja zakończona niepowodzeniem. Błąd autoryzacji.</string>
 	<string name="Result_GUI_WRONG_ELSE">Transakcja zakończona niepowodzeniem z nieznanego powodu.</string>

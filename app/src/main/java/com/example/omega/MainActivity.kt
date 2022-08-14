@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity() {
 			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> resetPermissionActivityResult(resultCode)
 			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank) -> dialogIfUserWantToResetBankAuthResult(resultCode)
 			resources.getInteger(R.integer.ACT_RETCODE_BASIC_TRANSFER_ACT) -> basicTransActResult(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_RBLIK_CREATOR) -> creatorResultPaymentAccepted(resultCode)
 		}
 	}
 	private fun resetPermissionActivityResult(resultCode: Int){
@@ -293,6 +294,11 @@ class MainActivity : AppCompatActivity() {
 				ActivityStarter.startOperationResultActivity(this@MainActivity, strMsg)
 			}
 		}
+	}
+	private fun creatorResultPaymentAccepted(resultCode: Int){
+		if(resultCode != RESULT_OK)
+			return
+		ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_PAYMENT_ACCEPTED)
 	}
 
 	//OptionsClicked
