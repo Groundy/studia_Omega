@@ -39,7 +39,8 @@
 				android:layout_height="wrap_content"
 				android:paddingStart="5sp"
 				android:text="from"
-				android:textColor="@color/black" />
+				android:textColor="@color/black"
+				android:visibility="gone" />
 
 			<TextView
 				android:id="@+id/hisRec_fromAccNumber"
@@ -47,11 +48,13 @@
 				android:layout_height="wrap_content"
 				android:paddingStart="5sp"
 				android:text="from number"
-				android:textColor="@color/black" />
+				android:textColor="@color/black"
+				android:visibility="gone" />
 
 			<Space
 				android:layout_width="match_parent"
-				android:layout_height="10sp" />
+				android:layout_height="10sp"
+				android:visibility="gone" />
 
 			<TextView
 				android:id="@+id/hisRec_toAccName"

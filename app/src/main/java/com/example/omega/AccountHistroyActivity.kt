@@ -237,121 +237,125 @@ class FilterDialog(context: Context) : Dialog(context) {
 		fun finish(result: TransactionsDoneAdditionalInfos?)
 	}
 
-
 	private fun setGui(){
-		minAmountField = findViewById(R.id.FilterAct_minAmount_editText)
-		maxAmountField= findViewById(R.id.FilterAct_maxAmount_editText)
-		applyButton = findViewById(R.id.FilterAct_apply_Button)
 		backButton = findViewById(R.id.FilterAct_cancel_Button)
-		startDateField = findViewById(R.id.FilterAct_dateFrom_textView)
-		endDateField = findViewById(R.id.FilterAct_dateTo_textView)
-
-		startDateField.text = OmegaTime.getDate(7, false)
-		endDateField.text = OmegaTime.getDate(0, false)
-		checkDatesCorrectness()
-	}
-	private fun setListeners(){
 		backButton.setOnClickListener {
 			this.dismiss()
 		}
+
+		applyButton = findViewById(R.id.FilterAct_apply_Button)
 		applyButton.setOnClickListener {
 			applyButtonClicked()
 		}
-		val minAmountListener = object : TextWatcher {
-			var previousValue : String = ""
-			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-				if(p0 != null)
-					previousValue = p0.toString()
-			}
-			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-			override fun afterTextChanged(p0: Editable?) {
-				if(!p0.isNullOrEmpty())
-					Utilities.stopUserFromPuttingMoreThan2DigitsAfterComma(
-						minAmountField,
-						previousValue,
-						p0.toString()
-					)
-				checkIfMaxAmountIsBiggerThanMin()
-			}
-		}
-		val maxAmountListener = object : TextWatcher {
-			var previousValue : String = ""
-			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-				if(p0 != null)
-					previousValue = p0.toString()
-			}
-			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-			override fun afterTextChanged(p0: Editable?) {
-				if(!p0.isNullOrEmpty())
-					Utilities.stopUserFromPuttingMoreThan2DigitsAfterComma(
-						maxAmountField,
-						previousValue,
-						p0.toString()
-					)
-				checkIfMaxAmountIsBiggerThanMin()
-			}
-		}
-		minAmountField.addTextChangedListener(minAmountListener)
-		maxAmountField.addTextChangedListener(maxAmountListener)
 
-
-		val startDateFieldClickedListener = View.OnClickListener{
-			val listener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-				var dayOfMonthStr = dayOfMonth.toString()
-				if(dayOfMonthStr.length == 1)
-					dayOfMonthStr = "0$dayOfMonthStr"
-
-				var monthOfYearStr = (monthOfYear+1).toString()
-				if(monthOfYearStr.length == 1)
-					monthOfYearStr = "0$monthOfYearStr"
-
-				val str = "$dayOfMonthStr-$monthOfYearStr-$year"
-				startDateField.text = str
-				checkDatesCorrectness()
+		minAmountField = findViewById(R.id.FilterAct_minAmount_editText)
+		with(minAmountField){
+			val minAmountListener = object : TextWatcher {
+				var previousValue : String = ""
+				override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+					if(p0 != null)
+						previousValue = p0.toString()
+				}
+				override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+				override fun afterTextChanged(p0: Editable?) {
+					if(!p0.isNullOrEmpty())
+						Utilities.stopUserFromPuttingMoreThan2DigitsAfterComma(
+							minAmountField,
+							previousValue,
+							p0.toString()
+						)
+					checkIfMaxAmountIsBiggerThanMin()
+				}
 			}
-			val c = Calendar.getInstance()
-			val year = c.get(Calendar.YEAR)
-			val month = c.get(Calendar.MONTH)
-			val day = c.get(Calendar.DAY_OF_MONTH)
-			val dpd = DatePickerDialog(this.context, listener, year, month, day)
-			dpd.show()
-
+			addTextChangedListener(minAmountListener)
 		}
 
-		val endDateFieldClickedListener = View.OnClickListener{
-			val listener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-				var dayOfMonthStr = dayOfMonth.toString()
-				if(dayOfMonthStr.length == 1)
-					dayOfMonthStr = "0$dayOfMonthStr"
-
-				var monthOfYearStr = (monthOfYear+1).toString()
-				if(monthOfYearStr.length == 1)
-					monthOfYearStr = "0$monthOfYearStr"
-
-				val str = "$dayOfMonthStr-$monthOfYearStr-$year"
-				endDateField.text = str
-				checkDatesCorrectness()
+		maxAmountField= findViewById(R.id.FilterAct_maxAmount_editText)
+		with(maxAmountField){
+			val maxAmountListener = object : TextWatcher {
+				var previousValue : String = ""
+				override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+					if(p0 != null)
+						previousValue = p0.toString()
+				}
+				override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+				override fun afterTextChanged(p0: Editable?) {
+					if(!p0.isNullOrEmpty())
+						Utilities.stopUserFromPuttingMoreThan2DigitsAfterComma(
+							maxAmountField,
+							previousValue,
+							p0.toString()
+						)
+					checkIfMaxAmountIsBiggerThanMin()
+				}
 			}
-			val c = Calendar.getInstance()
-			val year = c.get(Calendar.YEAR)
-			val month = c.get(Calendar.MONTH)
-			val day = c.get(Calendar.DAY_OF_MONTH)
-			val dpd = DatePickerDialog(this.context, listener, year, month, day)
-			dpd.show()
+			addTextChangedListener(maxAmountListener)
 		}
 
-		startDateField.setOnClickListener(startDateFieldClickedListener)
-		endDateField.setOnClickListener(endDateFieldClickedListener)
+		startDateField = findViewById(R.id.FilterAct_dateFrom_textView)
+		with(startDateField){
+			text = OmegaTime.getDate(7, false)
+			val startDateFieldClickedListener = View.OnClickListener{
+				val listener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+					var dayOfMonthStr = dayOfMonth.toString()
+					if(dayOfMonthStr.length == 1)
+						dayOfMonthStr = "0$dayOfMonthStr"
+
+					var monthOfYearStr = (monthOfYear+1).toString()
+					if(monthOfYearStr.length == 1)
+						monthOfYearStr = "0$monthOfYearStr"
+
+					val str = "$dayOfMonthStr-$monthOfYearStr-$year"
+					startDateField.text = str
+					checkDatesCorrectness()
+				}
+				val c = Calendar.getInstance()
+				val year = c.get(Calendar.YEAR)
+				val month = c.get(Calendar.MONTH)
+				val day = c.get(Calendar.DAY_OF_MONTH)
+				val dpd = DatePickerDialog(this.context, listener, year, month, day)
+				dpd.show()
+
+			}
+			setOnClickListener(startDateFieldClickedListener)
+		}
+
+		endDateField = findViewById(R.id.FilterAct_dateTo_textView)
+		with(endDateField){
+			text = OmegaTime.getDate(0, false)
+			val endDateFieldClickedListener = View.OnClickListener{
+				val listener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+					var dayOfMonthStr = dayOfMonth.toString()
+					if(dayOfMonthStr.length == 1)
+						dayOfMonthStr = "0$dayOfMonthStr"
+
+					var monthOfYearStr = (monthOfYear+1).toString()
+					if(monthOfYearStr.length == 1)
+						monthOfYearStr = "0$monthOfYearStr"
+
+					val str = "$dayOfMonthStr-$monthOfYearStr-$year"
+					endDateField.text = str
+					checkDatesCorrectness()
+				}
+				val c = Calendar.getInstance()
+				val year = c.get(Calendar.YEAR)
+				val month = c.get(Calendar.MONTH)
+				val day = c.get(Calendar.DAY_OF_MONTH)
+				val dpd = DatePickerDialog(this.context, listener, year, month, day)
+				dpd.show()
+			}
+			setOnClickListener(endDateFieldClickedListener)
+		}
+		
+		checkDatesCorrectness()
 	}
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		requestWindowFeature(Window.FEATURE_NO_TITLE)
 		setContentView(R.layout.account_history_filters)
 		setGui()
-		setListeners()
 		setCancelable(false)
 	}
-
 	private fun checkIfMaxAmountIsBiggerThanMin() : Boolean{
 		val minText = minAmountField.text.toString()
 		val minAmount = if(minText.isEmpty())
@@ -379,7 +383,6 @@ class FilterDialog(context: Context) : Dialog(context) {
 		maxAmountField.background = img
 		return ok
 	}
-
 	private fun checkDatesCorrectness(): Boolean {
 		val okImg = ContextCompat.getDrawable(context, R.drawable.main_frame)
 		val errIng = ContextCompat.getDrawable(context, R.drawable.error_frame)
@@ -406,7 +409,6 @@ class FilterDialog(context: Context) : Dialog(context) {
 			false
 		}
 	}
-
 	private fun applyButtonClicked(){
 		val ok = checkDatesCorrectness() && checkIfMaxAmountIsBiggerThanMin()
 		if(!ok)
