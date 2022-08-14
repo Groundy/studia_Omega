@@ -180,10 +180,32 @@
 
 					</LinearLayout>
 
-					<Button
-						android:id="@+id/RBlikCodeGenerator_goNext_button"
-						style="@style/OmegaButtonStyle"
-						android:text="@string/GUI_basicTransfer_goNextButtonText" />
+					<TextView
+						android:id="@+id/basicTransfer_numberOfTransactionsInBundle_textView"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:maxLines="11"
+						android:text="@string/GUI_basicTransfer_numberOfTransfers"
+						android:textColor="@color/black"
+						android:textStyle="bold"
+						android:visibility="visible" />
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:orientation="horizontal">
+
+						<Button
+							android:id="@+id/basicTransfer_addNewTrans_button"
+							style="@style/OmegaButtonStyle"
+							android:text="@string/GUI_basicTransfer_nextTransferButtonText" />
+
+						<Button
+							android:id="@+id/basicTransfer_goNext_button"
+							style="@style/OmegaButtonStyle"
+							android:text="@string/GUI_basicTransfer_goNextButtonText" />
+					</LinearLayout>
+
 				</LinearLayout>
 			</ScrollView>
 

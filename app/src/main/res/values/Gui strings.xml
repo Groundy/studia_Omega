@@ -9,7 +9,9 @@
 	<string name="GUI_basicTransfer_ReceiverNumberTextView">Numer rachunku odbiorcy: </string>
 	<string name="GUI_basicTransfer_AmountOfTransferTextView">Kwota: </string>
 	<string name="GUI_basicTransfer_TitleOfTransferTextView">Tytuł przelewu: </string>
-	<string name="GUI_basicTransfer_goNextButtonText">Dalej </string>
+	<string name="GUI_basicTransfer_goNextButtonText">Autoryzuj</string>
+	<string name="GUI_basicTransfer_numberOfTransfers">Liczba zaplanowanych przelewów: </string>
+	<string name="GUI_basicTransfer_nextTransferButtonText">Następny</string>
 	<string name="GUI_basicTransfer_amountAfterTransfer">Pozostało: </string>
 	<string name="GUI_basicTransfer_amountAfterTransfer_less_than_zero">Nie posiadasz wystarczjących środków</string>
 

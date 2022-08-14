@@ -134,7 +134,7 @@
 					</LinearLayout>
 
 					<Button
-						android:id="@+id/RBlikCodeGenerator_goNext_button"
+						android:id="@+id/basicTransfer_goNext_button"
 						style="@style/OmegaButtonStyle"
 						android:text="@string/GUI_RBlikCodeGenerator_goNextButtonText" />
 				</LinearLayout>

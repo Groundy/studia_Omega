@@ -16,26 +16,31 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONObject
 import java.util.ArrayList
 
 class BasicTransferActivity : AppCompatActivity() {
 	private lateinit var receiverNumberEditText : EditText
 	private lateinit var amountEditText : EditText
 	private lateinit var receiverNameEditText : EditText
-	private lateinit var transferTitle : EditText
+	private lateinit var transDesEditText : EditText
 	private lateinit var goNextButton : Button
 	private lateinit var amountAfterTransferTextView : TextView
 	private lateinit var spinner : Spinner
 	private lateinit var receiverAccNbrDigitsHint : TextView
+	private lateinit var addTransToBundleButton : Button
+	private lateinit var numberOfTransInBundle : TextView
 
 	private lateinit var tokenCpy : Token
 	private var currentPaymentAccount: PaymentAccount? = null
 
+	private var transferDataListToBundle = arrayListOf<TransferData>()
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_basic_transfer)
-		findGuiElements()
-		setListenersToGuiElements()
+		setUpGui()
 		val dialog = WaitingDialog(this)
 		CoroutineScope(IO).launch {
 			dialog.changeText(this@BasicTransferActivity, R.string.POPUP_getToken)
@@ -68,64 +73,84 @@ class BasicTransferActivity : AppCompatActivity() {
 		}
 	}
 
-	private fun setListenersToGuiElements(){
-		val amountEditTextListener = object :TextWatcher{
-			var previousValue : String = ""
-			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-				if(p0 != null)
-					previousValue = p0.toString()
+	private fun setUpGui(){
+		receiverNumberEditText = findViewById(R.id.basicTransfer_receiverNumber_EditText)
+		with(receiverNumberEditText){
+			val receiverNumberEditTextListener = object :TextWatcher{
+				override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+				override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+				override fun afterTextChanged(p0: Editable?) {
+					showDigitsLeftToHaveProperAmountOfDigits()
+				}
 			}
-			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-			override fun afterTextChanged(p0: Editable?) {
-				if(!p0.isNullOrEmpty())
-					Utilities.stopUserFromPuttingMoreThan2DigitsAfterComma(
-						amountEditText,
-						previousValue,
-						p0.toString()
-					)
-				showAmountAfterTransfer()
-			}
-		}
-		val receiverNumberEditTextListener = object :TextWatcher{
-			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-			override fun afterTextChanged(p0: Editable?) {
-				showDigitsLeftToHaveProperAmountOfDigits()
-			}
-		}
-		val receiverNameEditTextListener = object :TextWatcher{
-			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-			override fun afterTextChanged(p0: Editable?) {}
-		}
-		val transferTitleEditTextListener = object :TextWatcher{
-			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-			override fun afterTextChanged(p0: Editable?) {}
-		}
-		val selectedItemChangedListener = object :  AdapterView.OnItemSelectedListener {
-			override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-				userChangeAnotherAccOnSpiner()
-			}
-			override fun onNothingSelected(p0: AdapterView<*>?) {}
+			addTextChangedListener(receiverNumberEditTextListener)
 		}
 
-		receiverNumberEditText.addTextChangedListener(receiverNumberEditTextListener)
-		amountEditText.addTextChangedListener(amountEditTextListener)
-		receiverNameEditText.addTextChangedListener(receiverNameEditTextListener)
-		transferTitle.addTextChangedListener(transferTitleEditTextListener)
-		goNextButton.setOnClickListener { goNextActivityButtonClicked() }
-		spinner.onItemSelectedListener = selectedItemChangedListener
-	}
-	private fun findGuiElements(){
-		receiverNumberEditText = findViewById(R.id.basicTransfer_receiverNumber_EditText)
 		amountEditText = findViewById(R.id.basicTransfer_amount_editText)
+		with(amountEditText){
+			val amountEditTextListener = object :TextWatcher{
+				var previousValue : String = ""
+				override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+					if(p0 != null)
+						previousValue = p0.toString()
+				}
+				override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+				override fun afterTextChanged(p0: Editable?) {
+					if(!p0.isNullOrEmpty())
+						Utilities.stopUserFromPuttingMoreThan2DigitsAfterComma(
+							amountEditText,
+							previousValue,
+							p0.toString()
+						)
+					showAmountAfterTransfer()
+				}
+			}
+			addTextChangedListener(amountEditTextListener)
+		}
+
 		receiverNameEditText = findViewById(R.id.basicTransfer_reciverName_EditText)
-		transferTitle = findViewById(R.id.basicTransfer_transferTitle_EditText)
-		goNextButton = findViewById(R.id.RBlikCodeGenerator_goNext_button)
-		amountAfterTransferTextView = findViewById(R.id.basicTransfer_amountAfterTransfer_TextView)
+		with(receiverNumberEditText){
+			val receiverNameEditTextListener = object :TextWatcher{
+				override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+				override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+				override fun afterTextChanged(p0: Editable?) {}
+			}
+			addTextChangedListener(receiverNameEditTextListener)
+		}
+
+		transDesEditText = findViewById(R.id.basicTransfer_transferTitle_EditText)
+		with(transDesEditText){
+			val transferTitleEditTextListener = object :TextWatcher{
+				override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+				override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+				override fun afterTextChanged(p0: Editable?) {}
+			}
+			addTextChangedListener(transferTitleEditTextListener)
+		}
+
+		goNextButton = findViewById(R.id.basicTransfer_goNext_button)
+		goNextButton.setOnClickListener {goNextActivityButtonClicked()}
+
+		addTransToBundleButton = findViewById(R.id.basicTransfer_addNewTrans_button)
+		addTransToBundleButton.setOnClickListener {
+			userAddedTransferToBundle()
+		}
+
 		spinner = findViewById(R.id.basicTransfer_accountList_Spinner)
+		with(spinner){
+			val selectedItemChangedListener = object :  AdapterView.OnItemSelectedListener {
+				override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+					userChangeAnotherAccOnSpiner()
+				}
+				override fun onNothingSelected(p0: AdapterView<*>?) {}
+			}
+
+			onItemSelectedListener = selectedItemChangedListener
+		}
+
+		amountAfterTransferTextView = findViewById(R.id.basicTransfer_amountAfterTransfer_TextView)
 		receiverAccNbrDigitsHint = findViewById(R.id.basicTransfer_receiverNumberDigitsLeft_TextView)
+		numberOfTransInBundle = findViewById(R.id.basicTransfer_numberOfTransactionsInBundle_textView)
 	}
 	private fun showAmountAfterTransfer(){
 		val amountToTransfer = amountEditText.text.toString().toDoubleOrNull()
@@ -181,7 +206,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(!receiverNameCorrect)
 			return resources.getString(R.string.UserMsg_basicTransfer_wrong_receiver_name)
 
-		val titleCorrect = transferTitle.text.length in 3..50
+		val titleCorrect = transDesEditText.text.length in 3..50
 		if(!titleCorrect)
 			return resources.getString(R.string.UserMsg_basicTransfer_wrong_title)
 		return null
@@ -245,35 +270,48 @@ class BasicTransferActivity : AppCompatActivity() {
 		finish()
 	}
 	private fun goNextActivityButtonClicked(){
-		val inputErrorText = checkInputData()
-		if(inputErrorText != null){
-			Utilities.showToast(this, inputErrorText)
-			return
-		}
-		if(currentPaymentAccount==null)
-			return
+		if(transferDataListToBundle.size == 0){
+			val inputErrorText = checkInputData()
+			if(inputErrorText != null){
+				Utilities.showToast(this, inputErrorText)
+				return
+			}
+			if(currentPaymentAccount==null)
+				return
 
-		val transferData = getTransferDataFromFields()
-		if(transferData == null){
-			val errorStr = getString(R.string.UserMsg_basicTransfer_unkownError)
-			finishThisActivityWithError(errorStr)
-			return
-		}
+			val transferData = getTransferDataFromFields()
+			if(transferData == null){
+				val errorStr = getString(R.string.UserMsg_basicTransfer_unkownError)
+				finishThisActivityWithError(errorStr)
+				return
+			}
 
-		val transferDataSerialized = transferData.toString()
-		if(transferDataSerialized.isEmpty()){
-			val errorStr = getString(R.string.UserMsg_basicTransfer_unkownError)
-			finishThisActivityWithError(errorStr)
-			return
-		}
+			val transferDataSerialized = transferData.toString()
+			if(transferDataSerialized.isEmpty()){
+				val errorStr = getString(R.string.UserMsg_basicTransfer_unkownError)
+				finishThisActivityWithError(errorStr)
+				return
+			}
 
-		val showSummary = !PreferencesOperator.readPrefBool(this, R.string.PREF_skipSummaryWindows)
-		if(showSummary)
-			ActivityStarter.startTransferSummaryActivity(this, transferData)
+			val showSummary = !PreferencesOperator.readPrefBool(this, R.string.PREF_skipSummaryWindows)
+			if(showSummary)
+				ActivityStarter.startTransferSummaryActivity(this, transferData)
+			else{
+				val descripitionToShow = "${transferData.amount.toString()} ${transferData.currency}"
+				ActivityStarter.startAuthActivity(this, descripitionToShow)
+			}
+		}
 		else{
-			val descripitionToShow = "${transferData.amount.toString()} ${transferData.currency}"
+			var totalAmount = 0.0
+			transferDataListToBundle.forEach {
+				totalAmount += it.amount!!
+			}
+			val strToShow = Utilities.doubleToTwoDigitsAfterCommaString(totalAmount)
+
+			val descripitionToShow = "$strToShow PLN"
 			ActivityStarter.startAuthActivity(this, descripitionToShow)
 		}
+
 	}
 	private suspend fun getToken() : Boolean{
 		val tokenTmp = PreferencesOperator.getToken(this)
@@ -360,7 +398,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			isFocusable = false
 			setTextColor(Color.GRAY)
 		}
-		with(transferTitle){
+		with(transDesEditText){
 			text = Utilities.strToEditable(transferData.description)
 			isFocusable = false
 			setTextColor(Color.GRAY)
@@ -371,15 +409,23 @@ class BasicTransferActivity : AppCompatActivity() {
 		if(resultCode != RESULT_OK)
 			return
 
-		val transferData = getTransferDataFromFields()
-		if(transferData == null){
-			val errorStr = getString(R.string.UserMsg_basicTransfer_unkownError)
-			finishThisActivityWithError(errorStr)
-			return
+		var serializedTransferData : String? = null
+		if(transferDataListToBundle.size == 0) {
+			val transferData = getTransferDataFromFields()
+			if (transferData != null){
+				val arr = JSONArray().put(transferData)
+				serializedTransferData = arr.toString()
+			}
+		}
+		else{
+			val arr = JSONArray()
+				transferDataListToBundle.forEach {
+				arr.put(it.toJsonObject())
+			}
+			serializedTransferData = arr.toString()
 		}
 
-		val serializedTransferData = transferData.toString()
-		if(serializedTransferData.isEmpty()) {
+		if(serializedTransferData.isNullOrEmpty()) {
 			val errorStr = getString(R.string.UserMsg_basicTransfer_unkownError)
 			finishThisActivityWithError(errorStr)
 			return
@@ -398,7 +444,7 @@ class BasicTransferActivity : AppCompatActivity() {
 		receiverNumberEditText.text = Utilities.strToEditable("09124026981111001066212622")
 		amountEditText.text =  Utilities.strToEditable("1.23")
 		receiverNameEditText.text = Utilities.strToEditable("Ciocia Zosia")
-		transferTitle.text = Utilities.strToEditable("Zwrot za paczkę")
+		transDesEditText.text = Utilities.strToEditable("Zwrot za paczkę")
 	}
 	private fun getTransferDataFromFields() : TransferData?{
 		return try {
@@ -410,7 +456,7 @@ class BasicTransferActivity : AppCompatActivity() {
 				senderAccNumber = currentPaymentAccount!!.getAccNumber()
 				senderAccName = currentPaymentAccount!!.getOwnerName()
 				amount = amountEditText.text.toString().toDouble()
-				description = transferTitle.text.toString()
+				description = transDesEditText.text.toString()
 				currency = currentPaymentAccount!!.getCurrencyOfAccount()
 				executionDate = OmegaTime.getDate()
 			}
@@ -421,4 +467,51 @@ class BasicTransferActivity : AppCompatActivity() {
 		}
 
 	}
+	private fun userAddedTransferToBundle(){
+		val transferData = getTransferDataFromFields()
+		if(transferData == null){
+			//todo
+			return
+		}
+		if(transferDataListToBundle.size == 10){
+			Utilities.showToast(this, "Maksymalnie 10 przelewów w jednej paczce")
+			return
+		}
+
+		transferDataListToBundle.add(transferData)
+		receiverNumberEditText.text = null
+		amountEditText.text = null
+		receiverNameEditText.text = null
+		transDesEditText.text = null
+		amountAfterTransferTextView.text = null
+		wookieTestFillWidgetsWithTestData()
+
+		if(transferDataListToBundle.size == 0){
+			val base = resources.getString(R.string.GUI_basicTransfer_numberOfTransfers)
+			val textToSet = "$base 0"
+			numberOfTransInBundle.text = Utilities.strToEditable(textToSet)
+			numberOfTransInBundle.visibility = View.GONE
+		}
+
+		var amount = 0.0
+		var desciption = "\n"
+		val maxLength = 30
+		transferDataListToBundle.forEach {
+			amount += it.amount!!
+			val endIndex = if(it.description!!.length > maxLength)
+				maxLength
+			else
+				it.description!!.length
+
+			val desToAdd = "${it.amount} -> ${it.description!!.subSequence(0, endIndex)}\n"
+			desciption += desToAdd
+		}
+		val amountStr = "(${((amount*100).toInt()/100.0)})"
+
+		numberOfTransInBundle.visibility = View.VISIBLE
+		val base = resources.getString(R.string.GUI_basicTransfer_numberOfTransfers)
+		val textToSet = "$base ${transferDataListToBundle.size} $amountStr".plus(desciption)
+		numberOfTransInBundle.text = Utilities.strToEditable(textToSet)
+	}
+
 }

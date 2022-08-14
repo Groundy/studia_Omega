@@ -59,7 +59,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		titleField = findViewById(R.id.RBlikCodeGenerator_transferTitle_EditText)
 		receiverNameField = findViewById(R.id.RBlikCodeGenerator_reciverName_EditText)
 		accountListSpinner = findViewById(R.id.RBlikCodeGenerator_accountList_Spinner)
-		goNextActivityButton = findViewById(R.id.RBlikCodeGenerator_goNext_button)
+		goNextActivityButton = findViewById(R.id.basicTransfer_goNext_button)
 		goNextActivityButton.setOnClickListener{
 			goNextButtonClicked()
 		}

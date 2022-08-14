@@ -35,6 +35,8 @@ import com.example.omega.BankLoginWebPageActivity.Companion.WebActivtyRedirect
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.serialization.json.JsonArray
+import org.json.JSONArray
 
 class MainActivity : AppCompatActivity() {
 	private var nfcCapturingIsOn = false
@@ -46,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
 		startNfcOnStartIfUserWishTo()
-
+/*
 		CoroutineScope(IO).launch{
 			//getToken(WebActivtyRedirect.None)
 			//val token = PreferencesOperator.getToken(this@MainActivity)
@@ -60,6 +62,7 @@ class MainActivity : AppCompatActivity() {
 			ActivityStarter.openBrowserForLogin(this@MainActivity, WebActivtyRedirect.BundlePaymentProcess)
 			//OpenApiBundle(this@MainActivity , token, list).run()
 		}
+		*/
 		//accHistoryTabClicked()
 		//PreferencesOperator.clearAuthData(this)
 		//val dialog = WaitingDialog(this, "Obtaining token from memory")
@@ -91,7 +94,7 @@ class MainActivity : AppCompatActivity() {
 			resources.getInteger(R.integer.ACT_RETCODE_WEBVIEW) ->webViewActivityResult(resultCode, data)
 			resources.getInteger(R.integer.ACT_RETCODE_PERMISSION_LIST) -> resetPermissionActivityResult(resultCode)
 			resources.getInteger(R.integer.ACT_RETCODE_DIALOG_userWantToLoginToBank) -> dialogIfUserWantToResetBankAuthResult(resultCode)
-			resources.getInteger(R.integer.ACT_RETCODE_BASIC_TRANSFER_ACT) -> startSinglePaymentAuthorization(resultCode, data)
+			resources.getInteger(R.integer.ACT_RETCODE_BASIC_TRANSFER_ACT) -> basicTransActResult(resultCode, data)
 		}
 	}
 	private fun resetPermissionActivityResult(resultCode: Int){
@@ -223,35 +226,56 @@ class MainActivity : AppCompatActivity() {
 			return
 		ActivityStarter.startResetPermissionsActivity(this)
 	}
-	private fun startSinglePaymentAuthorization(resultCode: Int, data: Intent?){
+	private fun basicTransActResult(resultCode: Int, data: Intent?){
 		if(resultCode != RESULT_OK)
 			return
 
-		val transferData = try {
+		val transferDataJsonArray = try {
 			val fieldName = resources.getString(R.string.ACT_COM_MANY_RetTransferData_FIELDNAME)
-			val transferDataStr = data!!.extras!!.getString(fieldName)
-			val transferDataObj = TransferData.fromJsonSerialized(transferDataStr!!)
-			transferDataObj
+			val transferDataArrayStr = data!!.extras!!.getString(fieldName)
+			JSONArray(transferDataArrayStr!!)
 		}catch (e : Exception){
 			Log.e(TagProduction, "[startSinglePaymentAuthorization/${this.javaClass.name}] cant obtain data transfer from intent")
 			null
 		}
-		if(transferData == null){
+
+		if(transferDataJsonArray == null || transferDataJsonArray.length() == 0){
 			ActivityStarter.startOperationResultActivity(this, R.string.Result_GUI_WRONG_ELSE)
 			return
 		}
 
+		val transferDataList = arrayListOf<TransferData>()
+		for (i in 0 until transferDataJsonArray.length()){
+			val jsonObj = transferDataJsonArray.getJSONObject(i)
+			val transferData = TransferData.fromJsonSerilization(jsonObj)
+			transferDataList.add(transferData)
+		}
+
 		val dialog = WaitingDialog(this, R.string.POPUP_auth)
 		CoroutineScope(IO).launch {
-			val authOk = OpenApiAuthorize(this@MainActivity).runForPis(transferData)
-			withContext(Main){
-				dialog.hide()
-				if(!authOk){
-					Log.e(TagProduction, "[startSinglePaymentAuthorization/${this@MainActivity.javaClass.name}] Failed To auth, ending payment process")
-					ActivityStarter.startOperationResultActivity(this@MainActivity, R.string.Result_GUI_WRONG_ELSE)
+			if(transferDataList.size == 1){
+				val authOk = OpenApiAuthorize(this@MainActivity).runForPis(transferDataList[0])
+				withContext(Main){
+					dialog.hide()
+					if(!authOk){
+						Log.e(TagProduction, "[startSinglePaymentAuthorization/${this@MainActivity.javaClass.name}] Failed To auth, ending payment process")
+						ActivityStarter.startOperationResultActivity(this@MainActivity, R.string.Result_GUI_WRONG_ELSE)
+					}
+					else
+						ActivityStarter.openBrowserForLogin(this@MainActivity, WebActivtyRedirect.DomesticPaymentProcess)
 				}
-				else
-					ActivityStarter.openBrowserForLogin(this@MainActivity, WebActivtyRedirect.DomesticPaymentProcess)
+			}
+			else if(transferDataList.size > 1){
+				val authOk = OpenApiAuthorize(this@MainActivity).runForBundle(transferDataList)
+				withContext(Main){
+					dialog.hide()
+					if(!authOk){
+						Log.e(TagProduction, "[startSinglePaymentAuthorization/${this@MainActivity.javaClass.name}] Failed To auth, ending payment process")
+						ActivityStarter.startOperationResultActivity(this@MainActivity, R.string.Result_GUI_WRONG_ELSE)
+					}
+					else
+						ActivityStarter.openBrowserForLogin(this@MainActivity, WebActivtyRedirect.BundlePaymentProcess)
+				}
 			}
 		}
 	}
@@ -448,7 +472,6 @@ class MainActivity : AppCompatActivity() {
 		button.icon = onIco
 		nfcCapturingIsOn = true
 	}
-
 	private fun turnNfcOff(){
 		Log.d(TagProduction, "Nfc turning Off started")
 		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
@@ -459,6 +482,7 @@ class MainActivity : AppCompatActivity() {
 		button.icon = offIco
 		nfcCapturingIsOn = false
 	}
+
 	@SuppressLint("UnspecifiedImmutableFlag")
 	private fun turnForegroundDispatchOn(){
 		val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
