@@ -23,10 +23,10 @@ class CodeServerApi {
 		TransferData("transferData");
 	}
 	private enum class GateWay(val text : String) {
-		Set("https://omegaserver.azurewebsites.net/OmegaServer-v1/setCode"),
-		Get("https://omegaserver.azurewebsites.net/OmegaServer-v1/getCode"),
-		Done("https://omegaserver.azurewebsites.net/OmegaServer-v1/codeDone"),
-		Waiting("https://omegaserver.azurewebsites.net/OmegaServer-v1/waitCodeDone"),
+		Set("https://omegaserver.azurewebsites.net/setCode"),
+		Get("https://omegaserver.azurewebsites.net/getCode"),
+		Done("https://omegaserver.azurewebsites.net/codeDone"),
+		Waiting("https://omegaserver.azurewebsites.net/waitCodeDone"),
 	}
 
 	companion object{

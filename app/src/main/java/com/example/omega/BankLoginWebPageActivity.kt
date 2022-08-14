@@ -24,7 +24,7 @@ class BankLoginWebPageActivity : AppCompatActivity() {
 			DomesticPaymentProcess("domesticPaymentProcess", Pis),
 			BundlePaymentProcess("bundlePaymentProcess", Pis),
 			GenerateRBlikCode("generateRBlikCode", Ais),
-			None("None", Pis);
+			None("None", Ais);
 
 			companion object{
 				fun fromStr(text : String) : WebActivtyRedirect{

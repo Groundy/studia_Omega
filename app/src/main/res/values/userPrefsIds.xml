@@ -18,4 +18,7 @@
 
 	<string name="PREF_userLastIp">userLastIp</string>
 	<string name="PREF_userIPLastCheckTime">userIPLastCheckTime</string>
+
+	<integer name="TMP_PREF_CODE_USED_TO_TRANSFER">0</integer>
+	<string name="TMP_PREF_TIME_CODE_USED_TO_TRANS"> </string>
 </resources>

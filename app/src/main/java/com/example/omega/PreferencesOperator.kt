@@ -101,5 +101,21 @@ class PreferencesOperator : Application() {
 			val prefs = getSharedProperties(activity)
 			return prefs.getString(fieldName, "")!!
 		}
+		fun saveTmpCodeUsedToTransfer(callActivity: Activity, code : Int){
+			savePref(callActivity, R.integer.TMP_PREF_CODE_USED_TO_TRANSFER, code)
+			savePref(callActivity, R.string.TMP_PREF_TIME_CODE_USED_TO_TRANS, OmegaTime.getCurrentTime())
+		}
+		fun readTmpCodeUsedToTransferIfNotOldEnough(callActivity: Activity) : Int?{
+			val code = readPrefInt(callActivity, R.integer.TMP_PREF_CODE_USED_TO_TRANSFER)
+			if(code !in 100000..999999)
+				return null
+
+			val timpeStamp = readPrefStr(callActivity, R.string.TMP_PREF_TIME_CODE_USED_TO_TRANS)
+			val timeToExpiration = OmegaTime.getSecondsToStampExpiration(timpeStamp, 4*60)
+			if(timeToExpiration < 0)
+				return null
+
+			return code
+		}
 	}
 }

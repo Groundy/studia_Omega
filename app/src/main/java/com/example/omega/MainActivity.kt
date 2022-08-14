@@ -228,9 +228,9 @@ class MainActivity : AppCompatActivity() {
 
 		val transferDataList = arrayListOf<TransferData>()
 		for (i in 0 until transferDataJsonArray.length()){
-			val jsonObj = transferDataJsonArray.getJSONObject(i)
-			val transferData = TransferData.fromJsonSerilization(jsonObj)
-			transferDataList.add(transferData)
+			val jsonObjStr = transferDataJsonArray.getString(i)
+			val transferData = TransferData.fromJsonSerialized(jsonObjStr)
+			transferDataList.add(transferData!!)
 		}
 
 		val dialog = WaitingDialog(this, R.string.POPUP_auth)
@@ -275,6 +275,14 @@ class MainActivity : AppCompatActivity() {
 			withContext(Main){
 				dialog.hide()
 				ActivityStarter.startOperationResultActivity(this@MainActivity, strMsg)
+			}
+
+			if(paymentSuccessed){
+				val codeUsedToTransfer = PreferencesOperator.readTmpCodeUsedToTransferIfNotOldEnough(this@MainActivity)
+				if(codeUsedToTransfer == null)
+					return@launch
+				else
+					CodeServerApi.codeDone(this@MainActivity, codeUsedToTransfer)
 			}
 		}
 	}
@@ -392,8 +400,10 @@ class MainActivity : AppCompatActivity() {
 			val transferData = CodeServerApi.getCodeData(this@MainActivity, code)
 			withContext(Main){
 				dialog.hide()
-				if(transferData!=null)
+				if(transferData!=null){
+					PreferencesOperator.saveTmpCodeUsedToTransfer(this@MainActivity, code)
 					ActivityStarter.startTransferActivity(this@MainActivity, transferData)
+				}
 			}
 		}
 	}

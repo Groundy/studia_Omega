@@ -403,6 +403,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			isFocusable = false
 			setTextColor(Color.GRAY)
 		}
+		addTransToBundleButton.visibility = View.GONE
 	}
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
