@@ -7,9 +7,4 @@
         android:title="@string/MainMenu_GUI_ConfigurationTabName"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/AskForTokenTab"
-        android:title="@string/MainMenu_GUI_TokenTabName"
-        app:showAsAction="never" />
-
 </menu>

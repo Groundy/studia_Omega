@@ -15,8 +15,8 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/ToImplementTab"
-        android:icon="@drawable/ico_cancel"
+        android:id="@+id/refreshTokenTab"
+        android:icon="@drawable/ico_refresh"
         android:title="@string/MainMenu_GUI_Tmp"
         app:showAsAction="never" />
 </menu>

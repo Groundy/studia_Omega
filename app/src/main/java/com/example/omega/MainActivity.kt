@@ -35,7 +35,6 @@ import com.example.omega.BankLoginWebPageActivity.Companion.WebActivtyRedirect
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.serialization.json.JsonArray
 import org.json.JSONArray
 
 class MainActivity : AppCompatActivity() {
@@ -59,8 +58,6 @@ class MainActivity : AppCompatActivity() {
 		when(item.itemId){
 			R.id.ConfigurationsTab ->
 				ActivityStarter.startConfigurationActivity(this)
-			R.id.AskForTokenTab ->
-				ActivityStarter.startResetPermissionsActivity(this)
 		}
 		return true
 	}
@@ -102,9 +99,6 @@ class MainActivity : AppCompatActivity() {
 
 			ActivityStarter.openBrowserForLogin(this@MainActivity, WebActivtyRedirect.None)
 		}
-
-
-
 	}
 	private fun webViewActivityResult(resultCode: Int, data: Intent?){
 		val dialog = WaitingDialog(this, R.string.POPUP_getToken)
@@ -149,7 +143,6 @@ class MainActivity : AppCompatActivity() {
 			}
 
 		}
-
 	}
 	private fun pinActivityResult(resultCode: Int){
 		if(resultCode == RESULT_OK)
@@ -364,9 +357,6 @@ class MainActivity : AppCompatActivity() {
 	private fun qrScannerTabClicked(){
 		ActivityStarter.startQrScannerActivity(this)
 	}
-	private fun wookieTestFunClicked(){
-		wookieTestFun()
-	}
 
 	//Other
 	private suspend fun getToken(redirectPlace : WebActivtyRedirect, dialog: WaitingDialog? = null) : Boolean{
@@ -431,7 +421,7 @@ class MainActivity : AppCompatActivity() {
 				R.id.GenerateBlikCodeTab -> generateRBlickCodeClicked()
 				R.id.NfcTab -> nfcButtonClicked()
 				R.id.QrScannerTab->qrScannerTabClicked()
-				R.id.ToImplementTab->wookieTestFunClicked()
+				R.id.refreshTokenTab->ActivityStarter.startResetPermissionsActivity(this)
 			}
 			true
 		}
@@ -451,11 +441,8 @@ class MainActivity : AppCompatActivity() {
 			ContextCompat.getDrawable(this, R.drawable.ico_nfc_on)
 		else
 			ContextCompat.getDrawable(this, R.drawable.ico_nfc_off)
-		secondBar.menu.findItem(R.id.ToImplementTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_cancel)
+		secondBar.menu.findItem(R.id.refreshTokenTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_refresh)
 		secondBar.menu.findItem(R.id.QrScannerTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_qr_scanner)
-	}
-	private fun wookieTestFun(){
-
 	}
 	//NFC
 	private fun turnNfcOn(){

@@ -103,7 +103,7 @@
 	<!-- second bar menu -->
 	<string name="MainMenu_GUI_NFC">NFC</string>
 	<string name="MainMenu_GUI_ScannerQR">Scanner QR</string>
-	<string name="MainMenu_GUI_Tmp">to add</string>
+	<string name="MainMenu_GUI_Tmp">Resetuj token</string>
 
 
 
