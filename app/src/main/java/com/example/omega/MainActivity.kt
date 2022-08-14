@@ -399,20 +399,22 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun initGUI() {
-		val codeFieldTextListener = object : TextWatcher {
-			override fun afterTextChanged(s: Editable) {
-				if (s.length == 6) {
-					val code = s.toString().toInt()
-					if (code in 0..999999)
-						processCode(code)
-				}
-			}
-			override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-			override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-		}
 		val codeField = findViewById<EditText>(R.id.MainAct_enterCodeField)
-		codeField.addTextChangedListener(codeFieldTextListener)
-		codeField.requestFocus()
+		with(codeField){
+			val codeFieldTextListener = object : TextWatcher {
+				override fun afterTextChanged(s: Editable) {
+					if (s.length == 6) {
+						val code = s.toString().toInt()
+						if (code in 0..999999)
+							processCode(code)
+					}
+				}
+				override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+				override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+			}
+			addTextChangedListener(codeFieldTextListener)
+			requestFocus()
+		}
 
 		val listner = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 			when(item.itemId){
@@ -425,24 +427,27 @@ class MainActivity : AppCompatActivity() {
 			}
 			true
 		}
+
 		val firstBar = findViewById<BottomNavigationView>(R.id.MainAct_firstBar)
+		with(firstBar){
+			setOnNavigationItemSelectedListener(listner)
+			itemIconTintList = null
+			menu.findItem(R.id.AccHistoryTab).icon = ContextCompat.getDrawable(this@MainActivity, R.drawable.ico_history)
+			menu.findItem(R.id.GenerateBlikCodeTab).icon = ContextCompat.getDrawable(this@MainActivity, R.drawable.ico_qr)
+			menu.findItem(R.id.TransferTab).icon = ContextCompat.getDrawable(this@MainActivity, R.drawable.ico_payment)
+		}
+
 		val secondBar = findViewById<BottomNavigationView>(R.id.MainAct_secondBar)
-		firstBar.setOnNavigationItemSelectedListener(listner)
-		secondBar.setOnNavigationItemSelectedListener(listner)
-
-		//te funkcje są po to aby ikoni pojawiały się czarne a nie białe
-		firstBar.itemIconTintList = null
-		secondBar.itemIconTintList = null
-
-		firstBar.menu.findItem(R.id.AccHistoryTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_history)
-		firstBar.menu.findItem(R.id.GenerateBlikCodeTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_qr)
-		firstBar.menu.findItem(R.id.TransferTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_payment)
-		secondBar.menu.findItem(R.id.NfcTab).icon = if(nfcCapturingIsOn)
-			ContextCompat.getDrawable(this, R.drawable.ico_nfc_on)
-		else
-			ContextCompat.getDrawable(this, R.drawable.ico_nfc_off)
-		secondBar.menu.findItem(R.id.refreshTokenTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_refresh)
-		secondBar.menu.findItem(R.id.QrScannerTab).icon = ContextCompat.getDrawable(this, R.drawable.ico_qr_scanner)
+		with(secondBar){
+			setOnNavigationItemSelectedListener(listner)
+			itemIconTintList = null
+			menu.findItem(R.id.NfcTab).icon = if(nfcCapturingIsOn)
+				ContextCompat.getDrawable(this@MainActivity, R.drawable.ico_nfc_on)
+			else
+				ContextCompat.getDrawable(this@MainActivity, R.drawable.ico_nfc_off)
+			menu.findItem(R.id.refreshTokenTab).icon = ContextCompat.getDrawable(this@MainActivity, R.drawable.ico_refresh)
+			menu.findItem(R.id.QrScannerTab).icon = ContextCompat.getDrawable(this@MainActivity, R.drawable.ico_qr_scanner)
+		}
 	}
 	//NFC
 	private fun turnNfcOn(){
