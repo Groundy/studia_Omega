@@ -96,9 +96,9 @@
 	<string name="MainAct_GUI_mainCodeFieldHint">_ _ _ _ _ _</string>
 
 	<!-- top bar menu -->
-	<string name="MainMenu_GUI_AccHistoryTabName">Historia rachunków</string>
+	<string name="MainMenu_GUI_AccHistoryTabName">Historia</string>
 	<string name="MainMenu_GUI_GenerateRblikCodeTabName">Generuj kod RBlik</string>
-	<string name="MainMenu_GUI_TransferTabName">Przelew jednorazowy</string>
+	<string name="MainMenu_GUI_TransferTabName">Przelew Krajowy</string>
 
 	<!-- second bar menu -->
 	<string name="MainMenu_GUI_NFC">NFC</string>

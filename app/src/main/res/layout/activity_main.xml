@@ -12,11 +12,7 @@
 
 	<com.google.android.material.bottomnavigation.BottomNavigationView
 		android:id="@+id/MainAct_firstBar"
-		android:layout_width="match_parent"
-		android:layout_height="80dp"
-		android:background="@color/colorPrimary"
-		app:itemTextColor="@color/white"
-		app:labelVisibilityMode="labeled"
+		style="@style/BottomNavigationStyle"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintHorizontal_bias="1.0"
 		app:layout_constraintStart_toStartOf="parent"
@@ -25,11 +21,7 @@
 
 	<com.google.android.material.bottomnavigation.BottomNavigationView
 		android:id="@+id/MainAct_secondBar"
-		android:layout_width="match_parent"
-		android:layout_height="80dp"
-		android:background="@color/colorPrimary"
-		app:itemTextColor="@color/white"
-		app:labelVisibilityMode="labeled"
+		style="@style/BottomNavigationStyle"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/MainAct_firstBar"
@@ -63,8 +55,7 @@
 			android:inputType="number"
 			android:maxLength="6"
 			android:textColorHint="#455A64"
-			android:textSize="50sp"
-			tools:visibility="visible" />
+			android:textSize="50sp" />
 
 		<Space
 			android:layout_width="wrap_content"
