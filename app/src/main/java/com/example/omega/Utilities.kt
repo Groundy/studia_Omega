@@ -44,7 +44,7 @@ class Utilities {
 		}
 		fun strToEditable(text: String?): Editable {
 			if(text.isNullOrEmpty()){
-				Log.e(TagProduction,"[strToEditable/${this::class.java.name}] null or empty string passed")
+				Log.w(TagProduction,"[strToEditable/${this::class.java.name}] null or empty string passed")
 				return Editable.Factory.getInstance().newEditable(String())
 			}
 			return Editable.Factory.getInstance().newEditable(text)

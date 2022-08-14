@@ -9,9 +9,19 @@ import com.example.omega.Utilities.Companion.TagProduction
 import com.example.omega.ApiConsts.ApiReqFields.*
 import kotlin.Exception
 import com.example.omega.ApiGetTransactionsDone.Companion.GetTransDoneRequestFields.*
-import com.example.omega.TransactionsDoneAdditionalInfos.Companion.GetTransDoneResponseFields.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+
+enum class GetTransDoneResponseFields(val text : String){
+	Amount ("amount"),
+	Currency ("currency"),
+	Description ("description"),
+	TradeDate ("tradeDate"),
+	Sender ("sender"),
+	Recipient ("recipient"),
+	NameAdress("nameAddress"),
+	Value("value");
+}
 
 class ApiGetTransactionsDone(private val callerActivity: Activity, private val  token: Token){
 	private var historyRecordsToRet : ArrayList<AccountHistoryRecord> = ArrayList()
@@ -20,19 +30,14 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 		enum class GetTransDoneRequestFields(val text : String){
 			TransactionDateFrom("transactionDateFrom"),
 			TransactionDateTo("transactionDateTo"),
-			//ItemIdFrom("itemIdFrom"),
-			//BookingDateFrom ("bookingDateFrom"),
-			//BookingDateTo ("bookingDateTo"),
 			MinAmount("minAmount"),
 			MaxAmount("maxAmount"),
-			//PageId("pageId"),
-			//PerPage("perPage"),
-			//Type("type"),
 			TransactionsObj("transactions"),
 		}
 
 	}
-	suspend fun run(accNumber: String, infos : TransactionsDoneAdditionalInfos): List<AccountHistoryRecord>? {
+
+	suspend fun run(accNumber: String, infos : HistoryFillters): List<AccountHistoryRecord>? {
 		Log.i(TagProduction, "GetTransactionsDone starts")
 		var sucess = false
 		try {
@@ -58,7 +63,7 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 			null
 		}
 	}
-	private fun getRequest(accNumber: String, infos : TransactionsDoneAdditionalInfos) : Request {
+	private fun getRequest(accNumber: String, infos : HistoryFillters) : Request {
 		val uuidStr = ApiFunctions.getUUID()
 
 		val headersJson = JSONObject()
@@ -73,22 +78,17 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 		val requestBodyJson = JSONObject()
 			.put(RequestHeader.text, headersJson)
 			.put(AccountNumberField.text, accNumber)
-			.put(TransactionDateFrom.text,infos.fromDate)
-			.put(TransactionDateTo.text,infos.endDate)
+			.put(TransactionDateFrom.text,infos.getStartDateForRequest())
+			.put(TransactionDateTo.text,infos.getEndDateForRequest())
 
-		if(infos.minAmount != null){
-			if(infos.minAmount!! > 0.0){
-				val textToPut = Utilities.doubleToTwoDigitsAfterCommaString(infos.minAmount)
-				requestBodyJson.put(MinAmount.text, textToPut)
-			}
-		}
+		val minAmount = infos.getMinAmountForRequest()
+		if(minAmount != null)
+			requestBodyJson.put(MinAmount.text, minAmount)
 
-		if(infos.maxAmount != null){
-			if(infos.maxAmount!! > 0.0){
-				val textToPut = Utilities.doubleToTwoDigitsAfterCommaString(infos.maxAmount)
-				requestBodyJson.put(MaxAmount.text, textToPut)
-			}
-		}
+		val maxAmount = infos.getMaxAmountForRequest()
+		if(maxAmount != null)
+			requestBodyJson.put(MaxAmount.text, maxAmount)
+
 
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text,token.getAuthFieldValue()))
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone, requestBodyJson, uuidStr, additionalHeaderList)
@@ -129,44 +129,15 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 	}
 }
 
-class TransactionsDoneAdditionalInfos(daysBack : Int = 7){
-	companion object{
-		/*
-		private enum class Type(val text: String){
-			DEBIT("DEBIT"), CREDIT("CREDIT")
-		}
-		*/
-		/*
-		private enum class JsonFields(val text: String){
-			DateFromInclusvie("DateFromInclusvie"),
-			DateToInclusvie("DateToInclusvie"),
-			AmountMin("AmountMin"),
-			AmountMax("AmountMax"),
-		}
-		*/
-		enum class GetTransDoneResponseFields(val text : String){
-			//ItemId ("itemId"),
-			//TransactionCategory ("transactionCategory"),
-			Amount ("amount"),
-			Currency ("currency"),
-			Description ("description"),
-			TradeDate ("tradeDate"),
-			Sender ("sender"),
-			Recipient ("recipient"),
-			//BookingDate ("bookingDate"),
-			NameAdress("nameAddress"),
-			Value("value");
-
-		}
-	}
-
+class HistoryFillters(daysBack : Int = 7){
 	//mandatory
-	var fromDate : String = OmegaTime.getDate(daysBack)
-	var endDate : String = OmegaTime.getDate()
+	private var fromDate : String = OmegaTime.getDate(daysBack,false)
+	private var endDate : String = OmegaTime.getDate(0,false)
 
 	//additional
-	var minAmount : Double? = null
-	var maxAmount : Double? = null
+	private var minAmount : Double? = null
+	private var maxAmount : Double? = null
+
 	constructor(amountMin: Double, amountMax: Double, dateFrom: String, dateTo: String) : this(){
 		this.maxAmount = amountMax
 		this.minAmount = amountMin
@@ -174,34 +145,67 @@ class TransactionsDoneAdditionalInfos(daysBack : Int = 7){
 		this.endDate = dateTo
 	}
 
-
-	//val itemIdFrom : Int? = null//Int or String
-	//val bookingDateFrom : String? = null
-	//val bookingDateTo : String? = null
-
-	//val pageId : Int? = null
-	//val perPage : Int? = null
-	//val type : Type? = null
-	/*
-	fun toJSONObject() : JSONObject{
-		return JSONObject()
-			.put(JsonFields.DateFromInclusvie.text,"")
-			.put(JsonFields.DateToInclusvie.text,"")
-			.put(JsonFields.AmountMin.text,"")
-			.put(JsonFields.AmountMax.text,"")
+	fun getEndDateForRequest() : String{
+		return reversdateToYearsFirst(endDate)
+	}
+	fun getStartDateForRequest() : String{
+		return reversdateToYearsFirst(fromDate)
+	}
+	fun getEndDateForDisplay() : String{
+		return endDate
+	}
+	fun getStartDateForDisplay() : String{
+		return fromDate
 	}
 
-	consctor(jsonObj : JSONObject) : this(){
-		try {
-			minAmount = jsonObj.getDouble(JsonFields.AmountMin.text)
-			maxAmount = jsonObj.getDouble(JsonFields.AmountMax.text)
-			fromDate = jsonObj.getString(JsonFields.DateFromInclusvie.text)
-			endDate = jsonObj.getString(JsonFields.DateToInclusvie.text)
-		}catch (e : Exception){
-			Log.e(TagProduction, "[constructor(json)/${this.javaClass.name}] Error in parsing TransactiondDoneInfo from json obj")
+	fun getMinAmountForRequest() : String?{
+		if(minAmount == null)
+			return null
+
+		if(minAmount == 0.0)
+			return null
+
+		return Utilities.doubleToTwoDigitsAfterCommaString(minAmount)
+	}
+	fun getMaxAmountForRequest() : String?{
+		if(maxAmount == null)
+			return null
+
+		if(maxAmount == 0.0)
+			return null
+
+		return Utilities.doubleToTwoDigitsAfterCommaString(maxAmount)
+	}
+	fun getMinAmountForDisplay() : String{
+		if(minAmount == null)
+			return String()
+
+		if(minAmount == 0.0)
+			return String()
+
+		return minAmount.toString()
+	}
+	fun getMaxAmountForDisplay() : String?{
+		if(maxAmount == null)
+			return String()
+
+		if(maxAmount == 0.0)
+			return String()
+
+		return maxAmount.toString()
+	}
+	private fun reversdateToYearsFirst(date : String) : String{
+		return try {
+			val parts = date.split("-")
+			val dd = parts[0]
+			val mm = parts[1]
+			val yyyy = parts[2]
+			"$yyyy-$mm-$dd"
+		} catch (e : Exception){
+			Log.e(TagProduction, "[reversdateToYearsFirst/${this.javaClass.name}] input=$date")
+			String()
 		}
 	}
-	 */
 }
 
 class AccountHistoryRecord(jsonObj: JSONObject) : Comparable<AccountHistoryRecord> {
@@ -215,18 +219,18 @@ class AccountHistoryRecord(jsonObj: JSONObject) : Comparable<AccountHistoryRecor
 	var tradeDate : String? = null
 	init {
 		try {
-			val senderObj = jsonObj.getJSONObject(Sender.text)
-			val recipientObj = jsonObj.getJSONObject(Recipient.text)
+			val senderObj = jsonObj.getJSONObject(GetTransDoneResponseFields.Sender.text)
+			val recipientObj = jsonObj.getJSONObject(GetTransDoneResponseFields.Recipient.text)
 
-			amount = jsonObj.getString(Amount.text).toDouble()
-			currency = jsonObj.getString(Currency.text)
-			description = jsonObj.getString(Description.text)
-			tradeDate = jsonObj.getString(TradeDate.text)
+			amount = jsonObj.getString(GetTransDoneResponseFields.Amount.text).toDouble()
+			currency = jsonObj.getString(GetTransDoneResponseFields.Currency.text)
+			description = jsonObj.getString(GetTransDoneResponseFields.Description.text)
+			tradeDate = jsonObj.getString(GetTransDoneResponseFields.TradeDate.text)
 			senderAccNumber = senderObj.getString(AccountNumberField.text)
 			recipientAccNumber = recipientObj.getString(AccountNumberField.text)
 
-			val senderNameArr = senderObj.getJSONObject(NameAdress.text).getJSONArray(Value.text)
-			val recipientNameArr = recipientObj.getJSONObject(NameAdress.text).getJSONArray(Value.text)
+			val senderNameArr = senderObj.getJSONObject(GetTransDoneResponseFields.NameAdress.text).getJSONArray(GetTransDoneResponseFields.Value.text)
+			val recipientNameArr = recipientObj.getJSONObject(GetTransDoneResponseFields.NameAdress.text).getJSONArray(GetTransDoneResponseFields.Value.text)
 
 			recipientName = if(recipientNameArr.length() > 0)
 				recipientNameArr[0].toString()

@@ -323,7 +323,7 @@ class MainActivity : AppCompatActivity() {
 					dialog.hide()
 				}
 				else{
-					Log.e(TagProduction, "[accHistoryTabClicked/${this@MainActivity.javaClass.name}] Nie można otworzyć historii rachunek, brak możliwości pobrania tokenu")
+					Log.w(TagProduction, "[accHistoryTabClicked/${this@MainActivity.javaClass.name}] Nie można otworzyć historii rachunek, brak możliwości pobrania tokenu, prawdopodobnie przekierowanie")
 					dialog.hide()
 				}
 			}

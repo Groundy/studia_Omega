@@ -145,7 +145,7 @@ class Token() {
 		PreferencesOperator.savePref(activity, R.string.PREF_Token , this.toString())
 		return true
 	}
-	suspend fun fillHistoryToPaymentAccount(callerActivity: Activity, paymentAccountAccNumber: String, fillterDataObj : TransactionsDoneAdditionalInfos) : Boolean{
+	suspend fun fillHistoryToPaymentAccount(callerActivity: Activity, paymentAccountAccNumber: String, fillterDataObj : HistoryFillters) : Boolean{
 		val errorBasic = "[fillHistoryToPaymentAccount/${this.javaClass.name}]"
 
 		if(accounts.isNullOrEmpty()){

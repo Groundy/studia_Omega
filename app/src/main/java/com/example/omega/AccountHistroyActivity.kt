@@ -32,7 +32,7 @@ class AccountHistroyActivity : AppCompatActivity() {
 	private lateinit var spinner : Spinner
 	private lateinit var list : ListView
 	private lateinit var token: Token
-	private var fillterDataObj : TransactionsDoneAdditionalInfos = TransactionsDoneAdditionalInfos()
+	private var fillterDataObj : HistoryFillters = HistoryFillters()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -154,9 +154,9 @@ class AccountHistroyActivity : AppCompatActivity() {
 
 	}
 	private fun showFilterDialog(){
-		val dialog = FilterDialog(this)
+		val dialog = FilterDialog(this, fillterDataObj)
 		dialog.setDialogResult(object : OnMyDialogResult {
-			override fun finish(result: TransactionsDoneAdditionalInfos?) {
+			override fun finish(result: HistoryFillters?) {
 				if(result!=null){
 					dialog.dismiss()
 					userAppliedFillters(result)
@@ -165,7 +165,7 @@ class AccountHistroyActivity : AppCompatActivity() {
 		})
 		dialog.show()
 	}
-	private fun userAppliedFillters(fillterDataObj: TransactionsDoneAdditionalInfos){
+	private fun userAppliedFillters(fillterDataObj: HistoryFillters){
 		token.clearPaymentAccsHistory()
 		this.fillterDataObj = fillterDataObj
 		userChangedAccount()
@@ -220,22 +220,21 @@ class CustomAdapter(private val callerActivity : Activity, private val accountNu
 	}
 }
 
-class FilterDialog(context: Context) : Dialog(context) {
+class FilterDialog(context: Context, fillterDataObj: HistoryFillters) : Dialog(context) {
 	private lateinit var minAmountField : EditText
 	private lateinit var maxAmountField : EditText
 	private lateinit var applyButton : Button
 	private lateinit var backButton : Button
 	private lateinit var startDateField : TextView
 	private lateinit var endDateField : TextView
-	private var mDialogResult: OnMyDialogResult? = null
 
-	fun setDialogResult(dialogResult: OnMyDialogResult) {
-		mDialogResult = dialogResult
-	}
+	private var mDialogResult: OnMyDialogResult? = null
+	private var filltersInput = fillterDataObj
 
 	interface OnMyDialogResult {
-		fun finish(result: TransactionsDoneAdditionalInfos?)
+		fun finish(result: HistoryFillters?)
 	}
+
 
 	private fun setGui(){
 		backButton = findViewById(R.id.FilterAct_cancel_Button)
@@ -294,7 +293,6 @@ class FilterDialog(context: Context) : Dialog(context) {
 
 		startDateField = findViewById(R.id.FilterAct_dateFrom_textView)
 		with(startDateField){
-			text = OmegaTime.getDate(7, false)
 			val startDateFieldClickedListener = View.OnClickListener{
 				val listener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
 					var dayOfMonthStr = dayOfMonth.toString()
@@ -322,7 +320,6 @@ class FilterDialog(context: Context) : Dialog(context) {
 
 		endDateField = findViewById(R.id.FilterAct_dateTo_textView)
 		with(endDateField){
-			text = OmegaTime.getDate(0, false)
 			val endDateFieldClickedListener = View.OnClickListener{
 				val listener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
 					var dayOfMonthStr = dayOfMonth.toString()
@@ -346,7 +343,7 @@ class FilterDialog(context: Context) : Dialog(context) {
 			}
 			setOnClickListener(endDateFieldClickedListener)
 		}
-		
+
 		checkDatesCorrectness()
 	}
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -355,6 +352,7 @@ class FilterDialog(context: Context) : Dialog(context) {
 		setContentView(R.layout.account_history_filters)
 		setGui()
 		setCancelable(false)
+		applyFilltersFromInput()
 	}
 	private fun checkIfMaxAmountIsBiggerThanMin() : Boolean{
 		val minText = minAmountField.text.toString()
@@ -372,7 +370,7 @@ class FilterDialog(context: Context) : Dialog(context) {
 
 		var ok = maxAmount > minAmount
 		if(maxAmount == 0.0 && minAmount == 0.0)
-			ok =true
+			ok = true
 
 		val img = if(ok)
 			ContextCompat.getDrawable(context, R.drawable.main_frame)
@@ -423,13 +421,10 @@ class FilterDialog(context: Context) : Dialog(context) {
 
 		mDialogResult!!.finish(dataObj)
 	}
-	private fun getFillterDataObj() : TransactionsDoneAdditionalInfos?{
+	private fun getFillterDataObj() : HistoryFillters?{
 		return try {
-			val startParts = startDateField.text.split("-")
-			val dateFrom = "${startParts[2]}-${startParts[1]}-${startParts[0]}"
-
-			val endParts = endDateField.text.split("-")
-			val dateTo = "${endParts[2]}-${endParts[1]}-${endParts[0]}"
+			val startDate = startDateField.text.toString()
+			val endDate = endDateField.text.toString()
 
 			val amountMinText =  minAmountField.text.toString()
 			val amountMin = if(amountMinText.isEmpty())
@@ -443,12 +438,25 @@ class FilterDialog(context: Context) : Dialog(context) {
 			else
 				amountMaxText.toDouble()
 
-			val fillterDataObj = TransactionsDoneAdditionalInfos(amountMin, amountMax, dateFrom, dateTo)
+			val fillterDataObj = HistoryFillters(amountMin, amountMax, startDate, endDate)
 			fillterDataObj
 		}catch (e : Exception){
 			Log.e(TagProduction, "applyButtonClicked/${this.javaClass.name} error in parsing data")
 			null
 		}
 	}
+	private fun applyFilltersFromInput(){
+		val minAmountStr = filltersInput.getMinAmountForDisplay()
+		val maxAmountStr = filltersInput.getMaxAmountForDisplay()
+		val minDate = filltersInput.getStartDateForDisplay()
+		val maxDate = filltersInput.getEndDateForDisplay()
 
+		this.minAmountField.text = Utilities.strToEditable(minAmountStr)
+		this.maxAmountField.text = Utilities.strToEditable(maxAmountStr)
+		this.startDateField.text = Utilities.strToEditable(minDate)
+		this.endDateField.text = Utilities.strToEditable(maxDate)
+	}
+	fun setDialogResult(dialogResult: OnMyDialogResult) {
+		mDialogResult = dialogResult
+	}
 }
