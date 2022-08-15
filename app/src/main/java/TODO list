@@ -1,11 +1,8 @@
 //do zrobienia
-32 W RBCreator dodać ograniczenie kwoty
-29. zastanowic się nad typem klawiatury, byc moze w mainie zamienic na typ phone
-27. Gdy użytkownik wczyta inny rachunek w historii transakcji to zrobić aby scroll view był na początku
-22  Dodać długości numerow kont w roznych krajach https://pl.wikipedia.org/wiki/Międzynarodowy_numer_rachunku_bankowego
-8.  W errorAuth dodać rozóznienie między tym gdy użytkownik chce autoryzacji za pomocą innej metody a innym błędem.
+
 
 //DONE
+32 W RBCreator dodać ograniczenie kwoty
 31 Server zwraca bad request w przypadku pytań o kodu które nie istnieją
 30  Po uzyskaniu danych z kodu Rblik i wpisaniu ich do formularzy amount raz sie uzpelnia a potem wywoluje sie funkcja ktora go czysci
 28. WAŻNE dodać obsługę wprowadzenia tylko jednej cyfry w baisc trans act

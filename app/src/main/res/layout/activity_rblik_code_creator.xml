@@ -75,6 +75,7 @@
 							android:id="@+id/RBlikCodeGenerator_amount_editText"
 							style="@style/inputFieldStyle"
 							android:inputType="numberDecimal"
+							android:maxLength="8"
 							tools:ignore="SpeakableTextPresentCheck" />
 
 						<Space
