@@ -22,7 +22,6 @@ import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.google.firebase.FirebaseApp
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -43,7 +42,6 @@ class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
-		FirebaseApp.initializeApp(this)
 		ActivityStarter.startPinActivity(this, PinActivity.Companion.Purpose.Set)
 		initGUI()
 		startNfcOnStartIfUserWishTo()
