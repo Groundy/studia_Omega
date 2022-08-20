@@ -134,6 +134,73 @@
 
 					</LinearLayout>
 
+					<CheckBox
+						android:id="@+id/RBlikCodeGenerator_multipeUse_Checkbox"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:minHeight="48dp"
+						android:text="@string/GUI_RBlikCodeGenerator_multipleUse" />
+
+					<CheckBox
+						android:id="@+id/RBlikCodeGenerator_prolongedTime_Checkbox"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:minHeight="48dp"
+						android:text="@string/GUI_RBlikCodeGenerator_ProLongedTime" />
+
+					<LinearLayout
+						android:id="@+id/RBlikCodeGenerator_timeGui_Layout"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:gravity="center"
+						android:orientation="vertical"
+						android:visibility="gone">
+
+						<TextView
+							android:id="@+id/textView8"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:gravity="center_horizontal"
+							android:text="godziny"
+							android:textColor="@color/black" />
+
+						<SeekBar
+							android:id="@+id/RBlikCodeGenerator_hours_slider"
+							android:layout_width="match_parent"
+							android:layout_height="30dp"
+							android:max="23"
+							android:min="0"
+							android:progress="1" />
+
+						<TextView
+							android:id="@+id/textView9"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:gravity="center_horizontal"
+							android:text="minuty"
+							android:textColor="@color/black" />
+
+						<SeekBar
+							android:id="@+id/RBlikCodeGenerator_minutes_slider"
+							android:layout_width="match_parent"
+							android:layout_height="30dp"
+							android:layout_weight="1"
+							android:max="60"
+							android:min="0"
+							android:progress="2" />
+
+						<TextView
+							android:id="@+id/RBlikCodeGenerator_totalTime_textBox"
+							android:layout_width="match_parent"
+							android:layout_height="30dp"
+							android:layout_gravity="clip_horizontal"
+							android:gravity="center_horizontal"
+							android:text="00:00"
+							android:textColor="@color/black"
+							android:textSize="24sp" />
+
+					</LinearLayout>
+
 					<Button
 						android:id="@+id/basicTransfer_goNext_button"
 						style="@style/OmegaButtonStyle"

@@ -4,8 +4,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.text.Layout
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.*
 import com.example.omega.Utilities.Companion.TagProduction
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +23,12 @@ class RBLIKCodeCreator : AppCompatActivity() {
 	private lateinit var accountListSpinner : Spinner
 	private lateinit var goNextActivityButton : Button
 	private lateinit var tokenCpy : Token
+
+	private lateinit var prolongedCheckBox : CheckBox
+	private lateinit var multipleCheckBox : CheckBox
+	private lateinit var hourField : SeekBar
+	private lateinit var minuteField : SeekBar
+	private lateinit var timeField : TextView
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -55,7 +63,6 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			}
 		}
 	}
-
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 		if(requestCode != resources.getInteger(R.integer.ACT_RETCODE_DISPLAY_ACTIVITY))
@@ -70,6 +77,26 @@ class RBLIKCodeCreator : AppCompatActivity() {
 
 	private fun setUpGui(){
 		amountField = findViewById(R.id.RBlikCodeGenerator_amount_editText)
+		with(amountField){
+			val amountEditTextListener = object : TextWatcher {
+				var previousValue : String = ""
+				override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+					if(p0 != null)
+						previousValue = p0.toString()
+				}
+				override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+				override fun afterTextChanged(p0: Editable?) {
+					if(p0 != null)
+						Utilities.stopUserFromPuttingMoreThan2DigitsAfterComma(
+							amountField,
+							previousValue,
+							p0.toString()
+						)
+				}
+			}
+			addTextChangedListener(amountEditTextListener)
+		}
+
 		titleField = findViewById(R.id.RBlikCodeGenerator_transferTitle_EditText)
 		receiverNameField = findViewById(R.id.RBlikCodeGenerator_reciverName_EditText)
 		accountListSpinner = findViewById(R.id.RBlikCodeGenerator_accountList_Spinner)
@@ -78,23 +105,33 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			goNextButtonClicked()
 		}
 
-		val amountEditTextListener = object : TextWatcher {
-			var previousValue : String = ""
-			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-				if(p0 != null)
-					previousValue = p0.toString()
+		prolongedCheckBox = findViewById(R.id.RBlikCodeGenerator_prolongedTime_Checkbox)
+		with(prolongedCheckBox){
+			val listener = CompoundButton.OnCheckedChangeListener { _, isCheckd ->
+				val timeGuiLayout = this@RBLIKCodeCreator.findViewById<LinearLayout>(R.id.RBlikCodeGenerator_timeGui_Layout)
+				val visibilityToSet = if(isCheckd)
+					View.VISIBLE
+				else
+					View.GONE
+				timeGuiLayout.visibility = visibilityToSet
 			}
-			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-			override fun afterTextChanged(p0: Editable?) {
-				if(p0 != null)
-					Utilities.stopUserFromPuttingMoreThan2DigitsAfterComma(
-						amountField,
-						previousValue,
-						p0.toString()
-					)
-			}
+			setOnCheckedChangeListener(listener)
 		}
-		amountField.addTextChangedListener(amountEditTextListener)
+		multipleCheckBox = findViewById(R.id.RBlikCodeGenerator_multipeUse_Checkbox)
+		timeField = findViewById(R.id.RBlikCodeGenerator_totalTime_textBox)
+
+		hourField = findViewById(R.id.RBlikCodeGenerator_hours_slider)
+		minuteField = findViewById(R.id.RBlikCodeGenerator_minutes_slider)
+		val seekBarsListeners = object : SeekBar.OnSeekBarChangeListener{
+			override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+				refreshTotalCodeExpirationTimeField()
+			}
+			override fun onStartTrackingTouch(seekBar: SeekBar) {}
+			override fun onStopTrackingTouch(seekBar: SeekBar) {}
+		}
+		minuteField.setOnSeekBarChangeListener(seekBarsListeners)
+		hourField.setOnSeekBarChangeListener(seekBarsListeners)
+
 	}
 	private fun goNextButtonClicked(){
 		val dataOk = validateDataToGenRBlikCode()
@@ -114,7 +151,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			withContext(Main){
 				dialog.hide()
 				if(responseData != null)
-					ActivityStarter.startDisplayActivity(this@RBLIKCodeCreator, responseData)
+					ActivityStarter.startDisplayActivity(this@RBLIKCodeCreator, responseData, multipleCheckBox.isChecked)
 			}
 		}
 	}
@@ -156,7 +193,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			return false
 		}
 
-		val receiverName = findViewById<EditText>(R.id.RBlikCodeGenerator_reciverName_EditText).text.toString()
+		val receiverName = receiverNameField.text.toString()
 		val receiverNameOk = receiverName.length in 3..50
 		if(!receiverNameOk){
 			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_wrong_receiver_name)
@@ -164,7 +201,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			return false
 		}
 
-		val amountText = findViewById<EditText>(R.id.RBlikCodeGenerator_amount_editText).text.toString()
+		val amountText = amountField.text.toString()
 		if(amountText.isEmpty()){
 			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_Amount_zero)
 			Utilities.showToast(this, textToShow)
@@ -179,7 +216,7 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		}
 
 
-		val titleText = findViewById<EditText>(R.id.RBlikCodeGenerator_transferTitle_EditText).text.toString()
+		val titleText = titleField.text.toString()
 		val titleOk = titleText.replace(" ","").length in 3..50
 		if(!titleOk){
 			val textToShow = getString(R.string.UserMsg_RBlikCodeGenerator_wrong_title)
@@ -206,6 +243,17 @@ class RBLIKCodeCreator : AppCompatActivity() {
 			receiverName = receiverNameField.text.toString()
 			senderAccName = null
 			senderAccNumber = null
+			proLongedExpTime = if(prolongedCheckBox.isChecked){
+				val minutes = minuteField.progress
+				val hours = hourField.progress
+				var totalTime = hours*60 + minutes
+				if(totalTime < 3)
+					totalTime = 3
+				totalTime
+			}
+			else
+				null
+			multipleUse = multipleCheckBox.isChecked
 		}
 		return transferData
 	}
@@ -226,12 +274,13 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		val currentlySelectedSpinnerItem =  accountListSpinner.selectedItem.toString()
 		val accountNumber = tokenCpy.getAccountNbrByDisplayStr(currentlySelectedSpinnerItem)?: return null
 		val paymentAccount = tokenCpy.getPaymentAccount(accountNumber)
-		return if(paymentAccount != null)
-			paymentAccount
-		else{
+
+		if(paymentAccount == null){
 			Log.e(TagProduction, "[getPaymentAccountInfoOfSelectedOneByUser/${this.javaClass.name}] Recived payment account is null")
 			return null
 		}
+
+		return paymentAccount
 	}
 	private fun fillReceiverName(){
 		val paymentAccount = getPaymentAccountInfoOfSelectedOneByUser()
@@ -242,5 +291,23 @@ class RBLIKCodeCreator : AppCompatActivity() {
 		val ownerName = paymentAccount.getOwnerName()
 		val ownerNameAsEditable = Utilities.strToEditable(ownerName)
 		receiverNameField.text = ownerNameAsEditable
+	}
+	private fun refreshTotalCodeExpirationTimeField(){
+		val minutes = minuteField.progress
+		val hours = hourField.progress
+
+		var minutesStr = minutes.toString()
+		if(minutesStr.length == 1)
+			minutesStr = "0$minutesStr"
+
+		var hoursStr = hours.toString()
+		if(hoursStr.length == 1)
+			hoursStr = "0$hoursStr"
+
+		val textToSet = if( (hours*60 + minutes) > 3)
+			"$hoursStr:$minutesStr"
+		else
+			"00:03"
+		timeField.text = textToSet
 	}
 }

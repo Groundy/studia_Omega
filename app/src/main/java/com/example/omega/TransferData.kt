@@ -4,7 +4,7 @@ import android.util.Log
 import org.json.JSONObject
 import com.example.omega.Utilities.Companion.TagProduction
 
-class TransferData() {
+class TransferData {
 	companion object{
 		private enum class TransferDataFields(val text : String){
 			SenderAccNumber("senderAccNumber"),
@@ -22,7 +22,11 @@ class TransferData() {
 			Value("value"),
 			NameAdress("nameAddress"),
 			AccountNumber("accountNumber"),
-			TppId("tppTransactionId")
+			TppId("tppTransactionId"),
+			MultipleUse("multipleUse"),
+			ProLongedExpTime("proLongedExpTime"),
+
+			Data("data")
 		}
 		private const val domesticMethodeName = "pis:domestic"
 		private const val bundleMethodeName = "pis:bundle"
@@ -96,41 +100,49 @@ class TransferData() {
 				}
 				objToRet
 			}catch (e : Exception){
-				Log.e(TagProduction, "[constructor(token)/TransferData] failed to obtain tmp data transfer class from payment token")
+				Log.e(TagProduction, "[constructor(token)/TransferData] failed to obtain tmp data transfer class from payment token  e=[$e]")
 				null
 			}
 		}
 		fun fromJsonSerilization(jsonObj : JSONObject) : TransferData{
 			try {
-				val senderAccNumberTmp = if(jsonObj.has(TransferDataFields.SenderAccNumber.text))
-					jsonObj.getString(TransferDataFields.SenderAccNumber.text)
-				else
-					String()
+				var senderAccNumberTmp = String()
+				if(jsonObj.has(TransferDataFields.SenderAccNumber.text))
+					senderAccNumberTmp = jsonObj.getString(TransferDataFields.SenderAccNumber.text)
 
-				val senderAccNameTmp = if(jsonObj.has(TransferDataFields.SenderAccName.text))
+				var senderAccNameTmp = String()
+				if(jsonObj.has(TransferDataFields.SenderAccName.text))
 					jsonObj.getString(TransferDataFields.SenderAccName.text)
-				else
-					String()
+
 				val receiverAccNumberTmp = jsonObj.getString(TransferDataFields.ReceiverAccNumber.text)
 				val receiverNameTmp = jsonObj.getString(TransferDataFields.ReceiverName.text)
 				val descriptionTmp = jsonObj.getString(TransferDataFields.Description.text)
 				val amountTmp = jsonObj.getDouble(TransferDataFields.Amount.text)
 				val currencyTmp = jsonObj.getString(TransferDataFields.Currency.text)
 				val executionDateTmp = jsonObj.getString(TransferDataFields.ExecutionDate.text)
+				val multipleUseTmp = jsonObj.getBoolean(TransferDataFields.MultipleUse.text)
+				val isProlonged = jsonObj.has(TransferDataFields.ProLongedExpTime.text)
 
-				val toRet = TransferData().also {
-					it.amount = amountTmp
-					it.senderAccNumber = senderAccNumberTmp
-					it.senderAccName = senderAccNameTmp
-					it.receiverName = receiverNameTmp
-					it.receiverAccNumber  =receiverAccNumberTmp
-					it.description = descriptionTmp
-					it.currency = currencyTmp
-					it.executionDate = executionDateTmp
+				var proLongExpTimeTmp: Int? = null
+				if(isProlonged)
+					proLongExpTimeTmp = jsonObj.getInt(TransferDataFields.ProLongedExpTime.text)
+
+				val toRet = TransferData()
+				with(toRet){
+					amount = amountTmp
+					senderAccNumber = senderAccNumberTmp
+					senderAccName = senderAccNameTmp
+					receiverName = receiverNameTmp
+					receiverAccNumber  =receiverAccNumberTmp
+					description = descriptionTmp
+					currency = currencyTmp
+					executionDate = executionDateTmp
+					multipleUse = multipleUseTmp
+					proLongedExpTime = proLongExpTimeTmp
 				}
 				return toRet
 			}catch (e : Exception){
-				Log.e(TagProduction, "[constructor(json)/TransferData] error in constructing TransferDataObj from json")
+				Log.e(TagProduction, "[constructor(json)/TransferData] error in constructing TransferDataObj from json e=[$e]")
 				return TransferData()
 			}
 		}
@@ -138,15 +150,17 @@ class TransferData() {
 			try{
 				val jsonObj = JSONObject(serializedObject)
 
-				val senderAccNumberTmp = if(jsonObj.has(TransferDataFields.SenderAccNumber.text))
-					jsonObj.getString(TransferDataFields.SenderAccNumber.text)
-				else
-					String()
+				val gotSender =
+					jsonObj.has(TransferDataFields.SenderAccNumber.text) &&
+					jsonObj.has(TransferDataFields.SenderAccName.text)
 
-				val senderAccNameTmp = if(jsonObj.has(TransferDataFields.SenderAccName.text))
-					jsonObj.getString(TransferDataFields.SenderAccName.text)
-				else
-					String()
+				var senderAccNumberTmp = String()
+				if(gotSender)
+					senderAccNumberTmp = jsonObj.getString(TransferDataFields.SenderAccNumber.text)
+
+				var senderAccNameTmp = String()
+				if(gotSender)
+					senderAccNameTmp = jsonObj.getString(TransferDataFields.SenderAccName.text)
 
 				val receiverAccNumberTmp = jsonObj.getString(TransferDataFields.ReceiverAccNumber.text)
 				val receiverNameTmp = jsonObj.getString(TransferDataFields.ReceiverName.text)
@@ -154,16 +168,26 @@ class TransferData() {
 				val amountTmp = jsonObj.getDouble(TransferDataFields.Amount.text)
 				val currencyTmp = jsonObj.getString(TransferDataFields.Currency.text)
 				val executionDateTmp = jsonObj.getString(TransferDataFields.ExecutionDate.text)
+				val multipleUseTmp = jsonObj.getBoolean(TransferDataFields.MultipleUse.text)
+				val isProlonged = jsonObj.has(TransferDataFields.ProLongedExpTime.text)
 
-				val toRet = TransferData().also {
-					it.amount = amountTmp
-					it.senderAccNumber = senderAccNumberTmp
-					it.senderAccName = senderAccNameTmp
-					it.receiverName = receiverNameTmp
-					it.receiverAccNumber  =receiverAccNumberTmp
-					it.description = descriptionTmp
-					it.currency = currencyTmp
-					it.executionDate = executionDateTmp
+				var proLongExpTimeTmp: Int? = null
+				if(isProlonged)
+					proLongExpTimeTmp = jsonObj.getInt(TransferDataFields.ProLongedExpTime.text)
+
+
+				val toRet = TransferData()
+				with(toRet){
+					amount = amountTmp
+					senderAccNumber = senderAccNumberTmp
+					senderAccName = senderAccNameTmp
+					receiverName = receiverNameTmp
+					receiverAccNumber  =receiverAccNumberTmp
+					description = descriptionTmp
+					currency = currencyTmp
+					executionDate = executionDateTmp
+					multipleUse = multipleUseTmp
+					proLongedExpTime = proLongExpTimeTmp
 				}
 				return toRet
 			}
@@ -177,26 +201,59 @@ class TransferData() {
 	var senderAccName : String? = null
 	var receiverAccNumber : String? = null
 	var receiverName : String? = null
-	var description : String? = null
-	var amount : Double? = null
-	var currency : String? = null
+	var description = String()
+	var amount = 0.0
+	var currency = String()
 	var executionDate : String? = OmegaTime.getDate()
 	var tppId : String? = null//for bundleOnly
+	var multipleUse : Boolean = false
+	var proLongedExpTime : Int? = null
 
 	override fun toString() : String{
 		return toJsonObject().toString()
 	}
 	fun toJsonObject() : JSONObject{
-		return JSONObject()
-			.put(TransferDataFields.SenderAccNumber.text, senderAccNumber?: String())
-			.put(TransferDataFields.SenderAccName.text, senderAccName?: String())
-			.put(TransferDataFields.ReceiverAccNumber.text, receiverAccNumber)
-			.put(TransferDataFields.ReceiverName.text, receiverName)
-			.put(TransferDataFields.Description.text, description)
-			.put(TransferDataFields.Amount.text, amount)
-			.put(TransferDataFields.Currency.text, currency)
-			.put(TransferDataFields.ExecutionDate.text, executionDate)
+		val toRet = JSONObject()
+		with(toRet){
+			put(TransferDataFields.SenderAccNumber.text, senderAccNumber?: String())
+			put(TransferDataFields.SenderAccName.text, senderAccName?: String())
+			put(TransferDataFields.ReceiverAccNumber.text, receiverAccNumber)
+			put(TransferDataFields.ReceiverName.text, receiverName)
+			put(TransferDataFields.Description.text, description)
+			put(TransferDataFields.Amount.text, amount)
+			put(TransferDataFields.Currency.text, currency)
+			put(TransferDataFields.ExecutionDate.text, executionDate)
+			put(TransferDataFields.MultipleUse.text, multipleUse)
 
+			if(proLongedExpTime != null)
+				put(TransferDataFields.ProLongedExpTime.text, proLongedExpTime)
+		}
+		return toRet
+	}
+	fun toSetCodeRequestBody() : JSONObject{
+		val data = JSONObject()
+		with(data){
+			put(TransferDataFields.SenderAccNumber.text, String())
+			put(TransferDataFields.SenderAccName.text, String())
+			put(TransferDataFields.ReceiverAccNumber.text, receiverAccNumber)
+			put(TransferDataFields.ReceiverName.text, receiverName)
+			put(TransferDataFields.Description.text, description)
+			put(TransferDataFields.Amount.text, amount)
+			put(TransferDataFields.Currency.text, currency)
+			put(TransferDataFields.ExecutionDate.text, executionDate)
+		}
+		val toRet = JSONObject()
+		with(toRet){
+			put(TransferDataFields.Data.text, data.toString())
+
+			if(multipleUse != null)
+				put(TransferDataFields.MultipleUse.text, multipleUse)
+
+			if(proLongedExpTime != null)
+				put(TransferDataFields.ProLongedExpTime.text, proLongedExpTime!!)
+		}
+
+		return toRet
 	}
 }
 

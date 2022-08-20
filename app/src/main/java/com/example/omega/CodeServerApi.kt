@@ -48,9 +48,7 @@ class CodeServerApi {
 	}
 
 		suspend fun setCode(callerActivity: Activity, transferData: TransferData) : ServerSetCodeResponse?{
-			val transferDataStr = transferData.toJsonObject()
-			val body = JSONObject()
-				.put("data", transferDataStr)
+			val body = transferData.toSetCodeRequestBody()
 			val request = getInternalRequest(GateWay.Set, body)
 			return try {
 				val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()

@@ -151,13 +151,15 @@ class ActivityStarter {
 			val intent = Intent(callerActivity, AccountHistroyActivity::class.java)
 			callerActivity.startActivity(intent)
 		}
-		fun startDisplayActivity(callerActivity: Activity, data : ServerSetCodeResponse){
-			val field = callerActivity.getString(R.string.ACT_COM_CODEGENERATOR_SERIALIZED_SERVER_RES_FIELD)
+		fun startDisplayActivity(callerActivity: Activity, data : ServerSetCodeResponse, multipleUseCode : Boolean){
+			val servResField = callerActivity.getString(R.string.ACT_COM_CODEGENERATOR_SERIALIZED_SERVER_RES_FIELD)
+			val multiUseCodeField = callerActivity.getString(R.string.ACT_COM_CODEGENERATOR_multiUseCode_FIELD)
 			val retCode = callerActivity.resources.getInteger(R.integer.ACT_RETCODE_DISPLAY_ACTIVITY)
 			val dataStr = data.toString()
 			val codeDisplayIntent = Intent(callerActivity, RBlikCodeDisplayActivity::class.java)
 
-			codeDisplayIntent.putExtra(field, dataStr)
+			codeDisplayIntent.putExtra(servResField, dataStr)
+			codeDisplayIntent.putExtra(multiUseCodeField, multipleUseCode)
 			callerActivity.startActivityForResult(codeDisplayIntent, retCode)
 		}
 	}

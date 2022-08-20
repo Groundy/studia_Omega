@@ -22,6 +22,8 @@
 	<string name="GUI_RBlikCodeGenerator_TitleOfTransferTextView">Tytuł przelewu: </string>
 	<string name="GUI_RBlikCodeGenerator_goNextButtonText">Dalej </string>
 
+	<string name="GUI_RBlikCodeGenerator_ProLongedTime">Kod o przedłużonym czasie ważności</string>
+	<string name="GUI_RBlikCodeGenerator_multipleUse">Kod wielokrotnego użytku</string>
 	<!-- RBLIK code display  -->
 	<string name="RBLIKDISPLAY_GUI_buttonText">Wstecz</string>
 

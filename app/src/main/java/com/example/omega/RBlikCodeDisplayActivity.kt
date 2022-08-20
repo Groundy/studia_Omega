@@ -26,6 +26,7 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 	private lateinit var codeDisplayField : TextView
 	private lateinit var data : ServerSetCodeResponse
 	private lateinit var timer : CountDownTimer
+	private var isMultipleUseCode : Boolean = false
 
 	override fun onResume() {
 		super.onResume()
@@ -58,10 +59,13 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 		}
 		imgWidget.setImageBitmap(qrCodeBitmap)
 		startTimer()
-		CoroutineScope(IO).launch{
-			val paymentAccepted = CodeServerApi.waitCodeDone(this@RBlikCodeDisplayActivity, data.code)
-			if(paymentAccepted)
-				endActivityWithPaymentAcceptance()
+
+		if(!isMultipleUseCode){
+			CoroutineScope(IO).launch{
+				val paymentAccepted = CodeServerApi.waitCodeDone(this@RBlikCodeDisplayActivity, data.code)
+				if(paymentAccepted)
+					endActivityWithPaymentAcceptance()
+			}
 		}
 	}
 
@@ -75,10 +79,12 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 		}
 	}
 	private fun getServerResponseFromIntent() : Boolean{
-		val fieldName = getString(R.string.ACT_COM_CODEGENERATOR_SERIALIZED_SERVER_RES_FIELD)
+		val servResponseFieldName = getString(R.string.ACT_COM_CODEGENERATOR_SERIALIZED_SERVER_RES_FIELD)
+		val isMultipleUseCodeFieldName = getString(R.string.ACT_COM_CODEGENERATOR_multiUseCode_FIELD)
 		return try {
-			val serverResStr = intent.extras!!.getString(fieldName)
+			val serverResStr = intent.extras!!.getString(servResponseFieldName)
 			data = ServerSetCodeResponse(serverResStr!!)
+			isMultipleUseCode = intent.extras!!.getBoolean(isMultipleUseCodeFieldName)
 			true
 		}catch (e : Exception){
 			Log.e(TagProduction,"[getServerResponseFromIntent/${this.javaClass.name}] Cant parse data from intent")
