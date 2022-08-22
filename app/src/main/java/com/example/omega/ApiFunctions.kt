@@ -47,25 +47,29 @@ class ApiFunctions {
 		}
 		fun getUserAgent() : String{
 			val result = StringBuilder(64)
-			result.append("Dalvik/")
-			result.append(System.getProperty("java.vm.version")) // such as 1.1.0
-			result.append(" (Linux; U; Android ")
-			val version = Build.VERSION.RELEASE // "1.0" or "3.4b5"
-			result.append(version.ifEmpty { "1.0" })
-			// add the model for the release build
-			if ("REL" == Build.VERSION.CODENAME) {
-				val model = Build.MODEL
-				if (model.isNotEmpty()) {
-					result.append("; ")
-					result.append(model)
+			with(result){
+				append("Dalvik/")
+				append(System.getProperty("java.vm.version"))
+				append(" (Linux; U; Android ")
+				val version = Build.VERSION.RELEASE
+				if(version.isNotEmpty())
+					append(version)
+				else
+					append("1.0")
+				if ("REL" == Build.VERSION.CODENAME) {
+					val model = Build.MODEL
+					if (model.isNotEmpty()) {
+						append("; ")
+						append(model)
+					}
 				}
+				val id = Build.ID
+				if (id.isNotEmpty()) {
+					append(" Build/")
+					append(id)
+				}
+				append(")")
 			}
-			val id = Build.ID // "MASTER" or "M4-rc20"
-			if (id.isNotEmpty()) {
-				result.append(" Build/")
-				result.append(id)
-			}
-			result.append(")")
 			return result.toString()
 		}
 
@@ -81,7 +85,7 @@ class ApiFunctions {
 				}
 			}
 
-			var ip = "213.134.160.2"
+			var ip = "0.0.0.0"
 			val thread =Thread{
 				try {
 					val url = "http://www.ip-api.com/json"
@@ -138,7 +142,7 @@ class ApiFunctions {
 			val additionalErrorMsg : String = try {
 				val additionalErrorMsg = JSONObject(response.body?.string()!!).getString("message")
 				if(additionalErrorMsg.isNotEmpty())
-					"  Additional info -->$additionalErrorMsg"
+					" Additional info -->$additionalErrorMsg"
 				else
 					String()
 			}catch (e : Exception){
