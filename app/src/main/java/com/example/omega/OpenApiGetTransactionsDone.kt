@@ -194,6 +194,22 @@ class HistoryFillters(daysBack : Int = 7){
 
 		return maxAmount.toString()
 	}
+	fun amountIsInFillterRange(amountToCheck : Double?) : Boolean{
+		if(amountToCheck == null)
+			return false
+
+		if(minAmount != null){
+			if(amountToCheck < minAmount!!)
+				return false
+		}
+
+		if(maxAmount != null){
+			if(amountToCheck > maxAmount!!)
+				return false
+		}
+
+		return true
+	}
 	private fun reversdateToYearsFirst(date : String) : String{
 		return try {
 			val parts = date.split("-")

@@ -297,7 +297,7 @@ class BasicTransferActivity : AppCompatActivity() {
 			if(showSummary)
 				ActivityStarter.startTransferSummaryActivity(this, transferData)
 			else{
-				val descripitionToShow = "${transferData.amount.toString()} ${transferData.currency}"
+				val descripitionToShow = "${transferData.amount} ${transferData.currency}"
 				ActivityStarter.startAuthActivity(this, descripitionToShow)
 			}
 		}
@@ -471,7 +471,7 @@ class BasicTransferActivity : AppCompatActivity() {
 	private fun userAddedTransferToBundle(){
 		val transferData = getTransferDataFromFields()
 		if(transferData == null){
-			//todo
+			Utilities.showToast(this, getString(R.string.UserMsg_UNKNOWN_ERROR))
 			return
 		}
 		if(transferDataListToBundle.size == 10){

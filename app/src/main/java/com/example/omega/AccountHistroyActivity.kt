@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class AccountHistroyActivity : AppCompatActivity() {
@@ -105,16 +106,19 @@ class AccountHistroyActivity : AppCompatActivity() {
 		return spinneradapter
 	}
 	private fun setGUI(){
-		val spinnerListener = object : AdapterView.OnItemSelectedListener{
-			override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-				userChangedAccount()
+		spinner = findViewById(R.id.AccHistoryActivity_Spinner)
+		with(spinner){
+			val spinnerListener = object : AdapterView.OnItemSelectedListener{
+				override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+					userChangedAccount()
+				}
+				override fun onNothingSelected(p0: AdapterView<*>?) {}
 			}
-			override fun onNothingSelected(p0: AdapterView<*>?) {}
+			onItemSelectedListener = spinnerListener
 		}
 
-		spinner = findViewById(R.id.AccHistoryActivity_Spinner)
 		list = findViewById(R.id.AccHistoryActivity_List)
-		spinner.onItemSelectedListener = spinnerListener
+
 		findViewById<Button>(R.id.AccHistoryActivity_filterButton).setOnClickListener{
 			showFilterDialog()
 		}
@@ -134,8 +138,8 @@ class AccountHistroyActivity : AppCompatActivity() {
 				return@launch
 			}
 
-			val recordsList = token.getPaymentAccount(accNumber)?.accountHistory
-			if(recordsList.isNullOrEmpty()){
+			val recordsListFromRequest = token.getPaymentAccount(accNumber)?.accountHistory
+			if(recordsListFromRequest.isNullOrEmpty()){
 				Log.e(TagProduction,"[userChangedAccount/${this@AccountHistroyActivity.javaClass.name}], failed to get hist from payment account")
 				withContext(Main){
 					list.adapter = CustomAdapter(this@AccountHistroyActivity,accNumber, emptyList())
@@ -144,7 +148,14 @@ class AccountHistroyActivity : AppCompatActivity() {
 				return@launch
 			}
 
-			val adapterToSet = CustomAdapter(this@AccountHistroyActivity,accNumber, recordsList.sorted())
+			val fillteredRecordsToDisplay  = ArrayList<AccountHistoryRecord>()
+			recordsListFromRequest.forEach{
+				val isInRange = fillterDataObj.amountIsInFillterRange(it.amount)
+				if(isInRange)
+					fillteredRecordsToDisplay.add(it)
+			}
+			val recordsToDisplay = fillteredRecordsToDisplay.toList().sorted()
+			val adapterToSet = CustomAdapter(this@AccountHistroyActivity,accNumber, recordsToDisplay)
 			withContext(Main){
 				list.adapter = null
 				list.adapter = adapterToSet
@@ -303,7 +314,7 @@ class FilterDialog(context: Context, fillterDataObj: HistoryFillters) : Dialog(c
 						monthOfYearStr = "0$monthOfYearStr"
 
 					val str = "$dayOfMonthStr-$monthOfYearStr-$year"
-					startDateField.text = str
+					text = str
 					checkDatesCorrectness()
 				}
 				val c = Calendar.getInstance()
@@ -330,7 +341,7 @@ class FilterDialog(context: Context, fillterDataObj: HistoryFillters) : Dialog(c
 						monthOfYearStr = "0$monthOfYearStr"
 
 					val str = "$dayOfMonthStr-$monthOfYearStr-$year"
-					endDateField.text = str
+					text = str
 					checkDatesCorrectness()
 				}
 				val c = Calendar.getInstance()
@@ -407,8 +418,9 @@ class FilterDialog(context: Context, fillterDataObj: HistoryFillters) : Dialog(c
 		}
 	}
 	private fun applyButtonClicked(){
-		val ok = checkDatesCorrectness() && checkIfMaxAmountIsBiggerThanMin()
-		if(!ok)
+		if(!checkDatesCorrectness())
+			return
+		if(!checkIfMaxAmountIsBiggerThanMin())
 			return
 
 		val dataObj = getFillterDataObj()
