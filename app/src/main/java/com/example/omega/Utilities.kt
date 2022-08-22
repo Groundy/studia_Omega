@@ -1,6 +1,7 @@
 package com.example.omega
 import android.app.Activity
 import android.content.DialogInterface
+import android.os.Build
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.util.Log
@@ -39,18 +40,19 @@ class Utilities {
 			}
 		}
 		fun hashMd5(inputStr : String) : String{
-			val firstSalt =  "vS77tCM2fulkL^ucDQl4XPX8dvB0".toByteArray()
+			val firstSalt = (Build.MANUFACTURER + " - " + Build.MODEL).toByteArray()
 			val md = MessageDigest.getInstance("MD5")
 			val bigInt = BigInteger(1, md.digest(inputStr.toByteArray().plus(firstSalt)))
 			var hashedPin = bigInt.toString(16).padStart(32, '0')
-			val addAdditionalhashedPinSuffling = true
-			if(addAdditionalhashedPinSuffling){
-				for (i in inputStr.indices){
-					val digit : Int = inputStr[i].digitToInt() * 3
-					val prefix = hashedPin.substring(0, digit)
-					val subSequence = hashedPin.substring(digit, hashedPin.length).reversed()
-					hashedPin = prefix.plus(subSequence)
-				}
+			val skipAdditionalhashedPinSuffling = false
+			if(skipAdditionalhashedPinSuffling)
+				return hashedPin
+
+			for (i in inputStr.indices){
+				val digit : Int = inputStr[i].digitToInt() * 3
+				val prefix = hashedPin.substring(0, digit).reversed()
+				val subSequence = hashedPin.substring(digit, hashedPin.length).reversed()
+				hashedPin = prefix.plus(subSequence)
 			}
 			return hashedPin
 		}
