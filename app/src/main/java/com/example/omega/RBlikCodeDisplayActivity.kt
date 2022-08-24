@@ -2,7 +2,6 @@ package com.example.omega
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.zxing.WriterException
 import android.graphics.Bitmap
 import android.os.CountDownTimer
 import android.util.Log
@@ -73,7 +72,7 @@ class RBlikCodeDisplayActivity : AppCompatActivity() {
 		val qrgEncoder = QRGEncoder(code.toString(), null, QRGContents.Type.TEXT, 300)
 		return try {
 			qrgEncoder.encodeAsBitmap()
-		} catch (e: WriterException) {
+		} catch (e: Exception) {
 			Log.e(TagProduction, "[generateQRCodeImg/${this.javaClass.name}] error txt = $e")
 			null
 		}
