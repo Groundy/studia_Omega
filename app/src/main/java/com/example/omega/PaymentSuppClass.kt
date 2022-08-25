@@ -58,27 +58,35 @@ class PaymentSuppClass(private val transferData: TransferData) {
 	}
 
 	private fun getRecipentbj(): JSONObject {
-		val nameAdressObj = nameToRequestJsonFormat(transferData.receiverName)
-		val accountNumber = ensureAccNumberGotPLPrefix(transferData.receiverAccNumber)
-
-		return JSONObject()
-			.put(RequestFields.AccountNumber.text, accountNumber)
-			.put(RequestFields.NameAddressArray.text,nameAdressObj)
+		val recipientObj = JSONObject()
+		with(recipientObj){
+			val nameAdressObj = nameToRequestJsonFormat(transferData.receiverName)
+			val accountNumber = ensureAccNumberGotPLPrefix(transferData.receiverAccNumber)
+			put(RequestFields.AccountNumber.text, accountNumber)
+			put(RequestFields.NameAddressArray.text,nameAdressObj)
+		}
+		return recipientObj
 	}
 	private fun getSenderObj(): JSONObject {
-		val nameAdressObj = nameToRequestJsonFormat(transferData.senderAccName)
-		val accountNumber = ensureAccNumberGotPLPrefix(transferData.senderAccNumber)
-		return JSONObject()
-			.put(RequestFields.AccountNumber.text, accountNumber)
-			.put(RequestFields.NameAddressArray.text,nameAdressObj)
+		val senderObj = JSONObject()
+		with(senderObj){
+			val nameAdressObj = nameToRequestJsonFormat(transferData.senderAccName)
+			val accountNumber = ensureAccNumberGotPLPrefix(transferData.senderAccNumber)
+			put(RequestFields.AccountNumber.text, accountNumber)
+			put(RequestFields.NameAddressArray.text,nameAdressObj)
+		}
+		return senderObj
 	}
 	private fun getTransferDataObj(): JSONObject {
-		val amountStr = Utilities.doubleToTwoDigitsAfterCommaString(transferData.amount!!)
-		return JSONObject()
-			.put(TransactionsObjFields.Description.text, transferData.description)
-			.put(TransactionsObjFields.Amount.text, amountStr)
-			.put(TransactionsObjFields.ExecutionDate.text, transferData.executionDate)
-			.put(TransactionsObjFields.Currency.text, transferData.currency)
+		val transferDataObj = JSONObject()
+		with(transferDataObj){
+			put(TransactionsObjFields.Description.text, transferData.description)
+			val amountStr = Utilities.doubleToTwoDigitsAfterCommaString(transferData.amount)
+			put(TransactionsObjFields.Amount.text, amountStr)
+			put(TransactionsObjFields.ExecutionDate.text, transferData.executionDate)
+			put(TransactionsObjFields.Currency.text, transferData.currency)
+		}
+		return transferDataObj
 	}
 	private fun ensureAccNumberGotPLPrefix(accountNumber: String?) : String{
 		if(accountNumber==null){
@@ -101,53 +109,59 @@ class PaymentSuppClass(private val transferData: TransferData) {
 			Log.e(Utilities.TagProduction,"[nameToRequestJsonFormat/${this.javaClass.name}] null acc name passed to request")
 			return JSONObject()
 		}
-
-		return JSONObject()
-			.put(RequestFields.Value.text,JSONArray()
-				.put(name)
-			)
+		val nameObj = JSONObject()
+		with(nameObj){
+			val array = JSONArray().put(name)
+			put(RequestFields.Value.text,array)
+		}
+		return nameObj
 	}
 
 	fun toDomesticPaymentScopeDetialObjForAuth(): JSONObject {
 		val scopeUsageLimitStr = ApiConsts.ScopeDetailsFields.ScopeUsageLimit.text
 		val scopeSingleUsageStr = ApiConsts.ScopeUsageLimit.Single.text
-		return JSONObject()
-			.put(scopeUsageLimitStr,scopeSingleUsageStr)
-			.put(RequestFields.Recipient.text, getRecipentbj())
-			.put(RequestFields.Sender.text, getSenderObj())
-			.put(RequestFields.TransferData.text,getTransferDataObj())
-			.put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
-			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
-			.put(RequestFields.System.text, usingSystem)
-			.put(RequestFields.ExecutionMode.text, usingExecutionMode)
+		val scopeDetails = JSONObject()
+		with(scopeDetails){
+			put(scopeUsageLimitStr,scopeSingleUsageStr)
+			put(RequestFields.Recipient.text, getRecipentbj())
+			put(RequestFields.Sender.text, getSenderObj())
+			put(RequestFields.TransferData.text,getTransferDataObj())
+			put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
+			put(RequestFields.DeliveryMode.text, usingDeliveryMode)
+			put(RequestFields.System.text, usingSystem)
+			put(RequestFields.ExecutionMode.text, usingExecutionMode)
+		}
+		return scopeDetails
 	}
 	fun toDomesticPaymentRequest(requestHeadersJsonObject: JSONObject): JSONObject {
-		return JSONObject()
-			.put(ApiConsts.ApiReqFields.RequestHeader.text, requestHeadersJsonObject)
-			.put(RequestFields.Recipient.text, getRecipentbj())
-			.put(RequestFields.Sender.text, getSenderObj())
-			.put(RequestFields.TransferData.text,getTransferDataObj())
-			.put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
-			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
-			.put(RequestFields.System.text, usingSystem)
-			.put(RequestFields.ExecutionMode.text, usingExecutionMode)
-
+		val requestJson = JSONObject()
+		with(requestJson){
+			put(ApiConsts.ApiReqFields.RequestHeader.text, requestHeadersJsonObject)
+			put(RequestFields.Recipient.text, getRecipentbj())
+			put(RequestFields.Sender.text, getSenderObj())
+			put(RequestFields.TransferData.text,getTransferDataObj())
+			put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
+			put(RequestFields.DeliveryMode.text, usingDeliveryMode)
+			put(RequestFields.System.text, usingSystem)
+			put(RequestFields.ExecutionMode.text, usingExecutionMode)
+		}
+		return requestJson
 	}
-
 	fun toBundleJsonArrayElement() : JSONObject{
 		val toRet = JSONObject()
-			.put(RequestFields.Recipient.text, getRecipentbj())
-			.put(RequestFields.Sender.text, getSenderObj())
-			.put(RequestFields.TransferData.text,getTransferDataObj())
-			.put(RequestFields.DeliveryMode.text, usingDeliveryMode)
-			.put(RequestFields.System.text, usingSystem)
-			.put(RequestFields.ExecutionMode.text, usingExecutionMode)
+		with(toRet){
+			put(RequestFields.Recipient.text, getRecipentbj())
+			put(RequestFields.Sender.text, getSenderObj())
+			put(RequestFields.TransferData.text,getTransferDataObj())
+			put(RequestFields.DeliveryMode.text, usingDeliveryMode)
+			put(RequestFields.System.text, usingSystem)
+			put(RequestFields.ExecutionMode.text, usingExecutionMode)
 
-		if(transferData.tppId == null)
-			toRet.put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
-		else
-			toRet.put(RequestFields.TppTransactionId.text, transferData.tppId)
-
+			if(transferData.tppId == null)
+				put(RequestFields.TppTransactionId.text, ApiFunctions.getRandomValueForTppTransId())
+			else
+				put(RequestFields.TppTransactionId.text, transferData.tppId)
+		}
 		return toRet
 	}
 }

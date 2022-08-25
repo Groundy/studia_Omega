@@ -51,7 +51,6 @@ class OpenApiBundle(private val callerActivity : Activity, private val paymentTo
 		val uuidStr = ApiFunctions.getUUID()
 		val currentTime = OmegaTime.getCurrentTime()
 		val authFieldValue = paymentToken.getAuthFieldValue()
-
 		val trDataList = TransferData.fromBundleToken(paymentToken)
 
 		var totalAmount = 0.0
@@ -70,24 +69,28 @@ class OpenApiBundle(private val callerActivity : Activity, private val paymentTo
 			trasferArray.put(toAdd)
 		}
 
-		val requestHeaderJsonObj = JSONObject()
-			.put(RequestId.text, uuidStr)
-			.put(UserAgent.text, ApiFunctions.getUserAgent())
-			.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-			.put(SendDate.text, currentTime)
-			.put(TppId.text, ApiConsts.TTP_ID)
-			.put(IsCompanyContext.text, false)
-			.put(TokenField.text, authFieldValue)
+		val bodyHeaders = JSONObject()
+		with(bodyHeaders){
+			put(RequestId.text, uuidStr)
+			put(UserAgent.text, ApiFunctions.getUserAgent())
+			put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			put(SendDate.text, currentTime)
+			put(TppId.text, ApiConsts.TTP_ID)
+			put(IsCompanyContext.text, false)
+			put(TokenField.text, authFieldValue)
+		}
 
-		val requestBodyJsonObj = JSONObject()
-			.put(RequestHeader.text,requestHeaderJsonObj)
-			.put(BundleFields.TppBundleId.text, ApiFunctions.getRandomValueForTppTransId())
-			.put(BundleFields.TransfersTotalAmount.text, totalAmountStr)
-			.put(BundleFields.TypeOfTransfers.text, BundleFields.Domestic.text)
-			.put(BundleFields.DomesticTransfers.text, trasferArray)
+		val body = JSONObject()
+		with(body){
+			put(RequestHeader.text,bodyHeaders)
+			put(BundleFields.TppBundleId.text, ApiFunctions.getRandomValueForTppTransId())
+			put(BundleFields.TransfersTotalAmount.text, totalAmountStr)
+			put(BundleFields.TypeOfTransfers.text, BundleFields.Domestic.text)
+			put(BundleFields.DomesticTransfers.text, trasferArray)
+		}
 
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
-		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.Bundle, requestBodyJsonObj, uuidStr, additionalHeaderList)
+		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.Bundle, body, uuidStr, additionalHeaderList)
 	}
 	private fun sendRequest(request: Request) : String?{
 		return try{

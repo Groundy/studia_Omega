@@ -27,23 +27,27 @@ class OpenApiGetToken(private val callerActivity: Activity, private val scope : 
 	private fun getRequest() : Request {
 		val uuidStr = ApiFunctions.getUUID()
 
-		val headerJson = JSONObject()
-			.put(RequestId.text, uuidStr)
-			.put(UserAgent.text, ApiFunctions.getUserAgent())
-			.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-			.put(SendDate.text, OmegaTime.getCurrentTime())
-			.put(TppId.text, ApiConsts.TTP_ID)
-			.put(IsCompanyContext.text, false)
+		val bodyHeaders = JSONObject()
+		with(bodyHeaders){
+			put(RequestId.text, uuidStr)
+			put(UserAgent.text, ApiFunctions.getUserAgent())
+			put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			put(SendDate.text, OmegaTime.getCurrentTime())
+			put(TppId.text, ApiConsts.TTP_ID)
+			put(IsCompanyContext.text, false)
+		}
 
-		val requestBodyJson = JSONObject()
-			.put(RequestHeader.text, headerJson)
-			.put(Code.text, PreferencesOperator.readPrefStr(callerActivity, R.string.PREF_authCode))
-			.put(GrantType.text,ApiConsts.GrantTypes.AuthorizationCode.text)
-			.put(RedirectUri.text, ApiConsts.REDIRECT_URI)
-			.put(ClientId.text, ApiConsts.userId_ALIOR)
-			.put(ClientSecret.text, ApiConsts.appSecret_ALIOR)
+		val body = JSONObject()
+		with(body){
+			put(RequestHeader.text, bodyHeaders)
+			put(Code.text, PreferencesOperator.readPrefStr(callerActivity, R.string.PREF_authCode))
+			put(GrantType.text,ApiConsts.GrantTypes.AuthorizationCode.text)
+			put(RedirectUri.text, ApiConsts.REDIRECT_URI)
+			put(ClientId.text, ApiConsts.userId_ALIOR)
+			put(ClientSecret.text, ApiConsts.appSecret_ALIOR)
+		}
 
-		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl, requestBodyJson, uuidStr)
+		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl, body, uuidStr)
 	}
 	private fun handleResponse(responseJson : JSONObject){
 		val accessToken = Token(responseJson)

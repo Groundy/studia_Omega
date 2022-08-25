@@ -163,8 +163,10 @@ class ServerSetCodeResponse{
 	var timestamp = String()
 	override fun toString(): String {
 		val json = JSONObject()
-			.put("code", code)
-			.put("timestamp", timestamp)
+		with(json){
+			put("code", code)
+			put("timestamp", timestamp)
+		}
 		return json.toString()
 	}
 	constructor(string: String){

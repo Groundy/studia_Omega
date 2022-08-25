@@ -78,19 +78,26 @@ class Token() {
 	override fun toString(): String{
 		return try{
 			val scopeDetilsObj = JSONObject()
-				.put(ScopeDetailsObjFieldsNames.ScopeTimeLimit.text, scopeExpirationTime)
-				.put(ScopeDetailsObjFieldsNames.PrivilegeList.text, privilegeList)
+			with(scopeDetilsObj){
+				put(ScopeDetailsObjFieldsNames.ScopeTimeLimit.text, scopeExpirationTime)
+				put(ScopeDetailsObjFieldsNames.PrivilegeList.text, privilegeList)
+			}
 
 			val responseHeadersObj = JSONObject()
-				.put(HeadersNames.SendDate.text, obtainTime)
+			with(responseHeadersObj){
+				put(HeadersNames.SendDate.text, obtainTime)
+			}
 
 			val toRet = JSONObject()
-				.put(ResponseFieldsNames.TokenType.text, tokenType)
-				.put(ResponseFieldsNames.AccessToken.text, accessToken)
-				.put(ResponseFieldsNames.RefreshToken.text, refreshToken)
-				.put(ResponseFieldsNames.ResponseHeader.text, responseHeadersObj)
-				.put(ResponseFieldsNames.Scope.text, scope!!.text)
-				.put(ResponseFieldsNames.ScopeDetails.text, scopeDetilsObj)
+			with(toRet){
+				put(ResponseFieldsNames.TokenType.text, tokenType)
+				put(ResponseFieldsNames.AccessToken.text, accessToken)
+				put(ResponseFieldsNames.RefreshToken.text, refreshToken)
+				put(ResponseFieldsNames.ResponseHeader.text, responseHeadersObj)
+				put(ResponseFieldsNames.Scope.text, scope!!.text)
+				put(ResponseFieldsNames.ScopeDetails.text, scopeDetilsObj)
+			}
+
 			toRet.toString()
 		}catch (e : Exception){
 			Log.e(TagProduction,"[serialize/${this.javaClass.name}] e=$e")

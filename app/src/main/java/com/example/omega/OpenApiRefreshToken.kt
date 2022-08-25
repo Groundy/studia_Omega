@@ -23,20 +23,24 @@ class OpenApiRefreshToken(private val refreshToken : String) {
 	}
 	private fun getRequest() : Request{
 		val uuid = ApiFunctions.getUUID()
-		val requestHeaders = JSONObject()
-			.put(ApiReqFields.RequestId.text, uuid)
-			.put(ApiReqFields.SendDate.text, OmegaTime.getCurrentTime())
-			.put(ApiReqFields.TppId.text, ApiConsts.TTP_ID)
+		val bodyHeaders = JSONObject()
+		with(bodyHeaders){
+			put(ApiReqFields.RequestId.text, uuid)
+			put(ApiReqFields.SendDate.text, OmegaTime.getCurrentTime())
+			put(ApiReqFields.TppId.text, ApiConsts.TTP_ID)
+		}
 
-		val jsonBodyRequest = JSONObject()
-			.put(ApiReqFields.RequestHeader.text, requestHeaders)
-			.put(ApiReqFields.GrantType.text, ApiConsts.GrantTypes.RefreshToken.text)
-			.put(ApiReqFields.RedirectUri.text, ApiConsts.REDIRECT_URI)
-			.put(ApiReqFields.ClientId.text, ApiConsts.userId_ALIOR)
-			.put(ApiReqFields.RefreshToken.text, refreshToken)
-			.put(ApiReqFields.Scope.text, ScopeValues.Ais.text)
+		val body = JSONObject()
+		with(body){
+			put(ApiReqFields.RequestHeader.text, bodyHeaders)
+			put(ApiReqFields.GrantType.text, ApiConsts.GrantTypes.RefreshToken.text)
+			put(ApiReqFields.RedirectUri.text, ApiConsts.REDIRECT_URI)
+			put(ApiReqFields.ClientId.text, ApiConsts.userId_ALIOR)
+			put(ApiReqFields.RefreshToken.text, refreshToken)
+			put(ApiReqFields.Scope.text, ScopeValues.Ais.text)
+		}
 
-		return 	ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl, jsonBodyRequest, uuid)
+		return 	ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTokenUrl, body, uuid)
 	}
 	private suspend fun sendRequest(request: Request) : JSONObject?{
 		return try{

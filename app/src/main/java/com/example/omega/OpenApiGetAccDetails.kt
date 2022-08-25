@@ -40,25 +40,28 @@ class OpenApiGetAccDetails(private var token: Token, private val callerActivity:
 	private fun getRequestForSignleAcc(accNumber: String): Request {
 		val uuidStr = ApiFunctions.getUUID()
 		val currentTimeStr = OmegaTime.getCurrentTime()
-
 		val authFieldValue = token.getAuthFieldValue()
 
-		val requestJson = JSONObject()
-			.put(RequestId.text, uuidStr)
-			.put(UserAgent.text, ApiFunctions.getUserAgent())
-			.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-			.put(SendDate.text, currentTimeStr)
-			.put(TppId.text, ApiConsts.TTP_ID)
-			.put(TokenField.text, authFieldValue)
-			.put(IsDirectPsu.text, false)
-			.put(DirectPsu.text, false)
+		val headers = JSONObject()
+		with(headers){
+			put(RequestId.text, uuidStr)
+			put(UserAgent.text, ApiFunctions.getUserAgent())
+			put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			put(SendDate.text, currentTimeStr)
+			put(TppId.text, ApiConsts.TTP_ID)
+			put(TokenField.text, authFieldValue)
+			put(IsDirectPsu.text, false)
+			put(DirectPsu.text, false)
+		}
 
-		val requestBodyJson = JSONObject()
-			.put(RequestHeader.text, requestJson)
-			.put(AccountNumberField.text, accNumber)
+		val body = JSONObject()
+		with(body){
+			put(RequestHeader.text, headers)
+			put(AccountNumberField.text, accNumber)
+		}
 
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
-		return ApiFunctions.bodyToRequest( ApiConsts.BankUrls.GetPaymentAccount, requestBodyJson, uuidStr, additionalHeaderList)
+		return ApiFunctions.bodyToRequest( ApiConsts.BankUrls.GetPaymentAccount, body, uuidStr, additionalHeaderList)
 	}
 	private suspend fun sendSingleRequest(request: Request): Boolean {
 		return try {

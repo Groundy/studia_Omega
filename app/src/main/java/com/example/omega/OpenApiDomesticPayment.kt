@@ -24,13 +24,15 @@ class OpenApiDomesticPayment(private val callerActivity: Activity, val token: To
 		val currentTime = OmegaTime.getCurrentTime()
 		val authFieldValue = token.getAuthFieldValue()
 
-		val requestHeaders = JSONObject()
-			.put(RequestId.text, uuidStr)
-			.put(UserAgent.text, ApiFunctions.getUserAgent())
-			.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-			.put(SendDate.text, currentTime)
-			.put(TppId.text, ApiConsts.TTP_ID)
-			.put(TokenField.text, authFieldValue)
+		val bodyHeaders = JSONObject()
+		with(bodyHeaders){
+			put(RequestId.text, uuidStr)
+			put(UserAgent.text, ApiFunctions.getUserAgent())
+			put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			put(SendDate.text, currentTime)
+			put(TppId.text, ApiConsts.TTP_ID)
+			put(TokenField.text, authFieldValue)
+		}
 
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
 		val transferDataFromToken = TransferData.fromDomesticPaymentToken(token)
@@ -39,13 +41,14 @@ class OpenApiDomesticPayment(private val callerActivity: Activity, val token: To
 			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, JSONObject(), uuidStr, additionalHeaderList)
 		}
 
-		val requestBodyJsonObj = PaymentSuppClass(transferDataFromToken).toDomesticPaymentRequest(requestHeaders)
+		val requestBodyJsonObj = PaymentSuppClass(transferDataFromToken).toDomesticPaymentRequest(bodyHeaders)
 		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, requestBodyJsonObj, uuidStr, additionalHeaderList)
 	}
 	private suspend fun sendRequest(request : Request) : Boolean{
 		return try{
 			val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()
 			val response = client.newCall(request).execute()
+			val body = JSONObject(response.body!!.string())
 			if(response.code!= ApiConsts.ResponseCodes.OK.code){
 				ApiFunctions.logResponseError(response, this.javaClass.name)
 				return false

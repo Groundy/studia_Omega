@@ -72,18 +72,6 @@ class OpenApiAuthorize(activity: Activity) {
 			Log.e(TagProduction, "Authorize for pis ended with error")
 		return success
 	}
-	suspend fun runForBundle(trDataList: List<TransferData>) : Boolean{
-		permissionsList = PermissionList(Privileges.Bundle)
-		Log.i(TagProduction, "Authorize for pis:bundle started")
-		val request = getRequestForBundle(trDataList)
-		val response = sendRequest(request)
-		val success = handleResponse(response)
-		if(success)
-			Log.i(TagProduction, "Authorize for pis:bundle ended with sucess")
-		else
-			Log.e(TagProduction, "Authorize for pis:bundle ended with error")
-		return success
-	}
 
 
 	private suspend fun sendRequest (request: Request) : JSONObject?{
@@ -105,35 +93,46 @@ class OpenApiAuthorize(activity: Activity) {
 	private fun getRequest(stateStr : String, scope : ScopeValues) : Request {
 		val uuidStr = ApiFunctions.getUUID()
 
-		val requestHeaderJsonObj = JSONObject()
-			.put(ApiReqFields.RequestId.text, uuidStr)
-			.put(ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
-			.put(ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-			.put(ApiReqFields.SendDate.text, OmegaTime.getCurrentTime())
-			.put(ApiReqFields.TppId.text, ApiConsts.TTP_ID)
-			.put(ApiReqFields.IsCompanyContext.text, false)
+		val bodyHeaders = JSONObject()
+		with(bodyHeaders){
+			put(ApiReqFields.RequestId.text, uuidStr)
+			put(ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
+			put(ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			put(ApiReqFields.SendDate.text, OmegaTime.getCurrentTime())
+			put(ApiReqFields.TppId.text, ApiConsts.TTP_ID)
+			put(ApiReqFields.IsCompanyContext.text, false)
+		}
 
-		val requestBodyJson = JSONObject()
-			.put(ApiReqFields.RequestHeader.text, requestHeaderJsonObj)
-			.put(ApiReqFields.ResponseType.text,ResponseTypes.Code.text)
-			.put(ApiReqFields.ClientId.text, ApiConsts.userId_ALIOR)
-			.put(ApiReqFields.Scope.text, scope.text)
-			.put(ApiReqFields.ScopeDetails.text,getScopeDetailsObject(scope))
-			.put(ApiReqFields.RedirectUri.text, ApiConsts.REDIRECT_URI)
-			.put(ApiReqFields.State.text,stateStr)
-		return ApiFunctions.bodyToRequest(BankUrls.AuthUrl, requestBodyJson, uuidStr)
+		val body = JSONObject()
+		with(body){
+			put(ApiReqFields.RequestHeader.text, bodyHeaders)
+			put(ApiReqFields.ResponseType.text,ResponseTypes.Code.text)
+			put(ApiReqFields.ClientId.text, ApiConsts.userId_ALIOR)
+			put(ApiReqFields.Scope.text, scope.text)
+			put(ApiReqFields.ScopeDetails.text,getScopeDetailsObject(scope))
+			put(ApiReqFields.RedirectUri.text, ApiConsts.REDIRECT_URI)
+			put(ApiReqFields.State.text,stateStr)
+		}
+
+		return ApiFunctions.bodyToRequest(BankUrls.AuthUrl, body, uuidStr)
 	}
 	private fun getScopeDetailsObject(scope: ScopeValues) : JSONObject? {
 		val privilegesListJsonObj = when(scope){
 			ScopeValues.Ais->{getPrivilegeScopeDetailsObjAIS()}
 			ScopeValues.Pis->{getPrivilegeScopeDetailsObjPIS()}
 		}
-		return JSONObject()
-			.put(ScopeFields.PrivilegeList.text, JSONArray().put(privilegesListJsonObj))
-			.put(ScopeFields.ScopeGroupType.text, scope.text)
-			.put(ScopeFields.ConsentId.text, ApiConsts.ConsentId)
-			.put(ScopeFields.ScopeTimeLimit.text, OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds))
-			.put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
+
+		val privilegesArray = JSONArray().put(privilegesListJsonObj)
+
+		val scopeDetailsObj = JSONObject()
+		with(scopeDetailsObj){
+			put(ScopeFields.PrivilegeList.text, privilegesArray)
+			put(ScopeFields.ScopeGroupType.text, scope.text)
+			put(ScopeFields.ConsentId.text, ApiConsts.ConsentId)
+			put(ScopeFields.ScopeTimeLimit.text, OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds))
+			put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
+		}
+		return scopeDetailsObj
 	}
 	private fun handleResponse(jsonObject: JSONObject?) : Boolean{
 		if(jsonObject == null)
@@ -159,19 +158,20 @@ class OpenApiAuthorize(activity: Activity) {
 	private fun getPrivilegeScopeDetailsObjAIS() : JSONObject{
 		val privilegesListJsonObj = JSONObject()
 		val privListCpy = permissionsList.permissionsArray
+		val privilegeScopeDetailsObj = JSONObject()
 
 		if(privListCpy.contains(Privileges.AccountsDetails)){
-			val privilegeScopeDetailsObj = JSONObject()
-				.put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Multiple.text)
-
+			with(privilegeScopeDetailsObj){
+				put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Multiple.text)
+			}
 			privilegesListJsonObj.put(ApiMethodes.AisGetAccount.text, privilegeScopeDetailsObj)
 		}
 
 		if(privListCpy.contains(Privileges.AccountsHistory)){
-			val privilegeScopeDetailsObj = JSONObject()
-				.put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Multiple.text)
-				.put(ScopeDetailsFields.MaxAllowedHistoryLong.text,800)
-
+			with(privilegeScopeDetailsObj) {
+				put(ScopeDetailsFields.ScopeUsageLimit.text, ScopeUsageLimit.Multiple.text)
+				put(ScopeDetailsFields.MaxAllowedHistoryLong.text, 800)
+			}
 			privilegesListJsonObj.put(ApiMethodes.AisGetTransactionsDone.text, privilegeScopeDetailsObj)
 		}
 		return privilegesListJsonObj
@@ -190,26 +190,42 @@ class OpenApiAuthorize(activity: Activity) {
 	}
 
 
+	suspend fun runForBundle(trDataList: List<TransferData>) : Boolean{
+		permissionsList = PermissionList(Privileges.Bundle)
+		Log.i(TagProduction, "Authorize for pis:bundle started")
+		val request = getRequestForBundle(trDataList)
+		val response = sendRequest(request)
+		val success = handleResponse(response)
+		if(success)
+			Log.i(TagProduction, "Authorize for pis:bundle ended with sucess")
+		else
+			Log.e(TagProduction, "Authorize for pis:bundle ended with error")
+		return success
+	}
 	private fun getRequestForBundle(trDataList: List<TransferData>) : Request{
 		val uuidStr = ApiFunctions.getUUID()
+		val bodyHeaders = JSONObject()
+		with(bodyHeaders){
+			put(ApiReqFields.RequestId.text, uuidStr)
+			put(ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
+			put(ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			put(ApiReqFields.SendDate.text, OmegaTime.getCurrentTime())
+			put(ApiReqFields.TppId.text, ApiConsts.TTP_ID)
+			put(ApiReqFields.IsCompanyContext.text, false)
+		}
 
-		val requestHeaderJsonObj = JSONObject()
-			.put(ApiReqFields.RequestId.text, uuidStr)
-			.put(ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
-			.put(ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-			.put(ApiReqFields.SendDate.text, OmegaTime.getCurrentTime())
-			.put(ApiReqFields.TppId.text, ApiConsts.TTP_ID)
-			.put(ApiReqFields.IsCompanyContext.text, false)
+		val body = JSONObject()
+		with(body){
+			put(ApiReqFields.RequestHeader.text, bodyHeaders)
+			put(ApiReqFields.ResponseType.text,ResponseTypes.Code.text)
+			put(ApiReqFields.ClientId.text, ApiConsts.userId_ALIOR)
+			put(ApiReqFields.Scope.text, ScopeValues.Pis.text)
+			put(ApiReqFields.ScopeDetails.text,getBundleScopeDetailsObject(trDataList))
+			put(ApiReqFields.RedirectUri.text, ApiConsts.REDIRECT_URI)
+			put(ApiReqFields.State.text,stateValue)
+		}
 
-		val requestBodyJson = JSONObject()
-			.put(ApiReqFields.RequestHeader.text, requestHeaderJsonObj)
-			.put(ApiReqFields.ResponseType.text,ResponseTypes.Code.text)
-			.put(ApiReqFields.ClientId.text, ApiConsts.userId_ALIOR)
-			.put(ApiReqFields.Scope.text, ScopeValues.Pis.text)
-			.put(ApiReqFields.ScopeDetails.text,getBundleScopeDetailsObject(trDataList))
-			.put(ApiReqFields.RedirectUri.text, ApiConsts.REDIRECT_URI)
-			.put(ApiReqFields.State.text,stateValue)
-		return ApiFunctions.bodyToRequest(BankUrls.AuthUrl, requestBodyJson, uuidStr)
+		return ApiFunctions.bodyToRequest(BankUrls.AuthUrl, body, uuidStr)
 	}
 	private fun getBundleScopeDetailsObject(trDataList: List<TransferData>) : JSONObject{
 		var amount = 0.0
@@ -230,22 +246,30 @@ class OpenApiAuthorize(activity: Activity) {
 		}
 
 		val methodeJsonObj = JSONObject()
-			.put(ScopeDetailsFields.ScopeUsageLimit.text, ScopeUsageLimit.Single.text)
-			.put(BundleFields.TransfersTotalAmount.text, amountStr)
-			.put(BundleFields.TypeOfTransfers.text, BundleFields.Domestic.text)
-			.put(BundleFields.DomesticTransfers.text, transfersArray)
+		with(methodeJsonObj){
+			put(ScopeDetailsFields.ScopeUsageLimit.text, ScopeUsageLimit.Single.text)
+			put(BundleFields.TransfersTotalAmount.text, amountStr)
+			put(BundleFields.TypeOfTransfers.text, BundleFields.Domestic.text)
+			put(BundleFields.DomesticTransfers.text, transfersArray)
+		}
 
 		val privilegesArray = JSONArray()
-			.put(JSONObject()
-				.put(ApiMethodes.PisBundle.text, methodeJsonObj)
-			)
+		with(privilegesArray){
+			val obj = JSONObject().put(ApiMethodes.PisBundle.text, methodeJsonObj)
+			put(obj)
+		}
 
 		val scopeDetailsObj = JSONObject()
-			.put(ScopeFields.PrivilegeList.text, privilegesArray)
-			.put(ScopeFields.ScopeGroupType.text, ScopeValues.Pis.text)
-			.put(ScopeFields.ConsentId.text, ApiConsts.ConsentId)
-			.put(ScopeFields.ScopeTimeLimit.text, OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds))
-			.put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
+		with(scopeDetailsObj){
+			put(ScopeFields.PrivilegeList.text, privilegesArray)
+			put(ScopeFields.ScopeGroupType.text, ScopeValues.Pis.text)
+			put(ScopeFields.ConsentId.text, ApiConsts.ConsentId)
+			put(ScopeFields.ScopeTimeLimit.text, OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds))
+			put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
+		}
+
+		return scopeDetailsObj
+	}
 
 
 	suspend fun runForGetPaymentStatus(paymentId : String, tppTransactionId : String) : Boolean{

@@ -66,32 +66,35 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 	private fun getRequest(accNumber: String, infos : HistoryFillters) : Request {
 		val uuidStr = ApiFunctions.getUUID()
 
-		val headersJson = JSONObject()
-			.put(RequestId.text, uuidStr)
-			.put(UserAgent.text, ApiFunctions.getUserAgent())
-			.put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
-			.put(SendDate.text, OmegaTime.getCurrentTime())
-			.put(TppId.text, ApiConsts.TTP_ID)
-			.put(TokenField.text, token.getAuthFieldValue())
-			.put(IsDirectPsu.text,false)
+		val bodyHeaders = JSONObject()
+		with(bodyHeaders){
+			put(RequestId.text, uuidStr)
+			put(UserAgent.text, ApiFunctions.getUserAgent())
+			put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			put(SendDate.text, OmegaTime.getCurrentTime())
+			put(TppId.text, ApiConsts.TTP_ID)
+			put(TokenField.text, token.getAuthFieldValue())
+			put(IsDirectPsu.text,false)
+		}
 
-		val requestBodyJson = JSONObject()
-			.put(RequestHeader.text, headersJson)
-			.put(AccountNumberField.text, accNumber)
-			.put(TransactionDateFrom.text,infos.getStartDateForRequest())
-			.put(TransactionDateTo.text,infos.getEndDateForRequest())
+		val body = JSONObject()
+		with(body){
+			put(RequestHeader.text, bodyHeaders)
+			put(AccountNumberField.text, accNumber)
+			put(TransactionDateFrom.text,infos.getStartDateForRequest())
+			put(TransactionDateTo.text,infos.getEndDateForRequest())
 
-		val minAmount = infos.getMinAmountForRequest()
-		if(minAmount != null)
-			requestBodyJson.put(MinAmount.text, minAmount)
+			val minAmount = infos.getMinAmountForRequest()
+			if(minAmount != null)
+				put(MinAmount.text, minAmount)
 
-		val maxAmount = infos.getMaxAmountForRequest()
-		if(maxAmount != null)
-			requestBodyJson.put(MaxAmount.text, maxAmount)
-
+			val maxAmount = infos.getMaxAmountForRequest()
+			if(maxAmount != null)
+				put(MaxAmount.text, maxAmount)
+		}
 
 		val additionalHeaderList = arrayListOf(Pair(Authorization.text,token.getAuthFieldValue()))
-		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone, requestBodyJson, uuidStr, additionalHeaderList)
+		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone, body, uuidStr, additionalHeaderList)
 	}
 	private suspend fun sendRequest(request: Request) : JSONObject?{
 		return try {
