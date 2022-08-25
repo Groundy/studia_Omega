@@ -14,32 +14,26 @@ import com.example.omega.Utilities.Companion.TagProduction
 
 class ApiFunctions {
 	companion object{
-		fun bodyToRequest(url : ApiConsts.BankUrls, requestBodyJson: JSONObject, uuidStr : String, additionalHeaders: List<Pair<String,String>>? = null): Request {
+		fun bodyToRequest(url : ApiConsts.BankUrls, requestBodyJson: JSONObject, uuidStr : String, authFieldValue : String? = null): Request {
 			val mediaType : MediaType = ApiConsts.CONTENT_TYPE.toMediaType()
 			val requestBodyStr = requestBodyJson.toString().toByteArray().toRequestBody(mediaType)
 
 			val request = Request.Builder()
-				.url(url.text)
-				.post(requestBodyStr)
-				.addHeader("x-ibm-client-id", ApiConsts.userId_ALIOR)
-				.addHeader("x-ibm-client-secret", ApiConsts.appSecret_ALIOR)
-				.addHeader("accept-encoding", ApiConsts.PREFERED_ENCODING)
-				.addHeader("accept-language", ApiConsts.PREFERED_LAUNGAGE)
-				.addHeader("accept-charset", ApiConsts.PREFERED_CHARSET)
-				//.addHeader("x-jws-signature", ApiFuncs.getJWS(bodyStr))
-				.addHeader("x-request-id", uuidStr)
-				.addHeader("content-type", ApiConsts.CONTENT_TYPE)
-				.addHeader("accept", ApiConsts.CONTENT_TYPE)
+			with(request){
+				url(url.text)
+				post(requestBodyStr)
+				addHeader("x-ibm-client-id", ApiConsts.userId_ALIOR)
+				addHeader("x-ibm-client-secret", ApiConsts.appSecret_ALIOR)
+				addHeader("accept-encoding", ApiConsts.PREFERED_ENCODING)
+				addHeader("accept-language", ApiConsts.PREFERED_LAUNGAGE)
+				addHeader("accept-charset", ApiConsts.PREFERED_CHARSET)
+				addHeader("x-request-id", uuidStr)
+				addHeader("content-type", ApiConsts.CONTENT_TYPE)
+				addHeader("accept", ApiConsts.CONTENT_TYPE)
 
-			if(!additionalHeaders.isNullOrEmpty()){
-				val size = additionalHeaders.size
-				for(i in 0 until size){
-					val headerTitle = additionalHeaders[i].first
-					val headerValue = additionalHeaders[i].second
-					request.addHeader(headerTitle,headerValue)
-				}
+				if(authFieldValue != null)
+					addHeader(ApiConsts.ApiReqFields.Authorization.text, authFieldValue)
 			}
-
 			return request.build()
 		}
 		fun getUUID() : String{

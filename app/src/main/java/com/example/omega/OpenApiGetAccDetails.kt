@@ -60,8 +60,7 @@ class OpenApiGetAccDetails(private var token: Token, private val callerActivity:
 			put(AccountNumberField.text, accNumber)
 		}
 
-		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
-		return ApiFunctions.bodyToRequest( ApiConsts.BankUrls.GetPaymentAccount, body, uuidStr, additionalHeaderList)
+		return ApiFunctions.bodyToRequest( ApiConsts.BankUrls.GetPaymentAccount, body, uuidStr, authFieldValue)
 	}
 	private suspend fun sendSingleRequest(request: Request): Boolean {
 		return try {

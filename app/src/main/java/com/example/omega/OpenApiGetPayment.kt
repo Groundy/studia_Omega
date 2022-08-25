@@ -8,6 +8,7 @@ import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 class OpenApiGetPayment{
+	/*
 	suspend fun run(callerActivity : Activity, token: Token) : Boolean{
 		Log.i(Utilities.TagProduction, "get payment status started")
 		val request = getRequest(callerActivity, token)
@@ -50,8 +51,7 @@ class OpenApiGetPayment{
 			put("tppTransactionId","5236361476964352")
 		}
 
-		val additionalHeaderList = arrayListOf(Pair(ApiConsts.ApiReqFields.Authorization.text, authFieldValue))
-		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.getPaymentStstus, body, uuid, additionalHeaderList)
+		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.getPaymentStstus, body, uuid, authFieldValue)
 	}
 	fun sendRequest(request: Request) : JSONObject?{
 		return try {
@@ -72,4 +72,5 @@ class OpenApiGetPayment{
 	fun handleOkResponse(response : JSONObject) : Boolean{
 		return false
 	}
+	 */
 }

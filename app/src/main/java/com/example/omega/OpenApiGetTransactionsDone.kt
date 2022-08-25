@@ -65,6 +65,7 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 	}
 	private fun getRequest(accNumber: String, infos : HistoryFillters) : Request {
 		val uuidStr = ApiFunctions.getUUID()
+		val authValue = token.getAuthFieldValue()
 
 		val bodyHeaders = JSONObject()
 		with(bodyHeaders){
@@ -73,7 +74,7 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 			put(IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
 			put(SendDate.text, OmegaTime.getCurrentTime())
 			put(TppId.text, ApiConsts.TTP_ID)
-			put(TokenField.text, token.getAuthFieldValue())
+			put(TokenField.text, authValue)
 			put(IsDirectPsu.text,false)
 		}
 
@@ -93,8 +94,7 @@ class ApiGetTransactionsDone(private val callerActivity: Activity, private val  
 				put(MaxAmount.text, maxAmount)
 		}
 
-		val additionalHeaderList = arrayListOf(Pair(Authorization.text,token.getAuthFieldValue()))
-		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone, body, uuidStr, additionalHeaderList)
+		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.GetTransactionsDone, body, uuidStr, authValue)
 	}
 	private suspend fun sendRequest(request: Request) : JSONObject?{
 		return try {

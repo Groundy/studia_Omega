@@ -89,8 +89,7 @@ class OpenApiBundle(private val callerActivity : Activity, private val paymentTo
 			put(BundleFields.DomesticTransfers.text, trasferArray)
 		}
 
-		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
-		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.Bundle, body, uuidStr, additionalHeaderList)
+		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.Bundle, body, uuidStr, authFieldValue)
 	}
 	private fun sendRequest(request: Request) : String?{
 		return try{

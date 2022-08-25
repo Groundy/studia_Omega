@@ -34,21 +34,20 @@ class OpenApiDomesticPayment(private val callerActivity: Activity, val token: To
 			put(TokenField.text, authFieldValue)
 		}
 
-		val additionalHeaderList = arrayListOf(Pair(Authorization.text, authFieldValue))
 		val transferDataFromToken = TransferData.fromDomesticPaymentToken(token)
 		if(transferDataFromToken == null){
 			Log.e(Utilities.TagProduction, "[getRequest/${this.javaClass.name}]  null transferDatat returned and passed further")
-			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, JSONObject(), uuidStr, additionalHeaderList)
+			return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, JSONObject(), uuidStr, authFieldValue)
 		}
 
 		val requestBodyJsonObj = PaymentSuppClass(transferDataFromToken).toDomesticPaymentRequest(bodyHeaders)
-		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, requestBodyJsonObj, uuidStr, additionalHeaderList)
+		return ApiFunctions.bodyToRequest(ApiConsts.BankUrls.SinglePayment, requestBodyJsonObj, uuidStr, authFieldValue)
 	}
 	private suspend fun sendRequest(request : Request) : Boolean{
 		return try{
 			val client = OkHttpClient.Builder().connectTimeout(ApiConsts.requestTimeOutMiliSeconds, TimeUnit.MILLISECONDS).build()
 			val response = client.newCall(request).execute()
-			val body = JSONObject(response.body!!.string())
+			//val body = JSONObject(response.body!!.string())
 			if(response.code!= ApiConsts.ResponseCodes.OK.code){
 				ApiFunctions.logResponseError(response, this.javaClass.name)
 				return false
