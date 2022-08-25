@@ -31,6 +31,7 @@ class OpenApiAuthorize(activity: Activity) {
 			AisGetAccount("ais:getAccount"),
 			PisDomestic("pis:domestic"),
 			PisBundle("pis:bundle"),
+			PisGetPayment("pis:getPayment")
 		}
 		private enum class BundleFields(val text : String){
 			//TppBundleId("tppBundleId"),
@@ -38,6 +39,10 @@ class OpenApiAuthorize(activity: Activity) {
 			TypeOfTransfers("typeOfTransfers"),
 			DomesticTransfers("domesticTransfers"),
 			Domestic("domestic")
+		}
+		private enum class GetPaymentsFields(val text : String){
+			PaymentId("paymentId"),
+			TppTransactionId("tppTransactionId")
 		}
 		const val redirectUriField = "aspspRedirectUri"
 	}
@@ -242,6 +247,68 @@ class OpenApiAuthorize(activity: Activity) {
 			.put(ScopeFields.ScopeTimeLimit.text, OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds))
 			.put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
 
+
+	suspend fun runForGetPaymentStatus(paymentId : String, tppTransactionId : String) : Boolean{
+		permissionsList = PermissionList(Privileges.GetPayment)
+		Log.i(TagProduction, "Authorize for pis:GetPayment started")
+		val request = getRequestForGetPayment(paymentId, tppTransactionId)
+		val response = sendRequest(request)
+		val success = handleResponse(response)
+		if(success)
+			Log.i(TagProduction, "Authorize for pis:GetPayment ended with sucess")
+		else
+			Log.e(TagProduction, "Authorize for pis:GetPayment ended with error")
+		return success
+	}
+	private fun getRequestForGetPayment(paymentId : String, tppTransactionId : String) : Request{
+		val uuidStr = ApiFunctions.getUUID()
+		val bodyHeaders = JSONObject()
+		with(bodyHeaders){
+			put(ApiReqFields.RequestId.text, uuidStr)
+			put(ApiReqFields.UserAgent.text, ApiFunctions.getUserAgent())
+			put(ApiReqFields.IpAddress.text, ApiFunctions.getPublicIPByInternetService(callerActivity))
+			put(ApiReqFields.SendDate.text, OmegaTime.getCurrentTime())
+			put(ApiReqFields.TppId.text, ApiConsts.TTP_ID)
+			put(ApiReqFields.IsCompanyContext.text, false)
+		}
+
+		val body = JSONObject()
+		with(body){
+			put(ApiReqFields.RequestHeader.text, bodyHeaders)
+			put(ApiReqFields.ResponseType.text,ResponseTypes.Code.text)
+			put(ApiReqFields.ClientId.text, ApiConsts.userId_ALIOR)
+			put(ApiReqFields.Scope.text, ScopeValues.Pis.text)
+			put(ApiReqFields.ScopeDetails.text,getScopeDetailsObjForGetPayment(paymentId, tppTransactionId))
+			put(ApiReqFields.RedirectUri.text, ApiConsts.REDIRECT_URI)
+			put(ApiReqFields.State.text,stateValue)
+		}
+
+		return ApiFunctions.bodyToRequest(BankUrls.AuthUrl, body, uuidStr)
+	}
+	private fun getScopeDetailsObjForGetPayment(paymentId: String, tppTransactionId: String): JSONObject {
+		val methodeJsonObj = JSONObject()
+		with(methodeJsonObj){
+			put(ScopeDetailsFields.ScopeUsageLimit.text, ScopeUsageLimit.Single.text)
+			put(GetPaymentsFields.PaymentId.text, paymentId)
+			put(GetPaymentsFields.TppTransactionId.text, tppTransactionId)
+		}
+
+
+		val privilegesArray = JSONArray()
+		with(privilegesArray){
+			val obj = JSONObject()
+				.put(ApiMethodes.PisGetPayment.text, methodeJsonObj)
+			put(obj)
+		}
+
+		val scopeDetailsObj = JSONObject()
+		with(scopeDetailsObj){
+			put(ScopeFields.PrivilegeList.text, privilegesArray)
+			put(ScopeFields.ScopeGroupType.text, ScopeValues.Pis.text)
+			put(ScopeFields.ConsentId.text, ApiConsts.ConsentId)
+			put(ScopeFields.ScopeTimeLimit.text, OmegaTime.getCurrentTime(ApiConsts.AuthUrlValidityTimeSeconds))
+			put(ScopeFields.ThrottlingPolicy.text, ApiConsts.ThrottlingPolicyVal)
+		}
 		return scopeDetailsObj
 	}
 }

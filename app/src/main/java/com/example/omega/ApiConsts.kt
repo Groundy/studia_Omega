@@ -19,7 +19,8 @@ class ApiConsts {
 		AccountsDetails("ACC_DETAILS"),
 		AccountsHistory("ACC_HISTORY"),
 		SinglePayment("SINGLE_PAYMENT"),
-		Bundle("Bundle")
+		Bundle("Bundle"),
+		GetPayment("GetPayment")
 	}
 	enum class BankUrls(val text : String){
 		AuthUrl("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/auth/v3_0.1/authorize"),
@@ -28,7 +29,8 @@ class ApiConsts {
 		//GetPaymentAccounts("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getAccounts"),
 		GetTransactionsDone("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/accounts/v3_0.1/getTransactionsDone"),
 		SinglePayment("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/payments/v3_0.1/domestic"),
-		Bundle("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/payments/v3_0.1/bundle")
+		Bundle("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/payments/v3_0.1/bundle"),
+		getPaymentStstus("https://gateway.developer.aliorbank.pl/openapipl/sb/v3_0.1/payments/v3_0.1/getPayment")
 	}
 	enum class ApiReqFields(val text : String){
 		RequestHeader("requestHeader"),
