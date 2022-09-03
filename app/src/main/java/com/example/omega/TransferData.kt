@@ -168,7 +168,11 @@ class TransferData {
 				val amountTmp = jsonObj.getDouble(TransferDataFields.Amount.text)
 				val currencyTmp = jsonObj.getString(TransferDataFields.Currency.text)
 				val executionDateTmp = jsonObj.getString(TransferDataFields.ExecutionDate.text)
-				val multipleUseTmp = jsonObj.getBoolean(TransferDataFields.MultipleUse.text)
+
+				var multipleUseTmp = false
+				if(jsonObj.has(TransferDataFields.MultipleUse.text))
+					multipleUseTmp = jsonObj.getBoolean(TransferDataFields.MultipleUse.text)
+
 				val isProlonged = jsonObj.has(TransferDataFields.ProLongedExpTime.text)
 
 				var proLongExpTimeTmp: Int? = null
