@@ -35,15 +35,16 @@ class CodeServerApi {
 		val requestBodyStr = requestBodyJson.toString().toByteArray().toRequestBody(mediaType)
 
 		val request = Request.Builder()
-			.url(url.text)
-			.post(requestBodyStr)
-			.addHeader("accept-encoding", ApiConsts.PREFERED_ENCODING)
-			.addHeader("accept-language", ApiConsts.PREFERED_LAUNGAGE)
-			.addHeader("accept-charset", ApiConsts.PREFERED_CHARSET)
-			.addHeader("x-request-id", ApiFunctions.getUUID())
-			.addHeader("content-type", ApiConsts.CONTENT_TYPE)
-			.addHeader("accept", ApiConsts.CONTENT_TYPE)
-
+		with(request){
+			url(url.text)
+			post(requestBodyStr)
+			addHeader("accept-encoding", ApiConsts.PREFERED_ENCODING)
+			addHeader("accept-language", ApiConsts.PREFERED_LAUNGAGE)
+			addHeader("accept-charset", ApiConsts.PREFERED_CHARSET)
+			addHeader("x-request-id", ApiFunctions.getUUID())
+			addHeader("content-type", ApiConsts.CONTENT_TYPE)
+			addHeader("accept", ApiConsts.CONTENT_TYPE)
+		}
 		return request.build()
 	}
 

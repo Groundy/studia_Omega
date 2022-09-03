@@ -158,9 +158,9 @@ class OpenApiAuthorize(activity: Activity) {
 	private fun getPrivilegeScopeDetailsObjAIS() : JSONObject{
 		val privilegesListJsonObj = JSONObject()
 		val privListCpy = permissionsList.permissionsArray
-		val privilegeScopeDetailsObj = JSONObject()
 
 		if(privListCpy.contains(Privileges.AccountsDetails)){
+			val privilegeScopeDetailsObj = JSONObject()
 			with(privilegeScopeDetailsObj){
 				put(ScopeDetailsFields.ScopeUsageLimit.text,ScopeUsageLimit.Multiple.text)
 			}
@@ -168,6 +168,7 @@ class OpenApiAuthorize(activity: Activity) {
 		}
 
 		if(privListCpy.contains(Privileges.AccountsHistory)){
+			val privilegeScopeDetailsObj = JSONObject()
 			with(privilegeScopeDetailsObj) {
 				put(ScopeDetailsFields.ScopeUsageLimit.text, ScopeUsageLimit.Multiple.text)
 				put(ScopeDetailsFields.MaxAllowedHistoryLong.text, 800)
